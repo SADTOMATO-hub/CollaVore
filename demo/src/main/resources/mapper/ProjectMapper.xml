@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.collavore.app.project.mapper.ProjectMapper">
+<mapper
+	namespace="com.collavore.app.project.mapper.ProjectMapper">
+	<!-- 전체조회 -->
+	<select id="selectProjectAll" resultType="ProjectVO">
+		SELECT proj_no
+		,name
+		,content
+		,start_date
+		,end_date
+		,is_template
+		,status
+		,proj_temp_no
+		,project_git_url
+		,p_mgr_no
+		FROM proj
+		ORDER BY proj_no
+	</select>
 </mapper>

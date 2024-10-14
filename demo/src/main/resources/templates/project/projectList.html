@@ -23,36 +23,29 @@
 			<!-- Column -->
 			<div class="card">
                 <div class="card-body">
-                  <h5 class="card-title mb-0">Static Table</h5>
+                  <h5 class="card-title mb-0"><button type="button" class="btn btn-info btn-lg"  style="float: right;">
+                      프로젝트생성
+                    </button></h5>
                 </div>
                 <table class="table">
                   <thead>
                     <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">First</th>
-                      <th scope="col">Last</th>
-                      <th scope="col">Handle</th>
+                      <th scope="col">번호</th>
+                      <th scope="col">담당자</th>
+                      <th scope="col">진행상태</th>
+                      <th scope="col">마감일</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody>                 
+                  <th:block th:each="info : ${projects}">
                     <tr>
                       <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
+                      <td>[[${info.projNo}]]</td>
+                      <td>[[${info.name}]]</td>
+                      <td>[[${info.projNo}]]</td>
+                      <td>[[${info.status}]]</td>
                     </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
+                    </th:block>
                   </tbody>
                 </table>
               </div>
