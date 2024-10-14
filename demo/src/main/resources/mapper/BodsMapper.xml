@@ -2,15 +2,41 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.collavore.app.board.mapper.BodsMapper">
 	<select id="selectBoardAll" resultType="BodsVO">
-		SELECT bno
+		SELECT post_no
 			, title
-			, contents
+			, content
 			, writer
-			, regdate
-			, updatedate
-			, image
-		FROM board
-		ORDER BY bno
+			, reg_date
+		FROM bods
+		ORDER BY post_no
 	</select>
+	
+		<!--  등록 -->
+	<insert id="insertBodsInfo" parameterType="BodsVO">
+		<selectKey	keyProperty="post_no"
+					resultType="Integer"
+					order="BEFORE">
+			SELECT NVL(MAX(post_no),1000) + 1
+			FROM bods
+		</selectKey>
+		INSERT INTO bods
+				(
+					post_no
+					, title
+					, content
+					, reg_date
+					, board_no
+					, writer
+				)
+			   VALUES
+			   (
+			   		#{post_no}
+			   		, #{title}
+			   		, #{content}
+			   		, #{reg_date}
+			   		, #{board_no}
+			   		, #{writer}
+			   )
+	</insert>
 	
 </mapper>

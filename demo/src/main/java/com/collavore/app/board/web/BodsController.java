@@ -12,8 +12,16 @@ public class BodsController {
 	    model.addAttribute("sidemenu", "board_sidebar");
 	}
 
-	@GetMapping("/board")
+	@GetMapping("board/boardList")
 	public String homepage() {
 		return "board/bodsList";
-	}// end homepage
+	}
+	
+	@GetMapping("board/insertbods")
+	public String insertpage() {
+		return "board/bodsInsert";
+	}
+	
+	
 }
+

@@ -5,18 +5,28 @@ import java.util.List;
 import com.collavore.app.board.service.BodsVO;
 
 public interface BodsMapper {
+	// 게시글 전체 목록 전체조회
+	public List<BodsVO> selectBoardAll();
 
-	List<BodsVO> selectBoardAll();
-	// 전체조회
+	// 게시글상세보기(단건조회)
+	public BodsVO selectBodsInfo(BodsVO bodsVO);
+
+	// 게시글등록(등록)
+	public int insertBodsInfo(BodsVO bodsVO);
+
+	// 게시글수정(수정)
+	public int updateBodsInfo(BodsVO bodsVO);
+
+	// 게시판 생성(등록)
+	public int insertBodsInfo();
 	
-	// 단건조회
+	// 게시판 수정
+	public int UpdateBodsInfo();
 	
-	// 게시판 목록 조회
+	// 게시판 삭제
+	public int delectBodsInfo(int post_no); 
 	
-	// 등록
-	
-	// 수정
-	
-	// 삭제
-	
+	// 게시판 전체 조회
+	public List<BodsVO> getlist();
+
 }
