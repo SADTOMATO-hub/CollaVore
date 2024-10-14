@@ -1,0 +1,51 @@
+<div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	layout:fragment="Content">
+
+	<div class="container">
+		<!-- 왼쪽 상단에 관리자 페이지 경로 추가 -->
+		<div>관리자 페이지 > 사원관리</div>
+		<div>
+			<p class="title">
+				<b>사원관리 |</b> 사원관리
+			</p>
+			<p class="subtitle">전체 사원의 관리 페이지 입니다.</p>
+		</div>
+	</div>
+
+	<div class="card">
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">이름</th>
+					<th scope="col">연락처</th>
+					<th scope="col">이메일</th>
+					<th scope="col">소속</th>
+					<th scope="col">직무</th>
+					<th scope="col">직위(직책)</th>
+					<th scope="col">상태</th>
+					<th scope="col"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<th:block th:each="info : ${mambers}">
+					<tr>
+						<td>[[${info.empName}]]</td>
+						<td>[[${info.tel}]]</td>
+						<td>[[${info.email}]]</td>
+						<td>[[${info.deptName}]]</td>
+						<td>[[${info.jobName}]]</td>
+						<td>[[${info.posiName}]]</td>
+						<td>[[${info.workType}]]</td>
+						<td><button >보기</button></td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+		<div>
+			<button type="button" th:onclick="|location.href='@{/memberInsert}'|" > 등록 </button>
+		</div>
+	</div>
+
+</div>
