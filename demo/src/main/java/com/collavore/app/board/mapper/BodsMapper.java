@@ -10,9 +10,10 @@ public interface BodsMapper {
 	// 게시글수정(수정)
 	// public int updateBoardInfo(BodsVO bodsVO);
 	// 게시판 생성
-
+	// public insertbodsInfo()
 	// 게시판 수정
-
-	// 게시판 조회
+	// public UpdateBodsInfo(BodsVO BodsVO)
+	// 게시판 전체 조회
+	// public List<>
 
 }
