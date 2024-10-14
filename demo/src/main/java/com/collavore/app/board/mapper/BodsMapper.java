@@ -1,6 +1,12 @@
 package com.collavore.app.board.mapper;
 
+import java.util.List;
+
+import com.collavore.app.board.service.BodsVO;
+
 public interface BodsMapper {
+
+	List<BodsVO> selectBoardAll();
 	// 전체조회
 	
 	// 단건조회

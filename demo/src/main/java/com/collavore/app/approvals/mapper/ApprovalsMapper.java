@@ -1,5 +1,8 @@
 package com.collavore.app.approvals.mapper;
 
-public interface ApprovalsMapper {
+import java.util.List;
 
+import com.collavore.app.approvals.service.ApprovalsVO;
+
+public interface ApprovalsMapper {
 }
