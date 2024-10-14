@@ -2,6 +2,7 @@ package com.collavore.app.approvals.service;
 
 public interface ApprovalsService {
 	// 템플릿 생성
+	public int createApprsTemp (ApprovalstempVO apprsVO);
 	// 템플릿 목록 조회
 	// 템플릿 상세 조회
 	// 템플릿 수정

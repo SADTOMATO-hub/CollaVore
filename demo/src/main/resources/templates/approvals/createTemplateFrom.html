@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	layout:fragment="Content">
+<head>
+<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js"
+	charset="utf-8"></script>
+</head>
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-15">
+				<div class="card">
+					<form action="createTemplate" method="post" class="form-horizontal">
+						<div class="card-body">
+							<h4 class="card-title">템플릿 생성 페이지</h4>
+							<hr>
+							<div class="col-sm-5 form-group row">
+								<label for="insertTitle"
+									class="control-label col-form-label">
+									템플릿 제목
+								</label>
+								<div class="col-sm-5">
+									<input type="text" class="form-control" id="insertTitle"
+										placeholder="템플릿 제목을 정해주세요" />
+								</div>
+							</div>
+							<div class="form-group row d-flex justify-content-center">
+								<div>
+									<textarea name="editorTxt" id="editorTxt" rows="1" style="resize: none;" spellcheck="false"
+										placeholder="내용을 입력해주세요"></textarea>
+								</div>
+							</div>
+							<div class="border-top">
+								<div class="card-body">
+									<button type="button" class="btn btn-primary">템플릿 등록</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	let oEditors = []
+	smartEditor = function() {
+		console.log("Naver SmartEditor")
+		nhn.husky.EZCreator.createInIFrame({
+			oAppRef : oEditors,
+			elPlaceHolder : "editorTxt",
+			sSkinURI : "/smarteditor/SmartEditor2Skin.html",
+			fCreator : "createSEditor2"
+		})
+	}
+	$(document).ready(function() {
+		smartEditor()
+	})
+	submitPost = function() {
+ oEditors.getById["editorTxt"].exec("UPDATE_CONTENTS_FIELD", [])
+ let content = document.getElementById("editorTxt").value
+ if(content == '') {
+	 alert("내용을 입력해주세요.")
+	 oEditors.getById["editorTxt"].exec("FOCUS")
+	 return
+	 } else {
+	 console.log(content)
+	 }
+	}
+</script>
+</html>

@@ -1,4 +1,4 @@
-package com.collavore.app;
+package com.collavore.app.board.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -6,15 +6,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 
 @Controller
-public class HomeController {
-	// 사이드 적용
+public class BodsController {
 	@ModelAttribute
 	public void addAttributes(Model model) {
-	    model.addAttribute("sidemenu", "default_sidebar");
+	    model.addAttribute("sidemenu", "board_sidebar");
 	}
-	
-	@GetMapping("/")
-	public String homePage() {
-		return "home";
-	}
+
+	@GetMapping("/board")
+	public String homepage() {
+		return "board/bodsList";
+	}// end homepage
 }

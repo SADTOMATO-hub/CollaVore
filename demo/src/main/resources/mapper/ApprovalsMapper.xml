@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.collavore.app.approvals.mapper.ApprovalsMapper">
+	<!-- 템플릿 생성 -->
+	<insert id="createApprsTemp" parameterMap="ApprovalstempVO">
+	  <selectKey keyProperty="eatNo"
+	  			 resultType="Integer"
+	  			 order="BEFORE">
+	  	SELECT NVL(MAX(eat_no),0) + 1
+	  	FROM approvalstemp
+	  </selectKey>
+		INSERT INTO approvalstemp (
+									eat_no
+								   ,title
+								   ,content
+								   )
+					VALUES         (
+									1
+									,#{title}
+									,#{content}
+									)
+	</insert>
+</mapper>
+<!-- 3번째 -->
