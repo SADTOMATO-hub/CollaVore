@@ -16,7 +16,6 @@ public class ProjectVO {
 	private Integer projNo;
 	private String name;
 	private String content;
-
 	private Date regDate;
 
 	

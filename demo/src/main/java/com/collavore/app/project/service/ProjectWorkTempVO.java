@@ -12,14 +12,12 @@ import lombok.Data;
 @Builder
 public class ProjectWorkTempVO {
 	
-	//프로젝트 파일관리
-	private Integer projFileNo;
-	private Integer pfNo;
+	//프로젝트 업무 템플릿 관리
+	private Integer pwtNo;
 	private String name;
 	private String content;
-	private String size;
-	private String extension;
-	private String path;
+	private Integer projTempNo;
+	private String jobType;
 	private Date regDate;
 
 	
