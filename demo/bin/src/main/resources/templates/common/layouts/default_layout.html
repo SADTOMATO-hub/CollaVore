@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+<meta charset="UTF-8">
+<th:block th:replace="~{common/configs/default_config :: ConfigFrag}"></th:block>
+<title>CollaVore : 그룹협업툴</title>
+</head>
+<body>
+	<div id="main-wrapper" data-layout="vertical" data-navbarbg="skin5"
+		data-sidebartype="full" data-sidebar-position="absolute"
+		data-header-position="absolute" data-boxed-layout="full">
+		<header th:insert="~{common/fragments/default_header :: HeaderFrag}"></header>
+
+		<aside class="left-sidebar" data-sidebarbg="skin5">
+			<div class="scroll-sidebar">
+				<nav class="sidebar-nav">
+					<ul id="sidebarnav" class="pt-4"
+						th:replace="~{common/sidebar/sidebar_test :: CommonSidebar2}">
+					</ul>
+				</nav>
+			</div>
+		</aside>
+		<div layout:fragment="Content"></div>
+
+	</div>
+</body>
+</html>
