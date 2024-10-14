@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	  layout:decorate="~{common/layouts/default_layout}"
+	  layout:fragment="Content">
+<head>
+<meta charset="UTF-8">
+<title>board Info</title>
+</head>
+<body>
+	<div class="text-center">
+		<h3>게시글 정보</h3>
+		<table class="table">
+			<tr>
+				<th>제목</th>
+				<td>[[${board.title}]]</td>
+			</tr>
+			<tr>
+				<th>내용</th>
+				<td>[[${board.contents}]]</td>
+			</tr>
+			<tr>
+				<th>첨부파일</th>
+				<!-- /images/cat.jpg -->
+				<!-- <td><img th:src="@{|/images/${board.image}|}" width="200" height="200"></td> -->
+				<td><img th:src="@{/images/{file}(file=${board.image})}" width="200" height="200"></td>
+			</tr>
+			<tr>
+				<th>작성일자</th>
+				<td>[[${#dates.format(board.regdate, "yyyy/MM/dd")}]]</td>
+			</tr>
+		</table>
+		<button type="button" th:onclick="|location.href='@{/boardUpdate(bno=${board.bno})}'|">수정</button>
+		<button type="button" th:onclick="|location.href='@{/boardList}'|">목록</button>
+		<button type="button" th:onclick="|location.href='@{/boardDelete(bno=${board.bno})}'|">삭제</button>
+	</div>
+</body>
+</html>
