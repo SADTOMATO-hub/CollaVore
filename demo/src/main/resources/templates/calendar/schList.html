@@ -1,10 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+<div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorate="~{common/layouts/default_layout}"
+   layout:fragment="Content">
+   
 
-</body>
-</html>
+<script src='../dist/js/cals/index.global.js'></script>
+<script src='../dist/js/cals/fullCal.js'></script>
+ <link rel="stylesheet" href='../dist/css/cals/fullCal.css'>
+
+  <div id='calendar'></div>
+
+   
+</div>
+              
