@@ -15,9 +15,14 @@ public class ProjectVO {
 	//프로젝트관리
 	private Integer projNo;
 	private String name;
-	private String content;
-
-	private Date regDate;
+	private String content;	
+	private Date startDate;
+	private Date endDate;
+	private String isTemplate;	
+	private String status;	
+	private Integer projTempNo;
+	private String projectGitUrl;
+	private Integer pMgrNo;
 
 	
 	
