@@ -1,8 +1,232 @@
 <div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{common/layouts/default_layout}"
-	layout:fragment="Content">
-	
-	<p>ㄹㄹㄹㄹ</p>
-	
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorate="~{common/layouts/default_layout}"
+   layout:fragment="Content">
+   
+   <div class="row">
+      <div class="card">
+         <form class="form-horizontal">
+            <div class="card-body">
+               <div class="container mt-5">
+                  <!-- 상단 이미지와 타이틀 -->
+                  <div class="header">
+                     <h4 class="card-title">사원등록</h4>
+                     <div class="text-end">관리자 페이지 > 사원관리 > 등록</div>
+                  </div>
+
+                  <div class="col-md-9">
+                     <!-- 이미지 업로드 및 미리보기 -->
+                     <div class="form-group row">
+                        <label for="fname"
+                           class="col-sm-3 text-end control-label col-form-label">프로필
+                           사진</label>
+                        <div class="col-sm-9">
+                           <div class="image-preview mb-3">
+                              <img id="imgPreview" src="#" alt="이미지 미리보기"
+                                 style="display: none; max-width: 200px; max-height: 200px;" />
+                           </div>
+                           <input type="file" class="form-control" id="profileImage"
+                              accept="image/*" onchange="previewImage(event)" /> <small
+                              class="form-text text-muted">* 프로필 사진 권장 크기는
+                              330x330px(10MB 이하)입니다.</small>
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <label for="fname"
+                           class="col-sm-3 text-end control-label col-form-label">이름</label>
+                        <div class="col-sm-9">
+                           <input type="text" class="form-control" id="fname"
+                              placeholder="이름" />
+                        </div>
+                     </div>
+
+                     <div class="form-group row">
+                        <label for="lname"
+                           class="col-sm-3 text-end control-label col-form-label">비밀번호</label>
+                        <div class="col-sm-9">
+                           <input type="text" class="form-control" id="lname"
+                              placeholder="비밀번호" />
+                        </div>
+                     </div>
+
+                     <div class="form-group row">
+                        <label for="lname"
+                           class="col-sm-3 text-end control-label col-form-label">연락처</label>
+                        <div class="col-sm-9">
+                           <input type="password" class="form-control" id="lname"
+                              placeholder="연락처" />
+                        </div>
+                     </div>
+
+                     <div class="form-group row">
+                        <label for="email1"
+                           class="col-sm-3 text-end control-label col-form-label">이메일</label>
+                        <div class="col-sm-9">
+                           <input type="text" class="form-control" id="email1"
+                              placeholder="이메일" />
+                        </div>
+                     </div>
+
+                     <div class="form-group row">
+                        <label for="cono1"
+                           class="col-sm-3 text-end control-label col-form-label">주소</label>
+                        <div class="col-sm-9">
+                           <input type="text" class="form-control" id="cono1"
+                              placeholder="주소" />
+                        </div>
+                     </div>
+
+                     <div class="form-group row">
+                        <label for="cono1"
+                           class="col-sm-3 text-end control-label col-form-label">사번</label>
+                        <div class="col-sm-9">
+                           <input type="text" class="form-control" id="cono1"
+                              placeholder="사번" />
+                        </div>
+                     </div>
+
+                     <div class="form-group row">
+                        <label for="cono1"
+                           class="col-sm-3 text-end control-label col-form-label">근로형태</label>
+                        <div class="col-md-9">
+                           <select class="select2 form-select shadow-none"
+                              style="width: 100%; height: 36px">
+                              <option>정규직/비정규직</option>
+                              <optgroup label="Alaskan/Hawaiian Time Zone">
+                                 <option value="AK">정규직</option>
+                                 <option value="HI">비정규직</option>
+                              </optgroup>
+                           </select>
+                        </div>
+                     </div>
+
+                     <div class="form-group row">
+                        <label for="cono1"
+                           class="col-sm-3 text-end control-label col-form-label">근로상태</label>
+                        <div class="col-md-9">
+                           <select class="select2 form-select shadow-none"
+                              style="width: 100%; height: 36px">
+                              <option>재직중/퇴사</option>
+                              <optgroup label="Alaskan/Hawaiian Time Zone">
+                                 <option value="AK">재직중</option>
+                                 <option value="HI">퇴사</option>
+                              </optgroup>
+                           </select>
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <label for="cono1"
+                           class="col-sm-3 text-end control-label col-form-label">소속조직</label>
+                        <div class="col-md-9">
+                           <select class="select2 form-select shadow-none"
+                              style="width: 100%; height: 36px">
+                              <option>소속조직</option>
+                              <optgroup label="ex)레벨">
+                                 <option value="CT">Connecticut</option>
+                                 <option value="DE">Delaware</option>
+                                 <option value="FL">Florida</option>
+                                 <option value="GA">Georgia</option>
+                                 <option value="IN">Indiana</option>
+                              </optgroup>
+                              <optgroup label="ex)레벨">
+                                 <option value="CT">Connecticut</option>
+                                 <option value="DE">Delaware</option>
+                                 <option value="FL">Florida</option>
+                                 <option value="GA">Georgia</option>
+                                 <option value="IN">Indiana</option>
+                              </optgroup>
+                           </select>
+                        </div>
+                     </div>
+
+                     <div class="form-group row">
+                        <label for="cono1"
+                           class="col-sm-3 text-end control-label col-form-label">입사일</label>
+                        <div class="col-sm-9">
+                           <input type="text" class="form-control" id="cono1"
+                              placeholder="입사일" />
+                        </div>
+                     </div>
+
+                     <div class="form-group row">
+                        <label for="cono1"
+                           class="col-sm-3 text-end control-label col-form-label">직급</label>
+                        <div class="col-md-9">
+                           <select class="select2 form-select shadow-none"
+                              style="width: 100%; height: 36px">
+                              <option>직급</option>
+                              <optgroup label="Alaskan/Hawaiian Time Zone">
+                                 <option value="AK">사원</option>
+                                 <option value="HI">대리</option>
+                              </optgroup>
+                           </select>
+                        </div>
+                     </div>
+
+                     <div class="form-group row">
+                        <label for="cono1"
+                           class="col-sm-3 text-end control-label col-form-label">직무</label>
+                        <div class="col-md-9">
+                           <select class="select2 form-select shadow-none"
+                              style="width: 100%; height: 36px">
+                              <option>직무</option>
+                              <optgroup label="Alaskan/Hawaiian Time Zone">
+                                 <option value="AK">직무1</option>
+                                 <option value="HI">직무2</option>
+                              </optgroup>
+                           </select>
+                        </div>
+                     </div>
+
+                     <div class="form-group row">
+                        <label for="cono1"
+                           class="col-sm-3 text-end control-label col-form-label">계정구분</label>
+                        <div class="col-md-9">
+                           <div class="form-check form-check-inline">
+                              <input type="radio" class="form-check-input"
+                                 id="customControlValidation1" name="radio-stacked" required />
+                              <label class="form-check-label mb-0"
+                                 for="customControlValidation1">관리자</label>
+                           </div>
+                           <div class="form-check form-check-inline">
+                              <input type="radio" class="form-check-input"
+                                 id="customControlValidation2" name="radio-stacked" required />
+                              <label class="form-check-label mb-0"
+                                 for="customControlValidation2">일반사원</label>
+                           </div>
+                        </div>
+                     </div>
+
+                     <div class="form-group row">
+                        <label for="cono1"
+                           class="col-sm-3 text-end control-label col-form-label">Message</label>
+                        <div class="col-sm-9">
+                           <textarea class="form-control"></textarea>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="border-top">
+                     <div class="card-body">
+                        <button type="button" class="btn btn-primary">Submit</button>
+                     </div>
+                  </div>
+
+               </div>
+            </div>
+         </form>
+      </div>
+   </div>
 </div>
+<!-- 이미지 미리보기 스크립트 -->
+<script>
+   function previewImage(event) {
+      var reader = new FileReader();
+      reader.onload = function() {
+         var output = document.getElementById('imgPreview');
+         output.src = reader.result;
+         output.style.display = 'block';
+      };
+      reader.readAsDataURL(event.target.files[0]);
+   }
+</script>

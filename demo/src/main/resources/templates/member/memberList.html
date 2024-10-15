@@ -29,7 +29,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<th:block th:each="info : ${mambers}">
+				<th:block th:each="info : ${members}">
 					<tr>
 						<td>[[${info.empName}]]</td>
 						<td>[[${info.tel}]]</td>
@@ -38,7 +38,7 @@
 						<td>[[${info.jobName}]]</td>
 						<td>[[${info.posiName}]]</td>
 						<td>[[${info.workType}]]</td>
-						<td><button >보기</button></td>
+						<td><button type="button" th:onclick="|location.href='@{/memberInsert}'|">상세보기</button></td>
 					</tr>
 				</th:block>
 			</tbody>
@@ -47,5 +47,13 @@
 			<button type="button" th:onclick="|location.href='@{/memberInsert}'|" > 등록 </button>
 		</div>
 	</div>
-
 </div>
+<!-- <script> 사원이 단건조회시 사이드바에 넣을 아이
+	const context = $('meta[name="ctxPath"]').attr('value'); // val();
+	$('tbody > tr').on('click', function(e){
+		let trTag = e.currentTarget;
+		let eid = $(trTag).children().eq(1).text();
+		let url = (context==undefined?'':context) + '/empInfo?empNo=' + eid;
+		location.href=url;
+	});
+</script> -->

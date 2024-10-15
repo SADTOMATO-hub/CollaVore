@@ -2,17 +2,61 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.collavore.app.hrm.mapper.MemberMapper">
 
-	<!-- 사원 전체 리스트 -->
-	<select id="selectMemberAll" resultType="HrmVO">
-		SELECT   name as empName
-			     ,tel
-			     ,email
-			     ,(SELECT name FROM departments WHERE dept_no = employees.dept_no) AS deptName
-			     ,(SELECT name FROM jobs WHERE job_no = employees.job_no) AS jobName
-			     ,(SELECT name FROM positions WHERE posi_no = employees.posi_no) AS posiName
-			     ,work_type
-		FROM     employees
-		ORDER BY name
+   <!-- 사원 전체 리스트 -->
+   <select id="selectMemberAll" resultType="HrmVO">
+      SELECT   name as empName
+              ,tel
+              ,email
+              ,(SELECT name FROM departments WHERE dept_no = employees.dept_no) AS deptName
+              ,(SELECT name FROM jobs WHERE job_no = employees.job_no) AS jobName
+              ,(SELECT name FROM positions WHERE posi_no = employees.posi_no) AS posiName
+              ,work_type
+      FROM     employees
+      ORDER BY name
+   </select>
+   
+   <!-- 사원 등록 -->
+    <insert id="insertMember" parameterType="map">
+        INSERT INTO employees 
+                 (name
+                 ,password
+                 ,tel
+                 ,email
+                 ,address
+                 ,emp_no
+                 ,work_type
+                 ,join_date
+                 ,dept_id
+                 ,position_id
+                 ,job_id
+                 )
+        VALUES (
+               #{name} 
+               ,#{password} 
+               ,#{tel}
+               ,#{email}
+               ,#{address} 
+               ,#{empNo}
+               ,#{workType} 
+               ,#{joinDate} 
+               ,(SELECT id FROM departments WHERE name = #{deptName})
+               ,(SELECT id FROM positions WHERE name = #{posiName})
+               ,(SELECT id FROM jobs WHERE name = #{jobName}
+               )
+        )
+    </insert>
+    
+    <!-- 단건조회 -->
+	<select id="selectMemberInfo" resultType="HrmVO">
+		SELECT info
+		       , name AS empName
+		       , tel
+		       , email
+		       , emp_no
+		       , work_type
+		       ,(SELECT name FROM departments WHERE dept_no = employees.dept_no) AS deptName
+		FROM   employees
+		WHERE  emp_no = #{empNo}
 	</select>
-	
+   
 </mapper>

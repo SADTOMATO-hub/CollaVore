@@ -1,17 +1,35 @@
 package com.collavore.app.hrm.mapper;
 
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import com.collavore.app.hrm.service.HrmVO;
+
 public interface DeptMapper {
-	// 부서 전체조회
-	// 주서 단건조회
-	// 부서 등록
-	// 부서 수정
-	// 부서 삭제
-	
-	// 직위 전체조회
-	// 직위 등독
-	// 직위 수정
-	// 직위 삭제
-	
+	// 전체조회
+	public List<HrmVO> selectDeptAll();
+
+	// 단건조회
+	public HrmVO selectDeptInfo(HrmVO hrmVO);
+
+	// 등록
+	public int insertDeptInfo(HrmVO hrmVO);
+
+	// 수정
+	public int updateDeptInfo(@Param("did") int deptId, @Param("dept") HrmVO hrmVO);
+
+	// 삭제
+	public int deleteDeptInfo(int deptNo);
+
+	// 직위
+	public int insertPosiInfo(HrmVO hrmVO);
+
+	public int updatePosiInfo(HrmVO hrmVO);
+
+	public int deletePosiInfo(Integer posiNo);
+
+	public List<HrmVO> selectPosiList();
 	// 직무 전체조회
 	// 직무 등록
 	// 직무 수정
