@@ -24,4 +24,17 @@ public class ProjectServiceImpl implements PjService{
 		return projectMapper.selectProjectAll();
 	}
 
+	@Override
+	public int projectinsert(ProjectVO proejctVO) {
+		int result = projectMapper.ProjectInsert(proejctVO);
+		return result == 1? proejctVO.getProjNo() : -1;
+	}
+
+//	@Override
+//	public int projectDelete(int projNo) {
+//		return projectMapper.projectDelete(projNo);
+//	}
+	
+	
+
 }
