@@ -3,23 +3,7 @@ package com.collavore.app.hrm.service;
 import java.util.List;
 import java.util.Map;
 
-public interface DeptService {
-	// 전제조회
-	public List<HrmVO> deptList();
-
-	// 단건조회
-	public HrmVO deptInfo(HrmVO hrmVO);
-
-	// 등록
-	public int deptInsert(HrmVO hrmVO);
-
-	// 수정
-	public Map<String, Object> deptUpdate(HrmVO hrmVO);
-
-	// 삭제
-	public Map<String, Object> deptDelete(int deptNo);
-
-	// 직위
+public interface PosiService {
 
     /**
      * 직위 정보 삽입
@@ -50,9 +34,5 @@ public interface DeptService {
      * @return 직위 정보 리스트
      */
     public List<HrmVO> getExistingPositions();
-	// 직무 전체조회
-	// 직무 등록
-	// 직무 수정
-	// 직무 삭제
 
 }

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인 페이지</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        /* 배경 이미지 설정 */
+        .bg-image {
+            background-image: url('/mnt/data/image.png'); /* 업로드한 배경 이미지 경로 */
+            background-size: cover;
+            background-position: center;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /* 로그인 창 스타일 */
+        .login-container {
+            background-color: rgba(255, 255, 255, 0.9); /* 반투명한 배경 */
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .login-container img {
+            width: 150px; /* 로고 이미지 크기 */
+        }
+        .login-container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .login-container button {
+            background-color: #333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 5px;
+        }
+        .login-container button:hover {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-image">
+        <div class="login-container">
+            <img src="logo.png" alt="로고">
+            <form action="/login" method="post">
+                <input type="text" name="username" placeholder="이메일" required>
+                <input type="password" name="password" placeholder="비밀번호" required>
+                <button type="submit">로그인</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
