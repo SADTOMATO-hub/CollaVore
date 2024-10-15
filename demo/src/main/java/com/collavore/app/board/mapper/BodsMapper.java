@@ -18,6 +18,7 @@ public interface BodsMapper {
 	public int updateBodsInfo(BodsVO bodsVO);
 	
 	// 게시글삭제
+	public int deleteBoardInfo(int postNO);
 
 	/*// 게시판 생성(등록)
 	public int insertBodsInfo();

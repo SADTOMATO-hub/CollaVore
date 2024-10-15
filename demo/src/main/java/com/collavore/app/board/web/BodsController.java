@@ -89,8 +89,8 @@ public class BodsController {
 	// 삭제 - 처리 : URI - boardDelete / PARAMETER - Integer
 	// RETURN - 전체조회 다시 호출
 	@GetMapping("/bodsDelete") // QueryString : @RequestParam
-	public String boardDelete(@RequestParam Integer no) {
-		bodsService.deleteBods(no);
+	public String boardDelete(@RequestParam Integer postNo) {
+		bodsService.deleteBods(postNo);
 		return "redirect:bodsList";
 	}
 }

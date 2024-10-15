@@ -17,8 +17,8 @@ public interface BodsService {
 	public Map<String, Object> updateBods(BodsVO bodVO);
 
 	// 게시글 삭제
-	public int deleteBods(int post_no);
-
+	public int deleteBods(int bodVO);
+	
 	// 게시판 생성
 	// public int insertBods
 	

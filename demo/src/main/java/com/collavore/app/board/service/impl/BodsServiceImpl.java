@@ -67,8 +67,8 @@ public class BodsServiceImpl implements BodsService {
 	}
 
 	@Override
-	public int deleteBods(int post_no) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int deleteBods(int bodsVO) {
+		return bodsMapper.deleteBoardInfo(bodsVO);
+		//return 0;
 	}
 }
