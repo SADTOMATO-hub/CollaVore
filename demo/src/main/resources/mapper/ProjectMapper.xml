@@ -17,4 +17,41 @@
 		FROM proj
 		ORDER BY proj_no
 	</select>
+	<!-- 프로젝트 생성 -->
+	<insert id="ProjectInsert" parameterType="ProjectVO">
+		<selectKey keyProperty="projNo" resultType="Integer" order="BEFORE">
+			SELECT NVL(MAX(proj_no), 1000)+1
+			FROM proj
+		</selectKey>
+		INSERT INTO proj(
+		proj_no
+		,name
+		,content
+		,start_date
+		,end_date
+		,is_template
+		,status
+		,proj_temp_no
+		,project_git_url
+		,p_mgr_no)
+		VALUES(
+		#{projNo}
+		,#{name}
+		,#{content}
+		,#{startDate}
+		,#{endDate}
+		,#{isTemplate}
+		,#{status}
+		,#{projTempNo}
+		,#{projectGitUrl}
+		,#{pMgrNo}
+		)
+
+	</insert>
+	
+		<!-- 삭제 -->
+	<!-- <delete id="projectDelete" parameterType="int">
+		DELETE FROM proj_no
+		WHERE proj_no = #{projNo}
+	</delete> -->
 </mapper>
