@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	layout:fragment="Content">
+<head>
+</head>
+<body>
+	<div class="page-wrapper">
+		<div class="container-fluid">
+			<div class="row">
+				<th:block th:each=" info : ${tempInfo}">
+					<div class="col-md-4 eatNo" th:data-no="${info.eatNo}">
+						<div class="card">
+							<div class="card-body" >
+								<h4 class="card-title">[[${info.eatNo}]]</h4>
+								<h5 class="card-title">[[${info.title}]]</h5>
+							</div>
+						</div>
+					</div>
+				</th:block>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+$('.eatNo').on('click', function(){
+  let eatNo = event.currentTarget/*이벤트가 걸려 있는 타겟*/.dataset.no; // $('.col-md-4').children.eq(2).text();
+  let url = '/approvals/tempInfo?eatNo=' + eatNo;
+  location.href=url
+})
+</script>
+</html>
