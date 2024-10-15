@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	layout:fragment="Content">
+<head>
+</head>
+<body>
+	<div class="page-wrapper">
+		<div class="container-fluid">
+			<div class="row">
+				<h4 class="card-title">템플릿 정보</h4>
+				<div class="card">
+					<div class="col-md-6">
+						<div class="card-body">
+							<div class="form-group row">
+								<div class="col-md-9">
+									<div class="col-12">
+										<div class="card">
+											<div class="card-body">
+												<h5 class="card-title">템플릿 명 : [[${tempInfo.title}]]</h5>
+												<span th:utext="${tempInfo.content}"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr>
+			<div class="border-top">
+				<div class="card-body">
+					<button type="button" class="btn btn-primary">Submit</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>

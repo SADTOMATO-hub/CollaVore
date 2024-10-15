@@ -10,11 +10,11 @@ public interface ApprovalsMapper {
 	//템플릿 목록 조회
 	public List<ApprovalstempVO> tempList ();
 	//템플릿 상세 조회
-	public ApprovalstempVO readTemp (int eatNo);
+	public ApprovalstempVO readTemp (ApprovalstempVO eatNo);
 	//템플릿 수정
 	public int updateTemp (ApprovalstempVO apprsVO);
 	//템플릿 삭제
-	public int deleteTemp (int eatNo);
+	public int deleteTemp (ApprovalstempVO eatNo);
 	//전자결재 생성
 	//진행 중인 전자결재 목록 조회
 	//전체 전자결재 목록 조회
