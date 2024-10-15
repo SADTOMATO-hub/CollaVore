@@ -2,23 +2,43 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
-	
-	<div class="text-center">
-		<h3>게시판 목록</h3>
+
+	<div class="card">
+		<div class="card-body">
+			<h5 class="card-title">게시글 목록</h5>
+		</div>
 		<table class="table">
 			<thead>
 				<tr>
-					<th>번호</th>
-					<th>제목</th>
-					<th>작성자</th>
-					<th>작성일</th>
-					<!-- yyyy년MM월dd일 -->
+					<th scope="col">번호</th>
+					<th scope="col">제목</th>
+					<th scope="col">작성자</th>
+					<th scope="col">등록일</th>
 				</tr>
 			</thead>
 			<tbody>
+				<th:block th:each="info : ${bodsList}">
+					<tr>
+						<td>[[${info.postNo}]]</td>
+						<td>[[${info.title}]]</td>
+						<td>[[${info.writerName}]]</td>
+						<td>[[${#dates.format(info.regDate, "yyyy년MM월dd일")}]]</td>
+					</tr>
+				</th:block>
 			</tbody>
 		</table>
-			<button type="button" th:onclick='|location.href="@{/board/insertbods}"|'>등록</button>
 	</div>
+	<button type="button" th:onclick='|location.href="@{/board/bodsInsert}"|'>등록</button>
 	
+	
+	<script>
+		//제이쿼리 객체 생성
+		$('tbody > tr').on('click', function(event){
+			let trTag = event.currentTarget;
+			let postno = $(trTag).children().first().text();
+			let url = `/board/bodsInfo?postNo=${postno}`;
+			location.href=url;
+		});	
+	</script>
+
 </div>
