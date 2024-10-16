@@ -22,13 +22,13 @@ public class PosiServiceImpl implements PosiService {
 	// 직위
 	@Override
 	public int posiInsert(HrmVO hrmVO) {
-	    System.out.println("Inserting: " + hrmVO);  // 삽입할 데이터 출력
+	    System.out.println("Inserting: " + hrmVO);  
 	    return posiMapper.insertPosiInfo(hrmVO);
 	}
 
 	@Override
 	public int updatePosition(HrmVO hrmVO) {
-	    System.out.println("Updating: " + hrmVO);  // 업데이트할 데이터 출력
+	    System.out.println("Updating: " + hrmVO); 
 	    return posiMapper.updatePosiInfo(hrmVO);
 	}
 

@@ -16,11 +16,12 @@ import com.collavore.app.approvals.service.ApprovalsService;
 import com.collavore.app.approvals.service.ApprovalstempVO;
 
 
-@RestController
+@Controller
 public class ApprovalsController {
 	private ApprovalsService approvalsService;
 	
-	@Autowired ApprovalsController(ApprovalsService approvalsService){
+	@Autowired 
+	ApprovalsController(ApprovalsService approvalsService){
 		this.approvalsService = approvalsService;
 	}
 	@ModelAttribute
