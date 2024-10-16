@@ -2,6 +2,7 @@ package com.collavore.app.project.service.impl;
 
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,16 @@ public class ProjectServiceImpl implements PjService{
 	public int projectDelete(int projNo) {
 		return projectMapper.projectDelete(projNo);
 	}
+
+	@Override
+	public ProjectVO projectInfo(int projNo) {
+	    return projectMapper.selectProjectById(projNo); 
+	}
+
+    @Override
+    public Map<String, Object> updateProject(ProjectVO projectVO) {
+        return projectMapper.updateProject(projectVO);
+    }
 	
 	
 
