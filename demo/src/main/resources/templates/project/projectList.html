@@ -8,7 +8,8 @@
     height: 6.25em;
     border: none;
     resize: none;
-  }
+  };
+  
 </style>	
 	<div class="page-breadcrumb">
 		<div class="row">
@@ -68,6 +69,7 @@
 						</th:block>
 					</tbody>
 				</table>
+				
 			</div>
 		</div>
 	</div>
@@ -182,49 +184,53 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-	// 프로젝트생성 모달폼 
-    $(document).ready(function() {
-        $('#projectForm').on('submit', function(event) {
-            event.preventDefault(); 
+//프로젝트생성 모달폼 
+$(document).ready(function() {
+    $('#projectForm').on('submit', function(event) {
+        event.preventDefault(); 
 
-            $.ajax({
-                url: '/project/projectinsert', 
-                type: 'POST',
-                data: $(this).serialize(), 
-                success: function(response) {
-                    const newProject = response.data; 
-                    function formatDate(dateString) {
-                        const date = new Date(dateString);
-                        const year = date.getFullYear();
-                        const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더함
-                        const day = String(date.getDate()).padStart(2, '0');
-                        return `${year}년${month}월${day}일`;
-                    }
-                    $('table tbody').append(`
-                        <tr>
-                            <th scope="row">${newProject.projNo}</th>
-                            <td>${newProject.name}</td>
-                            <td>
-                            <span class="badge rounded-pill bg-info">${newProject.status === 'j1' ? '진행전' : newProject.status === 'j2' ? '진행중' : '완료'}</span></td>
-                            <td>${formatDate(newProject.startDate)}</td>
-                            <td>${formatDate(newProject.endDate)}</td>
-                            <td>${newProject.pmgrNo}</td>
-                            <td>
-                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
-                            <button type="button" class="btn btn-danger text-white delete-btn" data-proj-no="${projNo}">삭제</button>
-                       		</td>                            
-                        </tr>
-                    `);
-
-                    alert('프로젝트가 성공적으로 생성되었습니다!');
-                    $('#projectModal').modal('hide'); 
-                },
-                error: function(xhr, status, error) {
-                    alert('프로젝트 생성에 실패했습니다: ' + error);
+        $.ajax({
+            url: '/project/projectinsert', 
+            type: 'POST',
+            data: $(this).serialize(), 
+            success: function(response) {
+                const newProject = response.data; 
+                function formatDate(dateString) {
+                    const date = new Date(dateString);
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}년${month}월${day}일`;
                 }
-            });
+                $('table tbody').append(`
+                    <tr>
+                        <th scope="row">${newProject.projNo}</th>
+                        <td>${newProject.name}</td>
+                        <td>
+                        <span class="badge rounded-pill bg-info">${newProject.status === 'j1' ? '진행전' : newProject.status === 'j2' ? '진행중' : '완료'}</span></td>
+                        <td>${formatDate(newProject.startDate)}</td>
+                        <td>${formatDate(newProject.endDate)}</td>
+                        <td>${newProject.pmgrNo}</td>
+                        <td>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
+                        <button type="button" class="btn btn-danger text-white delete-btn" data-proj-no="${newProject.projNo}">삭제</button>
+                        </td>                            
+                    </tr>
+                `);
+
+                alert('프로젝트가 성공적으로 생성되었습니다!');
+                $('#projectModal').modal('hide'); 
+            },
+            error: function(xhr, status, error) {
+                alert('프로젝트 생성에 실패했습니다: ' + error);
+            }
         });
     });
+    // 모달이 숨겨질 때 입력 필드 초기화
+    $('#projectModal').on('hide.bs.modal', function() {
+        $('#projectForm')[0].reset(); // 폼의 모든 필드를 초기화
+    });
+});
 	// 프로젝트 삭제 ajax
     $(document).on('click', '.delete-btn', function() {
         const projNo = $(this).data('proj-no'); 
@@ -276,58 +282,69 @@ $(document).on('click', '.btn-warning', function() {
     });
 });
 	//수정 처리
-    $('#editProjectForm').on('submit', function(e) {
-        e.preventDefault();
-        const projNo = $('#editProjNo').val();
-        $.ajax({
-            url: `/project/projectupdate`,
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                projNo: projNo,
-                name: $('#editProjName').val(),
-                content: $('#editProjContent').val(),
-                pmgrNo: $('#editProjManager').val(),
-                projectGitUrl: $('#editProjGit').val(),
-                status: $('#editProjStatus').val(),
-                startDate: $('#editProjStartDate').val(),
-                endDate: $('#editProjEndDate').val()
-            }),
-            success: function(response) {
-                alert('프로젝트가 성공적으로 수정되었습니다!');
-                // 기존 행을 새 데이터로 교체
-                const updatedRow = `
-                    <tr>
-                        <th scope="row">${projNo}</th>
-                        <td>${$('#editProjName').val()}</td>
-                        <td>
-                        if({$('#editProjStatus').val() === 'j1'}){
-                        <span class="badge rounded-pill bg-secondary">${$('#editProjStatus').val() === 'j1' ? '진행전' : $('#editProjStatus').val() === 'j2' ? '진행중' : '완료'}
-                        }else if($('#editProjStatus').val() === 'j2'}){
-                        	<span class="badge rounded-pill bg-info">${$('#editProjStatus').val() === 'j1' ? '진행전' : $('#editProjStatus').val() === 'j2' ? '진행중' : '완료'}                        	
-                        }else{
-                        	<span class="badge rounded-pill bg-success">${$('#editProjStatus').val() === 'j1' ? '진행전' : $('#editProjStatus').val() === 'j2' ? '진행중' : '완료'}
-                        }
-                        
-                        	
-                        </span>
-                        </td>
-                        
-                        <td>${$('#editProjStartDate').val()}</td>
-                        <td>${$('#editProjEndDate').val()}</td>
-                        <td>${$('#editProjManager').val()}</td>
-                        <td>
-                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
-                            <button type="button" class="btn btn-danger text-white delete-btn" data-proj-no="${projNo}">삭제</button>
-                        </td>
-                    </tr>
-                `;
-                $(`tr:has(th:contains(${projNo}))`).replaceWith(updatedRow);
-                $('#editProjectModal').modal('hide'); // 수정 모달 닫기
-            },
-            error: function(xhr, status, error) {
-                alert('프로젝트 수정에 실패했습니다: ' + error);
+$('#editProjectForm').on('submit', function(e) {
+    e.preventDefault();
+    const projNo = $('#editProjNo').val();
+    
+    $.ajax({
+        url: `/project/projectupdate`,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            projNo: projNo,
+            name: $('#editProjName').val(),
+            content: $('#editProjContent').val(),
+            pmgrNo: $('#editProjManager').val(),
+            projectGitUrl: $('#editProjGit').val(),
+            status: $('#editProjStatus').val(),
+            startDate: $('#editProjStartDate').val(),
+            endDate: $('#editProjEndDate').val()
+        }),
+        success: function(response) {
+            alert('프로젝트가 성공적으로 수정되었습니다!');
+
+            // 상태에 따라 배지 결정
+            const status = $('#editProjStatus').val();
+            let statusBadge = '';
+            if (status === 'j1') {
+                statusBadge = `<span class="badge rounded-pill bg-secondary">진행전</span>`;
+            } else if (status === 'j2') {
+                statusBadge = `<span class="badge rounded-pill bg-info">진행중</span>`;
+            } else if (status === 'j3') {
+                statusBadge = `<span class="badge rounded-pill bg-success">완료</span>`;
             }
-        });
+
+            // 날짜 포맷팅
+            const formatDate = (dateString) => {
+                const date = new Date(dateString);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더함
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}년${month}월${day}일`;
+            };
+
+            const updatedRow = `
+                <tr>
+                    <th scope="row">${projNo}</th>
+                    <td>${$('#editProjName').val()}</td>
+                    <td>${statusBadge}</td>
+                    <td>${formatDate($('#editProjStartDate').val())}</td>
+                    <td>${formatDate($('#editProjEndDate').val())}</td>
+                    <td>${$('#editProjManager').val()}</td>
+                    <td>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
+                        <button type="button" class="btn btn-danger text-white delete-btn" data-proj-no="${projNo}">삭제</button>
+                    </td>
+                </tr>
+            `;
+            $(`tr:has(th:contains(${projNo}))`).replaceWith(updatedRow);
+            $('#editProjectModal').modal('hide'); // 수정 모달 닫기
+        },
+        error: function(xhr, status, error) {
+            alert('프로젝트 수정에 실패했습니다: ' + error);
+        }
     });
+});
+
+
 </script>

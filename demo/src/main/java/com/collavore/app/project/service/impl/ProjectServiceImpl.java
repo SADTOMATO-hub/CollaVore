@@ -45,7 +45,17 @@ public class ProjectServiceImpl implements PjService{
     public Map<String, Object> updateProject(ProjectVO projectVO) {
         return projectMapper.updateProject(projectVO);
     }
-	
+
+//    public List<ProjectVO> getProjects(int page, int size) {
+//        // 페이지 번호와 크기에 맞춰 데이터 조회
+//        int offset = (page - 1) * size;
+//        return projectMapper.findProjects(offset, size); 
+//    }
+//
+//    public long getTotalProjects() {
+//        // 총 프로젝트 수 조회
+//        return projectMapper.countAllProjects(); 
+//    }
 	
 
 }

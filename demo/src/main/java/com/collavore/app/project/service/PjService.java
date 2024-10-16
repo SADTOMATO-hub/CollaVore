@@ -15,4 +15,9 @@ public interface PjService {
 	public ProjectVO projectInfo(int projNo); 
 	// 프로젝트 수정
 	public Map<String, Object> updateProject(ProjectVO proejctVO);
+	
+//	public List<ProjectVO> getProjects(int page, int size);
+//
+//	public long getTotalProjects();
+	
 }

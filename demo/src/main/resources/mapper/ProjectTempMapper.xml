@@ -1,5 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.collavore.app.project.mapper.ProjectTempMapper">
-
+<!-- 전체조회 -->
+	<select id="selecttempProjectAll" resultType="ProjectTempVO">
+		SELECT proj_temp_no
+			   ,name
+			   ,content
+			   ,period_date
+		FROM projtemps
+		ORDER BY proj_temp_no
+	</select>
+<!-- 프로젝트 생성 -->
+	<insert id="ProjectTmepInsert" parameterType="ProjectTempVO">
+		<selectKey keyProperty="projTempNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(proj_temp_no), 1000)+1
+			FROM projtemps
+		</selectKey>
+		INSERT INTO projtemps(
+		proj_temp_no
+		,name
+		,content
+		,period_date)
+		VALUES(
+		#{projTempNo}
+		,#{name}
+		,#{content}
+		,#{periodDate}
+		)
+	</insert>	
 </mapper>

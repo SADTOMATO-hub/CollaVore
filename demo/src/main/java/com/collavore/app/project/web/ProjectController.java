@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.collavore.app.project.service.PjService;
@@ -32,7 +33,7 @@ public class ProjectController {
 		this.pjService = pjService;
 	}
 
-	// 리스트 출력 매핑
+	// 프로젝트 리스트 출력
 	@GetMapping("project/projectlist")
 	public String projectList(Model model) {
 		List<ProjectVO> list = pjService.projectList();
@@ -46,9 +47,9 @@ public class ProjectController {
 	@ResponseBody
 	public Map<String, Object> insertAjax(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
-		// System.err.println(projectVO);
-		pjService.projectinsert(projectVO);
-
+		 //System.err.println(projectVO);
+		 pjService.projectinsert(projectVO);
+		
 		map.put("type", "postAjax");
 		map.put("data", projectVO);
 		return map;
@@ -84,4 +85,8 @@ public class ProjectController {
 		pjService.projectDelete(projNo);
 		return "삭제 완료";
 	}
+	
+	
+
+	
 }

@@ -17,4 +17,8 @@ public interface ProjectMapper {
 	public Map<String, Object> updateProject(ProjectVO projectVO);
 	// 프로젝트 단건조회
 	public ProjectVO selectProjectById(int projNo);
+	
+	public List<ProjectVO> findProjects(int offset, int size);
+	
+	public long countAllProjects();
 }
