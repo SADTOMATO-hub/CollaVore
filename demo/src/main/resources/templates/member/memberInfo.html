@@ -1,0 +1,182 @@
+<div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	layout:fragment="Content">
+
+	<style>
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f5f5f5;
+}
+
+.container {
+	width: 90%;
+	margin: 0 auto;
+	background-color: #fff;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+	background-color: #5f46f8;
+	color: white;
+	padding: 10px;
+	text-align: left;
+	font-size: 1.5rem;
+	border-radius: 8px 8px 0 0;
+}
+
+.profile {
+	display: flex;
+	align-items: center;
+	padding: 20px;
+}
+
+.profile img {
+	border-radius: 50%;
+	width: 100px;
+	height: 100px;
+	object-fit: cover;
+}
+
+.profile-info {
+	margin-left: 20px;
+}
+
+.profile-info h3 {
+	margin: 0;
+	font-size: 1.2rem;
+}
+
+.profile-info p {
+	margin: 5px 0;
+}
+
+.button {
+	background-color: #5f46f8;
+	color: white;
+	padding: 5px 10px;
+	border: none;
+	cursor: pointer;
+	margin-left: auto;
+}
+
+.section {
+	margin-top: 20px;
+	padding: 10px;
+	border: 1px solid #ddd;
+	background-color: #f9f9f9;
+}
+
+.section h2 {
+	margin-bottom: 10px;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 10px;
+}
+
+table, th, td {
+	border: 1px solid #ddd;
+}
+
+th, td {
+	padding: 10px;
+	text-align: left;
+}
+</style>
+
+	<div class="container">
+		<!-- Header -->
+		<div class="header">
+			인사정보기록 | 인사 기본 정보
+			<p style="font-size: 0.9rem;">나의 인사 기본정보를 볼 수 있는 공간입니다.</p>
+		</div>
+
+		<!-- Profile Section -->
+		<!-- <div class="profile">
+			<img src="profile-image-placeholder.jpg" alt="프로필 사진">-->
+		<div class="profile-info">
+			<p>
+				<textarea rows="3" cols="40" placeholder="본인이 쓸 수 있는 소개글 공간"></textarea>
+			</p>
+			<h3>이승엽</h3>
+			<p>010-7705-5527</p>
+			<p>pr34@naver.com</p>
+			<p>ss1002574 | 재직</p>
+			<p>개발기획실 | 사원</p>
+		</div>
+
+
+		<div>
+			<textarea rows="3" cols="40" id="info" th:value="${member.info}" readonly></textarea>
+			<input type="text" id="name" th:value="${member.empName}" readonly>
+			<input type="text" id="tel" th:value="${member.tel}" readonly>
+			<input type="text" id="email" th:value="${member.email}" readonly>
+			<input type="number" id="empNo" th:value="${member.empNo}" readonly>
+			<input type="text" id="workType" th:value="${member.workType}" readonly>
+		</div>
+
+		<button class="button">정보 수정</button>
+	</div>
+
+	<!-- 인사정보 Section -->
+	<div class="section">
+		<h2>인사정보</h2>
+		<table>
+			<tr>
+				<th>고용형태</th>
+				<th>생년월일</th>
+				<th>입사일자</th>
+				<th>소속</th>
+				<th>직책</th>
+				<th>직급</th>
+			</tr>
+			<tr>
+				<td>정규직</td>
+				<td>1993.11.10</td>
+				<td>2024.05.20</td>
+				<td>개발기획본부</td>
+				<td>사원</td>
+				<td>과장</td>
+			</tr>
+		</table>
+	</div>
+
+	<!-- 부가정보 Section -->
+	<div class="section">
+		<h2>부가정보</h2>
+		<table>
+			<tr>
+				<th>프로젝트명</th>
+				<th>역할</th>
+				<th>기간</th>
+				<th>진행상황</th>
+			</tr>
+			<tr>
+				<td>업무협업툴 구축</td>
+				<td>부팀장</td>
+				<td>2024.09.30 ~</td>
+				<td>진행중</td>
+			</tr>
+			<tr>
+				<td>쇼핑몰 구축</td>
+				<td>팀장</td>
+				<td>2024.06.10 ~ 2024.09.21</td>
+				<td>완료</td>
+			</tr>
+			<tr>
+				<td>설비 프로그램</td>
+				<td>부팀장</td>
+				<td>2024.03.12 ~ 2024.05.30</td>
+				<td>완료</td>
+			</tr>
+		</table>
+	</div>
+
+</div>
+
+<!-- </div> -->

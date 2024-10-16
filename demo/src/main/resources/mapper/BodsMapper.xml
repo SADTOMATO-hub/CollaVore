@@ -1,16 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.collavore.app.board.mapper.BodsMapper">
+
 	<select id="selectBoardAll" resultType="BodsVO">
-		SELECT bno
-			, title
-			, contents
-			, writer
-			, regdate
-			, updatedate
-			, image
-		FROM board
-		ORDER BY bno
+		SELECT post_no
+		, title
+		,(select name
+from employees
+where emp_no = writer) writerName
+		, content
+		, reg_date
+		FROM bods
+		ORDER BY post_no
 	</select>
-	
+
+	<!-- 단건조회 -->
+	<select id="selectBodsInfo" resultType="BodsVO">
+		SELECT post_no
+		, title
+		, content
+		, writer
+		, reg_date
+		FROM bods
+		WHERE post_no = #{postNo}
+	</select>
+
+	<!-- 등록 -->
+	<insert id="insertBodsInfo" parameterType="BodsVO">
+		<selectKey keyProperty="postNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(post_no),1000) + 1
+			FROM bods
+		</selectKey>
+		INSERT INTO bods
+		(
+		post_no
+		, title
+		, content
+		, reg_date
+		, board_no
+		, writer
+		)
+		VALUES
+		(
+		#{postNo}
+		, #{title}
+		, #{content}
+		, #{regDate}
+		, #{boardNo}
+		,
+		#{writer}
+		)
+	</insert>
+
+
+	<!-- 수정 -->
+	<update id="updateBoardInfo" parameterType="BodsVO">
+		UPDATE board
+		SET
+		title = #{title}
+		, content = #{contents}
+		, writer = #{writer}
+		, mod_date = sysdate
+		WHERE post_no = #{postNo}
+	</update>
+
 </mapper>

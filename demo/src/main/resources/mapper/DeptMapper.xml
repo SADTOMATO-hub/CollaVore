@@ -1,4 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.collavore.app.hrm.mapper.DeptMapper">
+
+	<!-- 전체조회 -->
+	<select id="selectDeptAll" resultType="HrmVO">
+		SELECT DEPT_NO
+		,
+		PARENT_DEPT_NO
+		, NAME AS deptName
+		, MGR_NO
+		, REG_DATE
+		, MOD_DATE
+		SORT
+		FROM
+		DEPARTMENTS
+		ORDER BY DEPT_NO
+	</select>
+
+
+	<!-- 등록 -->
+	<insert id="insertDeptInfo" parameterType="HrmVO">
+		<selectKey keyProperty="deptNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(dept_no), 100) + 1
+			FROM departments
+		</selectKey>
+		INSERT INTO departments
+		(
+		NAME AS deptName
+		, MGR_NO
+		, PARENT_DEPT_NO
+		,
+		REG_DATE
+		, SORT
+		)
+		VALUES (
+		#{deptName}
+		, #{mgrNo}
+		, #{parentDeptNo}
+		,
+		#{deptDate}
+		, #{sort}
+		)
+	</insert>
+
+	<!-- 수정 -->
+	<update id="updateDeptInfo">
+		UPDATE departments
+		SET
+		<if test="dept.deptName != null and !dept.deptName.equals('')">
+			name = #{dept.deptName}
+		</if>
+		<if test="dept.mgrNo != null">
+			, mgr_no = #{dept.mgrNo}
+		</if>
+		<if test="dept.parentDeptNo != null">
+			, parent_dept_no = #{dept.parentDeptNo}
+		</if>
+		WHERE dept_no = #{did}
+	</update>
+
+	<!-- 삭제 -->
+	<delete id="deleteDeptInfo" parameterType="int">
+		DELETE FROM
+		departments
+		WHERE dept_no = #{id}
+	</delete>
+
 </mapper>
