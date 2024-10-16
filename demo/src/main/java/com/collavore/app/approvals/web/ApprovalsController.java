@@ -1,5 +1,6 @@
 package com.collavore.app.approvals.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -63,9 +64,15 @@ public class ApprovalsController {
 	}
 	//템플릿 수정 데이터를 받는 곳
 	@PostMapping("/approvals/updateTemp")
-	@ResponseBody
-	public Map<String, Object> updateTemplate(@RequestBody ApprovalstempVO apprTempVO){
-		return approvalsService.updateTemplate(apprTempVO);
+	public String updateTemplate(ApprovalstempVO apprTempVO){
+		int result =  approvalsService.updateTemplate(apprTempVO);
+		if (result > 0) {
+			int eatNo = apprTempVO.getEatNo();	
+			String url = "redirect:/approvals/tempInfo?eatNo=";
+			return url + eatNo;
+		}else {
+			return null;			
+		}
 	}
 	//템플릿 삭제 기능
 	@GetMapping("/approvals/deleteTemp")

@@ -1,90 +1,97 @@
 <!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{common/layouts/default_layout}"
-	layout:fragment="Content">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{common/layouts/default_layout}"
+      layout:fragment="Content">
 <head>
-<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js"
-	charset="utf-8"></script>
+    <script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
 </head>
+<body>
 <div class="page-wrapper">
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-md-15">
-				<div class="card">
-					<form action="updateTemp" class="form-horizontal"
-					 name="insertForm" th:object="${apprInfo}" >
-						<div class="card-body">
-							<h4 class="card-title">템플릿 수정 페이지</h4>
-							<hr>
-							<div class="col-sm-5 form-group row">
-								<label for="title" class="control-label col-form-label">
-									템플릿 제목
-								</label>
-								<div class="col-sm-10">
-									<input type="text" class="form-control"
-									 id="title" th:field="*{title}">
-								</div>
-							</div>
-							<div class="form-group row d-flex justify-content-center">
-								<div>
-									<textarea  id="content"
-									 rows="2" style="resize: none;"
-									 spellcheck="false"
-									 th:field="*{content}" readonly>
-									</textarea>
-								</div>
-							</div>
-							<div class="border-top">
-								<div class="card-body">
-									<button type="button" id="UpdateButton" class="btn btn-primary">수정 확인</button>
-								</div>
-							</div>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-15">
+                <div class="card">
+                    <form action="/approvals/updateTemp" class="form-horizontal" method="post"
+                     name="updateForm" th:object="${apprInfo}">
+                     <input type="hidden" th:field="*{eatNo}">
+                        <div class="card-body">
+                            <h4 class="card-title">템플릿 수정 페이지</h4>
+                            <hr>
+                            <div class="col-sm-5 form-group row">
+                                <label for="title" class="control-label col-form-label">템플릿 제목</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="title" th:field="*{title}">
+                                </div>
+                            </div>
+                            <div class="form-group row d-flex justify-content-center">
+                                <div>
+                                    <textarea id="content" rows="2" style="resize: none;" spellcheck="false" th:field="*{content}" readonly></textarea>
+                                </div>
+                            </div>
+                            <div class="border-top">
+                                <div class="card-body">
+                                    <button type="button" id="updateButton"
+                                     class="btn btn-primary">수정 확인</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <script>
-// 네이버 스마트 에디터 2.0 적용
-let oEditors = [];
+    // 네이버 스마트 에디터 2.0 적용
+    let oEditors = [];
 
-function smartEditor() {
-    console.log("Naver SmartEditor");
-    nhn.husky.EZCreator.createInIFrame({
-        oAppRef: oEditors,
-        elPlaceHolder: "content",
-        sSkinURI: "/smarteditor/SmartEditor2Skin.html",
-        fCreator: "createSEditor2"
-    });
-}
-$(document).ready(function() {
-    smartEditor();
-});
-
-function submitPost(event) {
-    event.preventDefault(); // 폼 제출 방지
-    oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
-    let title = document.getElementById("title").value;
-    let content = document.getElementById("content").value;
-
-    if (title == '' || title == null) {
-        alert("제목을 입력해주세요.");
-        document.getElementById("title").focus();
-    } else if (content == '' || content == null) {
-        alert("내용을 입력해주세요.");
-        oEditors.getById["content"];
-        return;
-    } else {
-        console.log(content);
-        // 검증 후 폼을 수동으로 제출
-        insertForm.submit(); // 또는 $(this).closest('form').submit(); 사용
+    function smartEditor() {
+        console.log("Naver SmartEditor");
+        nhn.husky.EZCreator.createInIFrame({
+            oAppRef: oEditors,
+            elPlaceHolder: "content",
+            sSkinURI: "/smarteditor/SmartEditor2Skin.html",
+            fCreator: "createSEditor2"
+        });
     }
-}
 
+    $(document).ready(function () {
+        smartEditor();
 
+        // UpdateButton 클릭 이벤트 핸들러 등록
+        $("#updateButton").on("click", function (event) {
+            submitPost(event);
+        });
+    });
 
+    function submitPost(event) {
+        event.preventDefault(); // 폼 제출 방지
+        oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
+        let title = document.getElementById("title").value;
+        let content = document.getElementById("content").value;
+
+        if (title === '' || title == null) {
+            alert("제목을 입력해주세요.");
+            document.getElementById("title").focus();
+        } else if( content == "" 
+				|| content == null 
+				|| content == '&nbsp;'
+				|| content == '<br>' 
+				|| content == '<br/>'
+				|| content == '<p>&nbsp;</p>'
+				|| content == '<p></p>'
+			)
+	{
+		alert("템플릿을 정해주세요.");
+		oEditors.getById["content"].exec("FOCUS"); //포커싱
+		return;
+        } else {
+            console.log(content);
+            // 검증 후 폼을 수동으로 제출
+            document.forms["updateForm"].submit(); // 또는 $(this).closest('form').submit(); 사용
+        }
+    }
 </script>
+</body>
 </html>

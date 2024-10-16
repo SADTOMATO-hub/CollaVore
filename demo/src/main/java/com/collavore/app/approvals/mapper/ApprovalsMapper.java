@@ -5,12 +5,12 @@ import java.util.List;
 import com.collavore.app.approvals.service.ApprovalstempVO;
 
 public interface ApprovalsMapper {
-	//템플릿 생성
-	public int createApprsTemp (ApprovalstempVO apprsVO);
 	//템플릿 목록 조회
 	public List<ApprovalstempVO> tempList ();
 	//템플릿 상세 조회
 	public ApprovalstempVO readTemp (ApprovalstempVO apprsVO);
+	//템플릿 생성
+	public int createApprsTemp (ApprovalstempVO apprsVO);
 	//템플릿 수정
 	public int updateTemp (ApprovalstempVO apprsVO);
 	//템플릿 삭제

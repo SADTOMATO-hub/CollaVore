@@ -12,29 +12,30 @@
 		<div class="row">
 			<div class="col-md-15">
 				<div class="card">
-					<form action="createTemp" method="post" class="form-horizontal" name="insertForm">
+					<form action="createTemp" method="post" class="form-horizontal"
+						name="insertForm">
 						<div class="card-body">
 							<h4 class="card-title">템플릿 생성 페이지</h4>
 							<hr>
 							<div class="col-sm-5 form-group row">
 								<label for="insertTitle" class="control-label col-form-label">
-									템플릿 제목
-								</label>
+									템플릿 제목 </label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="insertTitle" name="title"
-									placeholder="템플릿 제목을 정해주세요" />
+									<input type="text" class="form-control" id="insertTitle"
+										name="title" placeholder="템플릿 제목을 정해주세요" />
 								</div>
 							</div>
 							<div class="form-group row d-flex justify-content-center">
 								<div>
-									<textarea name="content" id="content"
-									 rows="2" style="resize: none;" spellcheck="false"
-									 placeholder="내용을 입력해주세요"></textarea>
+									<textarea name="content" id="content" rows="2"
+										style="resize: none;" spellcheck="false"
+										placeholder="내용을 입력해주세요"></textarea>
 								</div>
 							</div>
 							<div class="border-top">
 								<div class="card-body">
-									<button type="submit" id="btn" class="btn btn-primary"  onclick="submitPost(event)">템플릿 등록</button>
+									<button type="button" id="createButton" class="btn btn-primary">템플릿
+										등록</button>
 								</div>
 							</div>
 						</div>
@@ -46,41 +47,56 @@
 </div>
 
 <script>
-// 네이버 스마트 에디터 2.0 적용
-let oEditors = [];
+	// 네이버 스마트 에디터 2.0 적용
+	let oEditors = [];
 
-function smartEditor() {
-    console.log("Naver SmartEditor");
-    nhn.husky.EZCreator.createInIFrame({
-        oAppRef: oEditors,
-        elPlaceHolder: "content",
-        sSkinURI: "/smarteditor/SmartEditor2Skin.html",
-        fCreator: "createSEditor2"
-    });
-}
-$(document).ready(function() {
-    smartEditor();
-});
+	function smartEditor() {
+		console.log("Naver SmartEditor");
+		nhn.husky.EZCreator.createInIFrame({
+			oAppRef : oEditors,
+			elPlaceHolder : "content",
+			sSkinURI : "/smarteditor/SmartEditor2Skin.html",
+			fCreator : "createSEditor2"
+		});
+	}
+	$(document).ready(function() {
+		smartEditor();
 
-function submitPost(event) {
-    event.preventDefault(); // 폼 제출 방지
-    oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
-    let title = document.getElementById("insertTitle").value;
-    let content = document.getElementById("content").value;
+		// UpdateButton 클릭 이벤트 핸들러 등록
+		$("#createButton").on("click", function(event) {
+			submitPost(event);
+		});
+	});
 
-    if (title == '' || title == null) {
-        alert("제목을 입력해주세요.");
-        document.getElementById("insertTitle").focus();
-    } else if (content == '' || content == null) {
-        alert("내용을 입력해주세요.");
-        oEditors.getById["content"];
-        return;
-    } else {
-        console.log(content);
-        // 검증 후 폼을 수동으로 제출
-        insertForm.submit(); // 또는 $(this).closest('form').submit(); 사용
-    }
-}
+	function submitPost(event) {
+		event.preventDefault(); // 폼 제출 방지
+		oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
+		let title = document.getElementById("insertTitle").value;
+		let content = document.getElementById("content").value;
 
+		if (title == '' || title == null) {
+			alert("제목을 입력해주세요.");
+			document.getElementById("insertTitle").focus();
+			
+		}
+		if (	       content == "" 
+					|| content == null 
+					|| content == '&nbsp;'
+					|| content == '<br>' 
+					|| content == '<br/>'
+					|| content == '<p>&nbsp;</p>'
+					|| content == '<p></p>'
+					)
+			{
+				alert("템플릿을 정해주세요.");
+				oEditors.getById["content"].exec("FOCUS"); //포커싱
+				return;
+			}
+		else {
+			console.log(content);
+			// 검증 후 폼을 수동으로 제출
+			insertForm.submit(); // 또는 $(this).closest('form').submit(); 사용
+		}
+	}
 </script>
 </html>

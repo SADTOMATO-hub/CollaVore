@@ -11,7 +11,7 @@ public interface ApprovalsService {
 	// 템플릿 상세 조회
 	public ApprovalstempVO apprInfo (ApprovalstempVO apprsVO);
 	// 템플릿 수정
-	public Map<String, Object> updateTemplate (ApprovalstempVO apprsVO);
+	public int updateTemplate (ApprovalstempVO apprsVO);
 	// 템플릿 삭제
 	public int DeleteTemplate(ApprovalstempVO eatNo);
 	// 전자결재 생성

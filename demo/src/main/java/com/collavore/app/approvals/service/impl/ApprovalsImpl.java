@@ -39,16 +39,14 @@ public class ApprovalsImpl implements ApprovalsService {
 	}
 	// 템플릿 수정
 	@Override
-	public Map<String, Object> updateTemplate(ApprovalstempVO apprsVO) {
-		Map<String, Object> map = new HashMap<>();
-		int result = approvalsMapper.updateTemp(apprsVO);
-		boolean doneOrNot = false;
-				if(result == 1) {
-					doneOrNot = true;
-				}
-		map.put("result", doneOrNot);
-		map.put("tempUpdate", apprsVO);
-		return map;
+	public int updateTemplate(ApprovalstempVO apprsVO) {
+		//Map<String, Object> map = new HashMap<>();
+	//	int result = approvalsMapper.updateTemp(apprsVO);
+		//if (result == 1) {
+		//	map.put("tempUpdate", apprsVO);			
+		//}
+		//return map;
+		return approvalsMapper.updateTemp(apprsVO);
 	}
 	// 템플릿 삭제
 	@Override
