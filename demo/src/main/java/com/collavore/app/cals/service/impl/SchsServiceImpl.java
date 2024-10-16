@@ -10,23 +10,24 @@ import com.collavore.app.cals.service.SchsService;
 import com.collavore.app.cals.service.SchsVO;
 
 @Service
-public class SchsServiceImpl implements SchsService{
-	private SchsMapper schsMapper;
-	
+public class SchsServiceImpl implements SchsService {
+	private final SchsMapper schsMapper;
+
 	@Autowired // 생성자 주입
 	public SchsServiceImpl(SchsMapper schsMapper) {
 		this.schsMapper = schsMapper;
 	}
-	
-	//전체조회
+
 	@Override
-	public List<SchsVO> schList(){
+	public List<SchsVO> SchsList() {
 		return schsMapper.selectSchsAll();
 	}
-	
-	//일정등록
+
+	// 등록
 	@Override
-	public int insertSch(SchsVO schsVO) {
-		return schsMapper.insertSch(schsVO);
+	public int insertSchs(SchsVO schsVO) {
+		int result = schsMapper.insertSchsInfo(schsVO);
+		return result == 1 ? schsVO.getSchNo() : -1;
+
 	}
 }
