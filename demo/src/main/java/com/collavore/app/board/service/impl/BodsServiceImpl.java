@@ -68,7 +68,7 @@ public class BodsServiceImpl implements BodsService {
 
 	@Override
 	public int deleteBods(int bodsVO) {
-		return bodsMapper.deleteBoardInfo(bodsVO);
+		return bodsMapper.deleteBodsInfo(bodsVO);
 		//return 0;
 	}
 }

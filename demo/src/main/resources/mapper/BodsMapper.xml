@@ -59,7 +59,7 @@ where emp_no = writer) writerName
 		UPDATE bods
 		SET
 		title = #{title}
-		, content = #{contents}
+		, content = #{content}
 		, writer = #{writer}
 		, mod_date = sysdate
 		WHERE post_no = #{postNo}
@@ -70,5 +70,11 @@ where emp_no = writer) writerName
 		DELETE FROM bods  
 		WHERE post_no = #{postNo}
 	</delete> 
+	
+	
+	<!-- 댓글 등록  -->
+	
+	
+	
 
 </mapper>
