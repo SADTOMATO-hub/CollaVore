@@ -55,14 +55,26 @@ where emp_no = writer) writerName
 
 
 	<!-- 수정 -->
-	<update id="updateBoardInfo" parameterType="BodsVO">
-		UPDATE board
+	<update id="updateBodsInfo" parameterType="BodsVO">
+		UPDATE bods
 		SET
 		title = #{title}
-		, content = #{contents}
+		, content = #{content}
 		, writer = #{writer}
 		, mod_date = sysdate
 		WHERE post_no = #{postNo}
 	</update>
+	
+	<!-- 삭제 -->
+	<delete id="deleteBodsInfo" parameterType="BodsVO">
+		DELETE FROM bods  
+		WHERE post_no = #{postNo}
+	</delete> 
+	
+	
+	<!-- 댓글 등록  -->
+	
+	
+	
 
 </mapper>
