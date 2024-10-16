@@ -1,6 +1,8 @@
 package com.collavore.app.cals.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.collavore.app.cals.service.SchsService;
@@ -42,10 +45,44 @@ public class SchsController {
 	}
 
     
-    // 등록 
+//    // 등록 
+//	@PostMapping("/sch/schInsert")
+//	public String SchsInsertProcess(SchsVO SchsVO) { 
+//		int bno = schsService.insertSchs(SchsVO);
+//		return "redirect:boardInfo?bno="+bno;	
+//	}
+	
+	
+	
+	
+	
+	//등록
 	@PostMapping("/sch/schInsert")
-	public String SchsInsertProcess(SchsVO SchsVO) { 
-		int bno = schsService.insertSchs(SchsVO);
-		return "redirect:boardInfo?bno="+bno;	
-	}
+	@ResponseBody
+    public Map<String, Object> insertSchs(@RequestBody SchsVO schsVO) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            int id = schsService.insertSchs(schsVO);
+            result.put("success", true);
+            result.put("id", id);
+        } catch (Exception e) {
+            result.put("success", false);
+        }
+        return result;
+    }
+	
+	//삭제 
+	@PostMapping("/sch/schDelete")
+	@ResponseBody
+    public Map<String, Object> deleteSchs(@RequestBody Map<String, Integer> request) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            schsService.deleteSchs(request.get("schNo"));
+            result.put("success", true);
+        } catch (Exception e) {
+            result.put("success", false);
+        }
+        return result;
+    }
+	
 }

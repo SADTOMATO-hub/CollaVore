@@ -13,7 +13,40 @@
 		<!-- 캘린더 -->
 	</div>
 
+	
+	
+	<!-- 일정 추가 모달 -->
+<div id="scheduleModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>일정 생성</h2>
+        <form id="scheduleForm">
+            <label for="calendarType">캘린더</label>
+            <select id="calendarType">
+                <option value="내캘린더">내캘린더</option>
+                <option value="공유캘린더">공유캘린더</option>
+                <option value="프로젝트">프로젝트</option>
+            </select>
 
+            <label for="title">일정 제목</label>
+            <input type="text" id="title" placeholder="내용 입력" required>
+
+            <label for="startDate">시작</label>
+            <input type="date" id="startDate" required>
+            <input type="time" id="startTime" required>
+
+            <label for="endDate">종료</label>
+            <input type="date" id="endDate" required>
+            <input type="time" id="endTime" required>
+
+            <label for="alert">알림</label>
+            <input type="checkbox" id="alert">
+
+            <button type="submit">저장</button>
+        </form>
+    </div>
+</div>
+	<!-- END  일정 추가 모달 -->
 
 
 

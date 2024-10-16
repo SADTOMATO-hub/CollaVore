@@ -18,9 +18,16 @@ public class SchsServiceImpl implements SchsService {
 		this.schsMapper = schsMapper;
 	}
 
+	// 조회
 	@Override
 	public List<SchsVO> SchsList() {
 		return schsMapper.selectSchsAll();
+	}
+
+	// 단건조회
+	@Override
+	public SchsVO SchsInfo(SchsVO schsVO) {
+		return schsMapper.selectSchsInfo(schsVO);
 	}
 
 	// 등록
@@ -29,5 +36,11 @@ public class SchsServiceImpl implements SchsService {
 		int result = schsMapper.insertSchsInfo(schsVO);
 		return result == 1 ? schsVO.getSchNo() : -1;
 
+	}
+
+	// 삭제
+	@Override
+	public int deleteSchs(int schsNO) {
+		return schsMapper.deleteSchsInfo(schsNO);
 	}
 }
