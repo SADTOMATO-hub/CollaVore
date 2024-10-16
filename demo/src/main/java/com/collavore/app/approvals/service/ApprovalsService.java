@@ -1,6 +1,7 @@
 package com.collavore.app.approvals.service;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ApprovalsService {
 	// 템플릿 생성
@@ -8,8 +9,9 @@ public interface ApprovalsService {
 	// 템플릿 목록 조회
 	public List<ApprovalstempVO> apprTempList ();
 	// 템플릿 상세 조회
-	public ApprovalstempVO apprInfo (ApprovalstempVO eatNo);
+	public ApprovalstempVO apprInfo (ApprovalstempVO apprsVO);
 	// 템플릿 수정
+	public Map<String, Object> updateTemplate (ApprovalstempVO apprsVO);
 	// 템플릿 삭제
 	public int DeleteTemplate(ApprovalstempVO eatNo);
 	// 전자결재 생성

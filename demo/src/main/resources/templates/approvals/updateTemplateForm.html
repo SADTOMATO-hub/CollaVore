@@ -12,29 +12,32 @@
 		<div class="row">
 			<div class="col-md-15">
 				<div class="card">
-					<form action="createTemp" method="post" class="form-horizontal" name="insertForm">
+					<form action="updateTemp" class="form-horizontal"
+					 name="insertForm" th:object="${apprInfo}" >
 						<div class="card-body">
-							<h4 class="card-title">템플릿 생성 페이지</h4>
+							<h4 class="card-title">템플릿 수정 페이지</h4>
 							<hr>
 							<div class="col-sm-5 form-group row">
-								<label for="insertTitle" class="control-label col-form-label">
+								<label for="title" class="control-label col-form-label">
 									템플릿 제목
 								</label>
 								<div class="col-sm-10">
-									<input type="text" class="form-control" id="insertTitle" name="title"
-									placeholder="템플릿 제목을 정해주세요" />
+									<input type="text" class="form-control"
+									 id="title" th:field="*{title}">
 								</div>
 							</div>
 							<div class="form-group row d-flex justify-content-center">
 								<div>
-									<textarea name="content" id="content"
-									 rows="2" style="resize: none;" spellcheck="false"
-									 placeholder="내용을 입력해주세요"></textarea>
+									<textarea  id="content"
+									 rows="2" style="resize: none;"
+									 spellcheck="false"
+									 th:field="*{content}" readonly>
+									</textarea>
 								</div>
 							</div>
 							<div class="border-top">
 								<div class="card-body">
-									<button type="submit" id="btn" class="btn btn-primary"  onclick="submitPost(event)">템플릿 등록</button>
+									<button type="button" id="UpdateButton" class="btn btn-primary">수정 확인</button>
 								</div>
 							</div>
 						</div>
@@ -44,7 +47,6 @@
 		</div>
 	</div>
 </div>
-
 <script>
 // 네이버 스마트 에디터 2.0 적용
 let oEditors = [];
@@ -65,12 +67,12 @@ $(document).ready(function() {
 function submitPost(event) {
     event.preventDefault(); // 폼 제출 방지
     oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
-    let title = document.getElementById("insertTitle").value;
+    let title = document.getElementById("title").value;
     let content = document.getElementById("content").value;
 
     if (title == '' || title == null) {
         alert("제목을 입력해주세요.");
-        document.getElementById("insertTitle").focus();
+        document.getElementById("title").focus();
     } else if (content == '' || content == null) {
         alert("내용을 입력해주세요.");
         oEditors.getById["content"];
@@ -81,6 +83,8 @@ function submitPost(event) {
         insertForm.submit(); // 또는 $(this).closest('form').submit(); 사용
     }
 }
+
+
 
 </script>
 </html>
