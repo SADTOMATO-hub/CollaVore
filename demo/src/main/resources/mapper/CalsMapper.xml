@@ -1,4 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.collavore.app.cals.mapper.CalsMapper">
+<mapper namespace="com.collavore.app.cals.mapper.SchsMapper">
+	<select id="selectSchsAll" resultType="SchsVO">
+	<!-- 전체조회 -->
+	SELECT 	sch_no
+			,title
+			,start_date
+			,end_date
+			,cal_No
+			,is_alarm
+	FROM	schs
+	
+	
+	</select>
+	
+	
+	<insert id="insertSch" parameterType="SchsVO" useGeneratedKeys="true" keyProperty="schNo">
+    INSERT INTO schs (
+					    title
+					    ,start_date
+					    ,end_date
+					    ,cal_no
+					    ,is_alarm)
+    VALUES (
+					    #{title}
+					    ,#{startDate}
+					    ,#{endDate}
+					    ,#{calNo}
+					    ,#{isAlarm})
+</insert>
+	
 </mapper>

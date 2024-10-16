@@ -12,14 +12,11 @@ import lombok.Data;
 @Builder
 public class ProjectDWorkVO {
 	
-	//프로젝트 파일관리
-	private Integer projFileNo;
-	private Integer pfNo;
-	private String name;
+	//프로젝트 상세 업무 관리
+	private Integer pdwcNo;
 	private String content;
-	private String size;
-	private String extension;
-	private String path;
+	private Integer writerNo;
+	private Integer pdwNo;
 	private Date regDate;
 
 	

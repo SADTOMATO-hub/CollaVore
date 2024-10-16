@@ -1,10 +1,49 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+<div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	layout:fragment="Content">
 
-</body>
-</html>
+	<script src='../dist/js/cals/index.global.js'></script>
+	<script src='../dist/js/cals/fullCal.js'></script>
+	<link rel="stylesheet" href='../dist/css/cals/fullCal.css'>
+
+	<!-- 캘린더와 사이드바 -->
+	<div id="calendar-container">
+		<div id="calendar"></div>
+		<!-- 캘린더 -->
+	</div>
+
+	<aside>
+		<ul id="eventSidebar" class="pt-2">
+			<li class="sidebar-title">일정 목록</li>
+		</ul>
+	</aside>
+
+	<!-- 모달 열기 버튼 -->
+	<button id="openModal">일정 추가</button>
+
+	<!-- 모달 창 -->
+	<div id="eventModal" class="modal">
+		<div class="modal-content">
+			<h2>일정 추가</h2>
+
+			<form id="eventForm">
+				<label for="calendarType">캘린더:</label> <select id="calendarType">
+					<option value="개인캘린더">개인캘린더</option>
+					<option value="공유캘린더">공유캘린더</option>
+					<option value="프로젝트">프로젝트</option>
+				</select> <label for="eventTitle">일정 제목:</label> <input type="text"
+					id="eventTitle" placeholder="일정 제목을 입력하세요" required /> <label>시작:</label>
+				<input type="date" id="startDate" required /> <input type="time"
+					id="startTime" /> <label>종료:</label> <input type="date"
+					id="endDate" /> <input type="time" id="endTime" />
+
+				<div class="modal-buttons">
+					<button type="button" id="saveEvent">저장</button>
+					<button type="button" id="closeModal">취소</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+</div>

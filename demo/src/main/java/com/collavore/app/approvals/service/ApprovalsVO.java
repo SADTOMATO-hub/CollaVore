@@ -16,3 +16,4 @@ public class ApprovalsVO {//전자결재 테이블
 	private Date regDate; 	//기안 날짜
 	private Date compDate; 	//전자결재 완료 날짜
 }
+//1번
