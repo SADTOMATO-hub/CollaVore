@@ -2,32 +2,44 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.collavore.app.cals.mapper.SchsMapper">
 	<select id="selectSchsAll" resultType="SchsVO">
-	<!-- 전체조회 -->
-	SELECT 	sch_no
-			,title
-			,start_date
-			,end_date
-			,cal_No
-			,is_alarm
-	FROM	schs
-	
-	
+		SELECT
+		sch_no
+		, title
+		, start_date
+		, end_date
+		, cal_no
+		, is_alarm
+		FROM schs
 	</select>
-	
-	
-	<insert id="insertSch" parameterType="SchsVO" useGeneratedKeys="true" keyProperty="schNo">
-    INSERT INTO schs (
-					    title
-					    ,start_date
-					    ,end_date
-					    ,cal_no
-					    ,is_alarm)
-    VALUES (
-					    #{title}
-					    ,#{startDate}
-					    ,#{endDate}
-					    ,#{calNo}
-					    ,#{isAlarm})
-</insert>
-	
+	<insert id="insertSchsInfo" parameterType="SchsVO">
+		<selectKey keyProperty="schNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(sch_no), 1000)+1
+			FROM schs
+		</selectKey>
+		INSERT INTO schs (
+							sch_no
+							,title
+							,start_Date
+							,end_date
+							,cal_no
+							,is_alarm)
+		VALUES (
+							#{schNo}
+							,#{title}
+							,#{startDate}
+							,#{endDate}
+							,#{calNo}
+							,#{isAlarm})
+	</insert>
+
+
+	<delete id="deleteSchsInfo" parameterType="int">
+		DELETE FROM schs
+		WHERE sch_no = #{schNo}
+	</delete>
+
+
+
+
 </mapper>

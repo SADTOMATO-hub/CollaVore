@@ -80,7 +80,7 @@ public class BodsController {
 	// 수정 - 처리 : URI - boardUpdate / PARAMETER - BoardVO(JSON)
 	// RETURN - 수정결과 데이터(Map)
 	// => 등록(내부에서 수행하는 쿼리문 - UPDATE문)
-	@PostMapping("/bodsUpdate")
+	@PostMapping("/board/bodsUpdate")
 	@ResponseBody
 	public Map<String, Object> boardUpdateProcess(@RequestBody BodsVO bodsVO) {
 		return bodsService.updateBods(bodsVO);
@@ -88,9 +88,9 @@ public class BodsController {
 
 	// 삭제 - 처리 : URI - boardDelete / PARAMETER - Integer
 	// RETURN - 전체조회 다시 호출
-	@GetMapping("/bodsDelete") // QueryString : @RequestParam
-	public String boardDelete(@RequestParam Integer no) {
-		bodsService.deleteBods(no);
+	@GetMapping("board/bodsDelete") // QueryString : @RequestParam
+	public String bodsDelete(@RequestParam Integer postNo) {
+		bodsService.deleteBods(postNo);
 		return "redirect:bodsList";
 	}
 }
