@@ -30,10 +30,10 @@ public class ProjectServiceImpl implements PjService{
 		return result == 1? proejctVO.getProjNo() : -1;
 	}
 
-//	@Override
-//	public int projectDelete(int projNo) {
-//		return projectMapper.projectDelete(projNo);
-//	}
+	@Override
+	public int projectDelete(int projNo) {
+		return projectMapper.projectDelete(projNo);
+	}
 	
 	
 

@@ -50,8 +50,8 @@
 	</insert>
 	
 		<!-- 삭제 -->
-	<!-- <delete id="projectDelete" parameterType="int">
+	 <delete id="projectDelete" parameterType="int">
 		DELETE FROM proj_no
 		WHERE proj_no = #{projNo}
-	</delete> -->
+	</delete> 
 </mapper>

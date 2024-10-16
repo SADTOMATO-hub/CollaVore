@@ -55,10 +55,10 @@ public class ProjectController {
 		map.put("data", projectVO);
 		return map;
 	}
-//	@DeleteMapping("project/projectdelete/{projNo}")
-//	@ResponseBody
-//	public String deleteProject(int projNo) {
-//	        pjService.projectDelete(projNo);
-//	        return "삭제 완료"; 
-//	}
+	@DeleteMapping("project/projectdelete/{projNo}")
+	@ResponseBody
+	public String deleteProject(int projNo) {
+	        pjService.projectDelete(projNo);
+	        return "삭제 완료"; 
+	}
 }

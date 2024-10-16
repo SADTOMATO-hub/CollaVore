@@ -9,6 +9,6 @@ public interface PjService {
 	
 	public int projectinsert(ProjectVO proejctVO);
 	
-//	public int projectDelete(int projNo);
+	public int projectDelete(int projNo);
 	
 }
