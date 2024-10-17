@@ -13,40 +13,94 @@
 		<!-- 캘린더 -->
 	</div>
 
-	
-	
+
+
 	<!-- 일정 추가 모달 -->
-<div id="scheduleModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>일정 생성</h2>
-        <form id="scheduleForm">
-            <label for="calendarType">캘린더</label>
-            <select id="calendarType">
-                <option value="내캘린더">내캘린더</option>
-                <option value="공유캘린더">공유캘린더</option>
-                <option value="프로젝트">프로젝트</option>
-            </select>
+	<div id="scheduleModal" class="modal">
+		<div class="modal-content">
+			<span class="close">&times;</span>
+			<h2>일정 생성</h2>
+			<form id="scheduleForm">
+				<label for="calendarType">캘린더</label> <select id="calendarType">
+					<option value="내캘린더">내캘린더</option>
+					<option value="공유캘린더">공유캘린더</option>
+					<option value="프로젝트">프로젝트</option>
+				</select> <label for="title">일정 제목</label> <input type="text" id="title"
+					placeholder="내용 입력" required> <label for="startDate">시작</label>
+				<input type="date" id="startDate" required> <input
+					type="time" id="startTime" required> <label for="endDate">종료</label>
+				<input type="date" id="endDate" required> <input type="time"
+					id="endTime" required> <label for="alert">알림</label> <input
+					type="checkbox" id="alert">
 
-            <label for="title">일정 제목</label>
-            <input type="text" id="title" placeholder="내용 입력" required>
+				<button type="submit">저장</button>
 
-            <label for="startDate">시작</label>
-            <input type="date" id="startDate" required>
-            <input type="time" id="startTime" required>
-
-            <label for="endDate">종료</label>
-            <input type="date" id="endDate" required>
-            <input type="time" id="endTime" required>
-
-            <label for="alert">알림</label>
-            <input type="checkbox" id="alert">
-
-            <button type="submit">저장</button>
-        </form>
-    </div>
-</div>
+			</form>
+		</div>
+	</div>
 	<!-- END  일정 추가 모달 -->
+
+
+
+
+
+	<!-- 일정 조회 모달 -->
+	<div id="viewScheduleModal" class="modal">
+		<div class="modal-content">
+			<span class="close">&times;</span>
+			<h2>일정 조회</h2>
+			<form id="viewScheduleForm">
+				<label for="viewCalendar">캘린더</label> <input type="text"
+					id="viewCalendar" readonly> <label for="viewTitle">일정
+					제목</label> <input type="text" id="viewTitle" readonly> <label
+					for="viewStartDate">시작</label> <input type="date"
+					id="viewStartDate" readonly> <input type="time"
+					id="viewStartTime" readonly> <label for="viewEndDate">종료</label>
+				<input type="date" id="viewEndDate" readonly> <input
+					type="time" id="viewEndTime" readonly>
+
+				<div class="modal-buttons">
+					<button type="button" id="editBtn">수정</button>
+					<button type="button" id="deleteBtn">삭제</button>
+					<button type="button" class="close">취소</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+
+	<!-- 일정 수정 모달 -->
+	<div id="editScheduleModal" class="modal">
+		<div class="modal-content">
+			<span class="close">&times;</span>
+			<h2>일정 수정</h2>
+			<form id="editScheduleForm">
+			
+				<label for="editCalendarType">캘린더</label> 
+				<select
+					id="editCalendarType">
+					<option value="내캘린더">내캘린더</option>
+					<option value="공유캘린더">공유캘린더</option>
+					<option value="프로젝트">프로젝트</option>
+				</select> 
+				<label for="editTitle">일정 제목</label> 
+				<input type="text" id="editTitle" required> 
+				
+				<label for="editStartDate">시작</label>
+				<input type="date" id="editStartDate" required> 
+				<input type="time" id="editStartTime" required> 
+				
+					<label for="editEndDate">종료</label> 
+					<input type="date" id="editEndDate" required> 
+					<input type="time" id="editEndTime" required>
+					
+					<label for="editAlarm">알림 설정</label>
+   					 <input type="checkbox" id="editAlarm">
+
+				<button type="submit">저장</button>
+			</form>
+		</div>
+	</div>
 
 
 

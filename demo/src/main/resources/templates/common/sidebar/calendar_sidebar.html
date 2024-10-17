@@ -1,26 +1,76 @@
-<th:block xmlns:th="https://www.thymeleaf.org/"
-	th:fragment="sidebar">
+<th:block xmlns:th="https://www.thymeleaf.org/" th:fragment="sidebar">
+	<!--캘린더 아이콘 빈 캘린더 mdi-calendar-blank
+			  쩜쩜쩜 캘린더 mdi-calendar-range
+			  체크 캘린더  mdi-calendar-check 
+			  더블체크 캘린더 mdi-calendar-multiple-check
+			  열리 휴지통 mdi-delete-empty
+			  닫긴 휴지통 mdi-delete
+			  -->
 
 	<ul id="sidebarnav" class="pt-4">
+
+		<li class="sidebar-item"><a
+			class="sidebar-link waves-effect waves-dark"
+			href="javascript:void(0)" aria-expanded="false"
+			id="createScheduleBtn"> <i class="mdi mdi-calendar-plus"></i> <span
+				class="hide-menu">일정 생성</span>
+				
+				
+				
+		</a></li>
 		<li class="sidebar-item"><a
 			class="sidebar-link has-arrow waves-effect waves-dark"
 			href="javascript:void(0)" aria-expanded="false"> <i
-				class="mdi mdi-receipt"></i>
-				<span class="hide-menu"> 일정test </span></a>
+				class="mdi mdi-calendar-check"></i> <span class="hide-menu">
+					개인캘린더 </span></a>
 			<ul aria-expanded="false" class="collapse first-level">
 				<li class="sidebar-item"><a href="form-basic.html"
 					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
-						class="hide-menu"> 일정test2 </span></a></li>
+						class="hide-menu"> test1 </span></a></li>
 
 				<li class="sidebar-item"><a href="form-wizard.html"
 					class="sidebar-link"> <i class="mdi mdi-note-plus"></i> <span
-						class="hide-menu"> 일정test3 </span></a></li>
+						class="hide-menu"> test2 </span></a></li>
+
+
+			</ul></li>
+
+		<li class="sidebar-item"><a
+			class="sidebar-link has-arrow waves-effect waves-dark"
+			href="javascript:void(0)" aria-expanded="false"> <i
+				class="mdi mdi-calendar-multiple-check"></i> <span class="hide-menu"> 공유캘린더 </span></a>
+			<ul aria-expanded="false" class="collapse first-level">
+				<li class="sidebar-item"><a href="form-basic.html"
+					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
+						class="hide-menu"> test1 </span></a></li>
+
+				<li class="sidebar-item"><a href="form-wizard.html"
+					class="sidebar-link"> <i class="mdi mdi-note-plus"></i> <span
+						class="hide-menu"> test2 </span></a></li>
+
+
+			</ul></li>
+
+		<li class="sidebar-item"><a
+			class="sidebar-link has-arrow waves-effect waves-dark"
+			href="javascript:void(0)" aria-expanded="false"> <i
+				class="mdi mdi-calendar-range"></i> <span class="hide-menu"> 프로젝트</span></a>
+
+			<ul aria-expanded="false" class="collapse first-level">
+				<li class="sidebar-item"><a href="form-basic.html"
+					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
+						class="hide-menu"> test1 </span></a></li>
+
+				<li class="sidebar-item"><a href="form-wizard.html"
+					class="sidebar-link"> <i class="mdi mdi-note-plus"></i> <span
+						class="hide-menu"> test2 </span></a></li>
+
 
 			</ul></li>
 		<li class="sidebar-item"><a
 			class="sidebar-link waves-effect waves-dark sidebar-link"
 			href="pages-buttons.html" aria-expanded="false"> <i
-				class="mdi mdi-relative-scale"></i> <span class="hide-menu">
-					일정단일메뉴test</span></a></li>
+				class="mdi mdi-delete"></i> <span class="hide-menu">
+					휴지통</span></a></li>
 	</ul>
 </th:block>

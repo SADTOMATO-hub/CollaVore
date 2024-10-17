@@ -1,189 +1,252 @@
 document.addEventListener('DOMContentLoaded', function() {
 
-	// 서버에서 JSON 데이터 가져오기 (Ajax)
-	fetch( //조회 패치
-		'/sch/schList',	// 스케줄 리스트를 가져오는 엔드포인트
-		{
-			method: "POST", // HTTP 요청 방식 (POST)
-			headers: {
-				'Content-Type': 'application/json', // 요청 본문이 JSON 형식임을 지정
-			},
+	// 일정 생성 버튼 클릭 시 모달 열기
+	document.getElementById('createScheduleBtn').addEventListener('click', function() {
+		var modal = document.getElementById('scheduleModal');
+		modal.style.display = 'block';  // 모달 열기
+
+		// 모달 닫기 버튼 처리
+		var closeBtn = modal.querySelector('.close');
+		closeBtn.onclick = function() {
+			modal.style.display = 'none';
+		};
+	});
+
+	// 전역에서 모달 외부 클릭 시 닫기 처리
+	window.onclick = function(event) {
+		var scheduleModal = document.getElementById('scheduleModal');
+		var viewModal = document.getElementById('viewScheduleModal');
+		var editModal = document.getElementById('editScheduleModal');
+
+		// 클릭된 대상이 각각의 모달일 경우에만 닫기
+		if (event.target == scheduleModal) {
+			scheduleModal.style.display = 'none';
 		}
-	)
-		.then(response => response.json()) // 응답 데이터를 JSON 형식으로 파싱
+		if (event.target == viewModal) {
+			viewModal.style.display = 'none';
+		}
+		if (event.target == editModal) {
+			editModal.style.display = 'none';
+		}
+	};
+
+	//============ 캘린더 전체조회 ============
+	fetch('/sch/schList', {
+		method: "POST",
+		headers: { 'Content-Type': 'application/json' }
+	})
+		.then(response => response.json())
 		.then(eventsData => {
-			console.log('FullCalendar에 전달된 이벤트:', eventsData); // JSON 데이터 확인
-			
-				// 서버에서 받은 데이터를 FullCalendar의 이벤트 구조에 맞게 매핑
+
+			// 서버에서 받은 데이터를 FullCalendar의 이벤트 구조에 맞게 매핑
 			const sList = eventsData.map(check => ({
 				id: check.schNo,
 				title: check.title,
 				start: new Date(check.startDate),
 				end: new Date(check.endDate),
-				allDay: true
+				allDay: false
 			}));
 
-			// 캘린더 요소 가져오기
+			//============ 풀캘린더API ============
 			var calendarEl = document.getElementById('calendar');
-			//풀캘린더 초기화
 			var calendar = new FullCalendar.Calendar(calendarEl, {
-				locale: 'ko', // 한국어 설정
+				locale: 'ko',
 				headerToolbar: {
 					left: 'prev,next today',
 					center: 'title',
-					right: 'dayGridMonth,timeGridWeek,timeGridDay' // 공백 처리 (드롭다운 위치)
+					right: 'dayGridMonth,timeGridWeek,timeGridDay'
 				},
-
-				initialDate: getTodayDate(), // 오늘 날짜를 기본값으로 설정
-				navLinks: true, // 일/주 이름 클릭 시 해당 뷰로 이동 가능
-				selectable: true, // 드래그해서 이벤트 추가 가능
-				selectMirror: true,  // 드래그 시 이벤트가 미리보기로 표시됨
-
-
-				//======================== 캘린더 뒤에 1일 2일 "일" 제거===================
-				/*// 날짜 헤더 형식 변경 (요일만 표시)
-				dayHeaderFormat: { weekday: 'short' },
-
-				// 날짜 클릭 형식 변경 (접미사 없는 숫자)
-				dayCellDidMount: function(info) {
-					// 날짜에서 "일" 제거
-					info.el.querySelector('.fc-daygrid-day-number').textContent =
-						info.date.getDate(); // 날짜 숫자만 표시
-				},*/
-				//========================END 캘린더 뒤에 1일 2일 "일" 제거===================
-
+				initialDate: getTodayDate(),
+				navLinks: true,
+				selectable: true,
+				selectMirror: true,
 				editable: true,
-				dayMaxEvents: true, // allow "more" link when too many events
-				//================ ajax데이터 불러올 부분 =====================
-
+				dayMaxEvents: true,
 				events: sList,
 
-
-				//================END ajax데이터 불러올 부분 =====================
-
-
-				//========================일정등록=============================
-				//등록
-				select: function(arg) {
-					var title = prompt('일정 제목을 입력하세요:');
-					if (title) {
-						fetch('/sch/schInsert', {  // 등록 API 호출
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-							},
-							body: JSON.stringify({
-								title: title,
-								startDate: arg.start.toISOString(),
-								endDate: arg.end ? arg.end.toISOString() : arg.start.toISOString(),
-								allDay: arg.allDay
-							})
-						})
-							.then(response => response.json())
-							.then(data => {
-								if (data.success) {
-									calendar.addEvent({
-										id: data.id,
-										title: title,
-										start: arg.start,
-										end: arg.end,
-										allDay: arg.allDay
-									});
-								} else {
-									console.log(arg)
-									alert('일정 등록에 실패했습니다.');
-								}
-							})
-							.catch(error => console.error('Error:', error));
-					}
-					calendar.unselect();
-					//========================END 일정등록=============================
-
-
-
-
-
-
-
-					//========================일정삭제=============================	
+				// 시간 형식 추가
+				eventTimeFormat: { // "시간:분" 형식으로 표시
+					hour: '2-digit',
+					minute: '2-digit',
+					meridiem: false
 				},
-				// 일정 삭제
-				eventClick: function(arg) {
-					if (confirm('정말로 이 일정을 삭제하시겠습니까?')) {
-						fetch('/sch/schDelete', {  // 삭제 API 호출
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json',
-							},
-							body: JSON.stringify({ schNo: arg.event.id })
-						})
-							.then(response => response.json())
-							.then(data => {
-								if (data.success) {
-									arg.event.remove();  // 캘린더에서 삭제
-								} else {
-									console.log(arg)
-									alert('일정 삭제에 실패했습니다.');
-								}
+
+				//============ 단건조회 ============
+				eventClick: function(info) {
+					// 조회 모달 창 열기
+					var viewModal = document.getElementById('viewScheduleModal');
+					document.getElementById('viewCalendar').value = info.event.extendedProps.calendarType || '없음';
+					document.getElementById('viewTitle').value = info.event.title;
+					document.getElementById('viewStartDate').value = info.event.startStr.split('T')[0];
+					document.getElementById('viewStartTime').value = info.event.startStr.split('T')[1];
+					document.getElementById('viewEndDate').value = info.event.endStr ? info.event.endStr.split('T')[0] : '';
+					document.getElementById('viewEndTime').value = info.event.endStr ? info.event.endStr.split('T')[1] : '';
+
+					viewModal.style.display = 'block'; // 조회 모달 보이기
+
+					//==================================== 수정 ====================================
+					// 수정 버튼 클릭 시
+					var editBtn = document.getElementById('editBtn');
+					editBtn.onclick = function() {
+						// 단건조회 모달 닫기
+						viewModal.style.display = 'none';
+						// 수정 모달 열기
+						var editModal = document.getElementById('editScheduleModal');
+						document.getElementById('editCalendarType').value = info.event.extendedProps.calendarType || '내캘린더';
+						document.getElementById('editTitle').value = info.event.title;
+						document.getElementById('editStartDate').value = info.event.startStr.split('T')[0];
+						document.getElementById('editStartTime').value = info.event.startStr.split('T')[1];
+						document.getElementById('editEndDate').value = info.event.endStr ? info.event.endStr.split('T')[0] : '';
+						document.getElementById('editEndTime').value = info.event.endStr ? info.event.endStr.split('T')[1] : '';
+
+						editModal.style.display = 'block'; // 수정 모달 보이기
+
+						document.getElementById('editScheduleForm').onsubmit = function(e) {
+							e.preventDefault();
+
+							const schNo = info.event.id;
+							const title = document.getElementById('editTitle').value;
+							const startDate = document.getElementById('editStartDate').value;
+							const endDate = document.getElementById('editEndDate').value;
+							const calNo = 0;  // 임시로 0 설정
+							const isAlarm = document.getElementById('editAlarm').checked ? "Y" : "N";
+
+							// POST 요청으로 일정 수정하는 부분
+							fetch('/sch/schUpdate', {
+								method: 'POST',
+								headers: { 'Content-Type': 'application/json' },
+								body: JSON.stringify({ schNo, title, startDate, endDate, calNo, isAlarm })
 							})
-							.catch(error => console.error('Error:', error));
-					}
+								.then(response => response.json())
+								.then(data => {
+									if (data === 'success') {
+										// 캘린더의 일정을 업데이트
+										info.event.setProp('title', title);
+										info.event.setStart(startDate);
+										info.event.setEnd(endDate);
+										// 변경된 내용을 즉시 반영하기 위해 info.event 객체를 업데이트합니다.
+
+										// 수정 완료 후 모달 닫기 (변경된 부분)
+										editModal.style.display = 'none';
+
+										// 성공 메시지 출력 (원래 코드에 있던 부분)
+										alert('일정이 수정되었습니다.');
+									} else {
+										alert('일정 수정에 실패했습니다.');
+									}
+								})
+								.catch(error => console.error('Error:', error));
+						};
+					};
+					//====================================END 수정 ====================================
+
+					// 삭제 버튼 클릭 시 이벤트
+					var deleteBtn = document.getElementById('deleteBtn');
+					deleteBtn.onclick = function() {
+						if (confirm('정말로 이 일정을 삭제하시겠습니까?')) {
+							fetch('/sch/schDelete', {  // 삭제 API 호출
+								method: 'POST',
+								headers: { 'Content-Type': 'application/json' },
+								body: JSON.stringify({ schNo: info.event.id })
+							})
+								.then(response => response.json())
+								.then(data => {
+									if (data.success) {
+										info.event.remove();  // FullCalendar에서 삭제
+										viewModal.style.display = 'none'; // 모달 닫기
+									} else {
+										alert('일정 삭제에 실패했습니다.');
+									}
+								})
+								.catch(error => console.error('Error:', error));
+						}
+					};
+				},
+				//============END 단건조회 ============
+
+				//============ 일정생성 ============
+				select: function(arg) {
+					// 일정 추가 모달 창 열기
+					var modal = document.getElementById('scheduleModal');
+					var closeBtn = modal.querySelector('.close');
+					var form = document.getElementById('scheduleForm');
+
+					// 현재 시간을 가져오는 부분 추가
+					var now = new Date();
+					var currentTime = now.toISOString().substring(11, 16);  // HH:MM 형식으로 추출
+
+					// 시작 날짜와 종료 날짜를 자동으로 폼에 설정
+					document.getElementById('startDate').value = arg.startStr;
+					document.getElementById('startTime').value = currentTime;  // 현재 시간으로 설정
+					document.getElementById('endDate').value = arg.endStr || arg.startStr;
+					document.getElementById('endTime').value = currentTime;  // 종료 시간도 현재 시간으로 설정
+
+					modal.style.display = 'block'; // 모달 보이기
+
+					// 모달 닫기 버튼 클릭 시 모달 닫기
+					closeBtn.onclick = function() {
+						modal.style.display = 'none';
+					};
+
+					// 폼 제출 처리
+					form.onsubmit = function(e) {
+						e.preventDefault();
+
+						// 폼 데이터 가져오기
+						var title = document.getElementById('title').value;
+						var startDate = document.getElementById('startDate').value;
+						var endDate = document.getElementById('endDate').value;
+
+						// 일정생성 
+						if (title) {
+							fetch('/sch/schInsert', {  // 등록 API 호출
+								method: 'POST',
+								headers: {
+									'Content-Type': 'application/json',
+								},
+								body: JSON.stringify({
+									title: title,
+									startDate: arg.start.toISOString(),
+									endDate: arg.end ? arg.end.toISOString() : arg.start.toISOString(),
+									allDay: arg.allDay
+								})
+							})
+								.then(response => response.json())
+								.then(data => {
+									if (data.success) {
+										calendar.addEvent({
+											id: data.id,
+											title: title,
+											start: arg.start,
+											end: arg.end,
+											allDay: arg.allDay
+										});
+									} else {
+										alert('일정 등록에 실패했습니다.');
+									}
+								})
+								.catch(error => console.error('Error:', error));
+						}
+						// 모달 닫기
+						modal.style.display = 'none';
+						calendar.unselect();
+					};
 				}
-				//========================END 일정등록=============================
+				//============END 일정생성 ============
 			});
 
 			calendar.render();
+			//============ 풀캘린더API ============
 
 		})
-
 		.catch(error => console.error('Error fetching events:', error));
+	//============ END 캘린더 전체조회 ============
 
-
-
-
-	//============================모달============================
-	
-	//============================END 모달============================
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	//============================캘린더 상단 월/주/일 드롭다운==========================================
-
-
-
-	//==========================END 월/주/일 드롭다운========================================
 });
 
-
-
-
+//=================================함수모음======================================
 // 오늘 날짜를 YYYY-MM-DD 형식으로 반환하는 함수
 function getTodayDate() {
 	return new Date().toISOString().slice(0, 10);
 }
-
-
-
+//================================END 함수모음====================================

@@ -1,6 +1,8 @@
 package com.collavore.app.cals.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +39,28 @@ public class SchsServiceImpl implements SchsService {
 		return result == 1 ? schsVO.getSchNo() : -1;
 
 	}
-
+	@Override
+    public Map<String, Object> updateShcs(SchsVO schsVO) {
+        Map<String, Object> resultMap = new HashMap<>();
+        try {
+            int updatedRows = schsMapper.updateSchsInfo(schsVO);
+            
+            if (updatedRows > 0) {
+                resultMap.put("success", true);
+                resultMap.put("message", "일정이 성공적으로 수정되었습니다.");
+            } else {
+            	
+                resultMap.put("success", false);
+                resultMap.put("message", "수정할 일정이 없습니다.");
+            }
+        } catch (Exception e) {
+            resultMap.put("success", false);
+            resultMap.put("message", "수정 중 오류가 발생했습니다.");
+        }
+        return resultMap;
+    }
+	
+	
 	// 삭제
 	@Override
 	public int deleteSchs(int schsNO) {

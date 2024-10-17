@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,58 +33,67 @@ public class SchsController {
 	public void addAttributes(Model model) {
 		model.addAttribute("sidemenu", "calendar_sidebar");
 	}
-	
-	//조회 받은거 UI로 뿌리기
+
+	// 조회 받은거 UI로 뿌리기
 	@GetMapping("/cal/schList")
 	public String SchsListView() {
 		return "calendar/schList";
 	}
-	//조회 json 뿌려주기
+
+	// 조회 json 뿌려주기
 	@PostMapping("/sch/schList")
 	@ResponseBody
 	public List<SchsVO> SchsList() {
 		return schsService.SchsList();
 	}
 
-    
 //    // 등록 
 //	@PostMapping("/sch/schInsert")
 //	public String SchsInsertProcess(SchsVO SchsVO) { 
 //		int bno = schsService.insertSchs(SchsVO);
 //		return "redirect:boardInfo?bno="+bno;	
 //	}
-	
-	
-	
-	
-	
-	//등록
+
+	// 등록
 	@PostMapping("/sch/schInsert")
 	@ResponseBody
-    public Map<String, Object> insertSchs(@RequestBody SchsVO schsVO) {
-        Map<String, Object> result = new HashMap<>();
-        try {
-            int id = schsService.insertSchs(schsVO);
-            result.put("success", true);
-            result.put("id", id);
-        } catch (Exception e) {
-            result.put("success", false);
-        }
-        return result;
-    }
-	
-	//삭제 
+	public Map<String, Object> insertSchs(@RequestBody SchsVO schsVO) {
+		Map<String, Object> result = new HashMap<>();
+		try {
+			int id = schsService.insertSchs(schsVO);
+			result.put("success", true);
+			result.put("id", id);
+		} catch (Exception e) {
+			result.put("success", false);
+		}
+		return result;
+	}
+
+	// 수정
+	@PostMapping("/sch/schUpdate")
+	@ResponseBody
+	public ResponseEntity<?> updateSchedule(@RequestBody SchsVO schsVO) {
+		Map<String, Object> resultMap = schsService.updateShcs(schsVO);
+
+		if ((boolean) resultMap.get("success")) {
+			return ResponseEntity.ok().body(resultMap.get("message"));
+		} else {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap.get("message"));
+		}
+	}
+
+	// 삭제
 	@PostMapping("/sch/schDelete")
 	@ResponseBody
-    public Map<String, Object> deleteSchs(@RequestBody Map<String, Integer> request) {
-        Map<String, Object> result = new HashMap<>();
-        try {
-            schsService.deleteSchs(request.get("schNo"));
-            result.put("success", true);
-        } catch (Exception e) {
-            result.put("success", false);
-        }
-        return result;
-    }
-	
+	public Map<String, Object> deleteSchs(@RequestBody Map<String, Integer> request) {
+		Map<String, Object> result = new HashMap<>();
+		try {
+			schsService.deleteSchs(request.get("schNo"));
+			result.put("success", true);
+		} catch (Exception e) {
+			result.put("success", false);
+		}
+		return result;
+	}
+
 }
