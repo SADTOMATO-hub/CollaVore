@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.collavore.app.approvals.service.ApprovalsService;
 import com.collavore.app.approvals.service.ApprovalstempVO;
+import com.collavore.app.approvals.service.ApproversVO;
 
 
 @Controller
@@ -84,5 +85,25 @@ public class ApprovalsController {
 			return urlSucss;
 		}
 		return urlFailed + eatNo;
+	}
+	//전자결재 폼 생성
+	@GetMapping("/approvals/createApprForm")
+	public String createApprovals (Model model) {
+		List<ApprovalstempVO> tempInfo = approvalsService.apprTempList();
+		List<ApproversVO> apprvers = approvalsService.approversData();
+		model.addAttribute("tempInfo", tempInfo);
+		model.addAttribute("apprvers",apprvers);
+		return "approvals/createApproval";
+	}
+	//전자결재 데이터를 받는 곳
+	@PostMapping("/approvals/createAppr")
+	@ResponseBody
+	
+	//전자결재 템플릿 내용만 호출하는 기능
+	@GetMapping("/approvals/loveJapan")
+	public String info (ApprovalstempVO apprVO, Model model) {
+		ApprovalstempVO tempInfo = approvalsService.apprInfo(apprVO);
+		model.addAttribute("tempInfo", tempInfo);
+		return "approvals/readTemplate::contents";
 	}
 }

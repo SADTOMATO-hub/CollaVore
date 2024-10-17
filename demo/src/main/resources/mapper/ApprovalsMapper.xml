@@ -19,7 +19,7 @@
 	  <selectKey keyProperty="eatNo"
 	  			 resultType="Integer"
 	  			 order="BEFORE">
-	  	SELECT NVL(MAX(eat_no),1) + 1
+	  	SELECT NVL(MAX(eat_no),0) + 1
 	  	FROM approvalstemp
 	  </selectKey>
 	   		INSERT INTO approvalstemp (
@@ -47,5 +47,12 @@
 			   ,content = #{content}
 		WHERE eat_no = #{eatNo}		
 	</update>
+	
+	<!-- 결재자 모든 정보 호출 -->
+	<select id="appversData" resultType="ApproversVO">
+		SELECT emp_no, sort, status
+		FROM approvers
+	</select>
+	
 </mapper>
 <!-- 3번째 -->
