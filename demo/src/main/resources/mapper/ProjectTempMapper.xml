@@ -54,6 +54,9 @@
 		FROM projtemps
 		WHERE proj_temp_no = #{projTempNo}
 	</select>
+	
+	
+	
 	<!-- 프로젝트 업무 템플릿 리스트 전체조회 -->
 	<select id="selectWrkTempProjectAll" resultType="ProjectWorkTempVO">
 		SELECT pwt_no
@@ -85,7 +88,7 @@
 					        #{jobType},
 					        SYSDATE  
 			    )
-</insert>
+	</insert>
 	<!-- 삭제 -->
 	<delete id="projectwrktempDelete" parameterType="int">
 		DELETE FROM projwrktemps
@@ -93,7 +96,7 @@
 		pwt_no = #{pwtNo}
 	</delete>
 	<!-- 수정 -->
-	<update id="projectwrktempUpdate" parameterType="ProjectTempVO">
+	<update id="projectwrktempUpdate" parameterType="ProjectWorkTempVO">
 		UPDATE projwrktemps
 		SET name = #{name},
 			content = #{content},
@@ -104,7 +107,7 @@
 	</update>
 
 	<!-- 단건조회 -->
-	<select id="selectwrktempProject" resultType="ProjectTempVO">
+	<select id="selectwrktempProject" resultType="ProjectWorkTempVO">
 		SELECT pwt_no,
 				name,
 				content,
@@ -113,4 +116,46 @@
 		FROM projwrktemps
 		WHERE pwt_no = #{pwtNo}
 	</select>
+	
+	
+	<!-- 프로젝트 업무 템플릿 리스트 전체조회 -->
+	<select id="selectDwrktempProjectAll" resultType="ProjectDWorkTempVO">
+		SELECT pdwt_no
+				,name
+				,content
+				,pwt_no
+				,importance
+				,reg_date
+		FROM projdwrktemps
+		ORDER BY pdwt_no
+	</select>	
+	
+	<!-- 프로젝트 상세 업무 템플릿 생성 -->
+	<insert id="ProjectDwrkTempInsert" parameterType="ProjectDWorkTempVO">
+    <selectKey keyProperty="pdwtNo" resultType="Integer" order="BEFORE">
+        SELECT NVL(MAX(pdwt_no), 3000) + 1 FROM projdwrktemps
+    </selectKey>
+    INSERT INTO projdwrktemps (pdwt_no, 
+    						  name, 
+    						  content, 
+    						  pwt_no, 
+    						  importance, 
+    						  reg_date
+    						  )
+			    VALUES (
+					        #{pdwtNo},
+					        #{name},
+					        #{content},
+					        #{pwtNo},
+					        #{importance},
+					        SYSDATE  
+			    )
+	</insert>
+	<!-- 프로젝트 상세 업무 템플릿 삭제 -->
+	<delete id="projectDwrktempDelete" parameterType="int">
+		DELETE FROM projdwrktemps
+		WHERE
+		pdwt_no = #{pdwtNo}
+	</delete>
+	
 </mapper>

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.collavore.app.project.mapper.ProjectTempMapper;
 import com.collavore.app.project.service.PjTempService;
+import com.collavore.app.project.service.ProjectDWorkTempVO;
 import com.collavore.app.project.service.ProjectTempVO;
 import com.collavore.app.project.service.ProjectWorkTempVO;
 
@@ -40,11 +41,12 @@ public class ProjectTempServiceImpl implements PjTempService{
 	public ProjectTempVO projecttempInfo(int projTempNo) {
 		return ProjecttempMapper.selectProjectById(projTempNo); 
 	}
+	
+	
 	@Override
 	public List<ProjectWorkTempVO> projectWrktempList() {
 		return ProjecttempMapper.selectWrkTempProjectAll();
 	}
-	
 	@Override
 	public int projectwrktempinsert(ProjectWorkTempVO projectworktempVO) {
 		 int result = ProjecttempMapper.ProjectwrkTempInsert(projectworktempVO);
@@ -55,12 +57,27 @@ public class ProjectTempServiceImpl implements PjTempService{
 		return ProjecttempMapper.projectwrktempDelete(pwtNo);
 	}
 	@Override
-	public ProjectTempVO projectwrktempInfo(int pwtNo) {
+	public ProjectWorkTempVO projectwrktempInfo(int pwtNo) {
 		return ProjecttempMapper.selectwrktempProject(pwtNo); 
 	}
 	@Override
-	public int projectwrktempUpdate(ProjectTempVO projectTempVO) {
-		return ProjecttempMapper.projectwrktempUpdate(projectTempVO);
+	public int projectwrktempUpdate(ProjectWorkTempVO projectworkTempVO) {
+		return ProjecttempMapper.projectwrktempUpdate(projectworkTempVO);
+	}
+	
+	
+	@Override
+	public List<ProjectDWorkTempVO> projectDwrktemplist() {
+		return ProjecttempMapper.selectDwrktempProjectAll();
+	}
+	@Override
+	public int projectDwrktempinsert(ProjectDWorkTempVO projectDworktempVO) {
+		 int result = ProjecttempMapper.ProjectDwrkTempInsert(projectDworktempVO);
+	        return result == 1 ? projectDworktempVO.getPdwtNo() : -1;		
+	}
+	@Override
+	public int projectdwrktempDelete(int pdwtNo) {
+		return ProjecttempMapper.projectDwrktempDelete(pdwtNo);
 	}
 
 

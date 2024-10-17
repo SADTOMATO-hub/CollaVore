@@ -57,7 +57,7 @@
 								<td>[[${info.jobType}]]</td>
 								<td>[[${#dates.format(info.regDate, 'yyyy년MM월dd일')}]]</td>
 								<td>
-									<button type="button" class="btn btn-warning edit-btn" data-bs-toggle="modal" data-bs-target="#editTemplateModal" data-proj-temp-no="[[${info.pwtNo}]]">수정</button>
+									<button type="button" class="btn btn-warning edit-btn" data-bs-toggle="modal" data-bs-target="#editTemplateModal" th:attr="data-proj-temp-no=${info.pwtNo}">수정</button>
 									<button type="button" class="btn btn-danger text-white delete-btn" th:attr="data-proj-temp-no=${info.pwtNo}">삭제</button>
 								</td>
 							</tr>
@@ -171,6 +171,7 @@ $('#createTemplateForm').on('submit', function(event) {
         contentType: 'application/json',
         data: JSON.stringify(formData),
         success: function(response) {
+        	console.log(response);
             // 테이블에 새로운 행 추가
             $('table tbody').append(`
                 <tr>
@@ -215,21 +216,27 @@ $(document).on('click', '.delete-btn', function() {
     }
 });
 
-// 프로젝트 수정 모달 폼
+//수정 모달 폼
 $(document).on('click', '.edit-btn', function() {
     const pwtNo = $(this).data('proj-temp-no');
-
+    //console.log(pwtNo);
     $.ajax({
         url: `/project/projectwrktempinfo/${pwtNo}`,
         type: 'GET',
         success: function(response) {
-            $('#editPwtNo').val(response.pwtNo);
-            $('#editSelectProjTempNo').val(response.projTempNo);
-            $('#editInputTemplateName').val(response.name);
-            $('#editTextareaContent').val(response.content);
-            $('#editInputJobType').val(response.jobType);
+           // console.log(response);
 
-            $('#editTemplateModal').modal('show');
+            if (response) {
+                $('#editPwtNo').val(response.pwtNo);
+                $('#editSelectProjTempNo').val(response.projTempNo);
+                $('#editInputTemplateName').val(response.name);
+                $('#editTextareaContent').val(response.content);
+                $('#editInputJobType').val(response.jobType);
+
+                $('#editTemplateModal').modal('show');
+            } else {
+                alert('프로젝트 정보를 가져오는 데 실패했습니다: 응답이 비어있습니다.');
+            }
         },
         error: function(xhr, status, error) {
             alert('프로젝트 정보를 가져오는 데 실패했습니다: ' + error);
@@ -237,13 +244,12 @@ $(document).on('click', '.edit-btn', function() {
     });
 });
 
-// 수정 처리 AJAX
+//수정 처리 AJAX
 $(document).on('submit', '#editTemplateForm', function(event) {
     event.preventDefault();
 
     const pwtNo = $('#editPwtNo').val();
     const updatedData = {
-        pwtNo: pwtNo,
         projTempNo: $('#editSelectProjTempNo').val(),
         name: $('#editInputTemplateName').val(),
         content: $('#editTextareaContent').val(),
@@ -251,8 +257,8 @@ $(document).on('submit', '#editTemplateForm', function(event) {
     };
 
     $.ajax({
-        url: '/project/projecttempupdate',
-        type: 'PUT',
+        url: `/project/projectwrktempupdate/${pwtNo}`,
+        type: 'POST', 
         contentType: 'application/json',
         data: JSON.stringify(updatedData),
         success: function(response) {

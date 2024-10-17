@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.collavore.app.project.service.PjTempService;
+import com.collavore.app.project.service.ProjectDWorkTempVO;
 import com.collavore.app.project.service.ProjectTempVO;
 import com.collavore.app.project.service.ProjectWorkTempVO;
 
@@ -128,28 +129,68 @@ public class ProjectTempController {
 		// 업무템플릿 단건 조회 
 		@GetMapping("/project/projectwrktempinfo/{pwtNo}")
 		@ResponseBody
-		public ProjectTempVO ProjectwrktempInfo(@PathVariable int pwtNo) {
+		public ProjectWorkTempVO ProjectwrktempInfo(@PathVariable int pwtNo) {
 		    return pjtempService.projectwrktempInfo(pwtNo); 
 		}	
+		
 		// 프로젝트 수정 요청 처리
 		@PostMapping("/project/projectwrktempupdate/{pwtNo}")
 		@ResponseBody
-		public Map<String, Object> updatewrktempProject(@PathVariable int pwtNo, @RequestBody ProjectTempVO projectTempVO) {
+		public Map<String, Object> updatewrktempProject(@PathVariable int pwtNo, @RequestBody ProjectWorkTempVO projectworkTempVO) {
 		    Map<String, Object> response = new HashMap<>();
-		    
 		    try {
-		        projectTempVO.setProjTempNo(pwtNo); 
-		        
-		        pjtempService.projectwrktempUpdate(projectTempVO);
-		        
+		    	projectworkTempVO.setPwtNo(pwtNo); 
+		        pjtempService.projectwrktempUpdate(projectworkTempVO);
+
 		        response.put("message", "수정 완료");
 		        response.put("status", "success");
 		    } catch (Exception e) {
 		        response.put("message", "수정 실패: " + e.getMessage());
 		        response.put("status", "error");
 		    }
-		    
 		    return response;
 		}
+
+		
+	    // 프로젝트 템플릿 리스트
+	    @GetMapping("project/projectDwrktemplist")
+	    public String projectDwrktempList(Model model) {
+	        List<ProjectDWorkTempVO> list = pjtempService.projectDwrktemplist();
+	        List<ProjectWorkTempVO> worklist = pjtempService.projectWrktempList();
+	        
+	        model.addAttribute("projects", list);
+	        model.addAttribute("wrkproj", worklist);
+	        return "project/projectDeteilWorkTempList";
+	    }   
+	    
+	 // 프로젝트 상세업무 템플릿 생성
+	    @PostMapping("project/projectDwrktempinsert")
+	    @ResponseBody
+	    public Map<String, Object> projDwrktempinsertAjax(@RequestBody ProjectDWorkTempVO projectDworktempVO) {
+	        Map<String, Object> response = new HashMap<>();
+
+	        int generatedId =  pjtempService.projectDwrktempinsert(projectDworktempVO);
+	        projectDworktempVO.setPdwtNo(generatedId);
+	        
+	        int getPwtNo = projectDworktempVO.getPwtNo();
+	        // 응답 데이터 설정
+	        System.err.println(projectDworktempVO);
+	        System.err.println(getPwtNo);
+	        
+	        response.put("pdwtNo", projectDworktempVO.getPdwtNo());
+	        response.put("name", projectDworktempVO.getName());
+	        response.put("content", projectDworktempVO.getContent());
+	        response.put("pwtNo", getPwtNo); 
+	        response.put("importance", projectDworktempVO.getImportance()); 
+
+	        return response;
+	    }
+		 // 업무템플릿 삭제
+			@DeleteMapping("project/projectdwrktempdelete/{pdwtNo}")
+			@ResponseBody
+			public String deletedwrktempProject(@PathVariable int pdwtNo) {
+				pjtempService.projectdwrktempDelete(pdwtNo);
+				return "삭제 완료";
+			}	    
 
 }

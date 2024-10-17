@@ -1,0 +1,287 @@
+<div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{common/layouts/default_layout}"
+     layout:fragment="Content">
+<style>
+  textarea {
+    width: 100%;
+    height: 6.25em;
+    border: none;
+    resize: none;
+  }
+</style>
+<div class="page-breadcrumb">
+    <div class="row">
+        <div class="col-12 d-flex no-block align-items-center">
+            <h4 class="page-title">프로젝트 상세 업무 템플릿</h4>
+            <div class="ms-auto text-end">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Library</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title mb-0">
+                    <button type="button" class="btn btn-info btn-lg"
+                            data-bs-toggle="modal" data-bs-target="#projectModal"
+                            style="float: right;">상세업무 템플릿 생성</button>
+                </h5>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">템플릿 번호</th>
+                        <th scope="col">템플릿 명</th>
+                        <th scope="col">개요</th>
+						<th scope="col">프로젝트 템플릿 번호</th>
+						<th scope="col">중요도</th>
+						<th scope="col">등록일</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <th:block th:each="info : ${projects}">
+                        <tr>
+                            <th scope="row">[[${info.pdwtNo}]]</th>
+                            <td>[[${info.name}]]</td>
+                            <td>[[${info.content}]]</td>
+                            <td>[[${info.pwtNo}]]</td>
+                            <td><span class="badge rounded-pill bg-secondary"  th:if="${info.importance == 'l1'}">낮 음</span> 
+									<span class="badge rounded-pill bg-info"th:if="${info.importance == 'l2'}">중 간</span> 
+									<span class="badge rounded-pill bg-success" th:if="${info.importance == 'l3'}">높 음</span></td>
+                            <td>[[${#dates.format(info.regDate, 'yyyy년MM월dd일')}]]</td>
+                            <td>
+                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
+                                <button type="button" class="btn btn-danger text-white delete-btn" th:attr="data-proj-temp-no=${info.pdwtNo}">삭제</button>
+                            </td>
+                        </tr>
+                    </th:block>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+<!-- 모달 폼 -->
+<div class="modal fade" id="projectModal" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="projectModalLabel">상세업무 템플릿 생성</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="projectForm">
+                	<div class="mb-3">
+						<label for="selectProjTempNo" class="form-label">업무 템플릿</label>
+						<select class="form-select" name="pwtNo" id="pwtNo" required>
+							<option value="" selected>선택하세요</option>
+							<option th:each="temp : ${wrkproj}" th:value="${temp.pwtNo}">[[${temp.name}]]</option>
+						</select>
+					</div>
+                    <div class="mb-3">
+                        <label for="taskName" class="form-label">업무 이름</label>
+                        <input type="text" class="form-control" name="name" id="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="taskDescription" class="form-label">업무 내용</label>
+                        <textarea class="form-control" name="content" id="content" rows="5" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="importance" class="form-label">중요도</label>
+                        <select class="form-select" name="importance" id="importance" required>
+                            <option value="" disabled selected>선택하세요</option>
+                            <option value="l1">낮음</option>
+                            <option value="l2">중간</option>
+                            <option value="l3">높음</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary">생성</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 수정 모달 폼 -->
+<div class="modal fade" id="editProjectModal" tabindex="-1" aria-labelledby="editProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editProjectModalLabel">프로젝트 템플릿 수정</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editProjectForm">
+                    <input type="hidden" name="projNo" id="editProjNo">
+                    <div class="mb-3">
+                        <label for="editProjName" class="form-label">템플릿 이름</label> 
+                        <input type="text" class="form-control" name="name" id="editProjName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editProjContent" class="form-label">프로젝트 개요</label> 
+                        <textarea class="form-control" name="content" id="editProjContent" rows="5" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editProjManager" class="form-label">개발기간</label> 
+                        <input type="text" class="form-control" name="periodDate" id="editProjManager" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">수정</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+function formatCurrentDate() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    
+    return `${year}년${month}월${day}일`;
+}
+
+$(document).ready(function() {
+    $('#projectForm').on('submit', function(event) {
+        event.preventDefault();
+
+        $.ajax({
+            url: '/project/projectDwrktempinsert', 
+            type: 'POST',
+            contentType: 'application/json', 
+            data: JSON.stringify({
+                pwtNo: $('#pwtNo').val(),
+                name: $('#name').val(), 
+                content: $('#content').val(), 
+                pwtNo: $('#pwtNo').val(), 
+                importance: $('#importance').val() 
+            }),
+            
+            success: function(response) {
+                let statusClass;
+                let statusText;
+                switch (response.importance) {
+                    case 'l1':
+                        statusClass = 'bg-secondary';
+                        statusText = '낮 음';
+                        break;
+                    case 'l2':
+                        statusClass = 'bg-info';
+                        statusText = '중 간';
+                        break;
+                    case 'l3':
+                        statusClass = 'bg-success';
+                        statusText = '높 음';
+                        break;
+                }
+                $('table tbody').append(`
+                    <tr>
+                        <th scope="row">${response.pdwtNo}</th>
+                        <td>${response.name}</td>
+                        <td>${response.content}</td>
+                        <td>${response.pwtNo}</td>
+                        <td>
+                        <span class="badge rounded-pill ${statusClass}">${statusText}</span>
+                    	</td>
+                        <td>${formatCurrentDate()}</td>
+                        <td>
+                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
+                            <button type="button" class="btn btn-danger text-white delete-btn" data-proj-temp-no="${response.pdwtNo}">삭제</button>
+                        </td>
+                    </tr>
+                `);
+                alert('상세업무 템플릿이 성공적으로 생성되었습니다!');
+                $('#projectModal').modal('hide');
+            },
+            error: function(xhr, status, error) {
+                alert('상세업무 템플릿 생성에 실패했습니다: ' + error);
+            }
+        });
+    });
+});
+    // 프로젝트 삭제 AJAX
+    $(document).on('click', '.delete-btn', function() {
+        const pdwtNo = $(this).data('proj-temp-no');
+
+        if (confirm('정말로 이 프로젝트를 삭제하시겠습니까?')) {
+            $.ajax({
+                url: `/project/projectdwrktempdelete/${pdwtNo}`,
+                type: 'DELETE',
+                success: function(response) {
+                    alert('프로젝트가 성공적으로 삭제되었습니다!');
+                    $(`button[data-proj-temp-no="${pdwtNo}"]`).closest('tr').remove();
+                },
+                error: function(xhr, status, error) {
+                    alert('프로젝트 삭제에 실패했습니다: ' + error);
+                }
+            });
+        }
+    });
+ // 프로젝트 수정 모달 폼
+    $(document).on('click', '.btn-warning', function() {
+        const projTempNo = $(this).closest('tr').find('.delete-btn').data('proj-temp-no'); 
+
+        $.ajax({
+            url: `/project/projecttempinfo/${projTempNo}`, 
+            type: 'GET',
+            success: function(response) {
+                $('#editProjNo').val(response.projTempNo);
+                $('#editProjName').val(response.name);
+                $('#editProjContent').val(response.content);
+                $('#editProjManager').val(response.periodDate);
+
+                $('#editProjectModal').modal('show');
+            },
+            error: function(xhr, status, error) {
+                alert('프로젝트 정보를 가져오는 데 실패했습니다: ' + error);
+            }
+        });
+    });    
+ // 수정 처리 AJAX
+    $(document).on('submit', '#editProjectForm', function(event) {
+        event.preventDefault(); // 기본 제출 방지
+
+        const projNo = $('#editProjNo').val();
+        const updatedData = {
+            projTempNo: projNo,
+            name: $('#editProjName').val(),
+            content: $('#editProjContent').val(),
+            periodDate: $('#editProjManager').val()
+        };
+
+        $.ajax({
+            url: '/project/projecttempupdate',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(updatedData),
+            success: function(response) {
+                if (response.status === 'success') {
+                    // 테이블에서 해당 행 업데이트
+                    const row = $(`button[data-proj-temp-no="${projNo}"]`).closest('tr');
+                    row.find('td:nth-child(2)').text(updatedData.name);
+                    row.find('td:nth-child(3)').text(updatedData.content);
+                    row.find('td:nth-child(4)').text(updatedData.periodDate);
+
+                    alert('프로젝트가 성공적으로 수정되었습니다!');
+                    $('#editProjectModal').modal('hide');
+                } else {
+                    alert('수정에 실패했습니다: ' + response.message);
+                }
+            },
+            error: function(xhr, status, error) {
+                alert('수정 요청에 실패했습니다: ' + error);
+            }
+        });
+    });
+    
+</script>

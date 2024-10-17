@@ -21,10 +21,19 @@ public interface PjTempService {
 	public int projectwrktempinsert(ProjectWorkTempVO projectworktempVO);
 	// 프로젝트 업무 템플릿 삭제
 	public int projectDelete(int pwtNo);
-	// 
-	public ProjectTempVO projectwrktempInfo(int projNo);
+	// 프로젝트 업무 템플릿 단건 조회
+	public ProjectWorkTempVO projectwrktempInfo(int pwtNo);
+	// 프로젝트 업무 텟플릿 수정
+	public int projectwrktempUpdate(ProjectWorkTempVO projectworkTempVO);
 	
-	public int projectwrktempUpdate(ProjectTempVO projectTempVO);
+	
+	
+	// 프로젝트 상세 업무 템플릿 전체 조회
+	List<ProjectDWorkTempVO> projectDwrktemplist();
+	// 프로젝트 상세 업무 템플릿 생성
+	public int projectDwrktempinsert(ProjectDWorkTempVO projectDworktempVO);
+	// 프로젝트 상세 업무 템플릿 삭제
+	public int projectdwrktempDelete(int pdwtNo);
 	
 	
 	
