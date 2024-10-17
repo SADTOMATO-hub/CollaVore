@@ -1,9 +1,7 @@
 package com.collavore.app.project.service;
 
 
-import java.util.Date;
 
-import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +15,9 @@ public class ProjectTempVO {
 	private String name;
 	private String content;
 	private Integer periodDate;
+	
+	
+	
 
 	
 	

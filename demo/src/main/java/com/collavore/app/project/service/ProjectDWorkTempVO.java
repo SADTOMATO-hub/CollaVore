@@ -18,6 +18,7 @@ public class ProjectDWorkTempVO {
 	private String content;
 	private Integer pwtNo;
 	private String importance;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date regDate;
 
 	
