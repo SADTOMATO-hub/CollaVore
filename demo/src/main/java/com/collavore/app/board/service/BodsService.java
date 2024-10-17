@@ -20,7 +20,7 @@ public interface BodsService {
 	public int deleteBods(int bodVO);
 	
 	// 게시판 생성
-	// public int insertBods
+	
 	
 	// 게시판 수정
 	// public 

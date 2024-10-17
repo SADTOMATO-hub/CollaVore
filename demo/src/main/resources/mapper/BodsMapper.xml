@@ -5,11 +5,13 @@
 	<select id="selectBoardAll" resultType="BodsVO">
 		SELECT post_no
 		, title
+		, board_no
 		,(select name
 from employees
 where emp_no = writer) writerName
 		, content
 		, reg_date
+		, mod_date
 		FROM bods
 		ORDER BY post_no
 	</select>
@@ -21,6 +23,7 @@ where emp_no = writer) writerName
 		, content
 		, writer
 		, reg_date
+		, mod_date
 		FROM bods
 		WHERE post_no = #{postNo}
 	</select>
@@ -46,7 +49,7 @@ where emp_no = writer) writerName
 		#{postNo}
 		, #{title}
 		, #{content}
-		, #{regDate}
+		, sysdate
 		, #{boardNo}
 		,
 		#{writer}
@@ -70,9 +73,6 @@ where emp_no = writer) writerName
 		DELETE FROM bods  
 		WHERE post_no = #{postNo}
 	</delete> 
-	
-	
-	<!-- 댓글 등록  -->
 	
 	
 	
