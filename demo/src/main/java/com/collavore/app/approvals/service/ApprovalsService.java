@@ -6,7 +6,7 @@ import java.util.Map;
 public interface ApprovalsService {
 	// 템플릿 생성
 	public int createApprsTemp (ApprovalstempVO apprsVO);
-	// 템플릿 목록 조회
+	// 템플릿 목록 조회, 템플릿의 모든 정보를 불러오는 기능
 	public List<ApprovalstempVO> apprTempList ();
 	// 템플릿 상세 조회
 	public ApprovalstempVO apprInfo (ApprovalstempVO apprsVO);
@@ -20,5 +20,7 @@ public interface ApprovalsService {
 	// 전자결재 상세 조회
 	// 전자결재 수정
 	// 전자결재 삭제
+	//결재자 정보 호출
+	public List<ApproversVO> approversData ();
 }
 //4번째
