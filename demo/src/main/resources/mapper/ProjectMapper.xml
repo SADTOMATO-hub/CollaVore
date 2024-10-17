@@ -17,9 +17,25 @@
 		FROM proj
 		ORDER BY proj_no
 	</select>
+	<!-- 단건조회 -->
+	<select id="selectProjectById" resultType="ProjectVO">
+		SELECT proj_no,
+		name,
+		content,
+		start_date,
+		end_date,
+		is_template,
+		status,
+		proj_temp_no,
+		project_git_url,
+		p_mgr_no
+		FROM proj
+		WHERE proj_no = #{projNo}
+	</select>
 	<!-- 프로젝트 생성 -->
 	<insert id="ProjectInsert" parameterType="ProjectVO">
-		<selectKey keyProperty="projNo" resultType="Integer" order="BEFORE">
+		<selectKey keyProperty="projNo" resultType="Integer"
+			order="BEFORE">
 			SELECT NVL(MAX(proj_no), 1000)+1
 			FROM proj
 		</selectKey>
@@ -46,12 +62,51 @@
 		,#{projectGitUrl}
 		,#{pMgrNo}
 		)
-
 	</insert>
-	
-		<!-- 삭제 -->
-	<!-- <delete id="projectDelete" parameterType="int">
-		DELETE FROM proj_no
-		WHERE proj_no = #{projNo}
-	</delete> -->
+	<!-- 수정 -->
+	<update id="updateProject">
+		UPDATE proj
+
+		SET
+		name = #{name}
+		,content = #{content}
+		,start_date =
+		#{startDate}
+		,end_date = #{endDate}
+		<!--,is_template = #{is_template} -->
+		,status = #{status}
+		<!-- ,proj_temp_no = #{proj_temp_no} -->
+		,project_git_url = #{projectGitUrl}
+		,p_mgr_no = #{pMgrNo}
+
+		WHERE proj_no
+		= #{projNo}
+	</update>
+	<!-- 삭제 -->
+	<delete id="projectDelete" parameterType="int">
+		DELETE FROM proj
+		WHERE
+		proj_no = #{projNo}
+	</delete>
+
+	<!-- 
+	 전체 프로젝트 수 카운트 
+	<select id="countAllProjects" resultType="int">
+		SELECT COUNT(*) FROM proj
+	</select>
+
+	 프로젝트 목록 조회 (페이지네이션 포함)
+	<select id="findProjects" resultType="ProjectVO">
+	<![CDATA[
+		SELECT *
+		FROM (
+		SELECT p.*, ROWNUM AS rn
+		FROM proj p
+		WHERE ROWNUM <= #{offset} + #{limit}
+		ORDER BY projNo
+		)
+		WHERE rn > #{offset}
+		]]>
+	</select> -->
+
 </mapper>
