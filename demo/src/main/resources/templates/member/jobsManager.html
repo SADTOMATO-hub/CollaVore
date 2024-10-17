@@ -3,8 +3,8 @@
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
 
-<style>
-.card_posi,.card_jobs {
+	<style>
+.card_posi, .card_jobs {
 	background-color: #ffffff;
 	padding: 20px;
 	border-radius: 10px;
@@ -15,71 +15,83 @@
 }
 
 .inline-container {
-    display: flex;
-    justify-content: space-between; /* 제목은 왼쪽, 버튼은 오른쪽 정렬 */
-    align-items: center; /* 텍스트와 버튼을 수직 가운데 정렬 */
-    padding: 10px 0; /* 상하 여백 추가 */
+	display: flex;
+	justify-content: space-between; /* 제목은 왼쪽, 버튼은 오른쪽 정렬 */
+	align-items: center; /* 텍스트와 버튼을 수직 가운데 정렬 */
+	padding: 10px 0; /* 상하 여백 추가 */
 }
 
+/* 직무 리스트를 가로로 표시 */
+.inline-jobs-container {
+	display: flex; /* 요소들을 가로로 나열 */
+	flex-wrap: wrap; /* 필요할 경우 줄 바꿈 */
+	gap: 10px; /* 각 직무 간의 간격 설정 */
+}
 
+.inline-jobs-container span {
+	padding: 5px 10px;
+	background-color: #e6e6fa; /* 연보라색 배경 */
+	border-radius: 4px;
+}
 
 .tooltip-text {
-    visibility: hidden;
-    background-color: #555;
-    color: #fff;
-    text-align: center;
-    border-radius: 5px;
-    padding: 5px 10px;
-    position: absolute;
-    z-index: 1;
-    bottom: 57%; /* 아이콘 아래에 뜨도록 */
-    left: 27%;
-    transform: translateX(-50%); /* 가운데 정렬 */
-    opacity: 0;
-    transition: opacity 0.3s;
-
+	visibility: hidden;
+	background-color: #555;
+	color: #fff;
+	text-align: center;
+	border-radius: 5px;
+	padding: 5px 10px;
+	position: absolute;
+	z-index: 1;
+	bottom: 57%; /* 아이콘 아래에 뜨도록 */
+	left: 27%;
+	transform: translateX(-50%); /* 가운데 정렬 */
+	opacity: 0;
+	transition: opacity 0.3s;
 }
 /* 아이콘에 마우스를 올렸을 때 툴팁 표시 */
-.tooltip-icon:hover + .tooltip-text {
-    visibility: visible;
-    opacity: 1;
+.tooltip-icon:hover+.tooltip-text {
+	visibility: visible;
+	opacity: 1;
 }
 
-h4{
-margin: 0
+h4 {
+	margin: 0
 }
+
 table {
 	width: 100%;
 	border-collapse: collapse;
 }
 
 th, td {
-    padding: 8px;
-    text-align: left;
-    border-bottom: 1px solid #ddd; /* 가로선만 추가 */
+	padding: 8px;
+	text-align: left;
+	border-bottom: 1px solid #ddd; /* 가로선만 추가 */
 }
 
 th {
-    border-top: 1px solid #ddd; /* 테이블의 첫 번째 행(헤더)에 상단 가로선 추가 */
+	border-top: 1px solid #ddd; /* 테이블의 첫 번째 행(헤더)에 상단 가로선 추가 */
 }
-th:first-child,td:first-child {
-    background-color: #e6e6fa; /* 연보라색(Lavender) */
-    font-weight: bold;
+
+th:first-child, td:first-child {
+	background-color: #e6e6fa; /* 연보라색(Lavender) */
+	font-weight: bold;
 }
 
 input {
-    padding: 8px;
-    font-size: 14px;
-    border: 1px solid #ddd;
-    border-radius: 4px; /* 모서리를 둥글게 */
-    width: 100%;
-    box-sizing: border-box; /* padding이 포함된 전체 너비를 맞추기 위해 사용 */
+	padding: 8px;
+	font-size: 14px;
+	border: 1px solid #ddd;
+	border-radius: 4px; /* 모서리를 둥글게 */
+	width: 100%;
+	box-sizing: border-box; /* padding이 포함된 전체 너비를 맞추기 위해 사용 */
 }
 
 input:focus {
-    outline: none;
-    border-color: #007bff; /* 포커스 시 테두리 색상 변경 */
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 포커스 시 외곽선에 그림자 추가 */
+	outline: none;
+	border-color: #007bff; /* 포커스 시 테두리 색상 변경 */
+	box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 포커스 시 외곽선에 그림자 추가 */
 }
 
 button {
@@ -99,153 +111,200 @@ button:hover {
 
 /* 버튼 오른쪽 정렬을 위한 컨테이너 */
 .button-container {
-margin-top: 10px;
-    display: flex;
-    justify-content: flex-end; /* 버튼을 오른쪽 정렬 */
-    align-items: center; /* 버튼 높이 일치 */
-    gap: 10px; /* 버튼 간격 */
-    margin-bottom: 20px;
+	margin-top: 10px;
+	display: flex;
+	justify-content: flex-end; /* 버튼을 오른쪽 정렬 */
+	align-items: center; /* 버튼 높이 일치 */
+	gap: 10px; /* 버튼 간격 */
+	margin-bottom: 20px;
 }
-
 
 /* td 안의 - 버튼 동그랗게 */
 td button {
-    width: 30px;
-    height: 30px;
-    padding: 0;
-    border-radius: 50%; /* 버튼을 동그랗게 만듦 */
-    justify-content: flex-end;
-    font-size: 16px;
-    background-color: #e6e6fa;
+	width: 30px;
+	height: 30px;
+	padding: 0;
+	border-radius: 50%; /* 버튼을 동그랗게 만듦 */
+	justify-content: flex-end;
+	font-size: 16px;
+	background-color: #e6e6fa;
 }
 
 td button:hover {
-    background-color: #c8a2c8;
+	background-color: #c8a2c8;
 }
-
-
 </style>
-	
+
+
+
+	<div class="card_posi">
+		<h4>조직 관리</h4>
+	</div>
+
+	<div class="card_posi">
+		<div class="inline-container">
+			<h4>
+				직위 관리 <i class="fas fa-question-circle tooltip-icon"></i>
+				<div class="tooltip-text">직위 관리에 대한 안내</div>
+			</h4>
+			<button onclick="addLevel()">
+				<i class="fas fa-plus"></i>
+			</button>
+		</div>
+
+		<table id="positionTable">
+			<tr>
+				<th>Level</th>
+				<th>직위</th>
+				<th></th>
+			</tr>
+		</table>
+		<div class="button-container">
+			<button onclick="saveData()">저장</button>
+		</div>
+	</div>
+
+
 	<div class="card_jobs">
 		<div class="inline-container">
-		<h4>직무 관리 <i class="fas fa-question-circle tooltip-icon"></i>
-		<div class="tooltip-text">직뮤 관리에 대한 안내</div></h4>
-		<button onclick="addLevel()"><i class="fas fa-plus"></i></button>
+			<h4>
+				직무 관리 <i class="fas fa-question-circle tooltip-icon"></i>
+				<div class="tooltip-text">직뮤 관리에 대한 안내</div>
+			</h4>
+			<button onclick="addJob()">
+				<i class="fas fa-plus"></i>
+			</button>
 		</div>
-		
+
 		<table id="jobsTable">
 			<tbody>
 				<tr>
-					<td>
+					<td class="inline-jobs-container">
 						<span></span>
 					</td>
 				</tr>
 			</tbody>
 		</table>
 		<div class="button-container">
-		<button onclick="saveData()">저장</button>
+			<button onclick="saveJobs()">저장</button>
 		</div>
 	</div>
 
 </div>
 
-  <script>
-    let jobCounter = 1; // 직무 레벨 카운터
+<script>
+    let levelCounter = 1;
 
-    // 직무 데이터 로드
-    function loadExistingJobs() {
-        fetch('/jobs/getExistingJobs') // 직무 데이터를 가져오는 API
+    // 페이지 로드 시 기존 데이터 불러오기
+    function loadExistingData() {
+    	fetch('/positions/getExistingPositions')
         .then(response => response.json())
         .then(data => {
-            const table = document.getElementById('jobsTable').querySelector('tbody');
+            const table = document.getElementById('positionTable');
 
+            // 첫 번째와 두 번째 tr을 제외한 나머지 tr 제거
+            while (table.rows.length > 1) {
+                table.deleteRow(1); // 항상 3번째 행(인덱스 2)을 삭제
+            }
 
-
-            // 데이터를 이용해 직무 테이블 업데이트
+            // 데이터로 테이블 업데이트
             data.forEach((item, index) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td><span>${item.jobName}</span></td>
-                    <td><button onclick="removeJob(this, ${item.jobNo})"><i class="fas fa-minus"></i></button></td>
+                    <td>Level. ${index + 1}</td>
+                    <td><input type="text" value="${item.posiName}" data-posi-no="${item.posiNo}" /></td>
+                    <td><button onclick="removeLevel(this, ${item.posiNo})"><i class="fas fa-minus"></i></button></td>
                 `;
                 table.appendChild(row);
-                jobCounter = index + 1;
+                levelCounter = index + 1; // 레벨 카운터 업데이트
             });
         });
     }
 
-    // 새 직무 추가 함수
-    function addJob() {
-        jobCounter++;
-        const table = document.getElementById('jobsTable').querySelector('tbody');
+    // 새 레벨 추가 함수
+    function addLevel() {
+        levelCounter++;
+        const table = document.getElementById('positionTable');
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td><input type="text" placeholder="새 직무 입력" /></td>
-            <td><button onclick="removeJob(this)"><i class="fas fa-minus"></i></button></td>
+            <td>Level. ${levelCounter}</td>
+            <td><input type="text" placeholder="새 직위 입력" /></td>
+            <td><button onclick="removeLevel(this)"><i class="fas fa-minus"></i></button></td>
         `;
         table.appendChild(row);
+        reorderLevels();
     }
 
-    // 직무 삭제 함수
-    function removeJob(button, jobNo = null) {
-        if (jobNo) {
+    // 레벨 삭제 함수
+    function removeLevel(button, posiNo = null) {
+        if (posiNo) {
             // 서버로 삭제 요청
-            fetch(`/jobs/delete/${jobNo}`, {
+            fetch(`/positions/delete/${posiNo}`, {
                 method: 'DELETE'
             })
             .then(response => response.text())
             .then(result => {
                 if (result === 'success') {
                     button.parentElement.parentElement.remove();
+                    reorderLevels();
                 } else {
                     alert('삭제에 실패했습니다.');
                 }
             });
         } else {
-            // 새로 추가된 직무는 그냥 삭제
             button.parentElement.parentElement.remove();
+            reorderLevels();
         }
     }
 
-    // 직무 데이터 저장 함수
-    function saveJobs() {
-        const rows = document.querySelectorAll('#jobsTable tr');
-        const jobs = [];
-        let nonName = false;
-        
+    // 레벨 재정렬
+    function reorderLevels() {
+        const rows = document.querySelectorAll('#positionTable tr');
         rows.forEach((row, index) => {
-            const jobNameInput = row.querySelector('input');
-            const jobName = jobNameInput ? jobNameInput.value.trim() : row.querySelector('span').textContent;
-            const jobNo = jobNameInput ? null : row.querySelector('button').dataset.jobNo;
+            if (index === 0) return; // 헤더는 제외
+            row.cells[0].textContent = `Level. ${index}`;
+        });
+    }
 
-            if (jobName === '') {
-                nonName = true;
-            }
-
-            jobs.push({
-                jobNo: jobNo,
-                jobName: jobName,
+ // 데이터 저장 함수
+    function saveData() {
+        const rows = document.querySelectorAll('#positionTable tr');
+        const positions = [];
+		let nonName = false;
+        rows.forEach((row, index) => {
+            if (index === 0) return; // 첫 번째는 헤더이므로 제외
+            const posiNo = row.cells[1].querySelector('input').dataset.posiNo || null;
+            const posiName = row.cells[1].querySelector('input').value.trim();
+			if(posiName == ''){
+				nonName = true;
+			}
+            positions.push({
+                posiNo: posiNo,
+                posiName: posiName,
+                grade: index // 레벨을 등급으로 사용
             });
         });
         
-        if (nonName) {
-            alert("직무명이 입력되지 않았습니다. 확인 후 다시 시도해주세요.");
-            return;
+        if(nonName){
+        	alert("직위명이 입력되지 않았습니다. 확인 후 다시 시도해주세요.");
+        	return;
         }
 
-        // 서버에 직무 데이터 전송
-        fetch('/jobs/save', {
+        console.log(positions);  // 전송할 데이터를 콘솔에 출력
+        // 서버에 데이터 전송 (AJAX 사용)
+        fetch('/positions/save', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(jobs)
+            body: JSON.stringify(positions)
         })
         .then(response => response.text())
         .then(result => {
+            //console.log(result);  // 서버로부터 받은 응답을 콘솔에 출력
             if (result === 'success') {
                 alert('저장되었습니다.');
-                loadExistingJobs(); // 저장 후 새로 로드
+                loadExistingData();
             } else {
                 alert('저장에 실패했습니다.');
             }
@@ -255,8 +314,133 @@ td button:hover {
             alert('에러 발생!');
         });
     }
+    // 페이지 로드 시 기존 데이터 불러오기
+    document.addEventListener('DOMContentLoaded', loadExistingData);
+    
+    
+    
+    
+    //------------------------------------------------------------------------------------------
+    // 직무 데이터 로드
+function loadExistingJobs() {
+    fetch('/jobs/getExistingJobs') // 직무 데이터를 가져오는 API 경로 수정
+    .then(response => response.json())
+    .then(data => {
+        const table = document.getElementById('jobsTable').querySelector('tbody');
 
-    // 페이지 로드 시 직무 데이터 불러오기
-    document.addEventListener('DOMContentLoaded', loadExistingJobs);
+        // 테이블 초기화 (기존 데이터 삭제)
+        table.innerHTML = '';
+
+        // 데이터를 이용해 직무 테이블 업데이트
+        data.forEach(item => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="inline-jobs-container">
+                    <span>${item.jobName}</span>
+                </td>
+                <td>
+                    <button data-job-no="${item.jobNo}" onclick="removeJob(this, ${item.jobNo})"><i class="fas fa-minus"></i></button>
+                </td>
+            `;
+            table.appendChild(row);
+        });
+    })
+    .catch(error => {
+        console.error('Error fetching jobs:', error); // 에러 확인
+    });
+}
+
+// 새 직무 추가 함수
+function addJob() {
+    const table = document.getElementById('jobsTable').querySelector('tbody');
+    const row = document.createElement('tr');
+    row.innerHTML = `
+        <td class="inline-jobs-container">
+            <input type="text" placeholder="새 직무 입력" />
+        </td>
+        <td>
+            <button onclick="removeJob(this)"><i class="fas fa-minus"></i></button>
+        </td>
+    `;
+    table.appendChild(row);
+}
+
+// 직무 삭제 함수
+function removeJob(button, jobNo = null) {
+    if (jobNo) {
+        // 서버로 삭제 요청
+        fetch(`/jobs/delete/${jobNo}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.text())
+        .then(result => {
+            if (result === 'success') {
+                button.parentElement.parentElement.remove(); // 행 삭제
+            } else {
+                alert('삭제에 실패했습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('Error deleting job:', error); // 에러 처리
+        });
+    } else {
+        // 새로 추가된 직무는 그냥 삭제
+        button.parentElement.parentElement.remove();
+    }
+}
+
+// 직무 데이터 저장 함수
+function saveJobs() {
+    const rows = document.querySelectorAll('#jobsTable tr');
+    const jobs = [];
+    let nonName = false;
+
+    rows.forEach(row => {
+        const jobNameInput = row.querySelector('input');
+        const jobName = jobNameInput ? jobNameInput.value.trim() : row.querySelector('span').textContent;
+        const button = row.querySelector('button');
+        const jobNo = jobNameInput ? null : (button ? button.dataset.jobNo : null); // 버튼이 있는지 확인
+
+        if (jobName === '') {
+            nonName = true;
+        }
+
+        jobs.push({
+            jobNo: jobNo,
+            jobName: jobName,
+        });
+    });
+
+    if (nonName) {
+        alert("직무명이 입력되지 않았습니다. 확인 후 다시 시도해주세요.");
+        return;
+    }
+
+    // 서버에 직무 데이터 전송
+    fetch('/jobs/save', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(jobs)
+    })
+    .then(response => response.text())
+    .then(result => {
+        if (result === 'success') {
+            alert('저장되었습니다.');
+            loadExistingJobs(); // 저장 후 새로 로드
+        } else {
+            alert('저장에 실패했습니다.');
+        }
+    })
+    .catch(error => {
+        console.error('Error saving jobs:', error); // 에러 처리
+        alert('에러 발생!');
+    });
+}
+
+// 페이지 로드 시 직무 데이터 불러오기
+document.addEventListener('DOMContentLoaded', loadExistingJobs);
+
+
 </script>
-  

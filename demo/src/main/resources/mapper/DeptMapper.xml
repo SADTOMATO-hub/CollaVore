@@ -5,15 +5,13 @@
 	<!-- 전체조회 -->
 	<select id="selectDeptAll" resultType="HrmVO">
 		SELECT DEPT_NO
-		,
-		PARENT_DEPT_NO
+		, PARENT_DEPT_NO
 		, NAME AS deptName
 		, MGR_NO
 		, REG_DATE
 		, MOD_DATE
-		SORT
-		FROM
-		DEPARTMENTS
+		, SORT
+		FROM DEPARTMENTS
 		ORDER BY DEPT_NO
 	</select>
 

@@ -38,7 +38,7 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	public List<HrmVO> getExistingJobs() {
+	public List<HrmVO> getExistinJobs() {
 		return jobMapper.selectJobsList();
 	}
 

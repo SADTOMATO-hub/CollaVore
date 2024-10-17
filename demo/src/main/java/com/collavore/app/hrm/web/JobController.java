@@ -55,11 +55,11 @@ public class JobController {
 	}
 
 	// 기존 직위 불러오기
-	@GetMapping("/jobs/getExistingJobtions")
+	@GetMapping("/jobs/getExistingJobs")
 	@ResponseBody
 	public List<HrmVO> getExistingJobtions() {
 		
-		return jobService.getExistingJobs();
+		return jobService.getExistinJobs();
 		
 	}
 
