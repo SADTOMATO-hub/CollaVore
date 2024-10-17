@@ -23,7 +23,7 @@ public class ProjectVO {
 	private Integer projTempNo;
 	private String projectGitUrl;
 	private Integer pMgrNo;
-
+//	private String pMgrNo;
 	
 	
 	

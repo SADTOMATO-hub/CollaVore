@@ -16,7 +16,7 @@ public class ProjectTempVO {
 	private Integer projTempNo;
 	private String name;
 	private String content;
-	private Date periodDate;
+	private Integer periodDate;
 
 	
 	

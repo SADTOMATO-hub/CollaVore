@@ -21,6 +21,7 @@ import com.collavore.app.approvals.service.ApprovalstempVO;
 public class ApprovalsController {
 	private ApprovalsService approvalsService;
 	
+	@Autowired 
 	ApprovalsController(ApprovalsService approvalsService){
 		this.approvalsService = approvalsService;
 	}
