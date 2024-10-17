@@ -34,7 +34,7 @@
 					type="checkbox" id="alert">
 
 				<button type="submit">저장</button>
-				
+
 			</form>
 		</div>
 	</div>
@@ -67,9 +67,40 @@
 			</form>
 		</div>
 	</div>
-	
-	
-	
+
+
+	<!-- 일정 수정 모달 -->
+	<div id="editScheduleModal" class="modal">
+		<div class="modal-content">
+			<span class="close">&times;</span>
+			<h2>일정 수정</h2>
+			<form id="editScheduleForm">
+			
+				<label for="editCalendarType">캘린더</label> 
+				<select
+					id="editCalendarType">
+					<option value="내캘린더">내캘린더</option>
+					<option value="공유캘린더">공유캘린더</option>
+					<option value="프로젝트">프로젝트</option>
+				</select> 
+				<label for="editTitle">일정 제목</label> 
+				<input type="text" id="editTitle" required> 
+				
+				<label for="editStartDate">시작</label>
+				<input type="date" id="editStartDate" required> 
+				<input type="time" id="editStartTime" required> 
+				
+					<label for="editEndDate">종료</label> 
+					<input type="date" id="editEndDate" required> 
+					<input type="time" id="editEndTime" required>
+					
+					<label for="editAlarm">알림 설정</label>
+   					 <input type="checkbox" id="editAlarm">
+
+				<button type="submit">저장</button>
+			</form>
+		</div>
+	</div>
 
 
 

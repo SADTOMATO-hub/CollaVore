@@ -5,13 +5,18 @@ import java.util.List;
 import com.collavore.app.cals.service.SchsVO;
 
 public interface SchsMapper {
-	List<SchsVO> selectSchsAll(); // 전체 일정 조회
+	
+	// 전체 일정 조회
+	List<SchsVO> selectSchsAll(); 
 
 	// 등록
 	public int insertSchsInfo(SchsVO schsVO);
 
 	// 단건조회 
 	public SchsVO selectSchsInfo(SchsVO schsVO);
+	
+	//수정
+	public int updateSchsInfo(SchsVO schsVO);
 
 	// 삭제 조건
 	public int deleteSchsInfo(int schsNO);
