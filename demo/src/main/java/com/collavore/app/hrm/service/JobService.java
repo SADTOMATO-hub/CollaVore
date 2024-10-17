@@ -8,5 +8,5 @@ public interface JobService {
 	public int jobsInsert(HrmVO hrmVO) throws Exception;
 	public int updateJobs(HrmVO hrmVO) throws Exception;
 	public int deleteJobs(Integer posiNo) throws Exception;
-	public List<HrmVO> getExistingJobs();
+	public List<HrmVO> getExistinJobs();
 }
