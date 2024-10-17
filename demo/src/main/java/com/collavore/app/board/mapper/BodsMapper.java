@@ -20,10 +20,10 @@ public interface BodsMapper {
 	// 게시글삭제
 	public int deleteBodsInfo(int postNO);
 
-	/*// 게시판 생성(등록)
+	// 게시판 생성(등록)
 	public int insertBodsInfo();
 	
-	// 게시판 수정
+	/*// 게시판 수정
 	public int UpdateBodsInfo();
 	
 	// 게시판 삭제
