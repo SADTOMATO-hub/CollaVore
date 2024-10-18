@@ -1,0 +1,71 @@
+<div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{common/layouts/default_layout}"
+    layout:fragment="Content">
+    
+	<div class="text-center">
+		<form name="insertBodsComts" th:action="@{/board/bodsComts}" method="post">
+			<h3>댓글 등록</h3>
+			<input type="hidden" name="writer" th:value = "${param.writer}">
+			<table class="table">
+	
+				<tr>
+					<th>제목</th>
+					<td><input type="text" name="title"></td>
+				</tr>
+				<tr>
+					<th>내용</th>
+					<td><textarea name="content"></textarea></td>
+				</tr>
+				<tr>
+					<th>작성자</th>
+					<td><input type="text" name="writer"></td>
+				</tr>
+
+			</table>
+			<button type="submit">등록</button>
+
+
+		</form>
+	</div>
+	<script>
+		// submit을 하기 전 제목, 작성자, 작성일자 확인
+		$(insertForm).on('submit', boardInsertHandler);
+
+		function boardInsertHandler(event) {
+			event.preventDefault();
+			
+			
+			let boardNo = $('form [name="boardNo"]');
+			if (boardNo.val() == '') {
+				alert('게시판 번호가 입력되지 않았습니다.');
+				title.focus();
+				return;
+			}
+
+			let title = $('form [name="title"]');
+			if (title.val() == '') {
+				alert('제목이 입력되지 않았습니다.');
+				title.focus();
+				return;
+			}
+
+			let writer = $('form [name="writer"]');
+			if (writer.val() == '') {
+				alert('작성자가 입력되지 않았습니다.');
+				writer.focus();
+				return;
+			}
+
+			let regdate = $('form [name="regdate"]');
+			if (regdate.val() == '') {
+				alert('작성일자가 입력되지 않았습니다.');
+				regDate.focus();
+				return;
+			}
+
+			alert('게시글이 등록되었습니다.');
+			insertForm.submit();
+		}
+	</script>
+</div>
