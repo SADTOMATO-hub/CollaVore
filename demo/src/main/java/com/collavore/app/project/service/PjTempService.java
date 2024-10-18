@@ -34,6 +34,10 @@ public interface PjTempService {
 	public int projectDwrktempinsert(ProjectDWorkTempVO projectDworktempVO);
 	// 프로젝트 상세 업무 템플릿 삭제
 	public int projectdwrktempDelete(int pdwtNo);
+	// 프로젝트 상세 업무 템플릿 단건 조회
+	public ProjectDWorkTempVO projectDwrktempInfo(int pdwtNo);
+	// 프로젝트 상세 업무 템플릿 수정
+	public int projectdwrktempUpdate(ProjectDWorkTempVO projectDworktempVO);
 	
 	
 	

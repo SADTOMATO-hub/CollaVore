@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,28 +15,35 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.collavore.app.project.service.PjService;
+import com.collavore.app.project.service.PjTempService;
+import com.collavore.app.project.service.ProjectFoldersVO;
+import com.collavore.app.project.service.ProjectTempVO;
 import com.collavore.app.project.service.ProjectVO;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
 public class ProjectController {
-	private PjService pjService;
+	private final PjService pjService;
+	private final PjTempService pjtempService;
 
 	@ModelAttribute
 	public void addAttributes(Model model) {
 		model.addAttribute("sidemenu", "project_sidebar");
 	}
 
-	@Autowired
-	public ProjectController(PjService pjService) {
-		this.pjService = pjService;
-	}
+
+	
 
 	// 프로젝트 리스트 출력
 	@GetMapping("project/projectlist")
 	public String projectList(Model model) {
 		List<ProjectVO> list = pjService.projectList();
+		List<ProjectTempVO> templist = pjtempService.projecttempList();
 
 		model.addAttribute("projects", list);
+		model.addAttribute("templist", templist);
 		return "project/projectList";
 	}
 
@@ -46,7 +52,7 @@ public class ProjectController {
 	@ResponseBody
 	public Map<String, Object> insertAjax(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
-		 //System.err.println(projectVO);
+		 System.err.println(projectVO);
 		 pjService.projectinsert(projectVO);
 		
 		map.put("type", "postAjax");
@@ -86,6 +92,13 @@ public class ProjectController {
 	}
 	
 	
-
+	// 프로젝트 파일 관리
+	@GetMapping("project/projectfilelist")
+	public String projectFileList(Model model) {
+		List<ProjectFoldersVO> list = pjService.projectfileList();
+		
+		model.addAttribute("projects", list);
+		return "project/projectfils";
+	}
 	
 }

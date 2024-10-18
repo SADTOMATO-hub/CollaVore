@@ -16,6 +16,8 @@ public interface PjService {
 	// 프로젝트 수정
 	public Map<String, Object> updateProject(ProjectVO proejctVO);
 	
+	public List<ProjectFoldersVO> projectfileList();
+	
 //	public List<ProjectVO> getProjects(int page, int size);
 //
 //	public long getTotalProjects();
