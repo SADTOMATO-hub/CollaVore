@@ -22,13 +22,11 @@ public class JobServiceImpl implements JobService {
 	// 직위
 	@Override
 	public int jobsInsert(HrmVO hrmVO) {
-	    System.out.println("Inserting: " + hrmVO);  
 	    return jobMapper.insertJobsInfo(hrmVO);
 	}
 
 	@Override
 	public int updateJobs(HrmVO hrmVO) {
-	    System.out.println("Updating: " + hrmVO); 
 	    return jobMapper.updateJobsInfo(hrmVO);
 	}
 
