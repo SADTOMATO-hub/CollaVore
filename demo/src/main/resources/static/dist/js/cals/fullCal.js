@@ -56,6 +56,12 @@ document.addEventListener('DOMContentLoaded', function() {
 					center: 'title',
 					right: 'dayGridMonth,timeGridWeek,timeGridDay'
 				},
+				buttonText: {
+					today: "오늘",
+					month: "월별",
+					week: "주별",
+					day: "일별",
+				},
 				initialDate: getTodayDate(),
 				navLinks: true,
 				selectable: true,
@@ -64,12 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				dayMaxEvents: true,
 				events: sList,
 
-				// 시간 형식 추가
-				eventTimeFormat: { // "시간:분" 형식으로 표시
-					hour: '2-digit',
-					minute: '2-digit',
-					meridiem: false
-				},
+
 
 				//============ 단건조회 ============
 				eventClick: function(info) {
@@ -119,24 +120,26 @@ document.addEventListener('DOMContentLoaded', function() {
 							})
 								.then(response => response.json())
 								.then(data => {
-									if (data === 'success') {
+									if (data.result) {
 										// 캘린더의 일정을 업데이트
+										// 변경된 내용을 즉시 반영하기 위해 info.event 객체를 업데이트
 										info.event.setProp('title', title);
 										info.event.setStart(startDate);
 										info.event.setEnd(endDate);
-										// 변경된 내용을 즉시 반영하기 위해 info.event 객체를 업데이트합니다.
 
-										// 수정 완료 후 모달 닫기 (변경된 부분)
+										// 수정 완료 후 모달 닫기 
 										editModal.style.display = 'none';
 
-										// 성공 메시지 출력 (원래 코드에 있던 부분)
-										alert('일정이 수정되었습니다.');
+										// 성공 메시지 출력 
+										alert(data.message);
 									} else {
-										alert('일정 수정에 실패했습니다.');
+										// 실패 메시지 출력 
+										alert(data.message);
 									}
 								})
 								.catch(error => console.error('Error:', error));
 						};
+
 					};
 					//====================================END 수정 ====================================
 

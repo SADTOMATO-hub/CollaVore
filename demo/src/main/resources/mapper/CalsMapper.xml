@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.collavore.app.cals.mapper.SchsMapper">
+
+	<!--============================== 일정관리 ==================================== -->
 	<select id="selectSchsAll" resultType="SchsVO">
 		SELECT
 		sch_no
@@ -13,9 +15,10 @@
 		FROM schs
 	</select>
 	<insert id="insertSchsInfo" parameterType="SchsVO">
+		
 		<selectKey keyProperty="schNo" resultType="Integer"
 			order="BEFORE">
-			SELECT NVL(MAX(sch_no), 1000)+1
+			SELECT NVL(MAX(sch_no), 0)+1
 			FROM schs
 		</selectKey>
 		INSERT INTO schs (
@@ -43,17 +46,35 @@
 
 	<update id="updateSchsInfo" parameterType="SchsVO">
 		UPDATE schs
-		SET title = #{title},
+		SET title =
+		#{title},
 		start_date = #{startDate},
 		end_date = #{endDate},
-		cal_no = #{calNo},
+		cal_no =
+		#{calNo},
 		is_alarm = #{isAlarm}
-		
+
 		WHERE sch_no = #{schNo}
-		 
+
 	</update>
 
+	<!--==============================END 일정관리 ==================================== -->
 
+
+	<!--============================== 캘린더관리 ==================================== -->
+	<select id="selectCalAll" resultType="CalsVO">
+		SELECT cal_no
+		,name
+		,type
+		,reg_date
+		,is_delete
+		,delete_date
+		FROM cals
+	</select>
+
+
+
+	<!--==============================END 캘린더관리 ==================================== -->
 
 
 </mapper>

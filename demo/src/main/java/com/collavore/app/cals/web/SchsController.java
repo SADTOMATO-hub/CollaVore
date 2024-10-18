@@ -47,13 +47,6 @@ public class SchsController {
 		return schsService.SchsList();
 	}
 
-//    // 등록 
-//	@PostMapping("/sch/schInsert")
-//	public String SchsInsertProcess(SchsVO SchsVO) { 
-//		int bno = schsService.insertSchs(SchsVO);
-//		return "redirect:boardInfo?bno="+bno;	
-//	}
-
 	// 등록
 	@PostMapping("/sch/schInsert")
 	@ResponseBody
@@ -72,14 +65,10 @@ public class SchsController {
 	// 수정
 	@PostMapping("/sch/schUpdate")
 	@ResponseBody
-	public ResponseEntity<?> updateSchedule(@RequestBody SchsVO schsVO) {
+	public Map<String, Object> updateSchedule(@RequestBody SchsVO schsVO) {
 		Map<String, Object> resultMap = schsService.updateShcs(schsVO);
 
-		if ((boolean) resultMap.get("success")) {
-			return ResponseEntity.ok().body(resultMap.get("message"));
-		} else {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(resultMap.get("message"));
-		}
+		return resultMap;
 	}
 
 	// 삭제
@@ -95,5 +84,9 @@ public class SchsController {
 		}
 		return result;
 	}
+	
+//==============================END 일정관리 ===============================
+
+
 
 }
