@@ -10,8 +10,7 @@
 		<table class="table">
 			<thead>
 				<tr>
-					<th scope="col">1번 공지사항 2번 자유게시판</th>
-					<th scope="col">번호</th>
+					<th scope="col">게시글 번호</th>
 					<th scope="col">제목</th>
 					<th scope="col">작성자</th>
 					<th scope="col">등록일</th>
@@ -20,7 +19,6 @@
 			<tbody>
 				<th:block th:each="info : ${bodsList}">
 					<tr>
-						<td>[[${info.boardNo}]]</td>
 						<td>[[${info.postNo}]]</td>
 						<td>[[${info.title}]]</td>
 						<td>[[${info.writerName}]]</td>
@@ -30,9 +28,9 @@
 			</tbody>
 		</table>
 	</div>
-	<button type="button" th:onclick='|location.href="@{/board/bodsInsert}"|'>글쓰기</button>
+	<button type="button" th:onclick='|location.href="@{/board/bodsInsert(boardNo=${param.boardNo})}"|'>글쓰기</button>
 	
-	
+
 	
 	<script>
 		//제이쿼리 객체 생성

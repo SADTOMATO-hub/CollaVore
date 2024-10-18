@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.collavore.app.board.service.BodsComtsVO;
 import com.collavore.app.board.service.BodsService;
 import com.collavore.app.board.service.BodsVO;
 
@@ -33,8 +34,8 @@ public class BodsController {
 
 	// 전체조회 : URI - boardList / RETURN - board/boardList
 	@GetMapping("/board/bodsList") // 인터넷창에 치는 주소
-	public String bodsList(Model model) {
-		List<BodsVO> list = bodsService.bodsList();
+	public String bodsList(Model model, BodsVO bodsVO) {
+		List<BodsVO> list = bodsService.bodsList(bodsVO);
 		model.addAttribute("bodsList", list);
 		return "board/bodsList"; // 불러오는 html 경로
 // prefix  + return + suffix
@@ -55,7 +56,7 @@ public class BodsController {
 
 	// 등록 - 페이지 : URI - boardInsert / RETURN - board/boardInsert
 	@GetMapping("/board/bodsInsert")
-	public String boardInsertForm() {
+	public String boardInsertForm(BodsVO bodsVO) {
 		return "/board/bodsInsert";
 	}
 
@@ -89,8 +90,24 @@ public class BodsController {
 	// 삭제 - 처리 : URI - boardDelete / PARAMETER - Integer
 	// RETURN - 전체조회 다시 호출
 	@GetMapping("board/bodsDelete") // QueryString : @RequestParam
-	public String bodsDelete(@RequestParam Integer postNo) {
+	public String bodsDelete(@RequestParam Integer postNo, @RequestParam Integer boardNo) {
 		bodsService.deleteBods(postNo);
-		return "redirect:bodsList";
+
+		return "redirect:bodsList?boardNo=" + boardNo;
 	}
+
+	// 댓글등록 - 페이지 : URI - boardInsert / RETURN - board/boardInsert
+	@GetMapping("/board/bodsComts")
+	public String bodsComtsInsertForm(BodsComtsVO bodsComtsVO) {
+		return "/board/bodsComts";
+	}
+
+	// 댓글등록 - 처리 : URI - boardInsert / PARAMETER - BoardVO(QueryString)
+	// RETURN - 단건조회 다시 호출
+	@PostMapping("/board/bodsComts")
+	public String bodsComtsInsertProcess(BodsComtsVO bodsComtsVO) {// <form/> 활용한 submit
+		int eid = bodsService.insertBodsComts(bodsComtsVO);
+		return "redirect:bodsComtsInfo?cmtNo=" + eid;
+	}
+
 }

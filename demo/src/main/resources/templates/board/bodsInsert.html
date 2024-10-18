@@ -6,7 +6,9 @@
 	<div class="text-center">
 		<form name="insertForm" th:action="@{/board/bodsInsert}" method="post">
 			<h3>게시글 등록</h3>
+			<input type="text" name="boardNo" th:value = "${param.boardNo}">
 			<table class="table">
+	
 				<tr>
 					<th>제목</th>
 					<td><input type="text" name="title"></td>
@@ -19,6 +21,7 @@
 					<th>내용</th>
 					<td><textarea name="content"></textarea></td>
 				</tr>
+
 			</table>
 			<button type="submit">등록</button>
 
@@ -31,6 +34,14 @@
 
 		function boardInsertHandler(event) {
 			event.preventDefault();
+			
+			
+			let boardNo = $('form [name="boardNo"]');
+			if (boardNo.val() == '') {
+				alert('게시판 번호가 입력되지 않았습니다.');
+				title.focus();
+				return;
+			}
 
 			let title = $('form [name="title"]');
 			if (title.val() == '') {

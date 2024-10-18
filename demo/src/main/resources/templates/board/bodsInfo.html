@@ -9,11 +9,6 @@
 			<h3>게시글 정보</h3>
 			<table class="table">
 				<tr>
-					<th>번호</th>
-					<td>[[${bods.postNo}]]</td>
-				</tr>
-
-				<tr>
 					<th>제목</th>
 					<td>[[${bods.title}]]</td>
 				</tr>
@@ -37,8 +32,8 @@
 				
 			</table>
 			<button type="button" th:onclick='|location.href="@{/board/bodsUpdate(postNo=${bods.postNo})}"|'>수정</button>
-			<button type="button" th:onclick='|location.href="@{/board/bodsList}"|'>목록</button>
-			<button type="button" th:onclick='|location.href="@{/board/bodsDelete(postNo=${bods.postNo})}"|'>삭제</button>
+			<button type="button" th:onclick='|location.href="@{/board/bodsList(boardNo=${bods.boardNo})}"|'>목록</button>
+			<button type="button" th:onclick='|location.href="@{/board/bodsDelete(postNo=${bods.postNo}, boardNo=${bods.boardNo})}"|'>삭제</button>
 		</form>
 	</div>
 </div>
