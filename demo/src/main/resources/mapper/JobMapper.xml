@@ -1,6 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.collavore.app.hrm.mapper.DeptMapper">
+<mapper namespace="com.collavore.app.hrm.mapper.JobMapper">
+
+	<!-- 직무 등록 -->
+	<insert id="insertJobsInfo" parameterType="HrmVO">
+		<selectKey keyProperty="jobNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(job_no), 0) + 1
+			FROM JOBS
+		</selectKey>
+		INSERT INTO JOBS (job_no, name, reg_date)
+		VALUES (#{jobNo}, #{jobName}, sysdate)
+	</insert>
+
+	<!-- 직무 수정 -->
+	<update id="updateJobsInfo" parameterType="HrmVO">
+		UPDATE JOBS
+		SET name = #{jobName}
+		WHERE name = #{jobName}                                                      
+	</update>
+
+	<!-- 직무 삭제 -->
+	<delete id="deleteJobsInfo" parameterType="Integer">
+		DELETE FROM JOBS WHERE job_no = #{jobNo}
+	</delete>
+
+	<!-- 직무 목록 조회 -->
+	<select id="selectJobsList" resultType="HrmVO">
+		SELECT name AS jobName
+		FROM JOBS
+	</select>
 
 	
 </mapper>

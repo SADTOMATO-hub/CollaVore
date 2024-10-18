@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.collavore.app.hrm.mapper.DeptMapper">
+<mapper namespace="com.collavore.app.hrm.mapper.PosiMapper">
 
 	
 	<!-- 직위 등록 -->
 	<insert id="insertPosiInfo" parameterType="HrmVO">
 		<selectKey keyProperty="posiNo" resultType="Integer"
 			order="BEFORE">
-			SELECT NVL(MAX(posi_no), 100) + 1
+			SELECT NVL(MAX(posi_no), 0) + 1
 			FROM POSITIONS
 		</selectKey>
 		INSERT INTO POSITIONS (posi_no, name, grade, reg_date)
@@ -30,6 +30,7 @@
 	<select id="selectPosiList" resultType="HrmVO">
 		SELECT posi_no, name AS posiName, grade
 		FROM POSITIONS
+		ORDER BY grade
 	</select>
 
 </mapper>

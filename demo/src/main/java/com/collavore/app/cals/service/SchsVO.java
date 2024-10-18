@@ -9,10 +9,11 @@ import lombok.Data;
 
 @Builder
 public class SchsVO {
-	private Integer schNo;  // 자동 생성되는 번호
-    private String title;   // 일정 제목
-    private Date startDate; // 시작 날짜
-    private Date endDate;   // 종료 날짜
-    private Integer calNo;  // 캘린더 번호
-    private String isAlarm; // 알림 여부 (예/아니오)
+	private Integer schNo; // 일정번호 
+	private String title; // 제목 
+	private Date startDate; // 시작날짜 
+	private Date endDate; // 종료날짜 
+	private Integer calNo; //캘린더 넘버 
+	private String isAlarm; //알림여부 ('Y' or 'N')
+	
 }

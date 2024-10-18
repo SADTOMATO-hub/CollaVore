@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}"
@@ -30,15 +29,44 @@
 					<td>[[${bods.content}]]</textarea></td>
 				</tr>
 				<tr>
-					<th>작성일자</th>
+					<th>등록일자</th>
 					<td>[[${#dates.format(bods.regDate, 'yyyy/MM/dd')}]]</td>
 				</tr>
 			</table>
 			<button type="button" th:onclick='|location.href="@{/board/bodsUpdate(postNo=${bods.postNo})}"|'>수정</button>
 			<button type="button" th:onclick='|location.href="@{/board/bodsList}"|'>목록</button>
-			<button type="button" th:onclick='|location.href="@{/boardDelete(postNo=${bods.postNo})}"|'>삭제</button>
+			<button type="button" th:onclick='|location.href="@{/board/bodsDelete(postNo=${bods.postNo})}"|'>삭제</button>
 		</form>
 	</div>
-
 </body>
-</html>
+<div class="card-footer">
+  <form onsubmit="addComment(event)">
+    <div class="form-group">
+      <input type="text" class="form-control" placeholder="댓글을 입력하세요" required>
+    </div>
+    <button type="submit" class="btn btn-primary" th:onclick='|location.href="@{/board/bodsDelete(postNo=${bods.postNo})}"|'>작성</button>
+  </form>
+  <div class="comments mt-3">
+  </div>
+  <script>
+		// submit을 하기 전 제목, 작성자, 작성일자 확인
+		$(insertForm).on('submit', boardInsertHandler);
+		
+		function boardInsertHandler(event){
+				event.preventDefault();
+
+				let title = $('form [name="title"]');
+				if(title.val() == ''){
+					alert('뎃글이 입력되지 않았습니다.');
+					title.focus();
+					return;
+				}
+
+
+				alert('댓글이 등록되었습니다.');
+				insertForm.submit();
+		}
+	</script>
+  
+</div>
+

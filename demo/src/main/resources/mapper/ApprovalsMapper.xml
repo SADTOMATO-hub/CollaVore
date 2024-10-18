@@ -13,6 +13,7 @@
 		FROM approvalstemp
 		WHERE eat_no = #{eatNo}
 	</select>
+	
 	<!-- 템플릿 생성 -->
 	<insert id="createApprsTemp" parameterType="ApprovalstempVO">
 	  <selectKey keyProperty="eatNo"
@@ -21,7 +22,7 @@
 	  	SELECT NVL(MAX(eat_no),1) + 1
 	  	FROM approvalstemp
 	  </selectKey>
-		INSERT INTO approvalstemp (
+	   		INSERT INTO approvalstemp (
 									eat_no
 								   ,title
 								   ,content
@@ -32,10 +33,19 @@
 									,#{content}
 									)
 	</insert>
+	
 	<!-- 템플릿 삭제 -->
 	<delete id="deleteTemp" parameterType="int">
-	 DELETE approvalstemp
-	 WHERE eat_no = #{eatNo}
+		DELETE approvalstemp
+		WHERE eat_no = #{eatNo}
 	</delete>
+	
+	<!-- 템플릿 수정 -->
+	<update id="updateTemp" parameterType="ApprovalstempVO">
+		UPDATE approvalstemp
+		SET    title = #{title}
+			   ,content = #{content}
+		WHERE eat_no = #{eatNo}		
+	</update>
 </mapper>
 <!-- 3번째 -->

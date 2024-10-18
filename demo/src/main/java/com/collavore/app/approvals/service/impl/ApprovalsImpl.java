@@ -1,6 +1,8 @@
 package com.collavore.app.approvals.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +28,8 @@ public class ApprovalsImpl implements ApprovalsService {
 	}
 	// 템플릿 상세 조회
 	@Override
-	public ApprovalstempVO apprInfo(ApprovalstempVO eatNo) {
-		return approvalsMapper.readTemp(eatNo);
+	public ApprovalstempVO apprInfo(ApprovalstempVO apprsVO) {
+		return approvalsMapper.readTemp(apprsVO);
 	}
 	// 템플릿 생성
 	@Override
@@ -36,11 +38,21 @@ public class ApprovalsImpl implements ApprovalsService {
 		return result == 1 ? apprsVO.getEatNo() : -1 ;
 	}
 	// 템플릿 수정
+	@Override
+	public int updateTemplate(ApprovalstempVO apprsVO) {
+		//Map<String, Object> map = new HashMap<>();
+	//	int result = approvalsMapper.updateTemp(apprsVO);
+		//if (result == 1) {
+		//	map.put("tempUpdate", apprsVO);			
+		//}
+		//return map;
+		return approvalsMapper.updateTemp(apprsVO);
+	}
 	// 템플릿 삭제
 	@Override
-	public int DeleteTemplate(ApprovalstempVO eatNo) {
-		int result = approvalsMapper.deleteTemp(eatNo);
-		return result;
+	public int DeleteTemplate(ApprovalstempVO apprsVO) {
+		int result = approvalsMapper.deleteTemp(apprsVO);
+		return result == 1 ? apprsVO.getEatNo() : -1;
 	}
 	// 전자결재 생성
 	// 진행 중인 전자결재 목록 조회
