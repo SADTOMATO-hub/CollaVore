@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.collavore.app.board.mapper.BodsMapper;
+import com.collavore.app.board.service.BodsComtsVO;
 import com.collavore.app.board.service.BodsService;
 import com.collavore.app.board.service.BodsVO;
 
@@ -23,8 +24,8 @@ public class BodsServiceImpl implements BodsService {
 	}
 
 	@Override
-	public List<BodsVO> bodsList() {
-		return bodsMapper.selectBoardAll();
+	public List<BodsVO> bodsList(BodsVO bodsVO) {
+		return bodsMapper.selectBoardAll(bodsVO);
 	}
 
 	@Override
@@ -70,5 +71,11 @@ public class BodsServiceImpl implements BodsService {
 	public int deleteBods(int bodsVO) {
 		return bodsMapper.deleteBodsInfo(bodsVO);
 		//return 0;
+	}
+
+	@Override
+	public int insertBodsComts(BodsComtsVO bodsComtsVO) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }
