@@ -9,8 +9,8 @@ import lombok.Data;
 
 @Builder
 public class CalSharesVO {
-	private Integer csNo;
-	private Integer calNo;
-	private Integer empNo;
-	private Date regDate;
+	private Integer csNo; //캘린더공유번호
+	private Integer calNo; //캘린더번호
+	private Integer empNo; //사원번호
+	private Date regDate; //등록일
 }

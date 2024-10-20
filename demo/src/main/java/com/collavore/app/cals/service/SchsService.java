@@ -5,7 +5,7 @@ import java.util.Map;
 
 public interface SchsService {
 	// 조회
-	List<SchsVO> SchsList();
+	public List<SchsVO> SchsList();
 
 	// 단건조회
 	public SchsVO SchsInfo(SchsVO schsVO);

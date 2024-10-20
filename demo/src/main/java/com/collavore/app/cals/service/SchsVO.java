@@ -19,5 +19,6 @@ public class SchsVO {
 	private Date endDate; // 종료날짜 
 	private Integer calNo; //캘린더 넘버 
 	private String isAlarm; //알림여부 ('Y' or 'N')
+	private Integer type; // 캘린더 타입 (1: 개인, 2: 공유, 3: 프로젝트)
 	
 }

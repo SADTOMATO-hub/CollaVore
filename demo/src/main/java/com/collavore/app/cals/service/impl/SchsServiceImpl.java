@@ -46,15 +46,15 @@ public class SchsServiceImpl implements SchsService {
             int updatedRows = schsMapper.updateSchsInfo(schsVO);
             
             if (updatedRows > 0) {
-                resultMap.put("success", true);
+                resultMap.put("result", true);
                 resultMap.put("message", "일정이 성공적으로 수정되었습니다.");
             } else {
             	
-                resultMap.put("success", false);
+                resultMap.put("result", false);
                 resultMap.put("message", "수정할 일정이 없습니다.");
             }
         } catch (Exception e) {
-            resultMap.put("success", false);
+            resultMap.put("result", false);
             resultMap.put("message", "수정 중 오류가 발생했습니다.");
         }
         return resultMap;
