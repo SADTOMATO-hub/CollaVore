@@ -64,8 +64,7 @@ public class ApprovalsImpl implements ApprovalsService {
 	// 결재자의 정보를 호출
 	@Override
 	public List<ApproversVO> approversData() {
-		List<ApproversVO> list = approvalsMapper.appversData();
-		return list;
+		return approvalsMapper.appversData();
 	}
 }
 //5번째

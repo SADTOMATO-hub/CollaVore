@@ -50,7 +50,7 @@
 	
 	<!-- 결재자 모든 정보 호출 -->
 	<select id="appversData" resultType="ApproversVO">
-		SELECT emp_no, sort, status
+		SELECT *
 		FROM approvers
 	</select>
 	
