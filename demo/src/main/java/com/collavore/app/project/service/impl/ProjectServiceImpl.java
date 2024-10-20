@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.collavore.app.project.mapper.ProjectMapper;
 import com.collavore.app.project.service.PjService;
+import com.collavore.app.project.service.ProjectFilesVO;
+import com.collavore.app.project.service.ProjectFoldersVO;
 import com.collavore.app.project.service.ProjectVO;
 
 @Service	//AOP => @Transcational
@@ -45,6 +47,11 @@ public class ProjectServiceImpl implements PjService{
     public Map<String, Object> updateProject(ProjectVO projectVO) {
         return projectMapper.updateProject(projectVO);
     }
+
+	@Override
+	public List<ProjectFoldersVO> projectfileList() {
+		return projectMapper.selectfileAll();
+	}
 
 //    public List<ProjectVO> getProjects(int page, int size) {
 //        // 페이지 번호와 크기에 맞춰 데이터 조회

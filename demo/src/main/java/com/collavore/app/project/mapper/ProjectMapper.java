@@ -3,6 +3,8 @@ package com.collavore.app.project.mapper;
 import java.util.List;
 import java.util.Map;
 
+import com.collavore.app.project.service.ProjectFilesVO;
+import com.collavore.app.project.service.ProjectFoldersVO;
 import com.collavore.app.project.service.ProjectVO;
 
 public interface ProjectMapper {
@@ -21,4 +23,6 @@ public interface ProjectMapper {
 	public List<ProjectVO> findProjects(int offset, int size);
 	
 	public long countAllProjects();
+	
+	public List<ProjectFoldersVO> selectfileAll();
 }

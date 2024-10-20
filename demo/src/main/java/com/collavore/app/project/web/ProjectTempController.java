@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.collavore.app.project.service.PjTempService;
@@ -21,6 +22,7 @@ import com.collavore.app.project.service.ProjectTempVO;
 import com.collavore.app.project.service.ProjectWorkTempVO;
 
 @Controller
+@RequestMapping("/project")
 public class ProjectTempController {
     private PjTempService pjtempService;
 
@@ -34,14 +36,14 @@ public class ProjectTempController {
         this.pjtempService = pjtempService;
     }
     // 프로젝트 템플릿 리스트
-    @GetMapping("project/projecttemplist")
+    @GetMapping("/projecttemplist")
     public String projecttempList(Model model) {
         List<ProjectTempVO> list = pjtempService.projecttempList();
         model.addAttribute("projects", list);
         return "project/projectTempList";
     }   
 
-    @PostMapping("project/projecttempinsert")
+    @PostMapping("/projecttempinsert")
     @ResponseBody
     public Map<String, Object> insertAjax(ProjectTempVO projectTempVO) {
         Map<String, Object> response = new HashMap<>();
@@ -57,7 +59,7 @@ public class ProjectTempController {
         return response;
     }
     // 템플릿 삭제
-    @DeleteMapping("project/projecttempdelete/{projTempNo}")
+    @DeleteMapping("/projecttempdelete/{projTempNo}")
     @ResponseBody
     public String deleteProject(@PathVariable int projTempNo) {
         pjtempService.projecttempDelete(projTempNo);
@@ -65,13 +67,13 @@ public class ProjectTempController {
     }
     
 	// 프로젝트 단건 조회 
-	@GetMapping("/project/projecttempinfo/{projTempNo}")
+	@GetMapping("/projecttempinfo/{projTempNo}")
 	@ResponseBody
 	public ProjectTempVO getProjecttempInfo(@PathVariable int projTempNo) {
 	    return pjtempService.projecttempInfo(projTempNo); 
 	}	
 	// 프로젝트 수정 요청 처리
-		@PostMapping("/project/projecttempupdate")
+		@PostMapping("/projecttempupdate")
 		@ResponseBody
 		public Map<String, Object> updateProject(@RequestBody ProjectTempVO projectTempVO) {
 		    Map<String, Object> response = new HashMap<>();
@@ -87,7 +89,7 @@ public class ProjectTempController {
 		}
 		
 	    // 프로젝트 업무 템플릿 리스트
-	    @GetMapping("project/projectwrktemplist")
+	    @GetMapping("/projectwrktemplist")
 	    public String projectwrktempList(Model model) {
 	        List<ProjectWorkTempVO> list = pjtempService.projectWrktempList();
 	        List<ProjectTempVO> prolist = pjtempService.projecttempList();
@@ -96,7 +98,7 @@ public class ProjectTempController {
 	        return "project/projectWorkTempList";
 	    } 	
 	    // 프로젝트 업무 템플릿 생성
-	    @PostMapping("project/projectwrktempinsert")
+	    @PostMapping("/projectwrktempinsert")
 	    @ResponseBody
 	    public Map<String, Object> projwrktempinsertAjax(@RequestBody ProjectWorkTempVO projectworktempVO) {
 	        Map<String, Object> response = new HashMap<>();
@@ -119,7 +121,7 @@ public class ProjectTempController {
 	        return response;
 	    }
 	 // 업무템플릿 삭제
-		@DeleteMapping("project/projectwrktempdelete/{pwtNo}")
+		@DeleteMapping("/projectwrktempdelete/{pwtNo}")
 		@ResponseBody
 		public String deletewrktempProject(@PathVariable int pwtNo) {
 			pjtempService.projectDelete(pwtNo);
@@ -127,14 +129,14 @@ public class ProjectTempController {
 		}
 		
 		// 업무템플릿 단건 조회 
-		@GetMapping("/project/projectwrktempinfo/{pwtNo}")
+		@GetMapping("/projectwrktempinfo/{pwtNo}")
 		@ResponseBody
 		public ProjectWorkTempVO ProjectwrktempInfo(@PathVariable int pwtNo) {
 		    return pjtempService.projectwrktempInfo(pwtNo); 
 		}	
 		
 		// 프로젝트 수정 요청 처리
-		@PostMapping("/project/projectwrktempupdate/{pwtNo}")
+		@PostMapping("/projectwrktempupdate/{pwtNo}")
 		@ResponseBody
 		public Map<String, Object> updatewrktempProject(@PathVariable int pwtNo, @RequestBody ProjectWorkTempVO projectworkTempVO) {
 		    Map<String, Object> response = new HashMap<>();
@@ -153,7 +155,7 @@ public class ProjectTempController {
 
 		
 	    // 프로젝트 템플릿 리스트
-	    @GetMapping("project/projectDwrktemplist")
+	    @GetMapping("/projectDwrktemplist")
 	    public String projectDwrktempList(Model model) {
 	        List<ProjectDWorkTempVO> list = pjtempService.projectDwrktemplist();
 	        List<ProjectWorkTempVO> worklist = pjtempService.projectWrktempList();
@@ -164,7 +166,7 @@ public class ProjectTempController {
 	    }   
 	    
 	 // 프로젝트 상세업무 템플릿 생성
-	    @PostMapping("project/projectDwrktempinsert")
+	    @PostMapping("/projectDwrktempinsert")
 	    @ResponseBody
 	    public Map<String, Object> projDwrktempinsertAjax(@RequestBody ProjectDWorkTempVO projectDworktempVO) {
 	        Map<String, Object> response = new HashMap<>();
@@ -185,12 +187,36 @@ public class ProjectTempController {
 
 	        return response;
 	    }
-		 // 업무템플릿 삭제
-			@DeleteMapping("project/projectdwrktempdelete/{pdwtNo}")
+		 // 상세 업무템플릿 삭제
+			@DeleteMapping("/projectdwrktempdelete/{pdwtNo}")
 			@ResponseBody
 			public String deletedwrktempProject(@PathVariable int pdwtNo) {
 				pjtempService.projectdwrktempDelete(pdwtNo);
 				return "삭제 완료";
-			}	    
+			}
+			
+			// 상세 업무템플릿 단건 조회 
+			@GetMapping("/projectDwrktempinfo/{pdwtNo}")
+			@ResponseBody
+			public ProjectDWorkTempVO ProjectDwrktempInfo(@PathVariable int pdwtNo) {
+			    return pjtempService.projectDwrktempInfo(pdwtNo); 
+			}
+			
+			// 상세업무템플릿 수정 요청 처리
+			@PostMapping("/projectDwrktempupdate")
+			@ResponseBody
+			public Map<String, Object> updateDwrktempProject(@RequestBody ProjectDWorkTempVO projectDworktempVO) {
+			    Map<String, Object> response = new HashMap<>();
+			    System.err.println(projectDworktempVO);
+			    try {
+			    	pjtempService.projectdwrktempUpdate(projectDworktempVO);
+			        response.put("message", "수정 완료");
+			        response.put("status", "success");
+			    } catch (Exception e) {
+			        response.put("message", "수정 실패: " + e.getMessage());
+			        response.put("status", "error");
+			    }
+			    return response;
+			}			
 
 }

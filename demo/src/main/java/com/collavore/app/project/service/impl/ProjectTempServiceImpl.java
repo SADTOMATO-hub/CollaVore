@@ -79,6 +79,14 @@ public class ProjectTempServiceImpl implements PjTempService{
 	public int projectdwrktempDelete(int pdwtNo) {
 		return ProjecttempMapper.projectDwrktempDelete(pdwtNo);
 	}
+	@Override
+	public ProjectDWorkTempVO projectDwrktempInfo(int pdwtNo) {
+	    return ProjecttempMapper.selectDwrktempProject(pdwtNo); 
+	}
+	@Override
+	public int projectdwrktempUpdate(ProjectDWorkTempVO projectDworktempVO) {
+		return ProjecttempMapper.projectDwrktempUpdate(projectDworktempVO);
+	}
 
 
 

@@ -35,4 +35,8 @@ public interface ProjectTempMapper {
 	public int ProjectDwrkTempInsert(ProjectDWorkTempVO projectDworktempVO);
 	// 상세 업무 템플릿 삭제
 	public int projectDwrktempDelete(int pdwtNo);
+	// 상세 업무 템플릿 단건 조회
+	public ProjectDWorkTempVO selectDwrktempProject(int pdwtNo);
+	// 상세 업무 템플릿 수정
+	public int projectDwrktempUpdate(ProjectDWorkTempVO projectDworktempVO);
 }
