@@ -5,6 +5,9 @@ import java.util.List;
 import com.collavore.app.board.service.BodsVO;
 
 public interface BodsMapper {
+	// 게시글 전체 수 조회
+	public int totalBoardCnt(BodsVO bodsVO);
+	
 	// 게시글 전체 목록 전체조회
 	public List<BodsVO> selectBoardAll(BodsVO bodsVO);
 

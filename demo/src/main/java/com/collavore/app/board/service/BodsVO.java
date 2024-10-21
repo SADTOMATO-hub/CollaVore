@@ -14,4 +14,5 @@ public class BodsVO {
 	private Integer boardNo;      //게시판 번호
 	private Integer writer;        //게시글 작성자
 	private String writerName; //작성자이름
+	private String page; // 페이지 번호
 }

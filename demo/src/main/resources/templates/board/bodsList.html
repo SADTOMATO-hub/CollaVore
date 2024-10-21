@@ -27,19 +27,43 @@
 				</th:block>
 			</tbody>
 		</table>
-	</div>
-	<button type="button" th:onclick='|location.href="@{/board/bodsInsert(boardNo=${param.boardNo})}"|'>글쓰기</button>
-	
+		<button type="button"
+			th:onclick='|location.href="@{/board/bodsInsert(boardNo=${param.boardNo})}"|'>글쓰기</button>
 
-	
+		<nav aria-label="Page navigation example">
+			<ul class="pagination justify-content-center">
+				<li class="page-item" th:classappend="${!pageing.prev} ? 'disabled'">
+					<a class="page-link"
+					th:href="@{/board/bodsList(page=${pageing.page - 1}, boardNo=${param.boardNo})}"
+					tabindex="-1" aria-disabled="${!pageing.prev}">이전</a>
+				</li>
+
+				<li class="page-item"
+					th:each="i : ${#numbers.sequence(pageing.startPage, pageing.endPage)}"
+					th:classappend="${i == pageing.page} ? 'active'"><a
+					class="page-link"
+					th:href="@{/board/bodsList(page=${i}, boardNo=${param.boardNo})}"
+					th:classappend="${i == pageing.page} ? 'active' : ''">[[${i}]]</a>
+				</li>
+
+				<li class="page-item" th:classappend="${!pageing.next} ? 'disabled'">
+					<a class="page-link"
+					th:href="@{/board/bodsList(page=${pageing.page + 1}, boardNo=${param.boardNo})}">다음</a>
+				</li>
+			</ul>
+		</nav>
+	</div>
+
+
+
 	<script>
 		//제이쿼리 객체 생성
-		$('tbody > tr').on('click', function(event){
+		$('tbody > tr').on('click', function(event) {
 			let trTag = event.currentTarget;
 			let postno = $(trTag).children().first().text();
 			let url = `/board/bodsInfo?postNo=${postno}`;
-			location.href=url;
-		});	
+			location.href = url;
+		});
 	</script>
 
 </div>

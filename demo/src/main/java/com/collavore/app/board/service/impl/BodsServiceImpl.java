@@ -23,6 +23,12 @@ public class BodsServiceImpl implements BodsService {
 		this.bodsMapper = bodsMapper;
 	}
 
+	// 전체 게시글 수 확인하기.
+	@Override
+	public int totalListCnt(BodsVO bodsVO) {
+		return bodsMapper.totalBoardCnt(bodsVO);
+	}
+
 	@Override
 	public List<BodsVO> bodsList(BodsVO bodsVO) {
 		return bodsMapper.selectBoardAll(bodsVO);
