@@ -24,5 +24,17 @@ public interface ProjectMapper {
 	
 	public long countAllProjects();
 	
-	public List<ProjectFoldersVO> selectfileAll();
+	// 프로젝트 폴더 리스트
+	public List<ProjectFoldersVO> selectfolderAll();
+	// 프로젝트 파일 리스트
+	public List<ProjectFilesVO> selectfileAll(int pfNo);
+	
+	public int fileinsert(ProjectFilesVO projectFilesVO);
+	
+	public ProjectFilesVO filedetail(Long projFileNo);
+	
+	public List<ProjectVO> projecttree();
+	
+	
+	
 }
