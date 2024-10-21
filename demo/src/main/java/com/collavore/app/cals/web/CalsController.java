@@ -1,4 +1,4 @@
-package com.collavore.app.cals.web;
+/*package com.collavore.app.cals.web;
 
 import java.util.List;
 
@@ -39,3 +39,4 @@ public class CalsController {
         return calsService.projCal();
     }
 }
+*/

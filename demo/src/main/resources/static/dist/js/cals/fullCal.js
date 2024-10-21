@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				selectMirror: true,
 				editable: true,
 				dayMaxEvents: true,
-				events: sList,
+				events: sList, //풀캘린더 리스트
 
 
 
@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					document.getElementById('viewStartTime').value = info.event.startStr.split('T')[1];
 					document.getElementById('viewEndDate').value = info.event.endStr ? info.event.endStr.split('T')[0] : '';
 					document.getElementById('viewEndTime').value = info.event.endStr ? info.event.endStr.split('T')[1] : '';
-
+					''
 					viewModal.style.display = 'block'; // 조회 모달 보이기
 
 					// 취소 버튼 클릭 시 모달 닫기
@@ -194,6 +194,16 @@ document.addEventListener('DOMContentLoaded', function() {
 					var modal = document.getElementById('scheduleModal');
 					var form = document.getElementById('scheduleForm');
 
+					//============ 사이드바 ============
+					var selectedCalNo = null;  // 사이드바에서 선택된 캘린더 ID
+
+					// 사이드바에서 캘린더 선택 시 cal_no 저장 (여기에 사이드바 캘린더 선택 코드 필요)
+					document.querySelectorAll('.calendar-item').forEach(item => {
+						item.addEventListener('click', function() {
+							selectedCalNo = this.getAttribute('data-calno');  // 선택된 캘린더 ID 가져오기
+							alert('선택된 캘린더: ' + this.textContent + ' (ID: ' + selectedCalNo + ')');
+						});
+					});
 
 
 					// 현재 시간을 로컬 시간으로 가져오기
@@ -265,7 +275,11 @@ document.addEventListener('DOMContentLoaded', function() {
 						var startDateTime = new Date(startDate + 'T' + startTime).toISOString(); // ISO 형식으로 변환
 						var endDateTime = new Date(endDate + 'T' + endTime).toISOString(); // ISO 형식으로 변환
 
-
+						// 선택된 캘린더가 없으면 경고 메시지
+						if (!selectedCalNo) {
+							alert('캘린더를 먼저 선택해주세요!');
+							return;
+						}
 
 						// 일정생성 
 						if (title) {
@@ -278,6 +292,7 @@ document.addEventListener('DOMContentLoaded', function() {
 									title: title,
 									startDate: startDateTime,
 									endDate: endDateTime,
+									calNo: selectedCalNo,  // 선택된 캘린더 ID 전송
 									allDay: arg.allDay
 								})
 							})
@@ -290,7 +305,10 @@ document.addEventListener('DOMContentLoaded', function() {
 											title: title,
 											start: new Date(startDate + 'T' + startTime), // 여기에서 Date 객체로 변환
 											end: new Date(endDate + 'T' + endTime), // 여기에서 Date 객체로 변환
-											allDay: arg.allDay
+											allDay: arg.allDay,
+
+
+
 										});
 									} else {
 										alert('일정 등록에 실패했습니다.');
@@ -316,14 +334,110 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 	//============ 사이드바 ============
-	// 내 캘린더 모달 열기/닫기
+
+	//============ 사이드바 리스트===========
+
+	// 서버에서 캘린더 목록을 불러와서 사이드바에 추가하는 함수
+	function loadCalendars() {
+		fetch('/cal/calList')
+			.then(response => response.json())
+			.then(data => {
+				const personalCalendarList = document.getElementById('personalCalendarList'); //개인캘린더리스트
+				personalCalendarList.innerHTML = '';  // 기존 목록을 초기화
+
+				data.forEach(calendar => {
+					//li추가
+					const newCalendarItem = document.createElement('li');
+					newCalendarItem.innerHTML = `<a href="javascript:void(0)" data-calno="${calendar.calNo}" class="calendar-item">
+                        <i class="mdi mdi-calendar-blank" style="color:${calendar.color};"></i> ${calendar.name}</a>`;
+					personalCalendarList.appendChild(newCalendarItem);
+				});
+			})
+			.catch(error => console.error('Error loading calendars:', error));
+	}
+
+	// 페이지 로드 시 캘린더 목록 불러오기
+	loadCalendars();
+
+	//============ END 사이드바 리스트===========
+
+
+	//============ 사이드바 내 캘린더 생성 ===========
+	// 내 캘린더 추가 모달 열기/닫기
 	document.getElementById('addPersonalCalendarBtn').addEventListener('click', function() {
 		document.getElementById('personalCalendarModal').style.display = 'block';
 	});
+
 	document.getElementById('cancelPersonalCalendar').addEventListener('click', function() {
 		document.getElementById('personalCalendarModal').style.display = 'none';
 	});
 
+
+
+
+
+	// 모달 폼 제출 처리
+	document.getElementById('addPersonalCalendarForm').onsubmit = function(e) {
+		e.preventDefault();
+
+		// 입력받은 캘린더 정보 가져오기
+		const calendarName = document.getElementById('calendarName').value;
+		const selectedColor = document.querySelector('input[name="color"]:checked').value;
+
+		// 입력 값 검증
+		if (!calendarName || !selectedColor) {
+			alert('캘린더 이름과 색상을 선택해주세요.');
+			return;
+		}
+
+
+
+		// 서버에 캘린더 정보 저장 요청
+		fetch('/cal/calInsert', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({
+				name: calendarName,
+				color: selectedColor,
+				type: 'g1' , // 개인 캘린더 타입
+				isDelete: 'h2' // 기본값으로 'N' 설정
+			})
+		})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					// 캘린더가 성공적으로 추가되었을 때만 사이드바에 추가
+					const personalCalendarList = document.getElementById('personalCalendarList');
+					const newCalendarItem = document.createElement('li');
+
+					//li추가
+					newCalendarItem.innerHTML = `<a href="javascript:void(0)">
+                    <i class="mdi mdi-calendar-blank" style="color:${selectedColor};"></i> ${calendarName}</a>`;
+					personalCalendarList.appendChild(newCalendarItem);
+
+					alert('캘린더가 성공적으로 추가되었습니다!');
+
+					// 폼 초기화 
+					document.getElementById('calendarName').value = ''; // 캘린더 이름 필드 초기화
+					const colorInputs = document.querySelectorAll('input[name="color"]'); // 색상 선택 필드 가져오기
+					colorInputs.forEach(input => input.checked = false); // 색상 선택 해제
+
+				} else {
+					alert('캘린더 추가에 실패했습니다: ' + data.message);
+				}
+			})
+			.catch(error => {
+				console.error('Error:', error);
+				alert('서버와 통신 중 문제가 발생했습니다.');
+			});
+		// 모달 닫기
+		document.getElementById('personalCalendarModal').style.display = 'none';
+	};
+	//============END 사이드바 내 캘린더 생성 ===========
+
+		
+
+	//============ 사이드바 공유 캘린더 생성 ===========
 
 	// 공유 캘린더 모달 열기/닫기
 	document.getElementById('addSharedCalendarBtn').addEventListener('click', function() {
@@ -332,6 +446,13 @@ document.addEventListener('DOMContentLoaded', function() {
 	document.getElementById('cancelSharedCalendar').addEventListener('click', function() {
 		document.getElementById('sharedCalendarModal').style.display = 'none';
 	});
+	
+	
+	
+	
+	
+	//============END 사이드바 공유 캘린더 생성 ===========
+
 
 
 	//============END 사이드바 ============

@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.collavore.app.cals.service.CalsVO;
 import com.collavore.app.cals.service.SchsService;
 import com.collavore.app.cals.service.SchsVO;
 
 @Controller // @Controller 대신 @RestController 사용
 public class SchsController {
 	private final SchsService schsService;
+	
 
 	// 생성자 주입
 	@Autowired
@@ -72,7 +72,7 @@ public class SchsController {
 	@PostMapping("/sch/schUpdate")
 	@ResponseBody
 	public Map<String, Object> updateSchedule(@RequestBody SchsVO schsVO) {
-		Map<String, Object> resultMap = schsService.updateShcs(schsVO);
+		Map<String, Object> resultMap = schsService.updateSchs(schsVO);
 
 		return resultMap;
 	}
@@ -92,6 +92,34 @@ public class SchsController {
 	}
 	
 //==============================END 일정관리 ===============================
+	
+	
+	
+	
+	//전체조회
+	@GetMapping("/cal/calList")
+	@ResponseBody
+	public List<CalsVO> getAllCalendars() {
+	    return schsService.allCal();  // 서비스에서 DB의 캘린더 목록을 가져옴
+	}
+	
+	
+	
+	// 등록
+	@PostMapping("/cal/calInsert")
+	@ResponseBody
+	public Map<String, Object> insertCals(@RequestBody CalsVO calsVO) {
+	    Map<String, Object> result = new HashMap<>();
+	    try {
+	        int calNo = schsService.insertCals(calsVO);  // Service를 통해 캘린더 등록
+	        result.put("success", true);
+	        result.put("calNo", calNo);  // 등록된 캘린더 번호 반환
+	    } catch (Exception e) {
+	        result.put("success", false);
+	        result.put("message", "캘린더 등록에 실패했습니다.");
+	    }
+	    return result;
+	}
 
 
 

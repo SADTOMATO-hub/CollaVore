@@ -250,3 +250,31 @@ button.close:hover {
     background-color: #2a3b4c; /* hover 효과 */
     cursor: pointer;
 }
+
+
+/*사이드바 캘린더추가 색깔*/
+.color-selection {
+    display: flex;
+    gap: 10px; /* 색상 아이템 간의 간격 */
+    justify-content: flex-start;
+    margin-top: 10px;
+}
+
+.color-selection label {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.color-selection input[type="radio"] {
+    display: none; /* 라디오 버튼 숨기기 */
+}
+
+.color-selection input[type="radio"]:checked + label {
+    border: 2px solid black; /* 선택된 색상에 대한 테두리 */
+}
+
+

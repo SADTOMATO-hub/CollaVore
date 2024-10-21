@@ -1,6 +1,7 @@
 <th:block xmlns:th="https://www.thymeleaf.org/" th:fragment="sidebar">
 
 	<script src='../dist/js/cals/fullCal.js'></script>
+	<link rel="stylesheet" href='../dist/css/cals/fullCal.css'>
 	<!--캘린더 아이콘 빈 캘린더 mdi-calendar-blank
 			  쩜쩜쩜 캘린더 mdi-calendar-range
 			  체크 캘린더  mdi-calendar-check 
@@ -19,69 +20,102 @@
 			id="createScheduleBtn"> <i class="mdi mdi-calendar-plus"></i> <span
 				class="hide-menu">일정 생성</span>
 		</a></li>
-
-		<!-- 개인 캘린더 -->
+		<!-- 개인 캘린더 섹션 -->
 		<li class="sidebar-item" id="personalCalendar"><a
 			class="sidebar-link waves-effect waves-dark"
 			href="javascript:void(0)" aria-expanded="false"> <i
-				class="mdi mdi-calendar-check"></i> <span class="hide-menu">개인캘린더</span>
+				class="mdi mdi-calendar-check"></i> <span class="hide-menu">내 캘린더</span>
 		</a>
-			<ul aria-expanded="false" class="collapse first-level"
-				id="personalCalendarList">
-				<!-- 추가된 개인 일정 (예: test 캘린더) -->
-				<li><a href="javascript:void(0)"><i
-						class="mdi mdi-calendar-blank"></i> test</a></li>
-			</ul> <!-- 내 캘린더 추가 버튼 (초기 숨김) --> <a
-			class="sidebar-link waves-effect waves-dark"
+			<ul id="personalCalendarList" aria-expanded="false"
+				class="collapse first-level">
+				<!-- 동적으로 생성될 개인 캘린더 리스트 -->
+			</ul> <a class="sidebar-link waves-effect waves-dark"
 			id="addPersonalCalendarBtn" href="javascript:void(0)"> <i
 				class="mdi mdi-plus-circle-outline"></i> 내 캘린더 추가
+				
+				
+			
 		</a></li>
 
-		<!-- 공유 캘린더 -->
+
+		<!-- 공유 캘린더 섹션 -->
 		<li class="sidebar-item" id="sharedCalendar"><a
 			class="sidebar-link waves-effect waves-dark"
 			href="javascript:void(0)" aria-expanded="false"> <i
 				class="mdi mdi-calendar-multiple-check"></i> <span class="hide-menu">공유캘린더</span>
 		</a>
-			<ul aria-expanded="false" class="collapse first-level"
-				id="sharedCalendarList"></ul> <a
-			class="sidebar-link waves-effect waves-dark"
+			<ul id="sharedCalendarList" aria-expanded="false"
+				class="collapse first-level">
+				<!-- 동적으로 생성될 공유 캘린더 리스트 -->
+			</ul> <a class="sidebar-link waves-effect waves-dark"
 			href="javascript:void(0)" id="addSharedCalendarBtn"> <i
 				class="mdi mdi-plus-circle-outline"></i> 공유 캘린더 추가
 		</a></li>
-
-		<!-- 프로젝트 캘린더 -->
+		
+		
+		
+		
+		<!-- 프로젝트 캘린더 섹션 -->
 		<li class="sidebar-item" id="projectCalendar"><a
 			class="sidebar-link waves-effect waves-dark"
 			href="javascript:void(0)" aria-expanded="false"> <i
 				class="mdi mdi-calendar-range"></i> <span class="hide-menu">프로젝트캘린더</span>
 		</a>
-			<ul aria-expanded="false" class="collapse first-level"
-				id="projectCalendarList"></ul> </li>
-		
-		
+			<ul id="projectCalendarList" aria-expanded="false"
+				class="collapse first-level">
+				<!-- 동적으로 생성될 프로젝트 캘린더 리스트 -->
+			</ul></li>
+
+
 		<!-- 휴지통 -->
-		<li class="sidebar-item"><a
-			class="sidebar-link waves-effect waves-dark sidebar-link"
-			href="pages-buttons.html" aria-expanded="false"> <i
+		<li class="sidebar-item" id="wasteCalendar"><a
+			class="sidebar-link waves-effect waves-dark"
+			href="javascript:void(0)" aria-expanded="false"> <i
 				class="mdi mdi-delete"></i> <span class="hide-menu">휴지통</span>
-		</a></li>
+		</a>
+			<ul id="wasteCalendarList" aria-expanded="false"
+				class="collapse first-level">
+				<!-- 쓰레기통 리스트 -->
+			</ul></li>
+
 	</ul>
 
-	<!-- 내 캘린더 추가 모달 -->
 	<div id="personalCalendarModal" class="modal">
 		<div class="modal-content">
 			<span class="close" id="cancelPersonalCalendar">&times;</span>
-			<h2>내 캘린더 추가</h2>
+			<h2>내 캘린더</h2>
+
+
+
+			<!-- 새로운 캘린더 이름 입력 -->
 			<form id="addPersonalCalendarForm">
 				<label for="calendarName">캘린더 이름</label> <input type="text"
-					id="calendarName" required> <label for="calendarColor">색깔</label>
-				<div id="colorPalette">
-					<input type="radio" name="color" value="#FFCDD2" id="color1"><label
-						for="color1" style="background-color: #FFCDD2;"></label> <input
-						type="radio" name="color" value="#C5E1A5" id="color2"><label
-						for="color2" style="background-color: #C5E1A5;"></label>
-					<!-- 색상 추가 가능 -->
+					id="calendarName" placeholder="캘린더 이름 입력" required> <label for="calendarColor">선택</label>
+				<div id="colorPalette" class="color-selection">
+				
+					<input type="radio" name="color" value="red" id="red">
+					<label for="red" style="background-color: red;"></label> 
+					
+					<input type="radio" name="color" value="orange" id="orange"> 
+					<label for="orange" style="background-color: orange;"></label>
+					
+					<input type="radio" name="color" value="violet" id="violet"> 
+					<label for="violet" style="background-color: violet;"></label>
+					
+					<input type="radio" name="color" value="pink" id="pink"> 
+					<label for="pink" style="background-color: pink;"></label>
+					
+					<input type="radio" name="color" value="yellow" id="yellow"> 
+					<label for="yellow" style="background-color: yellow;"></label>
+					
+					<input type="radio" name="color" value="cyan" id="cyan"> 
+					<label for="cyan" style="background-color: cyan;"></label>
+					
+					<input type="radio" name="color" value="skyblue" id="skyblue"> 
+					<label for="skyblue" style="background-color: skyblue;"></label>
+					
+					<input type="radio" name="color" value="blue" id="blue"> 
+					<label for="blue" style="background-color: blue;"></label>
 				</div>
 
 				<button type="submit">저장</button>
@@ -92,17 +126,37 @@
 	<!-- 공유 캘린더 생성 모달 -->
 	<div id="sharedCalendarModal" class="modal">
 		<div class="modal-content">
-			<h2>공유 캘린더 생성</h2>
+			<h2>공유 캘린더</h2>
 			<form id="sharedCalendarForm">
 				<label for="sharedCalendarName">캘린더 이름</label> <input type="text"
-					id="sharedCalendarName" placeholder="캘린더 이름 입력" required> <label
-					for="sharedCalendarColor">색깔 선택</label>
-				<div id="sharedCalendarColor">
-					<input type="radio" name="color" value="yellow"> 노랑 <input
-						type="radio" name="color" value="pink"> 분홍 <input
-						type="radio" name="color" value="purple"> 보라
+					id="sharedCalendarName" placeholder="캘린더 이름 입력" required>
+					 <label for="calendarColor">선택</label>
+				<div id="colorPalette" class="color-selection">
+				
+					<input type="radio" name="color" value="red" id="red">
+					<label for="red" style="background-color: red;"></label> 
+					
+					<input type="radio" name="color" value="orange" id="orange"> 
+					<label for="orange" style="background-color: orange;"></label>
+					
+					<input type="radio" name="color" value="violet" id="violet"> 
+					<label for="violet" style="background-color: violet;"></label>
+					
+					<input type="radio" name="color" value="pink" id="pink"> 
+					<label for="pink" style="background-color: pink;"></label>
+					
+					<input type="radio" name="color" value="yellow" id="yellow"> 
+					<label for="yellow" style="background-color: yellow;"></label>
+					
+					<input type="radio" name="color" value="cyan" id="cyan"> 
+					<label for="cyan" style="background-color: cyan;"></label>
+					
+					<input type="radio" name="color" value="skyblue" id="skyblue"> 
+					<label for="skyblue" style="background-color: skyblue;"></label>
+					
+					<input type="radio" name="color" value="blue" id="blue"> 
+					<label for="blue" style="background-color: blue;"></label>
 				</div>
-
 				<label for="sharedCalendarMembers">공유 대상</label> <select
 					id="sharedCalendarMembers" multiple>
 					<option value="team1">팀 1</option>
@@ -119,7 +173,7 @@
 		</div>
 	</div>
 
-	
+
 
 
 
