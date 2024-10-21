@@ -9,11 +9,11 @@ import lombok.Data;
 
 @Builder
 public class AlarmHisVO {
-	private Integer hisNo;
-	private String title;
-	private String isView;
-	private Date regDate;
-	private Date viewDate;
-	private Integer saNo;
-	private Integer empNo;
+	private Integer hisNo; //일정아림내역번호
+	private String title; //알림제목
+	private String isView; //알림확인여부
+	private Date regDate; //등록일
+	private Date viewDate; //알림확인일
+	private Integer saNo; //알림번호
+	private Integer empNo; //사원번호
 }

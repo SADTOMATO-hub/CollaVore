@@ -8,5 +8,20 @@
 		WHERE email = #{email}
 			AND password = #{password}
 	</select>
+	
+	<select id="selectId"  resultType="String">
+		SELECT email
+		FROM employees
+		WHERE name = #{name}
+			AND tel = #{tel}
+	</select>
+	
+	<select id="chkUser" resultType="int">
+		SELECT emp_no
+		FROM employees
+		WHERE email = #{email}
+			AND name = #{name}
+	</select>
+	
 </mapper>
 <!-- 3번째 -->

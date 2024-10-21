@@ -157,5 +157,25 @@
 		WHERE
 		pdwt_no = #{pdwtNo}
 	</delete>
-	
+	<!-- 수정 -->
+	<update id="projectDwrktempUpdate" parameterType="ProjectDWorkTempVO">
+		UPDATE projdwrktemps
+		SET name = #{name},
+			content = #{content},
+			pwt_no = #{pwtNo}, 
+			importance = #{importance},
+			reg_date = SYSDATE
+		WHERE pdwt_no = #{pdwtNo}
+	</update>
+
+	<select id="selectDwrktempProject" resultType="ProjectDWorkTempVO">
+    SELECT pdwt_no,
+           name,
+           content,
+           reg_date,
+           pwt_no,
+           importance
+    FROM projdwrktemps
+    WHERE pdwt_no = #{pdwtNo}
+</select>
 </mapper>

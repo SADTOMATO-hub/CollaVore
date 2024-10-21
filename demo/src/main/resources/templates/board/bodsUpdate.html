@@ -6,13 +6,15 @@
 	
 	<form th:action="@{/board/bodsUpdate}" method="post"
 		enctype="multipart/form-data" th:object="${bods}" name="updateForm">
+		<input type="hidden" id="boardNo"	th:field="*{boardNo}">
 		<h3>게시글 수정</h3>
 		
 		<div>
-		     <label for="postNo">번호</label> <input type="text" id="postNo"
-				th:field="*{postNo}">
+		     <label for="postNo">게시글 번호</label> <input type="text" id="postNo" 
+				th:field="*{postNo}" readonly>
 		</div>
 		
+	
 		<div>
 			<label for="title">제목</label> <input type="text" id="title"
 				th:field="*{title}">
@@ -28,7 +30,7 @@
 		
 		
 		<div>
-			<button type="button" id="updateBtn" th:onclick='|location.href="@{/board/bodsList}"|'>저장</button>
+			<button type="button" id="updateBtn" th:onclick='|location.href="@{/board/bodsList?boardNo=1}"|'>저장</button>
 		</div>
 	</form>
 	<script>

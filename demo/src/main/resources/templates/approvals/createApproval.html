@@ -13,7 +13,8 @@
 			<div class="row">
 				<div class="col-md-15">
 					<div class="card">
-						<form action="/approvals/createAppr" class="form-horizontal"  th:object="${apprvers}">
+						<form action="/approvals/createAppr" class="form-horizontal"
+							th:object="${apprvers}">
 							<div class="card-body">
 								<h4 class="card-title">전자결재 기안 페이지</h4>
 								<hr>
@@ -23,9 +24,8 @@
 											class="form-select">
 											<option value="">==템플릿 선택==</option>
 											<option th:each="temps : ${tempInfo}"
-												    th:value="${temps.eatNo}">
-												[[${temps.title}]] / [[${temps.eatNo}]]
-											</option>
+												th:value="${temps.eatNo}">[[${temps.title}]] /
+												[[${temps.eatNo}]]</option>
 										</select>
 									</div>
 								</div>
@@ -34,8 +34,8 @@
 									placeholder="내용을 입력해주세요"></textarea>
 								<div class="border-top">
 									<div class="card-body text-center">
-										<input type="submit" id="createButton"
-											class="btn btn-primary" value="기안">
+										<input type="submit" id="createButton" class="btn btn-primary"
+											value="기안">
 									</div>
 								</div>
 							</div>
