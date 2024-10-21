@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.collavore.app.api.mapper.FlutterMapper;
+import com.collavore.app.api.service.FlutterSchsVO;
 import com.collavore.app.api.service.FlutterService;
 import com.collavore.app.api.service.FlutterVO;
 
@@ -44,8 +45,8 @@ public class FlutterServiceImpl implements FlutterService {
 
 	// 일정목록조회
 	@Override
-	public List<FlutterVO> schsAll(FlutterVO flutterVO) {
-		return null;
+	public List<FlutterSchsVO> schsAll(int empNo) {
+		return flutterMapper.selectMyAllSchsList(empNo);
 	}
 
 	// 일정등록
@@ -56,8 +57,8 @@ public class FlutterServiceImpl implements FlutterService {
 
 	// 일정상세
 	@Override
-	public FlutterVO schsInfo(FlutterVO flutterVO) {
-		return null;
+	public FlutterSchsVO schsInfo(int schsNo) {
+		return flutterMapper.selectSchsInfo(schsNo);
 	}
 
 	// 일정수정

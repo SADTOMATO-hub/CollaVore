@@ -4,6 +4,7 @@
 	<select id="selectUser"  resultType="FlutterVO">
 		SELECT email
 			, name
+			, emp_no
 		FROM employees
 		WHERE email = #{email}
 			AND password = #{password}
@@ -23,5 +24,32 @@
 			AND name = #{name}
 	</select>
 	
+	<update id="updatePassword"  parameterType="FlutterVO">
+		UPDATE employees
+		SET password = #{resetPwd}
+		WHERE email = #{email}
+	</update>
+	
+	<select id="selectMyAllSchsList" parameterType="int" resultType="FlutterSchsVO">
+		<![CDATA[
+		    SELECT 
+		        s.sch_no,
+		        s.title AS schTitle
+		    FROM schs s
+		    INNER JOIN cals c ON s.cal_no = c.cal_no
+		    INNER JOIN calshares cs ON c.cal_no = cs.cal_no
+		    WHERE cs.emp_no = #{empNo}
+		      	AND (s.start_date <= TRUNC(sysdate) OR s.end_date >= TRUNC(sysdate))
+	    ]]>
+	</select>
+	<select id="selectSchsInfo" parameterType="int" resultType="FlutterSchsVO">
+		SELECT s.sch_no
+			, s.title AS schTitle
+			, s.start_date
+			, s.end_date
+			, (SELECT c.name FROM cals c WHERE c.cal_no = s.cal_no) AS calName
+		FROM schs s
+		WHERE s.sch_no = #{schNo}
+	</select>
 </mapper>
 <!-- 3번째 -->

@@ -1,5 +1,8 @@
 package com.collavore.app.api.mapper;
 
+import java.util.List;
+
+import com.collavore.app.api.service.FlutterSchsVO;
 import com.collavore.app.api.service.FlutterVO;
 
 public interface FlutterMapper {
@@ -14,5 +17,9 @@ public interface FlutterMapper {
 	
 	// 비밀번호찾기-비밀번호변경
 	public int updatePassword(FlutterVO flutterVO);
+	
+	public List<FlutterSchsVO> selectMyAllSchsList(int empNo);
+	
+	public FlutterSchsVO selectSchsInfo(int schsNo);
 	
 }

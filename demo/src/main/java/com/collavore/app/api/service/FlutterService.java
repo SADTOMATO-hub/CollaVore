@@ -16,13 +16,13 @@ public interface FlutterService {
 	public int pwdModify(FlutterVO flutterVO);
 	
 	// 일정목록조회
-	public List<FlutterVO> schsAll(FlutterVO flutterVO);
+	public List<FlutterSchsVO> schsAll(int empNo);
 	
 	// 일정등록
 	public int schsAdd(FlutterVO flutterVO);
 	
 	// 일정상세
-	public FlutterVO schsInfo(FlutterVO flutterVO);
+	public FlutterSchsVO schsInfo(int schsNo);
 	
 	// 일정수정
 	public int schsModify(FlutterVO flutterVO);
