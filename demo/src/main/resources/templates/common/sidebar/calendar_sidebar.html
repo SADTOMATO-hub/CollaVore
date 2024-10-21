@@ -1,6 +1,6 @@
 <th:block xmlns:th="https://www.thymeleaf.org/" th:fragment="sidebar">
 
-<script src='../dist/js/cals/calSidebar.js'></script>
+	<script src='../dist/js/cals/fullCal.js'></script>
 	<!--캘린더 아이콘 빈 캘린더 mdi-calendar-blank
 			  쩜쩜쩜 캘린더 mdi-calendar-range
 			  체크 캘린더  mdi-calendar-check 
@@ -11,55 +11,116 @@
 
 	<ul id="sidebarnav" class="pt-4">
 
+
 		<!-- 일정 생성 버튼 -->
-    <li class="sidebar-item">
-        <a class="sidebar-link waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false" id="createScheduleBtn">
-            <i class="mdi mdi-calendar-plus"></i>
-            <span class="hide-menu">일정 생성</span>
-        </a>
-    </li>
-    
-    
-		 <!-- 개인 캘린더 -->
-    <li class="sidebar-item">
-        <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
-            <i class="mdi mdi-calendar-check"></i>
-            <span class="hide-menu">개인캘린더</span>
-        </a>
-        <ul aria-expanded="false" class="collapse first-level" id="personalCalendarList">
-            <!-- 개인 일정 목록이 여기에 동적으로 추가됩니다 -->
-        </ul>
-    </li>
+		<li class="sidebar-item"><a
+			class="sidebar-link waves-effect waves-dark"
+			href="javascript:void(0)" aria-expanded="false"
+			id="createScheduleBtn"> <i class="mdi mdi-calendar-plus"></i> <span
+				class="hide-menu">일정 생성</span>
+		</a></li>
+
+		<!-- 개인 캘린더 -->
+		<li class="sidebar-item" id="personalCalendar"><a
+			class="sidebar-link waves-effect waves-dark"
+			href="javascript:void(0)" aria-expanded="false"> <i
+				class="mdi mdi-calendar-check"></i> <span class="hide-menu">개인캘린더</span>
+		</a>
+			<ul aria-expanded="false" class="collapse first-level"
+				id="personalCalendarList">
+				<!-- 추가된 개인 일정 (예: test 캘린더) -->
+				<li><a href="javascript:void(0)"><i
+						class="mdi mdi-calendar-blank"></i> test</a></li>
+			</ul> <!-- 내 캘린더 추가 버튼 (초기 숨김) --> <a
+			class="sidebar-link waves-effect waves-dark"
+			id="addPersonalCalendarBtn" href="javascript:void(0)"> <i
+				class="mdi mdi-plus-circle-outline"></i> 내 캘린더 추가
+		</a></li>
 
 		<!-- 공유 캘린더 -->
-    <li class="sidebar-item">
-        <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
-            <i class="mdi mdi-calendar-multiple-check"></i>
-            <span class="hide-menu">공유캘린더</span>
-        </a>
-        <ul aria-expanded="false" class="collapse first-level" id="sharedCalendarList">
-            <!-- 공유 일정 목록이 여기에 동적으로 추가됩니다 -->
-        </ul>
-    </li>
-    
-    
-      <!-- 프로젝트 캘린더 -->
-    <li class="sidebar-item">
-        <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
-            <i class="mdi mdi-calendar-range"></i>
-            <span class="hide-menu">프로젝트캘린더</span>
-        </a>
-        <ul aria-expanded="false" class="collapse first-level" id="projectCalendarList">
-            <!-- 프로젝트 일정 목록이 여기에 동적으로 추가됩니다 -->
-        </ul>
-    </li>
+		<li class="sidebar-item" id="sharedCalendar"><a
+			class="sidebar-link waves-effect waves-dark"
+			href="javascript:void(0)" aria-expanded="false"> <i
+				class="mdi mdi-calendar-multiple-check"></i> <span class="hide-menu">공유캘린더</span>
+		</a>
+			<ul aria-expanded="false" class="collapse first-level"
+				id="sharedCalendarList"></ul> <a
+			class="sidebar-link waves-effect waves-dark"
+			href="javascript:void(0)" id="addSharedCalendarBtn"> <i
+				class="mdi mdi-plus-circle-outline"></i> 공유 캘린더 추가
+		</a></li>
 
+		<!-- 프로젝트 캘린더 -->
+		<li class="sidebar-item" id="projectCalendar"><a
+			class="sidebar-link waves-effect waves-dark"
+			href="javascript:void(0)" aria-expanded="false"> <i
+				class="mdi mdi-calendar-range"></i> <span class="hide-menu">프로젝트캘린더</span>
+		</a>
+			<ul aria-expanded="false" class="collapse first-level"
+				id="projectCalendarList"></ul> </li>
+		
+		
 		<!-- 휴지통 -->
-    <li class="sidebar-item">
-        <a class="sidebar-link waves-effect waves-dark sidebar-link" href="pages-buttons.html" aria-expanded="false">
-            <i class="mdi mdi-delete"></i>
-            <span class="hide-menu">휴지통</span>
-        </a>
-    </li>
+		<li class="sidebar-item"><a
+			class="sidebar-link waves-effect waves-dark sidebar-link"
+			href="pages-buttons.html" aria-expanded="false"> <i
+				class="mdi mdi-delete"></i> <span class="hide-menu">휴지통</span>
+		</a></li>
 	</ul>
+
+	<!-- 내 캘린더 추가 모달 -->
+	<div id="personalCalendarModal" class="modal">
+		<div class="modal-content">
+			<span class="close" id="cancelPersonalCalendar">&times;</span>
+			<h2>내 캘린더 추가</h2>
+			<form id="addPersonalCalendarForm">
+				<label for="calendarName">캘린더 이름</label> <input type="text"
+					id="calendarName" required> <label for="calendarColor">색깔</label>
+				<div id="colorPalette">
+					<input type="radio" name="color" value="#FFCDD2" id="color1"><label
+						for="color1" style="background-color: #FFCDD2;"></label> <input
+						type="radio" name="color" value="#C5E1A5" id="color2"><label
+						for="color2" style="background-color: #C5E1A5;"></label>
+					<!-- 색상 추가 가능 -->
+				</div>
+
+				<button type="submit">저장</button>
+				<button type="button" id="cancelPersonalCalendar">취소</button>
+			</form>
+		</div>
+	</div>
+	<!-- 공유 캘린더 생성 모달 -->
+	<div id="sharedCalendarModal" class="modal">
+		<div class="modal-content">
+			<h2>공유 캘린더 생성</h2>
+			<form id="sharedCalendarForm">
+				<label for="sharedCalendarName">캘린더 이름</label> <input type="text"
+					id="sharedCalendarName" placeholder="캘린더 이름 입력" required> <label
+					for="sharedCalendarColor">색깔 선택</label>
+				<div id="sharedCalendarColor">
+					<input type="radio" name="color" value="yellow"> 노랑 <input
+						type="radio" name="color" value="pink"> 분홍 <input
+						type="radio" name="color" value="purple"> 보라
+				</div>
+
+				<label for="sharedCalendarMembers">공유 대상</label> <select
+					id="sharedCalendarMembers" multiple>
+					<option value="team1">팀 1</option>
+					<option value="team2">팀 2</option>
+					<option value="team3">팀 3</option>
+				</select>
+
+				<div class="modal-buttons">
+					<button type="submit" class="btn btn-primary">저장</button>
+					<button type="button" id="cancelSharedCalendar"
+						class="btn btn-secondary">취소</button>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	
+
+
+
 </th:block>

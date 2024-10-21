@@ -53,6 +53,12 @@ public class SchsController {
 	public Map<String, Object> insertSchs(@RequestBody SchsVO schsVO) {
 		Map<String, Object> result = new HashMap<>();
 		try {
+			// 받은 데이터 확인용 로그
+	        System.out.println("Received Title: " + schsVO.getTitle());
+	        System.out.println("Received Start Date: " + schsVO.getStartDate());
+	        System.out.println("Received End Date: " + schsVO.getEndDate());
+	        
+	        // DB에 저장
 			int id = schsService.insertSchs(schsVO);
 			result.put("success", true);
 			result.put("id", id);

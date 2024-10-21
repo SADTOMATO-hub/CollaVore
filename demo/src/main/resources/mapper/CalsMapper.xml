@@ -31,8 +31,8 @@
 		VALUES (
 		#{schNo}
 		,#{title}
-		,#{startDate}
-		,#{endDate}
+		,#{startDate,jdbcType=TIMESTAMP}
+		,#{endDate,jdbcType=TIMESTAMP}
 		,#{calNo}
 		,#{isAlarm})
 	</insert>
