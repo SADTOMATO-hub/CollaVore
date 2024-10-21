@@ -2,19 +2,21 @@ package com.collavore.app.approvals.web;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.collavore.app.approvals.service.ApprovalsService;
+import com.collavore.app.approvals.service.ApprovalsVO;
 import com.collavore.app.approvals.service.ApprovalstempVO;
 import com.collavore.app.approvals.service.ApproversVO;
+import com.collavore.app.hrm.service.HrmVO;
 
 @Controller
 @RequestMapping("/approvals")
@@ -85,7 +87,7 @@ public class ApprovalsController {
 	// 템플릿 삭제 기능
 	@GetMapping("/deleteTemp")
 	public String deleteTemplate(ApprovalstempVO apprVO) {
-		int eatNo = approvalsService.DeleteTemplate(apprVO);
+		int eatNo = approvalsService.deleteTemplate(apprVO);
 		String urlFailed = "redirect:/approvals/tempInfo?eatNo=";
 		String urlSucss = "redirect:/approvals/tempList";
 		if (eatNo >= 1) {
@@ -94,17 +96,25 @@ public class ApprovalsController {
 		return urlFailed + eatNo;
 	}
 
-	// 전자결재 폼 생성
+	// 전자결재 생성 폼
 	@GetMapping("/createApprForm")
 	public String createApprovals(Model model) {
 		List<ApprovalstempVO> tempInfo = approvalsService.apprTempList();
-		List<ApproversVO> apprvers = approvalsService.approversData();
+		List<HrmVO> employeesInfo = approvalsService.employeesInfo();
 		model.addAttribute("tempInfo", tempInfo);
-		model.addAttribute("apprvers", apprvers);
+		model.addAttribute("employeesInfo", employeesInfo);
 		return "approvals/createApprovalForm";
 	}
 	// 전자결재 데이터를 받는 곳
-	// @PostMapping("/createAppr")
+	 @PostMapping("/createAppr")
+	 @ResponseBody
+	 public String createAppr(ApprovalsVO approvalVO) {
+		 int result = approvalsService.createAppovals(approvalVO);
+		 if(result >= 0) {
+			 return "redirect:/approvals/tempList";
+		 }
+		 return null;			 
+	 }
 
 	// 전자결재 템플릿 내용만 호출하는 기능
 	@GetMapping("/temp")
@@ -115,4 +125,5 @@ public class ApprovalsController {
 		// model.addAttribute("tempInfo", tempInfo.getContent());
 		return tempInfo;
 	}
+
 }
