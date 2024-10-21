@@ -51,5 +51,151 @@
 		FROM schs s
 		WHERE s.sch_no = #{schNo}
 	</select>
+	
+	<select id="selectMyAllProjList" parameterType="int" resultType="FlutterProjVO">
+		SELECT CASE WHEN alltree.no LIKE 'P%' THEN TO_NUMBER(REPLACE(no, 'P', '')) ELSE TO_NUMBER(REPLACE(parent_no, 'P', '')) END AS proj_no
+		    , alltree.mgr_no AS mgrNo
+		    , alltree.name AS projName
+		    , alltree.content AS projContent
+		FROM 
+		(SELECT LEVEL, tree.*
+		    FROM (
+		        SELECT 'P' || proj_no as no
+		            , null as parent_no
+		            , name as name
+		            , content as content
+		            , p_mgr_no as mgr_no
+		            , 'proj' AS tableName
+		        FROM proj
+		        UNION
+		        SELECT 'W' || pw_no
+		            ,  'P' || proj_no
+		            , name
+		            , content
+		            , mgr_no
+		            , 'projwrks'
+		        FROM 
+		            projwrks
+		        UNION
+		        SELECT 
+		            TO_CHAR(pdw.pdw_no)
+		            , CASE WHEN pdw.parent_pdw_no IS NULL THEN 'W' || pdw.pw_no ELSE TO_CHAR(pdw.parent_pdw_no) END
+		            , name
+		            , content
+		            , CASE WHEN pdw.mgr_no IS NULL THEN (SELECT mgr_no FROM projwrks WHERE pw_no = pdw.pw_no) ELSE pdw.mgr_no END
+		            , 'projdwrks'
+		        FROM 
+		            projdwrks pdw
+		    ) tree
+		    WHERE (mgr_no = #{empNo} AND tableName = 'proj')
+		        OR (mgr_no = #{empNo} AND tableName = 'projwrks')
+		        OR (mgr_no = #{empNo} AND tableName = 'projdwrks')
+		    START WITH 
+		        parent_no IS NULL
+		    CONNECT BY 
+		        PRIOR no = parent_no
+		    ORDER SIBLINGS BY 
+		        no) alltree
+		WHERE alltree.no LIKE 'P%'
+		    OR alltree.parent_no LIKE 'P%'
+	</select>
+	
+	<select id="selectMyAllProjWorkList" parameterType="int" resultType="FlutterProjVO">
+		SELECT CASE WHEN alltree.no LIKE 'W%' THEN TO_NUMBER(REPLACE(no, 'W', '')) ELSE TO_NUMBER(REPLACE(parent_no, 'W', '')) END AS pw_no
+		    , alltree.mgr_no AS mgrNo
+		    , alltree.name AS pwName
+		    , alltree.content AS pwContent
+		FROM 
+		(SELECT LEVEL, tree.*
+		    FROM (
+		        SELECT 'P' || proj_no as no
+		            , null as parent_no
+		            , name as name
+		            , content as content
+		            , p_mgr_no as mgr_no
+		            , 'proj' AS tableName
+		        FROM proj
+		        UNION
+		        SELECT 'W' || pw_no
+		            ,  'P' || proj_no
+		            , name
+		            , content
+		            , mgr_no
+		            , 'projwrks'
+		        FROM 
+		            projwrks
+		        UNION
+		        SELECT 
+		            TO_CHAR(pdw.pdw_no)
+		            , CASE WHEN pdw.parent_pdw_no IS NULL THEN 'W' || pdw.pw_no ELSE TO_CHAR(pdw.parent_pdw_no) END
+		            , name
+		            , content
+		            , CASE WHEN pdw.mgr_no IS NULL THEN (SELECT mgr_no FROM projwrks WHERE pw_no = pdw.pw_no) ELSE pdw.mgr_no END
+		            , 'projdwrks'
+		        FROM 
+		            projdwrks pdw
+		    ) tree
+		    WHERE ((no = 'P'|| #{projNo} OR parent_no = 'P'|| #{projNo}) AND tableName = 'projwrks')
+		        AND 
+		        ((mgr_no = 1 AND tableName = 'proj') OR (mgr_no = 1 AND tableName = 'projwrks') OR (mgr_no = 1 AND tableName = 'projdwrks'))
+		        
+		    START WITH 
+		        parent_no IS NULL
+		    CONNECT BY 
+		        PRIOR no = parent_no
+		    ORDER SIBLINGS BY 
+		        no) alltree
+		WHERE alltree.no LIKE 'W%'
+		    OR alltree.parent_no LIKE 'W%'
+	</select>
+	
+	<select id="selectMyAllProjDetailWorkList" parameterType="int" resultType="FlutterProjVO">
+		SELECT alltree.no AS pdw_no
+		    , alltree.mgr_no AS mgrNo
+		    , alltree.name AS pdwName
+		    , alltree.content AS pdwContent
+		FROM 
+		(SELECT LEVEL, tree.*
+		    FROM (
+		        SELECT 'P' || proj_no as no
+		            , null as parent_no
+		            , name as name
+		            , content as content
+		            , p_mgr_no as mgr_no
+		            , 'proj' AS tableName
+		        FROM proj
+		        UNION
+		        SELECT 'W' || pw_no
+		            ,  'P' || proj_no
+		            , name
+		            , content
+		            , mgr_no
+		            , 'projwrks'
+		        FROM 
+		            projwrks
+		        UNION
+		        SELECT 
+		            TO_CHAR(pdw.pdw_no)
+		            , CASE WHEN pdw.parent_pdw_no IS NULL THEN 'W' || pdw.pw_no ELSE TO_CHAR(pdw.parent_pdw_no) END
+		            , name
+		            , content
+		            , CASE WHEN pdw.mgr_no IS NULL THEN (SELECT mgr_no FROM projwrks WHERE pw_no = pdw.pw_no) ELSE pdw.mgr_no END
+		            , 'projdwrks'
+		        FROM 
+		            projdwrks pdw
+		    ) tree
+		    WHERE 
+		        ((no = 'W'|| #{pwNo} OR parent_no = 'W'|| #{pwNo}) AND tableName = 'projdwrks')
+		        AND 
+		        ((mgr_no = #{empNo} AND tableName = 'proj') OR (mgr_no = #{empNo} AND tableName = 'projwrks') OR (mgr_no = #{empNo} AND tableName = 'projdwrks'))
+		        
+		    START WITH 
+		        parent_no IS NULL
+		    CONNECT BY 
+		        PRIOR no = parent_no
+		    ORDER SIBLINGS BY 
+		        no) alltree
+		WHERE alltree.parent_no LIKE 'W%'
+	</select>
 </mapper>
 <!-- 3번째 -->

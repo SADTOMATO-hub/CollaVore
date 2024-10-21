@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.collavore.app.api.mapper.FlutterMapper;
+import com.collavore.app.api.service.FlutterProjVO;
 import com.collavore.app.api.service.FlutterSchsVO;
 import com.collavore.app.api.service.FlutterService;
 import com.collavore.app.api.service.FlutterVO;
@@ -69,20 +70,20 @@ public class FlutterServiceImpl implements FlutterService {
 
 	// 프로젝트목록조회
 	@Override
-	public List<FlutterVO> projAll(FlutterVO flutterVO) {
-		return null;
+	public List<FlutterProjVO> projAll(int empNo) {
+		return flutterMapper.selectMyAllProjList(empNo);
 	}
 
 	// 프로젝트업무목록조회
 	@Override
-	public List<FlutterVO> projWorkAll(FlutterVO flutterVO) {
-		return null;
+	public List<FlutterProjVO> projWorkAll(int projNo, int empNo) {
+		return flutterMapper.selectMyAllProjWorkList(projNo, empNo);
 	}
 
 	// 프로젝트상세업무목록조회
 	@Override
-	public List<FlutterVO> projWorkDetailAll(FlutterVO flutterVO) {
-		return null;
+	public List<FlutterProjVO> projWorkDetailAll(int pwNo, int empNo) {
+		return flutterMapper.selectMyAllProjDetailWorkList(pwNo, empNo);
 	}
 
 	// 프로젝트상세업무상세보기

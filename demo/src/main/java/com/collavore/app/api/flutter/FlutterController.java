@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.collavore.app.api.service.FlutterProjVO;
 import com.collavore.app.api.service.FlutterSchsVO;
 import com.collavore.app.api.service.FlutterService;
 import com.collavore.app.api.service.FlutterVO;
@@ -64,10 +65,29 @@ public class FlutterController {
 		FlutterSchsVO schsInfo = flutterService.schsInfo(schNo);
 		return schsInfo;
 	}
+	
 	// 일정수정
+	
 	// 프로젝트목록조회
+	@GetMapping("/projSelectAll")
+	public List<FlutterProjVO> selProjAllList(@RequestParam int empNo){
+		List<FlutterProjVO> myProjs = flutterService.projAll(empNo);
+		return myProjs;
+	}
+	
 	// 프로젝트업무목록조회
+	@GetMapping("/projWorkSelectAll")
+	public List<FlutterProjVO> selProjWorkAllList(@RequestParam int projNo, @RequestParam int empNo){
+		List<FlutterProjVO> myProjWorks = flutterService.projWorkAll(projNo, empNo);
+		return myProjWorks;
+	}
+	
 	// 프로젝트상세업무목록조회
+	@GetMapping("/projWorkDetailSelectAll")
+	public List<FlutterProjVO> selProjWrokDetailAllList(@RequestParam int pwNo, @RequestParam int empNo){
+		List<FlutterProjVO> myProjDetailWorks = flutterService.projWorkDetailAll(pwNo, empNo);
+		return myProjDetailWorks;
+	}
 	// 프로젝트상세업무상세보기
 	// 프로젝트상세업무상세보기-댓글조회
 	// 프로젝트상세업무상세보기-댓글등록
