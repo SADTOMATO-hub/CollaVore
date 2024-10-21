@@ -3,7 +3,8 @@
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
 
-<style>
+	<style>
+/* 바디 영역 내 헤더 끝 */
 .breadcrumb {
 	background-color: #ffffff;
 	padding: 5px 20px;
@@ -67,7 +68,9 @@
 	position: relative; /* 상대적인 위치 설정 */
 	top: -12px; /* 글자를 위로 5px 이동 */
 }
+/* 바디 영역 내 헤더 끝 */
 
+/* 개별 컨테이너 통일 */
 .card_posi, .card_jobs, .card_org {
 	background-color: #ffffff;
 	padding: 0 20px; /* 상단과 하단 패딩을 0, 왼쪽과 오른쪽은 20px 유지 */
@@ -77,14 +80,16 @@
 	max-width: 1000px; /* 최대 너비를 설정하여 너무 넓지 않게 유지 */
 	margin: 20px; /* 상단 20px, 양옆 20px, 하단 0px 마진 */
 }
-
+/* 개별 컨테이너 내 통일 */
 .inline-container {
 	display: flex;
 	justify-content: space-between; /* 제목은 왼쪽, 버튼은 오른쪽 정렬 */
 	align-items: center; /* 텍스트와 버튼을 수직 가운데 정렬 */
 	padding: 10px 0; /* 상하 여백 추가 */
 }
+/* 개별 컨테이너 통일 끝*/
 
+/* jobs 컨테이너 */
 .inline-jobs-container {
 	display: flex; /* 직무를 가로로 나열 */
 	gap: 10px; /* 각 직무 간 간격 */
@@ -158,7 +163,41 @@
 	font-size: 14px; /* 텍스트 크기 조절 */
 	line-height: 1; /* 텍스트 줄 높이 */
 }
+/* jobs 컨테이너 끝 */
 
+/* dept 컨테이너 */
+.dept-item {
+	margin-left: 20px;
+	border-left: 1px solid #ddd;
+	padding-left: 10px;
+	margin-bottom: 10px;
+}
+
+.child-container {
+	margin-left: 20px;
+}
+
+.dept-info {
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.actions {
+	display: none; /* 기본적으로 액션 버튼은 숨김 처리 */
+	margin-left: 10px;
+}
+
+.dept-item:hover .actions {
+	display: inline; /* 마우스 오버 시 액션 버튼 표시 */
+}
+
+.emp-count {
+	margin-left: 10px;
+	color: gray;
+}
+/* dept 컨테이너 끝 */
+
+/* 툴팁 현재는 통일 수정예정 */
 .tooltip-text {
 	visibility: hidden;
 	background-color: #555;
@@ -179,7 +218,7 @@
 	visibility: visible;
 	opacity: 1;
 }
-
+/* 툴팁 끝 */
 h4 {
 	margin: 0;
 }
@@ -246,349 +285,182 @@ button:hover {
 	margin-bottom: 20px;
 }
 </style>
-<div class="purple-background-container">
-	<div class="breadcrumb">
-		<div class="breadcrumb-left">
-			<h4>조직관리</h4>
-			<nav>
-				<a href="#position-section">직위관리</a> | <a href="#job-section">직무관리</a>
-				| <a href="#org-section">조직관리</a>
-			</nav>
+
+
+	<div class="purple-background-container">
+		<div class="breadcrumb">
+			<div class="breadcrumb-left">
+				<h4>조직관리</h4>
+				<nav>
+					<a href="#position-section">직위관리</a> | <a href="#job-section">직무관리</a>
+					| <a href="#org-section">조직관리</a>
+				</nav>
+			</div>
+			<div class="breadcrumb-right">
+				<span>관리자 페이지 > 조직관리</span>
+			</div>
 		</div>
-		<div class="breadcrumb-right">
-			<span>관리자 페이지 > 조직관리</span>
+
+		<!-- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+
+		<div class="card_posi" id="position-section">
+			<div class="inline-container">
+				<h4>
+					직위 관리 <i class="fas fa-question-circle tooltip-icon"></i>
+					<div class="tooltip-text">직위 관리에 대한 안내</div>
+				</h4>
+				<button onclick="addLevel()">
+					<i class="fas fa-plus"></i>
+				</button>
+			</div>
+
+			<table id="positionTable">
+				<tr>
+					<th>Level</th>
+					<th>직위</th>
+					<th></th>
+				</tr>
+			</table>
+			<div class="button-container">
+				<button onclick="saveData()">저장</button>
+			</div>
 		</div>
+
+		<!-- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+
+		<div class="card_jobs" id="job-section">
+			<div class="inline-container">
+				<h4>
+					직무 관리 <i class="fas fa-question-circle tooltip-icon"></i>
+					<div class="tooltip-text">직무 관리에 대한 안내</div>
+				</h4>
+				<button onclick="addJob()">
+					<i class="fas fa-plus"></i>
+				</button>
+			</div>
+
+			<div class="inline-jobs-container" id="jobsTable">
+				<!-- 직무들이 여기에 동적으로 추가됩니다 -->
+			</div>
+
+			<div class="button-container">
+				<button onclick="saveJobs()">저장</button>
+			</div>
+		</div>
+
+
+		<!-- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+
+		<div class="card_org" id="org-section">
+			<div class="inline-container">
+				<h4>
+					조직 관리 <i class="fas fa-question-circle tooltip-icon"></i>
+					<div class="tooltip-text">조직 관리에 대한 안내</div>
+				</h4>
+				<button onclick="addDept()">
+					<i class="fas fa-plus"></i>
+				</button>
+			</div>
+
+			<div class="inline-Dept-container" id="DeptTable">
+				<!-- 조직도 뿌려지는 곳 -->
+			</div>
+
+			<div class="button-container">
+				<button onclick="saveDept()">저장</button>
+			</div>
+		</div>
+
+
 	</div>
 
-	<!-- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
-
-	<div class="card_posi" id="position-section">
-		<div class="inline-container">
-			<h4>
-				직위 관리 <i class="fas fa-question-circle tooltip-icon"></i>
-				<div class="tooltip-text">직위 관리에 대한 안내</div>
-			</h4>
-			<button onclick="addLevel()">
-				<i class="fas fa-plus"></i>
-			</button>
-		</div>
-
-		<table id="positionTable">
-			<tr>
-				<th>Level</th>
-				<th>직위</th>
-				<th></th>
-			</tr>
-		</table>
-		<div class="button-container">
-			<button onclick="saveData()">저장</button>
-		</div>
-	</div>
-
-	<!-- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
-
-	<div class="card_jobs" id="job-section">
-		<div class="inline-container">
-			<h4>
-				직무 관리 <i class="fas fa-question-circle tooltip-icon"></i>
-				<div class="tooltip-text">직무 관리에 대한 안내</div>
-			</h4>
-			<button onclick="addJob()">
-				<i class="fas fa-plus"></i>
-			</button>
-		</div>
-
-		<div class="inline-jobs-container" id="jobsTable">
-			<!-- 직무들이 여기에 동적으로 추가됩니다 -->
-		</div>
-
-		<div class="button-container">
-			<button onclick="saveJobs()">저장</button>
-		</div>
-	</div>
-
-	<!-- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
-
-	<div class="card_org" id="org-section">
-		<!-- 조직 관리 내용 -->
-	</div>
-
-</div>
-</div>
-<script>
+	<script>
 //──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-// 직위 데이터 로드
-let levelCounter = 1;
+// 서버에서 부서 데이터를 가져오는 함수
+async function fetchDeptData() {
+    try {
+        const response = await fetch('/dept/getExistingDepts');  // 실제 API 엔드포인트로 수정
+        const departments = await response.json();  // JSON 형태로 변환
 
-// 페이지 로드 시 기존 데이터 불러오기
-function loadExistingData() {
-	fetch('/positions/getExistingPositions')
-    .then(response => response.json())
-    .then(data => {
-        const table = document.getElementById('positionTable');
+        // console.log('서버로부터 받은 부서 데이터:', departments);  // 서버로부터 받은 데이터를 확인
 
-        // 첫 번째와 두 번째 tr을 제외한 나머지 tr 제거
-        while (table.rows.length > 1) {
-            table.deleteRow(1); // 항상 3번째 행(인덱스 2)을 삭제
+        // 데이터를 확인해보고, 각 데이터의 필드가 존재하는지 확인
+        if (departments && departments.length > 0) {
+            // 받아온 데이터를 트리 형태로 렌더링
+            renderDeptTree(departments);
+        } else {
+            console.error('서버로부터 받은 부서 데이터가 비어있습니다.');
         }
-
-        // 데이터로 테이블 업데이트
-        data.forEach((item, index) => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>Level. ${index + 1}</td>
-                <td><input type="text" value="${item.posiName}" data-posi-no="${item.posiNo}" /></td>
-                <td><button onclick="removeLevel(this, ${item.posiNo})"><i class="fas fa-minus"></i></button></td>
-            `;
-            table.appendChild(row);
-            levelCounter = index + 1; // 레벨 카운터 업데이트
-        });
-    });
+    } catch (error) {
+        console.error('부서 데이터를 가져오는 중 오류 발생:', error);
+    }
 }
 
-// 새 레벨 추가 함수
-function addLevel() {
-    levelCounter++;
-    const table = document.getElementById('positionTable');
-    const row = document.createElement('tr');
-    row.innerHTML = `
-        <td>Level. ${levelCounter}</td>
-        <td><input type="text" placeholder="새 직위 입력" /></td>
-        <td><button onclick="removeLevel(this)"><i class="fas fa-minus"></i></button></td>
+// 부서 데이터를 트리 구조로 렌더링
+function renderDeptTree(departments) {
+    const deptTable = document.getElementById('DeptTable');
+    deptTable.innerHTML = ''; // 기존 내용을 초기화
+
+    const deptMap = {};
+
+    // 부서 데이터를 맵으로 변환 (부서 번호를 키로 사용)
+    departments.forEach(dept => {
+        deptMap[dept.deptNo] = { ...dept, children: [] }; // 각 부서에 children 배열을 미리 초기화
+    });
+
+    // 상위 부서에 자식 부서 연결
+    departments.forEach(dept => {
+        if (dept.parentDeptNo !== null && dept.parentDeptNo !== 0 && deptMap[dept.parentDeptNo]) {
+            deptMap[dept.parentDeptNo].children.push(deptMap[dept.deptNo]);
+        }
+    });
+
+    // 최상위 부서를 가져와 트리로 렌더링 (parentDeptNo가 null 또는 0인 부서)
+    const rootDepartments = departments.filter(dept => dept.parentDeptNo === null || dept.parentDeptNo === 0);
+    
+    if (rootDepartments.length > 0) {
+        // 최상위 부서만 1개를 선택하고 그 하위 부서를 모두 렌더링
+        const rootDept = rootDepartments[0];  // 첫 번째 최상위 부서 선택
+        const deptHTML = generateDeptHTML(deptMap[rootDept.deptNo]);
+        deptTable.appendChild(deptHTML);  // rootDept에 해당하는 HTML 요소 추가
+    } else {
+        console.error('최상위 부서를 찾을 수 없습니다.');
+    }
+}
+
+// 부서 트리 HTML을 재귀적으로 생성
+function generateDeptHTML(dept) {
+    const deptElement = document.createElement('div');
+    deptElement.classList.add('dept-item');
+
+    // null 값을 방지하기 위해 기본값 처리
+    const deptNo = dept.deptNo !== null ? dept.deptNo : 'N/A';
+    const deptName = dept.deptName !== null ? dept.deptName : 'N/A';
+    const empCnt = dept.empCnt !== null ? dept.empCnt : '0';
+
+    deptElement.innerHTML = `
+        <div class="dept-info">${deptName} (사원 수: ${empCnt})</div>
     `;
-    table.appendChild(row);
-    reorderLevels();
-}
 
-//레벨 삭제 함수
-function removeLevel(button, posiNo = null) {
-    // 확인 대화 상자
-    if (confirm('정말로 삭제하시겠습니까?')) {
-        if (posiNo) {
-            // 서버로 삭제 요청
-            fetch(`/positions/delete/${posiNo}`, {
-                method: 'DELETE'
-            })
-            .then(response => response.text())
-            .then(result => {
-                if (result === 'success') {
-                    button.parentElement.parentElement.remove();
-                    reorderLevels();
-                } else {
-                    alert('삭제에 실패했습니다.');
-                }
-            })
-            .catch(error => {
-                console.error('Error deleting position:', error);
-                alert('삭제 중 오류가 발생했습니다.');
-            });
-        } else {
-            // 새로 추가된 레벨의 경우 화면에서만 삭제
-            button.parentElement.parentElement.remove();
-            reorderLevels();
-        }
-    }
-}
-
-// 레벨 재정렬
-function reorderLevels() {
-    const rows = document.querySelectorAll('#positionTable tr');
-    rows.forEach((row, index) => {
-        if (index === 0) return; // 헤더는 제외
-        row.cells[0].textContent = `Level. ${index}`;
-    });
-}
-
-// 데이터 저장 함수
-function saveData() {
-    const rows = document.querySelectorAll('#positionTable tr');
-    const positions = [];
-	let nonName = false;
-    rows.forEach((row, index) => {
-        if (index === 0) return; // 첫 번째는 헤더이므로 제외
-        const posiNo = row.cells[1].querySelector('input').dataset.posiNo || null;
-        const posiName = row.cells[1].querySelector('input').value.trim();
-		if(posiName == ''){
-			nonName = true;
-		}
-        positions.push({
-            posiNo: posiNo,
-            posiName: posiName,
-            grade: index // 레벨을 등급으로 사용
+    // 자식 부서가 있는 경우
+    if (dept.children && dept.children.length > 0) {
+        const childContainer = document.createElement('div');
+        childContainer.classList.add('child-container');
+        
+        dept.children.forEach(childDept => {
+            const childDeptHTML = generateDeptHTML(childDept);  // 재귀적으로 자식 부서도 생성
+            childContainer.appendChild(childDeptHTML);
         });
-    });
-    
-    if(nonName){
-    	alert("직위명이 입력되지 않았습니다. 확인 후 다시 시도해주세요.");
-    	return;
+
+        deptElement.appendChild(childContainer);
     }
 
-    console.log(positions);  // 전송할 데이터를 콘솔에 출력
-    // 서버에 데이터 전송 (AJAX 사용)
-    fetch('/positions/save', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(positions)
-    })
-    .then(response => response.text())
-    .then(result => {
-        //console.log(result);  // 서버로부터 받은 응답을 콘솔에 출력
-        if (result === 'success') {
-            alert('저장되었습니다.');
-            loadExistingData();
-        } else {
-            alert('저장에 실패했습니다.');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('에러 발생!');
-    });
-}
-// 페이지 로드 시 기존 데이터 불러오기
-document.addEventListener('DOMContentLoaded', loadExistingData);
-
-
-// ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-// 직무 데이터 로드
-function loadExistingJobs() {
-    fetch('/jobs/getExistingJobs')
-    .then(response => response.json())
-    .then(data => {
-        const container = document.getElementById('jobsTable');
-        container.innerHTML = ''; // 기존 데이터 초기화
-
-        // 데이터를 이용해 직무 테이블 업데이트
-        data.forEach(item => {
-            const div = document.createElement('div');
-            div.innerHTML = `
-                <span onclick="editJob(this)">${item.jobName}</span>
-                <button data-job-no="${item.jobNo}" onclick="removeJob(this, ${item.jobNo})">X</button>
-            `;
-            container.appendChild(div);
-        });
-    })
-    .catch(error => {
-        console.error('Error fetching jobs:', error);
-    });
+    return deptElement;
 }
 
-// 새 직무 추가 함수
-function addJob() {
-    const container = document.getElementById('jobsTable');
-    const div = document.createElement('div');
-    div.innerHTML = `
-        <input type="text" placeholder="새 직무 입력" />
-        <button onclick="removeJob(this)">X</button>
-    `; 
-    container.appendChild(div);
-}
-
-// 직무 수정 함수 (span을 클릭했을 때 실행)
-function editJob(span) {
-    const jobName = span.textContent;
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.value = jobName;
-    input.onblur = function() {
-        // 수정된 값을 입력 후 focus가 사라질 때 span으로 다시 변환
-        if (input.value.trim() !== '') {
-            span.textContent = input.value.trim();
-        } else {
-            span.textContent = jobName; // 값이 없을 경우 기존 값으로 되돌림
-        }
-        span.style.display = 'inline';
-        input.remove(); // input 제거
-    };
-    span.style.display = 'none';
-    span.parentNode.insertBefore(input, span);
-    input.focus(); // 바로 입력할 수 있도록 포커스 설정
-}
-
-//직무 삭제 함수
-function removeJob(button, jobNo = null) {
-    // 확인 대화 상자
-    if (confirm('정말로 삭제하시겠습니까?')) {
-        if (jobNo) {
-            // 서버로 삭제 요청
-            fetch(`/jobs/delete/${jobNo}`, {
-                method: 'DELETE'
-            })
-            .then(response => response.text())
-            .then(result => {
-                if (result === 'success') {
-                    button.parentElement.remove();
-                } else {
-                    alert('삭제에 실패했습니다.');
-                }
-            })
-            .catch(error => {
-                console.error('Error deleting job:', error);
-                alert('삭제 중 오류가 발생했습니다.');
-            });
-        } else {
-            // 새로 추가된 직무는 화면에서만 삭제
-            button.parentElement.remove();
-        }
-    }
-}
-
-
-// 직무 데이터 저장 함수
-function saveJobs() {
-    const divs = document.querySelectorAll('#jobsTable div');
-    const jobs = [];
-    let nonName = false;
-
-    divs.forEach(div => {
-        const span = div.querySelector('span');
-        const jobNameInput = div.querySelector('input');
-        const jobName = jobNameInput ? jobNameInput.value.trim() : span.textContent.trim();
-        const button = div.querySelector('button');
-        const jobNo = jobNameInput ? null : (button ? button.dataset.jobNo : null); 
-
-        if (jobName === '') {
-            nonName = true;
-        }
-
-        jobs.push({
-            jobNo: jobNo,
-            jobName: jobName,
-        });
-    });
-    
-    if (nonName) {
-        alert("직무명이 입력되지 않았습니다. 확인 후 다시 시도해주세요.");
-        return;
-    }
-
-    // 서버에 직무 데이터 전송
-    fetch('/jobs/save', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(jobs)
-    })
-    .then(response => response.text())
-    .then(result => {
-        if (result === 'success') {
-            alert('저장되었습니다.');
-            loadExistingJobs();
-        } else {
-            alert('저장에 실패했습니다.');
-        }
-    })
-    .catch(error => {
-        console.error('Error saving jobs:', error);
-        alert('에러 발생!');
-    });
-}
-
-// 페이지 로드 시 직무 데이터 불러오기
-document.addEventListener('DOMContentLoaded', loadExistingJobs);
-
+// 페이지가 로드될 때 데이터를 가져와서 트리 구조로 렌더링
+document.addEventListener('DOMContentLoaded', () => {
+    fetchDeptData();  // 서버에서 데이터를 받아와 렌더링
+});
 
 </script>
