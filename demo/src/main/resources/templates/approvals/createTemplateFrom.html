@@ -12,8 +12,8 @@
 		<div class="row">
 			<div class="col-12">
 				<div class="card">
-						<form action="createTemp" method="post" class="form-horizontal"
-							name="insertForm">
+						<form action="createTemp" method="post"
+						 class="form-horizontal" name="insertForm">
 					<div class="card-body">
 							<h4 class="card-title">템플릿 생성 페이지</h4>
 							<hr>
@@ -30,7 +30,7 @@
 								<div>
 									<textarea name="content" id="content" rows="2"
 										style="resize: none;" spellcheck="false"
-										placeholder="내용을 입력해주세요"></textarea>
+										placeholder="내용을 입력해주세요" required="required"></textarea>
 								</div>
 							</div>
 							<div class="border-top">
@@ -88,7 +88,6 @@
 			return;
 		} else {
 			console.log(content);
-			// 검증 후 폼을 수동으로 제출
 			insertForm.submit(); // 또는 $(this).closest('form').submit(); 사용
 		}
 	}

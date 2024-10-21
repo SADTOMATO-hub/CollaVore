@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface BodsService {
+	// 게시글 전체 건수 확인하기(페이징을 위함)
+	public int totalListCnt(BodsVO bodsVO);
+	
 	// 게시글 전체 목록 전체조회
 	public List<BodsVO> bodsList(BodsVO bodsVO);
 

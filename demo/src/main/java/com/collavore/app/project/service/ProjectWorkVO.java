@@ -15,5 +15,8 @@ public class ProjectWorkVO {
 	private Date regDate;
 	private Integer projNo;
 	private Integer sort;
+	
+	
+
 
 }

@@ -16,25 +16,25 @@ public interface FlutterService {
 	public int pwdModify(FlutterVO flutterVO);
 	
 	// 일정목록조회
-	public List<FlutterVO> schsAll(FlutterVO flutterVO);
+	public List<FlutterSchsVO> schsAll(int empNo);
 	
 	// 일정등록
 	public int schsAdd(FlutterVO flutterVO);
 	
 	// 일정상세
-	public FlutterVO schsInfo(FlutterVO flutterVO);
+	public FlutterSchsVO schsInfo(int schsNo);
 	
 	// 일정수정
 	public int schsModify(FlutterVO flutterVO);
 	
 	// 프로젝트목록조회
-	public List<FlutterVO> projAll(FlutterVO flutterVO);
+	public List<FlutterProjVO> projAll(int empNo);
 	
 	// 프로젝트업무목록조회
-	public List<FlutterVO> projWorkAll(FlutterVO flutterVO);
+	public List<FlutterProjVO> projWorkAll(int projNo, int empNo);
 	
 	// 프로젝트상세업무목록조회
-	public List<FlutterVO> projWorkDetailAll(FlutterVO flutterVO);
+	public List<FlutterProjVO> projWorkDetailAll(int pwNo, int empNo);
 	
 	// 프로젝트상세업무상세보기
 	public FlutterVO projWorkDetailInfo(FlutterVO flutterVO);

@@ -2,6 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.collavore.app.board.mapper.BodsMapper">
 
+	<select id="totalBoardCnt" resultType="int">
+		SELECT COUNT(post_no) AS totalCnt
+		FROM bods
+		WHERE board_no = #{boardNo}
+	</select>
+
 	<!-- 전체조회 boarㅇNo에 따라서 다른 게시판으로 이동  -->
 	<select id="selectBoardAll" resultType="BodsVO"> 
 		SELECT post_no

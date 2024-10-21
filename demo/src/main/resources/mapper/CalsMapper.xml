@@ -15,7 +15,7 @@
 		FROM schs
 	</select>
 	<insert id="insertSchsInfo" parameterType="SchsVO">
-		
+
 		<selectKey keyProperty="schNo" resultType="Integer"
 			order="BEFORE">
 			SELECT NVL(MAX(sch_no), 0)+1
@@ -31,8 +31,8 @@
 		VALUES (
 		#{schNo}
 		,#{title}
-		,#{startDate}
-		,#{endDate}
+		,#{startDate,jdbcType=TIMESTAMP}
+		,#{endDate,jdbcType=TIMESTAMP}
 		,#{calNo}
 		,#{isAlarm})
 	</insert>
@@ -60,21 +60,65 @@
 
 	<!--==============================END 일정관리 ==================================== -->
 
+	<!--==============================개인 캘린더==================================== -->
 
-	<!--============================== 캘린더관리 ==================================== -->
-	<select id="selectCalAll" resultType="CalsVO">
+
+	<select id="selectAllCalendars" resultType="CalsVO">
+		SELECT 		cal_no
+					, name, type
+					, reg_date
+		FROM 		cals
+		WHERE 		is_delete = 'h2'
+	</select>
+
+
+	<select id="selectSoloCal" resultType="CalsVO">
 		SELECT cal_no
 		,name
 		,type
 		,reg_date
 		,is_delete
 		,delete_date
+		,color
 		FROM cals
+		
 	</select>
 
 
 
-	<!--==============================END 캘린더관리 ==================================== -->
+
+
+	<insert id="insertCalsInfo" parameterType="CalsVO">
+		<!-- INSERT 전 calNo를 계산하기 위한 selectKey -->
+		<selectKey keyProperty="calNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(cal_no), 0) + 1
+			FROM cals
+		</selectKey>
+
+		INSERT INTO cals (
+							cal_no
+							, name
+							, type
+							, reg_date
+							, is_delete
+							, delete_date
+							, color
+		)
+		VALUES (
+							#{calNo}
+							, #{name}
+							, #{type}
+							, SYSDATE
+							, #{isDelete}
+							, NULL
+							, #{color}
+		)
+	</insert>
+	<!--==============================END 개인 캘린더 ==================================== -->
+
+
+
 
 
 </mapper>

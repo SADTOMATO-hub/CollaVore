@@ -1,232 +1,60 @@
 <div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
-     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-     layout:decorate="~{common/layouts/default_layout}"
-     layout:fragment="Content">
-<style>
-  textarea {
-    width: 100%;
-    height: 6.25em;
-    border: none;
-    resize: none;
-  }
-</style>
-<div class="page-breadcrumb">
-    <div class="row">
-        <div class="col-12 d-flex no-block align-items-center">
-            <h4 class="page-title">프로젝트 업무 템플릿</h4>
-            <div class="ms-auto text-end">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Library</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-    </div>
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	layout:fragment="Content">
+	<head>
+		<link rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+	</head>
+	<style>
+		.no-border-button {
+			border: none;
+			background: transparent; 
+			padding: 0; 
+			cursor: pointer; 
+		}
+	</style>
+	<div class="container-fluid">
+		<div class="row">
+			<div id="jstree">
+				<ul>
+					<th:block th:each="project : ${projects}">
+						<th:block th:if="${project.parentNo == null}">
+							<li th:id="'node_' + ${project.no}">[[${project.name}]]
+							<button id="Folderinsertbutton" class="btn btn-info btn-lg no-border-button">
+								<i class="mdi mdi-plus-circle-outline" style="color:black;"></i>
+							</button>
+								<ul>
+									<th:block th:each="child : ${projects}" th:if="${child.parentNo == project.no}">
+										<li class="test" th:id="'node_' + ${child.no}"
+											th:attr="data-pf-no=${child.no}">[[${child.name}]]
+											<button id="Fileinsertbutton" class="btn btn-info btn-lg no-border-button">
+												<i class="mdi mdi-plus-circle-outline" style="color:black;"></i>
+											</button>
+											<ul>
+												<th:block th:each="subChild : ${projects}" th:if="${subChild.parentNo == child.no}">
+													<li th:id="'node_' + ${subChild.no}" th:attr="data-pf-no=${subChild.no}">[[${subChild.name}]]</li>
+												</th:block>
+											</ul>
+										</li>
+									</th:block>
+								</ul>
+							</li>
+						</th:block>
+					</th:block>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<!-- Include jQuery library -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+	<!-- Include jsTree -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+
+	<script>
+		$(document).ready(function() {
+			$('#jstree').jstree(); // jstree 초기화
+		});
+	</script>
 </div>
-<div class="container-fluid">
-    <div class="row">
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title mb-0">
-                    <button type="button" class="btn btn-info btn-lg"
-                            data-bs-toggle="modal" data-bs-target="#projectModal"
-                            style="float: right;">프로젝트 템플릿 생성</button>
-                </h5>
-            </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">템플릿 번호</th>
-                        <th scope="col">템플릿 명</th>
-                        <th scope="col">개요</th>
-                        <th scope="col">개발기간</th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <th:block th:each="info : ${projects}">
-                        <tr>
-                            <th scope="row">[[${info.projTempNo}]]</th>
-                            <td>[[${info.name}]]</td>
-                            <td>[[${info.content}]]</td>
-                            <td>[[${info.periodDate}]]일</td>
-                            <td>
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
-                                <button type="button" class="btn btn-danger text-white delete-btn" th:attr="data-proj-temp-no=${info.projTempNo}">삭제</button>
-                            </td>
-                        </tr>
-                    </th:block>
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
-</div>
-<!-- 모달 폼 -->
-<div class="modal fade" id="projectModal" tabindex="-1" aria-labelledby="projectModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="projectModalLabel">프로젝트 템플릿 생성</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="projectForm">
-                    <div class="mb-3">
-                        <label for="projName" class="form-label">템플릿 이름</label>
-                        <input type="text" class="form-control" name="name" id="projName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="projContent" class="form-label">프로젝트 개요</label>
-                        <textarea class="form-control" name="content" id="projContent" rows="5" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="periodDate" class="form-label">개발기간</label>
-                        <input type="text" class="form-control" name="periodDate" id="periodDate" placeholder="일(day)로 입력해주세요. ex) 56" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">생성</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<!-- 수정 모달 폼 -->
-<div class="modal fade" id="editProjectModal" tabindex="-1" aria-labelledby="editProjectModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editProjectModalLabel">프로젝트 템플릿 수정</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="editProjectForm">
-                    <input type="hidden" name="projNo" id="editProjNo">
-                    <div class="mb-3">
-                        <label for="editProjName" class="form-label">템플릿 이름</label> 
-                        <input type="text" class="form-control" name="name" id="editProjName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editProjContent" class="form-label">프로젝트 개요</label> 
-                        <textarea class="form-control" name="content" id="editProjContent" rows="5" required></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label for="editProjManager" class="form-label">개발기간</label> 
-                        <input type="text" class="form-control" name="periodDate" id="editProjManager" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">수정</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function() {
-        $('#projectForm').on('submit', function(event) {
-            event.preventDefault();
-
-            $.ajax({
-                url: '/project/projecttempinsert',
-                type: 'POST',
-                data: $(this).serialize(),
-                success: function(response) {
-                    $('table tbody').append(`
-                        <tr>
-                            <th scope="row">${response.projTempNo}</th>
-                            <td>${response.name}</td>
-                            <td>${response.content}</td>
-                            <td>${response.periodDate}일</td>
-                            <td>
-                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
-                                <button type="button" class="btn btn-danger text-white delete-btn" data-proj-temp-no="${response.projTempNo}">삭제</button>
-                            </td>
-                        </tr>
-                    `);
-                    alert('프로젝트가 성공적으로 생성되었습니다!');
-                    $('#projectModal').modal('hide');
-                },
-                error: function(xhr, status, error) {
-                    alert('프로젝트 생성에 실패했습니다: ' + error);
-                }
-            });
-        });
-    });
-    // 프로젝트 삭제 AJAX
-    $(document).on('click', '.delete-btn', function() {
-        const projTempNo = $(this).data('proj-temp-no');
-
-        if (confirm('정말로 이 프로젝트를 삭제하시겠습니까?')) {
-            $.ajax({
-                url: `/project/projecttempdelete/${projTempNo}`,
-                type: 'DELETE',
-                success: function(response) {
-                    alert('프로젝트가 성공적으로 삭제되었습니다!');
-                    $(`button[data-proj-temp-no="${projTempNo}"]`).closest('tr').remove();
-                },
-                error: function(xhr, status, error) {
-                    alert('프로젝트 삭제에 실패했습니다: ' + error);
-                }
-            });
-        }
-    });
- // 프로젝트 수정 모달 폼
-    $(document).on('click', '.btn-warning', function() {
-        const projTempNo = $(this).closest('tr').find('.delete-btn').data('proj-temp-no'); 
-
-        $.ajax({
-            url: `/project/projecttempinfo/${projTempNo}`, 
-            type: 'GET',
-            success: function(response) {
-                $('#editProjNo').val(response.projTempNo);
-                $('#editProjName').val(response.name);
-                $('#editProjContent').val(response.content);
-                $('#editProjManager').val(response.periodDate);
-
-                $('#editProjectModal').modal('show');
-            },
-            error: function(xhr, status, error) {
-                alert('프로젝트 정보를 가져오는 데 실패했습니다: ' + error);
-            }
-        });
-    });    
- // 수정 처리 AJAX
-    $(document).on('submit', '#editProjectForm', function(event) {
-        event.preventDefault(); // 기본 제출 방지
-
-        const projNo = $('#editProjNo').val();
-        const updatedData = {
-            projTempNo: projNo,
-            name: $('#editProjName').val(),
-            content: $('#editProjContent').val(),
-            periodDate: $('#editProjManager').val()
-        };
-
-        $.ajax({
-            url: '/project/projecttempupdate',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(updatedData),
-            success: function(response) {
-                if (response.status === 'success') {
-                    // 테이블에서 해당 행 업데이트
-                    const row = $(`button[data-proj-temp-no="${projNo}"]`).closest('tr');
-                    row.find('td:nth-child(2)').text(updatedData.name);
-                    row.find('td:nth-child(3)').text(updatedData.content);
-                    row.find('td:nth-child(4)').text(updatedData.periodDate);
-
-                    alert('프로젝트가 성공적으로 수정되었습니다!');
-                    $('#editProjectModal').modal('hide');
-                } else {
-                    alert('수정에 실패했습니다: ' + response.message);
-                }
-            },
-            error: function(xhr, status, error) {
-                alert('수정 요청에 실패했습니다: ' + error);
-            }
-        });
-    });
-    
-</script>

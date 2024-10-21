@@ -58,29 +58,33 @@ body {
 
 
 /* 모달 */
-/* 모달 스타일 */
-/* 모달 전체 스타일 */
+/* 모달창의 배경 흐림 효과 */
 .modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
     left: 0;
     top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
+    width: 100%; 
+    height: 100%; 
+    background-color: rgba(0, 0, 0, 0.5); /* 배경 어둡게 */
+    overflow: auto; 
 }
 
+/* 모달창 콘텐츠 스타일 */
 .modal-content {
-    background-color: #fefefe;
-    margin: 10% auto;
+    background-color: #fff;
+    margin: 5% auto;
     padding: 20px;
-    border: 1px solid #888;
-    width: 30%;
-    height: auto;
+    border: none;
+    width: 40%;
+    border-radius: 8px; /* 모서리 둥글게 */
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3); /* 그림자 */
+    font-family: 'Arial', sans-serif;
+    animation: fadeIn 0.3s ease-in-out; /* 모달 애니메이션 */
 }
 
+/* 모달창 닫기 버튼 */
 .close {
     color: #aaa;
     float: right;
@@ -90,15 +94,187 @@ body {
 
 .close:hover,
 .close:focus {
-    color: black;
+    color: #000;
+    text-decoration: none;
     cursor: pointer;
 }
 
-.modal-buttons {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+/* 폼 요소 스타일 */
+label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
 }
 
+input, select {
+    width: 100%;
+    padding: 8px 10px;
+    margin-top: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+}
+
+input:focus, select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+/* 버튼 스타일 */
+button {
+    margin-top: 20px;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+/* 취소 버튼 스타일 */
+button#cancelBtn {
+    background-color: #dc3545;
+}
+
+button#cancelBtn:hover {
+    background-color: #c82333;
+}
+
+/* 반복 설정 필드 */
+#repeatFields {
+    margin-top: 15px;
+    background-color: #f1f1f1;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+/* 애니메이션 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* 모든 버튼 공통 스타일 */
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+/* 저장, 수정, 삭제 버튼 스타일 */
+button[type="submit"], #editBtn, #deleteBtn {
+    background-color: #007bff;
+    color: white;
+}
+
+button[type="submit"]:hover, #editBtn:hover, #deleteBtn:hover {
+    background-color: #0056b3;
+}
+
+/* 취소 버튼 스타일 */
+button.close {
+    background-color: #dc3545;
+    color: white;
+}
+
+button.close:hover {
+    background-color: #c82333;
+}
+
+
+/* 사이드바 관련 CSS */
+/* 기본적으로 캘린더 추가 버튼을 숨김 */
+#addPersonalCalendarBtn,
+#addSharedCalendarBtn {
+    display: none;
+}
+
+/* 개인/공유/프로젝트 캘린더 항목에 마우스 올리면 추가 버튼 표시 */
+#personalCalendar:hover #addPersonalCalendarBtn,
+#sharedCalendar:hover #addSharedCalendarBtn {
+    display: block;
+    margin-left: 20px;
+}
+
+/* 개인/공유/프로젝트 캘린더 하위 항목 기본적으로 숨김 */
+#personalCalendarList,
+#sharedCalendarList,
+#projectCalendarList {
+    display: none;
+    list-style-type: none;
+    padding-left: 0;
+}
+
+/* 개인/공유/프로젝트 캘린더 항목에 마우스 올리면 하위 항목 표시 */
+#personalCalendar:hover #personalCalendarList,
+#sharedCalendar:hover #sharedCalendarList,
+#projectCalendar:hover #projectCalendarList {
+    display: block;
+}
+
+/* 개인/공유/프로젝트 캘린더 리스트 스타일 */
+#personalCalendarList li,
+#sharedCalendarList li,
+#projectCalendarList li {
+    padding: 2px 40px; /* 들여쓰기 */
+    margin: 0;
+    color: #fff;
+    font-size: 15px;
+    transition: background-color 0.3s ease;
+}
+
+#personalCalendarList li a,
+#sharedCalendarList li a,
+#projectCalendarList li a {
+    color: #fff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+#personalCalendarList li:hover,
+#sharedCalendarList li:hover,
+#projectCalendarList li:hover {
+    background-color: #2a3b4c; /* hover 효과 */
+    cursor: pointer;
+}
+
+
+/*사이드바 캘린더추가 색깔*/
+.color-selection {
+    display: flex;
+    gap: 10px; /* 색상 아이템 간의 간격 */
+    justify-content: flex-start;
+    margin-top: 10px;
+}
+
+.color-selection label {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: inline-block;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.color-selection input[type="radio"] {
+    display: none; /* 라디오 버튼 숨기기 */
+}
+
+.color-selection input[type="radio"]:checked + label {
+    border: 2px solid black; /* 선택된 색상에 대한 테두리 */
+}
 
 
