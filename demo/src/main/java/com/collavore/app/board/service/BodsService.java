@@ -5,7 +5,7 @@ import java.util.Map;
 
 public interface BodsService {
 	// 게시글 전체 목록 전체조회
-	public List<BodsVO> bodsList();
+	public List<BodsVO> bodsList(BodsVO bodsVO);
 
 	// 게시글상세보기(단건조회)
 	public BodsVO bodsInfo(BodsVO bodsVO);
@@ -18,9 +18,11 @@ public interface BodsService {
 
 	// 게시글 삭제
 	public int deleteBods(int bodVO);
+
+	public int insertBodsComts(BodsComtsVO bodsComtsVO);
 	
 	// 게시판 생성
-	// public int insertBods
+	
 	
 	// 게시판 수정
 	// public 

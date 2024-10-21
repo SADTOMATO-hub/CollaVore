@@ -26,7 +26,7 @@ public class JobController {
 	
 	@PostMapping("/jobs/save")
 	@ResponseBody
-	public String saveJobtions(@RequestBody List<HrmVO> jobList) throws Exception {
+	public String saveJobs(@RequestBody List<HrmVO> jobList) throws Exception {
 	    System.out.println("Received data: " + jobList); // 받은 데이터를 출력
 
 	    int result = 0;
@@ -49,17 +49,17 @@ public class JobController {
 	// 직위 삭제 처리
 	@DeleteMapping("/jobs/delete/{jobNo}")
 	@ResponseBody
-	public String deleteJobtion(@PathVariable Integer jobNo) throws Exception {
+	public String deleteJobs(@PathVariable Integer jobNo) throws Exception {
 		int result = jobService.deleteJobs(jobNo);
 		return result == 1 ? "success" : "failure";
 	}
 
 	// 기존 직위 불러오기
-	@GetMapping("/jobs/getExistingJobtions")
+	@GetMapping("/jobs/getExistingJobs")
 	@ResponseBody
-	public List<HrmVO> getExistingJobtions() {
+	public List<HrmVO> getExistingJobs() {
 		
-		return jobService.getExistingJobs();
+		return jobService.getExistinJobs();
 		
 	}
 

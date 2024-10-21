@@ -1,0 +1,54 @@
+<div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{common/layouts/default_layout}"
+     layout:fragment="Content">
+    <head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+    </head>
+    <div class="container-fluid">
+        <div class="row">
+            <div id="jstree">
+                <ul>
+                    <th:block th:each="project : ${projects}">
+                        <th:block th:if="${project.parentPfNo == 0}">
+                            <li th:id="'node_' + ${project.pfNo}">
+                                [[${project.name}]]
+                                <ul>
+                                    <th:block th:each="child : ${projects}" th:if="${child.parentPfNo == project.pfNo}">
+                                        <li th:id="'node_' + ${child.pfNo}">[[${child.name}]]</li>
+                                    </th:block>
+                                </ul>
+                            </li>
+                        </th:block>
+                    </th:block>
+                </ul>
+            </div>
+            <button id="demoButton">Demo Button</button>
+        </div>
+    </div>
+    
+    <!-- Include jQuery library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+    <!-- Include jsTree -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // jsTree 초기화
+            $('#jstree').jstree();
+
+            // 트리에서 선택된 노드의 ID를 로그로 출력
+            $('#jstree').on("changed.jstree", function(e, data) {
+                console.log(data.selected);
+            });
+
+            // Demo Button 클릭 이벤트
+            $('#demoButton').on('click', function() {
+                var firstNode = $('#jstree').jstree().get_json('#', { flat: true })[0];
+                if (firstNode) {
+                    $('#jstree').jstree().select_node(firstNode.id);
+                }
+            });
+        });
+    </script>
+</div>

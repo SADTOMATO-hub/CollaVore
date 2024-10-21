@@ -1,11 +1,11 @@
 package com.collavore.app.hrm.web;
 
 import java.util.List;
-import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,76 +20,77 @@ import com.collavore.app.hrm.service.HrmVO;
 
 @Controller
 public class DeptController {
-	private DeptService deptService;
 
-	@Autowired
-	DeptController(DeptService deptService) {
-		this.deptService = deptService;
-	}
+    private final DeptService deptService;
+    private static final Logger logger = LoggerFactory.getLogger(DeptController.class);
 
-	@ModelAttribute
-	public void addAttributes(Model model) {
-		model.addAttribute("sidemenu", "member_sidebar");
-	}
+    @Autowired
+    DeptController(DeptService deptService) {
+        this.deptService = deptService;
+    }
 
-	// 부서 전체조회
-	@GetMapping("deptManager")
-	public String deptList(Model model) {
-		List<HrmVO> list = deptService.deptList();
-		model.addAttribute("depts", list);
-		return "member/deptManager";
-	}
+    @ModelAttribute
+    public void addAttributes(Model model) {
+        model.addAttribute("sidemenu", "member_sidebar");
+    }
 
-	// 등록 - 페이지
-	@GetMapping("deptInsert")
-	public String deptInsertForm() {
-		return "dept/insert";
-	}
+    // 관리자 페이지 부서 파트 메인
+    @GetMapping("deptManager")
+    public String deptManager() {
+        return "member/deptManager";
+    }
+    
+    // 부서 정보 저장 처리
+    @PostMapping("/dept/save")
+    @ResponseBody
+    public String saveDepts(@RequestBody List<HrmVO> deptList) throws Exception {
+        logger.info("Received data: {}", deptList); // 받은 데이터를 로깅
 
-	// 등록 - 처리
-	@PostMapping("deptInsert")
-	public String deptInsertProcess(HrmVO hrmVO) {
-		int did = deptService.deptInsert(hrmVO);
+        int result = 0;
 
-		String url = null;
+        for (HrmVO hrmVO : deptList) {
+            if (hrmVO.getDeptNo() != null) {
+                // 기존 부서 정보 업데이트
+                logger.info("Updating department: {}", hrmVO);
+                result += deptService.updateDept(hrmVO);
+            } else {
+                // 새로운 부서 정보 등록
+                logger.info("Inserting new department: {}", hrmVO);
+                result += deptService.insertDept(hrmVO);
+            }
+        }
 
-		if (did > -1) {
-			url = "redirect:deptInfo?departmentId=" + did;
-		} else {
-			url = "redirect:deptList";
-		}
-		return url;
-	}
+        // 결과 확인
+        logger.info("Save operation result: {}", result);
+        return result > 0 ? "success" : "failure";
+    }
 
-	// 수정 - 페이지
-	@GetMapping("deptUpdate")
-	public String deptUpdateForm(HrmVO hrmVO, Model model) {
-		HrmVO findVO = deptService.deptInfo(hrmVO);
-		model.addAttribute("dept", findVO);
-		return "dept/update";
-	}
+    // 조직 삭제 처리
+    @DeleteMapping("/dept/delete/{deptNo}")
+    @ResponseBody
+    public String deleteDepts(@PathVariable Integer deptNo) throws Exception {
+        logger.info("Deleting department with deptNo: {}", deptNo);
+        
+        try {
+            int result = deptService.deleteDept(deptNo);
+            if (result == 1) {
+                logger.info("Successfully deleted department with deptNo: {}", deptNo);
+                return "success";
+            } else {
+                logger.warn("Failed to delete department with deptNo: {}", deptNo);
+                return "failure";
+            }
+        } catch (Exception e) {
+            logger.error("Error occurred while deleting department with deptNo: {}", deptNo, e);
+            return "error";
+        }
+    }
 
-	// 수정 - 처리 : JSON
-	@PostMapping("deptUpdate")
-	@ResponseBody // AJAX
-	public Map<String, Object> empUpdateAJAXJSON(@RequestBody HrmVO hrmVO) {
-		return deptService.deptUpdate(hrmVO);
-	}
-
-	/*
-	 * // 부서 전체조회
-	 * 
-	 * @GetMapping("deptManager") public String deptList(Model model) { List<HrmVO>
-	 * list = deptService.deptList(); model.addAttribute("depts", list); return
-	 * "member/deptManager"; }
-	 */
-
-	/*
-	 * // 부서 등록
-	 * 
-	 * @GetMapping("deptInsert") public String deptInsertForm() { return
-	 * "dept/insert"; }
-	 */
-
-	
+    // 기존 조직 불러오기
+    @GetMapping("/dept/getExistingDepts")
+    @ResponseBody
+    public List<HrmVO> getExistingDepts() {
+        logger.info("Fetching existing departments");
+        return deptService.getExistingDepts();
+    }
 }

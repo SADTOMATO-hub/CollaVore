@@ -7,31 +7,16 @@ import org.apache.ibatis.annotations.Param;
 import com.collavore.app.hrm.service.HrmVO;
 
 public interface DeptMapper {
-	// 전체조회
-	public List<HrmVO> selectDeptAll();
 
-	// 단건조회
-	public HrmVO selectDeptInfo(HrmVO hrmVO);
+    // 부서 정보 삽입
+    public int insertDept(HrmVO hrmVO);
 
-	// 등록
-	public int insertDeptInfo(HrmVO hrmVO);
+    // 부서 정보 업데이트
+    public int updateDept(HrmVO hrmVO);
 
-	// 수정
-	public int updateDeptInfo(@Param("did") int deptId, @Param("dept") HrmVO hrmVO);
+    // 부서 삭제
+    public int deleteDept(@Param("deptNo") Integer deptNo);
 
-	// 삭제
-	public int deleteDeptInfo(int deptNo);
-
-	// 직위
-	public int insertPosiInfo(HrmVO hrmVO);
-
-	public int updatePosiInfo(HrmVO hrmVO);
-
-	public int deletePosiInfo(Integer posiNo);
-
-	public List<HrmVO> selectPosiList();
-	// 직무 전체조회
-	// 직무 등록
-	// 직무 수정
-	// 직무 삭제
+    // 기존 부서 목록 조회
+    public List<HrmVO> selectDeptList();
 }

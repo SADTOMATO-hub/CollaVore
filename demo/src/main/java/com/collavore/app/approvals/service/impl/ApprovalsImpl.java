@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.collavore.app.approvals.mapper.ApprovalsMapper;
 import com.collavore.app.approvals.service.ApprovalsService;
 import com.collavore.app.approvals.service.ApprovalstempVO;
+import com.collavore.app.approvals.service.ApproversVO;
 
 @Service
 public class ApprovalsImpl implements ApprovalsService {
@@ -21,7 +22,7 @@ public class ApprovalsImpl implements ApprovalsService {
 		this.approvalsMapper = approvalsMapper;
 	}
 		//메소드
-	// 템플릿 목록 조회
+	// 템플릿 목록 조회, 템플릿의 모든 정보를 불러오는 기능
 	@Override
 	public List<ApprovalstempVO> apprTempList() {
 		return approvalsMapper.tempList();
@@ -60,5 +61,10 @@ public class ApprovalsImpl implements ApprovalsService {
 	// 전자결재 상세 조회
 	// 전자결재 수정
 	// 전자결재 삭제
+	// 결재자의 정보를 호출
+	@Override
+	public List<ApproversVO> approversData() {
+		return approvalsMapper.appversData();
+	}
 }
 //5번째

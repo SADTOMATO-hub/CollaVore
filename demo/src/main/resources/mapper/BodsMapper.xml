@@ -2,15 +2,19 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.collavore.app.board.mapper.BodsMapper">
 
-	<select id="selectBoardAll" resultType="BodsVO">
+	<!-- 전체조회 boarㅇNo에 따라서 다른 게시판으로 이동  -->
+	<select id="selectBoardAll" resultType="BodsVO"> 
 		SELECT post_no
 		, title
+		, board_no
 		,(select name
-from employees
-where emp_no = writer) writerName
+            from employees
+           where emp_no = writer) writerName
 		, content
 		, reg_date
+		, mod_date
 		FROM bods
+		where board_no = #{boardNo}
 		ORDER BY post_no
 	</select>
 
@@ -19,8 +23,10 @@ where emp_no = writer) writerName
 		SELECT post_no
 		, title
 		, content
+		, board_no
 		, writer
 		, reg_date
+		, mod_date
 		FROM bods
 		WHERE post_no = #{postNo}
 	</select>
@@ -46,7 +52,7 @@ where emp_no = writer) writerName
 		#{postNo}
 		, #{title}
 		, #{content}
-		, #{regDate}
+		, sysdate
 		, #{boardNo}
 		,
 		#{writer}
@@ -60,6 +66,7 @@ where emp_no = writer) writerName
 		SET
 		title = #{title}
 		, content = #{content}
+		, board_no = #{boardNo}
 		, writer = #{writer}
 		, mod_date = sysdate
 		WHERE post_no = #{postNo}
@@ -72,7 +79,30 @@ where emp_no = writer) writerName
 	</delete> 
 	
 	
-	<!-- 댓글 등록  -->
+	<!-- 댓글 등록 -->
+	<insert id="insertBodsComts" parameterType="BodsComtsVO">
+		<selectKey keyProperty="cmtNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(cmt_no),1000) + 1
+			FROM bods
+		</selectKey>
+		INSERT INTO bods
+		(
+		cmt_no
+		, content
+		, post_no
+		, reg_date
+		, writer
+		)
+		VALUES
+		(
+		#{cmtNo}
+		, #{content}
+		, #{postNo}
+		, sysdate
+		, #{writer}
+		)
+	</insert>
 	
 	
 	

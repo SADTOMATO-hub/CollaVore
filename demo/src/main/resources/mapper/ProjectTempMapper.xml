@@ -1,32 +1,181 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.collavore.app.project.mapper.ProjectTempMapper">
-<!-- 전체조회 -->
+<mapper
+	namespace="com.collavore.app.project.mapper.ProjectTempMapper">
+	<!-- 프로젝트 템플릿 리스트 전체조회 -->
 	<select id="selecttempProjectAll" resultType="ProjectTempVO">
 		SELECT proj_temp_no
-			   ,name
-			   ,content
-			   ,period_date
+				,name
+				,content
+				,period_date
 		FROM projtemps
 		ORDER BY proj_temp_no
 	</select>
-<!-- 프로젝트 생성 -->
+	<!-- 프로젝트 생성 -->
 	<insert id="ProjectTmepInsert" parameterType="ProjectTempVO">
 		<selectKey keyProperty="projTempNo" resultType="Integer"
 			order="BEFORE">
-			SELECT NVL(MAX(proj_temp_no), 1000)+1
-			FROM projtemps
+			SELECT NVL(MAX(proj_temp_no), 1000) + 1 FROM projtemps
 		</selectKey>
-		INSERT INTO projtemps(
-		proj_temp_no
-		,name
-		,content
-		,period_date)
-		VALUES(
-		#{projTempNo}
-		,#{name}
-		,#{content}
-		,#{periodDate}
-		)
-	</insert>	
+		INSERT INTO projtemps (
+					proj_temp_no,
+					name,
+					content,
+					period_date)
+		VALUES (
+					#{projTempNo},
+					#{name},
+					#{content},
+					#{periodDate})
+	</insert>
+
+	<!-- 삭제 -->
+	<delete id="projecttempDelete" parameterType="int">
+		DELETE FROM projtemps
+		WHERE
+		proj_temp_no = #{projTempNo}
+	</delete>
+	
+	<!-- 수정 -->
+	<update id="projecttempUpdate" parameterType="ProjectTempVO">
+		UPDATE projtemps
+		SET name = #{name},
+			content = #{content},
+			period_date = #{periodDate}
+		WHERE proj_temp_no = #{projTempNo}
+	</update>
+
+	<!-- 단건조회 -->
+	<select id="selectProjectById" resultType="ProjectTempVO">
+		SELECT proj_temp_no,
+				name,
+				content,
+				period_date
+		FROM projtemps
+		WHERE proj_temp_no = #{projTempNo}
+	</select>
+	
+	
+	
+	<!-- 프로젝트 업무 템플릿 리스트 전체조회 -->
+	<select id="selectWrkTempProjectAll" resultType="ProjectWorkTempVO">
+		SELECT pwt_no
+				,name
+				,content
+				,proj_temp_no
+				,job_type
+				,reg_date
+		FROM projwrktemps
+		ORDER BY pwt_no
+	</select>	
+	<!-- 프로젝트 업무 템플릿 생성 -->
+	<insert id="ProjectwrkTempInsert" parameterType="ProjectWorkTempVO">
+    <selectKey keyProperty="pwtNo" resultType="Integer" order="BEFORE">
+        SELECT NVL(MAX(pwt_no), 2000) + 1 FROM projwrktemps
+    </selectKey>
+    INSERT INTO projwrktemps (pwt_no, 
+    						  name, 
+    						  content, 
+    						  proj_temp_no, 
+    						  job_type, 
+    						  reg_date
+    						  )
+			    VALUES (
+					        #{pwtNo},
+					        #{name},
+					        #{content},
+					        #{projTempNo},
+					        #{jobType},
+					        SYSDATE  
+			    )
+	</insert>
+	<!-- 삭제 -->
+	<delete id="projectwrktempDelete" parameterType="int">
+		DELETE FROM projwrktemps
+		WHERE
+		pwt_no = #{pwtNo}
+	</delete>
+	<!-- 수정 -->
+	<update id="projectwrktempUpdate" parameterType="ProjectWorkTempVO">
+		UPDATE projwrktemps
+		SET name = #{name},
+			content = #{content},
+			proj_temp_no = #{projTempNo}, 
+			job_type = #{jobType}
+
+		WHERE pwt_no = #{pwtNo}
+	</update>
+
+	<!-- 단건조회 -->
+	<select id="selectwrktempProject" resultType="ProjectWorkTempVO">
+		SELECT pwt_no,
+				name,
+				content,
+				proj_temp_no,
+				job_type
+		FROM projwrktemps
+		WHERE pwt_no = #{pwtNo}
+	</select>
+	
+	
+	<!-- 프로젝트 업무 템플릿 리스트 전체조회 -->
+	<select id="selectDwrktempProjectAll" resultType="ProjectDWorkTempVO">
+		SELECT pdwt_no
+				,name
+				,content
+				,pwt_no
+				,importance
+				,reg_date
+		FROM projdwrktemps
+		ORDER BY pdwt_no
+	</select>	
+	
+	<!-- 프로젝트 상세 업무 템플릿 생성 -->
+	<insert id="ProjectDwrkTempInsert" parameterType="ProjectDWorkTempVO">
+    <selectKey keyProperty="pdwtNo" resultType="Integer" order="BEFORE">
+        SELECT NVL(MAX(pdwt_no), 3000) + 1 FROM projdwrktemps
+    </selectKey>
+    INSERT INTO projdwrktemps (pdwt_no, 
+    						  name, 
+    						  content, 
+    						  pwt_no, 
+    						  importance, 
+    						  reg_date
+    						  )
+			    VALUES (
+					        #{pdwtNo},
+					        #{name},
+					        #{content},
+					        #{pwtNo},
+					        #{importance},
+					        SYSDATE  
+			    )
+	</insert>
+	<!-- 프로젝트 상세 업무 템플릿 삭제 -->
+	<delete id="projectDwrktempDelete" parameterType="int">
+		DELETE FROM projdwrktemps
+		WHERE
+		pdwt_no = #{pdwtNo}
+	</delete>
+	<!-- 수정 -->
+	<update id="projectDwrktempUpdate" parameterType="ProjectDWorkTempVO">
+		UPDATE projdwrktemps
+		SET name = #{name},
+			content = #{content},
+			pwt_no = #{pwtNo}, 
+			importance = #{importance},
+			reg_date = SYSDATE
+		WHERE pdwt_no = #{pdwtNo}
+	</update>
+
+	<select id="selectDwrktempProject" resultType="ProjectDWorkTempVO">
+    SELECT pdwt_no,
+           name,
+           content,
+           reg_date,
+           pwt_no,
+           importance
+    FROM projdwrktemps
+    WHERE pdwt_no = #{pdwtNo}
+</select>
 </mapper>

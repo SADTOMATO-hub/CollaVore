@@ -1,21 +1,13 @@
-<html xmlns:th="https://www.thymeleaf.org/"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{common/layouts/default_layout}"
-	layout:fragment="Content">
-<head>
-<meta charset="UTF-8">
-<title>board Insert</title>
-</head>
-<body>
+<div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{common/layouts/default_layout}"
+    layout:fragment="Content">
+
+
 	<div class="text-center">
 		<form name="insertForm" th:action="@{/boardInsert}" method="post">
 			<h3>게시글 정보</h3>
 			<table class="table">
-				<tr>
-					<th>번호</th>
-					<td>[[${bods.postNo}]]</td>
-				</tr>
-
 				<tr>
 					<th>제목</th>
 					<td>[[${bods.title}]]</td>
@@ -26,47 +18,22 @@
 				</tr>
 				<tr>
 					<th>내용</th>
-					<td>[[${bods.content}]]</textarea></td>
+					<td>[[${bods.content}]]</td>
 				</tr>
 				<tr>
-					<th>등록일자</th>
-					<td>[[${#dates.format(bods.regDate, 'yyyy/MM/dd')}]]</td>
+					<th>작성일자</th><!-- yyyy/MM/dd -->
+				<td>[[${#dates.format(bods.regDate, 'yyyy/MM/dd')}]]</td>
 				</tr>
+				<tr>
+					<th>수정일자</th>
+					<td>[[${#dates.format(bods.modDate, 'yyyy/MM/dd')}]]</td> 
+					<!--<td>[[${bods.modDate}]]</td> -->
+				</tr>
+				
 			</table>
 			<button type="button" th:onclick='|location.href="@{/board/bodsUpdate(postNo=${bods.postNo})}"|'>수정</button>
-			<button type="button" th:onclick='|location.href="@{/board/bodsList}"|'>목록</button>
-			<button type="button" th:onclick='|location.href="@{/board/bodsDelete(postNo=${bods.postNo})}"|'>삭제</button>
+			<button type="button" th:onclick='|location.href="@{/board/bodsList(boardNo=${bods.boardNo})}"|'>목록</button>
+			<button type="button" th:onclick='|location.href="@{/board/bodsDelete(postNo=${bods.postNo}, boardNo=${bods.boardNo})}"|'>삭제</button>
 		</form>
 	</div>
-</body>
-<div class="card-footer">
-  <form onsubmit="addComment(event)">
-    <div class="form-group">
-      <input type="text" class="form-control" placeholder="댓글을 입력하세요" required>
-    </div>
-    <button type="submit" class="btn btn-primary" th:onclick='|location.href="@{/board/bodsDelete(postNo=${bods.postNo})}"|'>작성</button>
-  </form>
-  <div class="comments mt-3">
-  </div>
-  <script>
-		// submit을 하기 전 제목, 작성자, 작성일자 확인
-		$(insertForm).on('submit', boardInsertHandler);
-		
-		function boardInsertHandler(event){
-				event.preventDefault();
-
-				let title = $('form [name="title"]');
-				if(title.val() == ''){
-					alert('뎃글이 입력되지 않았습니다.');
-					title.focus();
-					return;
-				}
-
-
-				alert('댓글이 등록되었습니다.');
-				insertForm.submit();
-		}
-	</script>
-  
 </div>
-

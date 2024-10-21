@@ -6,7 +6,7 @@ import com.collavore.app.board.service.BodsVO;
 
 public interface BodsMapper {
 	// 게시글 전체 목록 전체조회
-	public List<BodsVO> selectBoardAll();
+	public List<BodsVO> selectBoardAll(BodsVO bodsVO);
 
 	// 게시글상세보기(단건조회)
 	public BodsVO selectBodsInfo(BodsVO bodsVO);
@@ -20,10 +20,10 @@ public interface BodsMapper {
 	// 게시글삭제
 	public int deleteBodsInfo(int postNO);
 
-	/*// 게시판 생성(등록)
-	public int insertBodsInfo();
+	// 게시판 생성(등록)
+	// public int insertBodsInfo();
 	
-	// 게시판 수정
+	/*// 게시판 수정
 	public int UpdateBodsInfo();
 	
 	// 게시판 삭제
