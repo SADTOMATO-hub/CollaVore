@@ -68,6 +68,28 @@
     height: 20px;
     background-color: #ccc;
 }
+.dept-info {
+    cursor: pointer;
+    font-weight: bold;
+    padding: 8px 12px;
+    border-radius: 5px;
+    background-color: #e6ecf7;
+    display: flex; /* Flexbox 추가 */
+    justify-content: space-between; /* 좌우 정렬 */
+    align-items: center; /* 세로 정렬 */
+    font-size: 0.9em;
+    color: #333;
+    margin-bottom: 10px;
+    width: 150px;
+}
+
+.dept-name {
+    /* 부서명에 추가적인 스타일을 줄 수 있습니다. */
+}
+
+.emp-count {
+    /* 사원 수에 추가적인 스타일을 줄 수 있습니다. */
+}
 
 /* 하위 부서와 연결되는 가로선 */
 .child-container::before {
@@ -215,7 +237,11 @@ function generateDeptHTML(dept) {
     const empCnt = dept.empCnt !== null ? dept.empCnt : '0';
 
     deptElement.innerHTML = `
-        <div class="dept-info">${deptName} (사원 수: ${empCnt})</div>
+        <div class="dept-info">
+            <span class="dept-name">${deptName}</span>
+            <span> <i class="fas fa-ellipsis-h"></i> </span>
+            <span class="emp-count"><i class="fas fa-user"></i> ${empCnt}</span>
+        </div>
     `;
 
     return deptElement;
