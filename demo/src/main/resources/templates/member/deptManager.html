@@ -3,264 +3,69 @@
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
 
-	<style>
-/* 바디 영역 내 헤더 끝 */
-.breadcrumb {
-    background-color: #ffffff;
-    padding: 5px 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    height: 70px;
-    display: flex;
-    justify-content: space-between; /* 좌우로 분리 */
-    align-items: center;
-    width: calc(100% - 40px);
-    max-width: 1000px;
-    margin: 20px;
-    color: #333;
-    position: relative;
-}
+	<div class="purple-background-container">
+		<div class="breadcrumb">
+			<div class="breadcrumb-left">
+				<h4>조직관리</h4>
+				<nav>
+					<a href="#position-section">직위관리</a> | <a href="#job-section">직무관리</a>
+					| <a href="#org-section">조직관리</a>
+				</nav>
+			</div>
+			<div class="breadcrumb-right">
+				<span>관리자 페이지 > 조직관리</span>
+			</div>
+		</div>
 
-.breadcrumb-left {
-    display: flex;
-    align-items: center;
-}
+		<!-- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
 
-.breadcrumb-right {
-    position: absolute;
-    right: 20px; /* 오른쪽 여백 */
-    top: 20px; /* 상단 여백 */
-}
+		<div class="card_posi" id="position-section">
+			<div class="inline-container">
+				<h4>
+					직위 관리 <i class="fas fa-question-circle tooltip-icon"></i>
+					<div class="tooltip-text">직위 관리에 대한 안내</div>
+				</h4>
+				<button onclick="addLevel()">
+					<i class="fas fa-plus"></i>
+				</button>
+			</div>
 
-.breadcrumb h4 {
-    margin: 0;
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-    margin-right: 10px; /* 제목과 내비게이션 간의 여백 */
-}
+			<table id="positionTable">
+				<tr>
+					<th>Level</th>
+					<th>직위</th>
+					<th></th>
+				</tr>
+			</table>
+			<div class="button-container">
+				<button onclick="saveData()">저장</button>
+			</div>
+		</div>
 
-.breadcrumb-left nav {
-    margin-top: 9px; /* 글자를 아래로 10px 이동 */
-    font-size: 16px;
-}
+		<!-- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
 
-.breadcrumb nav a {
-    color: #333;
-    text-decoration: none;
-    margin: 0 10px;
-    font-weight: normal;
-}
+		<div class="card_jobs" id="job-section">
+			<div class="inline-container">
+				<h4>
+					직무 관리 <i class="fas fa-question-circle tooltip-icon"></i>
+					<div class="tooltip-text">직무 관리에 대한 안내</div>
+				</h4>
+				<button onclick="addJob()">
+					<i class="fas fa-plus"></i>
+				</button>
+			</div>
 
-.breadcrumb nav a:first-child {
-    margin-left: 0;
-}
+			<div class="inline-jobs-container" id="jobsTable">
+				<!-- 직무들이 여기에 동적으로 추가됩니다 -->
+			</div>
 
-.breadcrumb nav a:hover {
-    text-decoration: underline;
-}
-
-.breadcrumb-right span {
-    font-size: 14px;
-    color: #999;
-    white-space: nowrap; /* 경로 표시 부분이 줄바꿈되지 않게 함 */
-    position: relative; /* 상대적인 위치 설정 */
-    top: -12px; /* 글자를 위로 5px 이동 */
-}
-
-/* 개별 컨테이너 통일 */
-.card_posi, .card_jobs, .card_org {
-    background-color: #ffffff;
-    padding: 0 20px; /* 상단과 하단 패딩을 0, 왼쪽과 오른쪽은 20px 유지 */
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    width: calc(100% - 40px); /* 양옆 20px씩 마진을 주기 위해 너비 계산 */
-    max-width: 1000px; /* 최대 너비를 설정하여 너무 넓지 않게 유지 */
-    margin: 20px;
-}
-
-/* 개별 컨테이너 내 통일 */
-.inline-container {
-    display: flex;
-    justify-content: space-between; /* 제목은 왼쪽, 버튼은 오른쪽 정렬 */
-    align-items: center; /* 텍스트와 버튼을 수직 가운데 정렬 */
-    padding: 10px 0; /* 상하 여백 추가 */
-}
+			<div class="button-container">
+				<button onclick="saveJobs()">저장</button>
+			</div>
+		</div>
 
 
-
-
-
-
-
-/* dept-item 컨테이너: 세로 간격 통일 */
-.dept-item {
-    position: relative;
-    margin-left: 20px;
-    padding-left: 15px; /* 왼쪽 여백을 주어 트리 간격을 조금 넓힘 */
-    border-left: 1px solid #ddd;
-    margin-bottom: 10px; /* 하단 마진을 10px로 통일 */
-}
-
-/* 자식 부서 컨테이너: 간격 조정 */
-.child-container {
-    margin-left: 60px; /* 자식 부서 간격을 조금 줄임 */
-}
-
-/* 부서 정보 스타일: 세로 간격을 일정하게 유지 */
-.dept-info {
-    display: flex;
-    justify-content: space-between; /* 좌우로 나누어 배치 */
-    align-items: center;
-    background-color: #f0f0ff; /* 부서 이름을 둘러싼 배경색 */
-    padding: 10px 15px; /* 상하 좌우 패딩 통일 */
-    border-radius: 10px;
-    color: #6c5ce7;
-    font-weight: bold;
-    cursor: pointer;
-    max-width: 220px; /* 부서 정보 전체 너비 제한 */
-    margin-bottom: 10px; /* 부서 간 간격 통일 */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가 */
-}
-
-/* 오른쪽에 위치할 요소들 */
-.dept-actions {
-    display: flex;
-    align-items: center;
-}
-
-/* 부서명 클릭 시 스타일 */
-.dept-name {
-    flex: 1;
-    cursor: pointer;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; /* 부서명이 길어지면 생략 표시 */
-}
-
-/* 옵션 아이콘 스타일 */
-.options-icon {
-    margin-left: 10px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-/* 사원 수 스타일 */
-.emp-count {
-    display: flex;
-    margin-left: 10px;
-    align-items: center;
-    color: #000;
-    font-size: 14px;
-}
-
-.emp-count i {
-    margin-right: 5px;
-    font-size: 16px;
-}
-
-/* dept-item과 부서 정보 간의 세로 간격 통일 */
-.dept-item:not(:first-child) {
-    margin-top: 10px; /* 모든 항목 간에 동일한 상하 간격 추가 */
-}
-
-
-/* dept 컨테이너 끝 */
-
-
-
-
-
-
-
-/* 툴팁 현재는 통일 수정예정 */
-.tooltip-text {
-	visibility: hidden;
-	background-color: #555;
-	color: #fff;
-	text-align: center;
-	border-radius: 5px;
-	padding: 5px 10px;
-	position: absolute;
-	z-index: 1;
-	bottom: 57%; /* 아이콘 아래에 뜨도록 */
-	left: 27%;
-	transform: translateX(-50%); /* 가운데 정렬 */
-	opacity: 0;
-	transition: opacity 0.3s;
-}
-/* 아이콘에 마우스를 올렸을 때 툴팁 표시 */
-.tooltip-icon:hover+.tooltip-text {
-	visibility: visible;
-	opacity: 1;
-}
-/* 툴팁 끝 */
-h4 {
-	margin: 0;
-}
-
-table {
-	width: 100%;
-	border-collapse: collapse;
-}
-
-th, td {
-	padding: 8px;
-	text-align: left;
-	border-bottom: 1px solid #ddd; /* 가로선만 추가 */
-}
-
-th {
-	border-top: 1px solid #ddd; /* 테이블의 첫 번째 행(헤더)에 상단 가로선 추가 */
-}
-
-th:first-child, td:first-child {
-	background-color: #e6e6fa; /* 연보라색(Lavender) */
-	font-weight: bold;
-}
-
-input {
-	padding: 8px;
-	font-size: 14px;
-	border: 1px solid #ddd;
-	border-radius: 4px; /* 모서리를 둥글게 */
-	width: 100%;
-	box-sizing: border-box; /* padding이 포함된 전체 너비를 맞추기 위해 사용 */
-}
-
-input:focus {
-	outline: none;
-	border-color: #007bff; /* 포커스 시 테두리 색상 변경 */
-	box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 포커스 시 외곽선에 그림자 추가 */
-}
-
-button {
-	margin-top: 10px;
-	margin-bottom: 10px;
-	padding: 5px 10px;
-	background-color: #d8bfd8;
-	border-radius: 4px;
-	color: white;
-	border: none;
-	cursor: pointer;
-	float: right;
-	justify-content: flex-end;
-}
-
-button:hover {
-	background-color: #0056b3;
-}
-
-/* 버튼 오른쪽 정렬을 위한 컨테이너 */
-.button-container {
-	margin-top: 10px;
-	display: flex;
-	justify-content: flex-end; /* 버튼을 오른쪽 정렬 */
-	align-items: center; /* 버튼 높이 일치 */
-	gap: 10px; /* 버튼 간격 */
-	margin-bottom: 20px;
-}
-</style>
+		<!-- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
 
 
 		<div class="card_org" id="org-section">
@@ -285,106 +90,9 @@ button:hover {
 
 
 	</div>
+</div>
 
-	<script>
-//──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-// 서버에서 부서 데이터를 가져오는 함수
-async function fetchDeptData() {
-    try {
-        const response = await fetch('/dept/getExistingDepts');  // 실제 API 엔드포인트로 수정
-        const departments = await response.json();  // JSON 형태로 변환
-
-        // console.log('서버로부터 받은 부서 데이터:', departments);  // 서버로부터 받은 데이터를 확인
-
-        // 데이터를 확인해보고, 각 데이터의 필드가 존재하는지 확인
-        if (departments && departments.length > 0) {
-            // 받아온 데이터를 트리 형태로 렌더링
-            renderDeptTree(departments);
-        } else {
-            console.error('서버로부터 받은 부서 데이터가 비어있습니다.');
-        }
-    } catch (error) {
-        console.error('부서 데이터를 가져오는 중 오류 발생:', error);
-    }
-}
-
-// 부서 데이터를 트리 구조로 렌더링
-function renderDeptTree(departments) {
-    const deptTable = document.getElementById('DeptTable');
-    deptTable.innerHTML = ''; // 기존 내용을 초기화
-
-    const deptMap = {};
-
-    // 부서 데이터를 맵으로 변환 (부서 번호를 키로 사용)
-    departments.forEach(dept => {
-        deptMap[dept.deptNo] = { ...dept, children: [] }; // 각 부서에 children 배열을 미리 초기화
-    });
-
-    // 상위 부서에 자식 부서 연결
-    departments.forEach(dept => {
-        if (dept.parentDeptNo !== null && dept.parentDeptNo !== 0 && deptMap[dept.parentDeptNo]) {
-            deptMap[dept.parentDeptNo].children.push(deptMap[dept.deptNo]);
-        }
-    });
-
-    // 최상위 부서를 가져와 트리로 렌더링 (parentDeptNo가 null 또는 0인 부서)
-    const rootDepartments = departments.filter(dept => dept.parentDeptNo === null || dept.parentDeptNo === 0);
-    
-    if (rootDepartments.length > 0) {
-        // 최상위 부서만 1개를 선택하고 그 하위 부서를 모두 렌더링
-        const rootDept = rootDepartments[0];  // 첫 번째 최상위 부서 선택
-        const deptHTML = generateDeptHTML(deptMap[rootDept.deptNo]);
-        deptTable.appendChild(deptHTML);  // rootDept에 해당하는 HTML 요소 추가
-    } else {
-        console.error('최상위 부서를 찾을 수 없습니다.');
-    }
-}
-
-// 부서 트리 HTML을 재귀적으로 생성
-function generateDeptHTML(dept) {
-    const deptElement = document.createElement('div');
-    deptElement.classList.add('dept-item');
-
-    // null 값을 방지하기 위해 기본값 처리
-    const deptNo = dept.deptNo !== null ? dept.deptNo : 'N/A';
-    const deptName = dept.deptName !== null ? dept.deptName : 'N/A';
-    const empCnt = dept.empCnt !== null ? dept.empCnt : '0';
-
-    deptElement.innerHTML = `
-        <div class="dept-info">
-            <span class="dept-name" onclick="editDeptName(this, ${dept.deptNo})">${deptName}</span>
-            <div class="dept-actions">
-                <span class="options-icon" onclick="showOptionsMenu(this, ${dept.deptNo})"> 
-                    <i class="fas fa-ellipsis-h"></i> 
-                </span>
-                <span class="emp-count" onclick="viewEmployees(${dept.deptNo})">
-                    <i class="fas fa-user"></i> ${empCnt}
-                </span>
-            </div>
-        </div>
-    `;
-    
-    
-
-    // 자식 부서가 있는 경우
-    if (dept.children && dept.children.length > 0) {
-        const childContainer = document.createElement('div');
-        childContainer.classList.add('child-container');
-        
-        dept.children.forEach(childDept => {
-            const childDeptHTML = generateDeptHTML(childDept);  // 재귀적으로 자식 부서도 생성
-            childContainer.appendChild(childDeptHTML);
-        });
-
-        deptElement.appendChild(childContainer);
-    }
-
-    return deptElement;
-}
-
-// 페이지가 로드될 때 데이터를 가져와서 트리 구조로 렌더링
-document.addEventListener('DOMContentLoaded', () => {
-    fetchDeptData();  // 서버에서 데이터를 받아와 렌더링
-});
-
-</script>
+<link rel="stylesheet" href="/dist/css/hrm/hrm.css">
+<script src="/dist/js/hrm/posi.js"></script>
+<script src="/dist/js/hrm/jobs.js"></script>
+<script src="/dist/js/hrm/dept.js"></script>
