@@ -13,7 +13,7 @@ import com.collavore.app.project.service.ProjectFilesVO;
 import com.collavore.app.project.service.ProjectFoldersVO;
 import com.collavore.app.project.service.ProjectVO;
 
-@Service	//AOP => @Transcational
+@Service	
 public class ProjectServiceImpl implements PjService{
 	private ProjectMapper projectMapper;
 	
@@ -47,11 +47,31 @@ public class ProjectServiceImpl implements PjService{
     public Map<String, Object> updateProject(ProjectVO projectVO) {
         return projectMapper.updateProject(projectVO);
     }
+    // 프로젝트 폴더 리스트
+	@Override
+	public List<ProjectFoldersVO> projectfolderList() {
+		return projectMapper.selectfolderAll();
+	}
+	// 프로젝트 파일 리스트
+	@Override
+	public List<ProjectFilesVO> projectfileList(int pfNo) {
+		return projectMapper.selectfileAll(pfNo);
+	}
 
 	@Override
-	public List<ProjectFoldersVO> projectfileList() {
-		return projectMapper.selectfileAll();
+	public int saveFile(String originalFilename, ProjectFilesVO projectFilesVO) {
+		int result = projectMapper.fileinsert(projectFilesVO);
+		return result == 1? projectFilesVO.getProjFileNo() : -1;
 	}
+	public ProjectFilesVO getFileDetails(Long projFileNo) {
+	    return projectMapper.filedetail(projFileNo);
+	}
+
+	@Override
+	public List<ProjectVO> projecttreeList() {
+		return projectMapper.projecttree();
+	}
+
 
 //    public List<ProjectVO> getProjects(int page, int size) {
 //        // 페이지 번호와 크기에 맞춰 데이터 조회

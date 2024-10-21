@@ -16,7 +16,17 @@ public interface PjService {
 	// 프로젝트 수정
 	public Map<String, Object> updateProject(ProjectVO proejctVO);
 	
-	public List<ProjectFoldersVO> projectfileList();
+	// 프로젝트 폴더 리스트 
+	public List<ProjectFoldersVO> projectfolderList();
+	// 프로젝트 파일 리스트
+	public List<ProjectFilesVO> projectfileList(int pfNo);
+	
+	public int saveFile(String originalFilename, ProjectFilesVO projectFilesVO);
+	
+	public ProjectFilesVO getFileDetails(Long projFileNo);
+	
+	// 프로젝트 트리구조 리스트
+	public List<ProjectVO> projecttreeList();
 	
 //	public List<ProjectVO> getProjects(int page, int size);
 //

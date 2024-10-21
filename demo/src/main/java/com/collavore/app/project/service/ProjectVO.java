@@ -25,6 +25,20 @@ public class ProjectVO {
 	private Integer pMgrNo;
 //	private String pMgrNo;
 	
+	// 프로젝트 업무관리
+	private Integer pwNo;
+	private String workType;
+	private Integer mgrNo;
+	private Integer sort;
 	
+	//프로젝트 상세 업무 관리
+	private Integer pdwcNo;
+	private Integer writerNo;
+	private Integer pdwNo;
+	private Date regDate;
+	
+	private String parentNo;
+	private String no;
+	private Integer level ;
 	
 }
