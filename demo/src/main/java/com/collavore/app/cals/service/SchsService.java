@@ -14,8 +14,26 @@ public interface SchsService {
 	public int insertSchs(SchsVO schsVO);
 
 	// 수정
-	public Map<String, Object> updateShcs(SchsVO schsVO);
+	public Map<String, Object> updateSchs(SchsVO schsVO);
 
 	// 삭제
 	public int deleteSchs(int schsNO);
+	
+	
+	
+	// 전체조회
+	public List<CalsVO> allCal();
+	
+	
+	public List<CalsVO> soloCal(); // 개인 일정 조회
+
+	public List<CalsVO> teamCal(); // 공유 일정 조회
+	
+	public List<CalsVO> projCal(); // 프로젝트 일정 조회
+	
+	
+	//캘린더 등록
+	public int insertCals(CalsVO calsVO);
+
+
 }

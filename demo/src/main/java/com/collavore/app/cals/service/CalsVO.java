@@ -11,10 +11,11 @@ import lombok.Data;
 public class CalsVO {
 	private Integer calNo; //캘린더 번호
 	private String name; // 캘린더 이름
-	private Integer type ; // 캘린더 타입 (개인캘린더 , 공유캘린더 , 프로젝트)
+	private String type ; // 캘린더 타입 (개인캘린더 , 공유캘린더 , 프로젝트)
 	private Date regDate; // 캘린더등록일
 	private String isDelete; //캘린더삭제여부
 	private Date deleteDate; //캘린더삭제일
+	private String color;
 	
 	
 	//캘린더 삭제누르면 휴지통으로 가게하기

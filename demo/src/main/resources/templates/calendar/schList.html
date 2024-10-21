@@ -14,28 +14,90 @@
 
 
 	<!-- 일정 추가 모달 -->
-	<div id="scheduleModal" class="modal">
-		<div class="modal-content">
-			<span class="close">&times;</span>
-			<h2>일정 생성</h2>
-			<form id="scheduleForm">
-				<label for="calendarType">캘린더</label> <select id="calendarType">
-					<option value="내캘린더">내캘린더</option>
-					<option value="공유캘린더">공유캘린더</option>
-					<option value="프로젝트">프로젝트</option>
-				</select> <label for="title">일정 제목</label> <input type="text" id="title"
-					placeholder="내용 입력" required> <label for="startDate">시작</label>
-				<input type="date" id="startDate" required> <input
-					type="time" id="startTime" required> <label for="endDate">종료</label>
-				<input type="date" id="endDate" required> <input type="time"
-					id="endTime" required> <label for="alert">알림</label> <input
-					type="checkbox" id="alert">
+<div id="scheduleModal" class="modal">
+	<div class="modal-content">
+		<h2>일정 생성</h2>
+		<form id="scheduleForm">
+			<label for="calendarType">캘린더</label> 
+			<select id="calendarType">
+				<option value="내캘린더">내캘린더</option>
+				<option value="공유캘린더">공유캘린더</option>
+				<option value="프로젝트">프로젝트</option>
+			</select> 
 
-				<button type="submit">저장</button>
+			<label for="title">일정 제목</label> 
+			<input type="text" id="title" placeholder="내용 입력" required>
 
-			</form>
-		</div>
+			<label for="startDate">시작</label>
+			<input type="date" id="startDate" required> 
+			<input type="time" id="startTime" required> 
+			
+			<!-- 종일 체크박스 추가 -->
+			<label for="allDay">종일</label>
+			<input type="checkbox" id="allDay">
+
+			<label for="endDate">종료</label>
+			<input type="date" id="endDate" required> 
+			<input type="time" id="endTime" required> 
+
+			
+
+			<!-- 반복 여부 -->
+			<label for="isRepeat">반복</label>
+			<input type="checkbox" id="isRepeat">
+
+			<!-- 반복 설정 필드 (기본적으로 숨김 처리) -->
+			<div id="repeatFields" style="display: none;">
+				<label for="repeatFrequency">반복 빈도</label>
+				<select id="repeatFrequency">
+					<option value="daily">매일</option>
+					<option value="weekly">매주</option>
+					<option value="monthly">매월</option>
+				</select>
+
+				<div id="dailyRepeat" style="display: none;">
+					<label for="dailyInterval">일 마다</label>
+					<input type="number" id="dailyInterval" min="1" value="1">
+				</div>
+
+				<div id="weeklyRepeat" style="display: none;">
+					<label for="weeklyInterval">주 마다</label>
+					<input type="number" id="weeklyInterval" min="1" value="1">
+					<select id="weeklyDays">
+						<option value="mon">월요일</option>
+						<option value="tue">화요일</option>
+						<option value="wed">수요일</option>
+						<option value="thu">목요일</option>
+						<option value="fri">금요일</option>
+						<option value="sat">토요일</option>
+						<option value="sun">일요일</option>
+					</select>
+				</div>
+
+				<div id="monthlyRepeat" style="display: none;">
+					<label for="monthlyInterval">개월 마다</label>
+					<input type="number" id="monthlyInterval" min="1" value="1">
+					<label for="monthlyDay">날짜</label>
+					<input type="date" id="monthlyDay">
+				</div>
+
+				<!-- 반복 범위 -->
+				<label for="repeatScope">반복 범위</label>
+				<input type="radio" id="infiniteRepeat" name="repeatScope" value="infinite"> 계속 반복
+				<input type="radio" id="limitedRepeat" name="repeatScope" value="limited"> 
+				<label for="repeatTimes">횟수</label>
+				<input type="number" id="repeatTimes" min="1">
+				<input type="radio" id="endDateRepeat" name="repeatScope" value="endDate">
+				<label for="repeatEndDate">반복 종료일</label>
+				<input type="date" id="repeatEndDate">
+			</div>
+
+			<button type="submit">저장</button>
+			<button type="button" id="cancelBtn">취소</button>
+		</form>
 	</div>
+</div>
+		
 	<!-- END  일정 추가 모달 -->
 
 
@@ -45,7 +107,6 @@
 	<!-- 일정 조회 모달 -->
 	<div id="viewScheduleModal" class="modal">
 		<div class="modal-content">
-			<span class="close">&times;</span>
 			<h2>일정 조회</h2>
 			<form id="viewScheduleForm">
 				<label for="viewCalendar">캘린더</label> <input type="text"
@@ -70,7 +131,6 @@
 	<!-- 일정 수정 모달 -->
 	<div id="editScheduleModal" class="modal">
 		<div class="modal-content">
-			<span class="close">&times;</span>
 			<h2>일정 수정</h2>
 			<form id="editScheduleForm">
 			
