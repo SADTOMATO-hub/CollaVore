@@ -3,115 +3,355 @@
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
 
-<style>
-
-/* card_org 스타일 */
-.card_org {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    width: calc(100% - 40px); 
-    max-width: 1000px;
-    margin: 20px auto; 
-    box-sizing: border-box;
-    overflow-x: auto; /* 가로 스크롤 추가 */
+	<style>
+/* 바디 영역 내 헤더 끝 */
+.breadcrumb {
+	background-color: #ffffff;
+	padding: 5px 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	height: 70px;
+	display: flex;
+	justify-content: space-between; /* 좌우로 분리 */
+	align-items: center;
+	width: calc(100% - 40px);
+	max-width: 1000px;
+	margin: 20px;
+	color: #333;
+	position: relative;
+	display: flex; /* 상대적 위치 설정 */
 }
 
-/* inline-Dept-container (부서 트리 컨테이너를 가로로 정렬) */
-.inline-Dept-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 20px 0;
+.breadcrumb-left {
+	display: flex;
+	align-items: center;
 }
 
-/* 각 부서 항목 */
+.breadcrumb-right {
+	position: absolute;
+	right: 20px; /* 오른쪽 여백 */
+	top: 20px; /* 상단 여백 */
+}
+
+.breadcrumb h4 {
+	margin: 0;
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+	margin-right: 10px; /* 제목과 내비게이션 간의 여백 */
+}
+
+.breadcrumb-left nav {
+	margin-top: 9px; /* 글자를 아래로 10px 이동 */
+	font-size: 16px;
+}
+
+.breadcrumb nav a {
+	color: #333;
+	text-decoration: none;
+	margin: 0 10px;
+	font-weight: normal;
+}
+
+.breadcrumb nav a:first-child {
+	margin-left: 0;
+}
+
+.breadcrumb nav a:hover {
+	text-decoration: underline;
+}
+
+.breadcrumb-right span {
+	font-size: 14px;
+	color: #999;
+	white-space: nowrap; /* 경로 표시 부분이 줄바꿈되지 않게 함 */
+	position: relative; /* 상대적인 위치 설정 */
+	top: -12px; /* 글자를 위로 5px 이동 */
+}
+/* 바디 영역 내 헤더 끝 */
+
+/* 개별 컨테이너 통일 */
+.card_posi, .card_jobs, .card_org {
+	background-color: #ffffff;
+	padding: 0 20px; /* 상단과 하단 패딩을 0, 왼쪽과 오른쪽은 20px 유지 */
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	width: calc(100% - 40px); /* 양옆 20px씩 마진을 주기 위해 너비 계산 */
+	max-width: 1000px; /* 최대 너비를 설정하여 너무 넓지 않게 유지 */
+	margin: 20px; /* 상단 20px, 양옆 20px, 하단 0px 마진 */
+}
+/* 개별 컨테이너 내 통일 */
+.inline-container {
+	display: flex;
+	justify-content: space-between; /* 제목은 왼쪽, 버튼은 오른쪽 정렬 */
+	align-items: center; /* 텍스트와 버튼을 수직 가운데 정렬 */
+	padding: 10px 0; /* 상하 여백 추가 */
+}
+/* 개별 컨테이너 통일 끝*/
+
+/* jobs 컨테이너 */
+.inline-jobs-container {
+	display: flex; /* 직무를 가로로 나열 */
+	gap: 10px; /* 각 직무 간 간격 */
+	flex-wrap: wrap; /* 줄 바꿈이 가능하도록 설정 */
+	overflow-x: visible; /* 필요 시 가로 스크롤을 없애거나 줄 바꿈 */
+}
+
+.inline-jobs-container div {
+	padding: 5px 10px;
+	background-color: #e6e6fa;
+	border-radius: 4px;
+	white-space: nowrap; /* 직무명이 길어져도 줄 바꿈 없이 한 줄 유지 */
+	cursor: pointer; /* 마우스를 올리면 클릭 가능한 느낌 */
+	position: relative; /* 삭제 버튼을 위한 상대 위치 */
+	margin: 10px; /*바깥 여백*/
+	display: flex;
+	align-items: center;
+}
+
+.inline-jobs-container div span, .inline-jobs-container div input {
+	display: block;
+	width: auto; /* 글자 수에 따라 너비 자동 조정 */
+	max-width: 100%; /* 너무 길어지지 않도록 최대 너비 제한 */
+	padding: 5px 10px; /* 동일한 패딩 적용 */
+	background-color: #e6e6fa; /* 배경색 통일 */
+	border-radius: 4px;
+	box-sizing: border-box; /* 패딩이 너비에 포함되도록 설정 */
+	font-size: 14px; /* 폰트 크기 */
+	font-weight: bold; /* 폰트 굵기 */
+	text-align: center; /* 글자 중앙 정렬 */
+	line-height: 1.5; /* 텍스트 수직 중앙 정렬을 위한 줄 높이 */
+	white-space: nowrap; /* 글자 줄바꿈 방지 */
+}
+
+.inline-jobs-container div input {
+	border: 1px solid #ddd; /* 인풋 필드 테두리 */
+}
+
+.inline-jobs-container div input:focus {
+	outline: none;
+	border-color: #007bff; /* 포커스 시 테두리 색상 변경 */
+	box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 포커스 시 그림자 */
+}
+
+.inline-jobs-container div:hover {
+	background-color: #d8bfd8; /* 호버 시 배경색 변경 */
+}
+
+/* 삭제 버튼을 숨겨두고 호버 시에만 나타나도록 설정 */
+.inline-jobs-container div button {
+	display: none; /* 기본 상태에서 숨김 */
+	position: absolute;
+	right: -8px;
+	top: -19%;
+	transform: translateY(-50%);
+	background-color: red;
+	color: white;
+	border: none;
+	border-radius: 50%;
+	width: 20px;
+	height: 20px;
+	cursor: pointer;
+}
+
+.inline-jobs-container div:hover button {
+	display: block; /* 마우스를 직무에 올리면 삭제 버튼 보이게 설정 */
+	/* Flexbox로 가운데 정렬 */
+	display: flex;
+	justify-content: center; /* 수평 중앙 정렬 */
+	align-items: center; /* 수직 중앙 정렬 */
+	font-size: 14px; /* 텍스트 크기 조절 */
+	line-height: 1; /* 텍스트 줄 높이 */
+}
+/* jobs 컨테이너 끝 */
+
+/* dept 컨테이너 */
 .dept-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative;
-    margin-bottom: 20px;
+	margin-left: 20px;
+	border-left: 1px solid #ddd;
+	padding-left: 10px;
+	margin-bottom: 10px;
 }
 
-/* 각 부서 정보 (이름 + 사원 수) */
-.dept-info {
-    cursor: pointer;
-    font-weight: bold;
-    padding: 8px 12px;
-    border-radius: 5px;
-    background-color: #e6ecf7;
-    display: inline-block;
-    font-size: 0.9em;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-/* 자식 부서 컨테이너 */
 .child-container {
-    display: flex;
-    flex-direction: row; /* 자식 부서를 가로로 배치 */
-    justify-content: space-around;
-    align-items: flex-start;
-    position: relative;
-    width: 100%;
+	margin-left: 20px;
 }
 
-/* 상위 부서와 연결되는 세로선 */
-.dept-item::before {
-    content: '';
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    width: 1px;
-    height: 20px;
-    background-color: #ccc;
+.dept-info {
+	font-weight: bold;
+	cursor: pointer;
 }
 
-/* 하위 부서와 연결되는 가로선 */
-.child-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background-color: #ccc;
+.actions {
+	display: none; /* 기본적으로 액션 버튼은 숨김 처리 */
+	margin-left: 10px;
 }
 
-/* 최상위 부서에서는 세로선을 없앰 */
-.level-1 .dept-item::before {
-    display: none;
+.dept-item:hover .actions {
+	display: inline; /* 마우스 오버 시 액션 버튼 표시 */
 }
 
-/* 각 레벨 스타일링 */
-.level-1 {
-    font-size: 1.2em;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 20px;
+.emp-count {
+	margin-left: 10px;
+	color: gray;
 }
 
-.level-2 {
-    font-size: 1.1em;
-    color: #333;
+
+/* dept 컨테이너 끝 */
+
+/* 툴팁 현재는 통일 수정예정 */
+.tooltip-text {
+	visibility: hidden;
+	background-color: #555;
+	color: #fff;
+	text-align: center;
+	border-radius: 5px;
+	padding: 5px 10px;
+	position: absolute;
+	z-index: 1;
+	bottom: 57%; /* 아이콘 아래에 뜨도록 */
+	left: 27%;
+	transform: translateX(-50%); /* 가운데 정렬 */
+	opacity: 0;
+	transition: opacity 0.3s;
+}
+/* 아이콘에 마우스를 올렸을 때 툴팁 표시 */
+.tooltip-icon:hover+.tooltip-text {
+	visibility: visible;
+	opacity: 1;
+}
+/* 툴팁 끝 */
+h4 {
+	margin: 0;
 }
 
-.level-3 {
-    font-size: 1.0em;
-    color: #555;
+table {
+	width: 100%;
+	border-collapse: collapse;
 }
 
-.level-4 {
-    font-size: 0.9em;
-    color: #777;
+th, td {
+	padding: 8px;
+	text-align: left;
+	border-bottom: 1px solid #ddd; /* 가로선만 추가 */
 }
 
+th {
+	border-top: 1px solid #ddd; /* 테이블의 첫 번째 행(헤더)에 상단 가로선 추가 */
+}
+
+th:first-child, td:first-child {
+	background-color: #e6e6fa; /* 연보라색(Lavender) */
+	font-weight: bold;
+}
+
+input {
+	padding: 8px;
+	font-size: 14px;
+	border: 1px solid #ddd;
+	border-radius: 4px; /* 모서리를 둥글게 */
+	width: 100%;
+	box-sizing: border-box; /* padding이 포함된 전체 너비를 맞추기 위해 사용 */
+}
+
+input:focus {
+	outline: none;
+	border-color: #007bff; /* 포커스 시 테두리 색상 변경 */
+	box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* 포커스 시 외곽선에 그림자 추가 */
+}
+
+button {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	padding: 5px 10px;
+	background-color: #d8bfd8;
+	border-radius: 4px;
+	color: white;
+	border: none;
+	cursor: pointer;
+	float: right;
+	justify-content: flex-end;
+}
+
+button:hover {
+	background-color: #0056b3;
+}
+
+/* 버튼 오른쪽 정렬을 위한 컨테이너 */
+.button-container {
+	margin-top: 10px;
+	display: flex;
+	justify-content: flex-end; /* 버튼을 오른쪽 정렬 */
+	align-items: center; /* 버튼 높이 일치 */
+	gap: 10px; /* 버튼 간격 */
+	margin-bottom: 20px;
+}
 </style>
 
 
-	
+	<div class="purple-background-container">
+		<div class="breadcrumb">
+			<div class="breadcrumb-left">
+				<h4>조직관리</h4>
+				<nav>
+					<a href="#position-section">직위관리</a> | <a href="#job-section">직무관리</a>
+					| <a href="#org-section">조직관리</a>
+				</nav>
+			</div>
+			<div class="breadcrumb-right">
+				<span>관리자 페이지 > 조직관리</span>
+			</div>
+		</div>
+
+		<!-- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+
+		<div class="card_posi" id="position-section">
+			<div class="inline-container">
+				<h4>
+					직위 관리 <i class="fas fa-question-circle tooltip-icon"></i>
+					<div class="tooltip-text">직위 관리에 대한 안내</div>
+				</h4>
+				<button onclick="addLevel()">
+					<i class="fas fa-plus"></i>
+				</button>
+			</div>
+
+			<table id="positionTable">
+				<tr>
+					<th>Level</th>
+					<th>직위</th>
+					<th></th>
+				</tr>
+			</table>
+			<div class="button-container">
+				<button onclick="saveData()">저장</button>
+			</div>
+		</div>
+
+		<!-- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+
+		<div class="card_jobs" id="job-section">
+			<div class="inline-container">
+				<h4>
+					직무 관리 <i class="fas fa-question-circle tooltip-icon"></i>
+					<div class="tooltip-text">직무 관리에 대한 안내</div>
+				</h4>
+				<button onclick="addJob()">
+					<i class="fas fa-plus"></i>
+				</button>
+			</div>
+
+			<div class="inline-jobs-container" id="jobsTable">
+				<!-- 직무들이 여기에 동적으로 추가됩니다 -->
+			</div>
+
+			<div class="button-container">
+				<button onclick="saveJobs()">저장</button>
+			</div>
+		</div>
+
+
+		<!-- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
 
 		<div class="card_org" id="org-section">
 			<div class="inline-container">
@@ -132,15 +372,21 @@
 				<button onclick="saveDept()">저장</button>
 			</div>
 		</div>
+
+
 	</div>
 
 	<script>
-//──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────// 서버에서 부서 데이터를 가져오는 함수
+//──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+// 서버에서 부서 데이터를 가져오는 함수
 async function fetchDeptData() {
     try {
         const response = await fetch('/dept/getExistingDepts');  // 실제 API 엔드포인트로 수정
         const departments = await response.json();  // JSON 형태로 변환
 
+        // console.log('서버로부터 받은 부서 데이터:', departments);  // 서버로부터 받은 데이터를 확인
+
+        // 데이터를 확인해보고, 각 데이터의 필드가 존재하는지 확인
         if (departments && departments.length > 0) {
             // 받아온 데이터를 트리 형태로 렌더링
             renderDeptTree(departments);
@@ -158,7 +404,6 @@ function renderDeptTree(departments) {
     deptTable.innerHTML = ''; // 기존 내용을 초기화
 
     const deptMap = {};
-    const levelMap = {};
 
     // 부서 데이터를 맵으로 변환 (부서 번호를 키로 사용)
     departments.forEach(dept => {
@@ -172,38 +417,17 @@ function renderDeptTree(departments) {
         }
     });
 
-    // 부서별 레벨 계산
-    function calculateLevel(deptNo, currentLevel = 1) {
-        const dept = deptMap[deptNo];
-        if (!levelMap[currentLevel]) levelMap[currentLevel] = [];
-        levelMap[currentLevel].push(dept);
-        
-        dept.children.forEach(child => {
-            calculateLevel(child.deptNo, currentLevel + 1);
-        });
-    }
-
     // 최상위 부서를 가져와 트리로 렌더링 (parentDeptNo가 null 또는 0인 부서)
     const rootDepartments = departments.filter(dept => dept.parentDeptNo === null || dept.parentDeptNo === 0);
     
-    // 최상위 부서부터 각 레벨별로 부서를 렌더링
-    rootDepartments.forEach(rootDept => {
-        calculateLevel(rootDept.deptNo);  // 레벨별로 부서를 계산
-    });
-
-    // 레벨별로 부서를 렌더링
-    Object.keys(levelMap).forEach(level => {
-        const levelContainer = document.createElement('div');
-        levelContainer.classList.add('level-container');
-        levelContainer.innerHTML = `<h4>Level.${level}</h4>`;
-
-        levelMap[level].forEach(dept => {
-            const deptHTML = generateDeptHTML(dept);
-            levelContainer.appendChild(deptHTML);
-        });
-
-        deptTable.appendChild(levelContainer);
-    });
+    if (rootDepartments.length > 0) {
+        // 최상위 부서만 1개를 선택하고 그 하위 부서를 모두 렌더링
+        const rootDept = rootDepartments[0];  // 첫 번째 최상위 부서 선택
+        const deptHTML = generateDeptHTML(deptMap[rootDept.deptNo]);
+        deptTable.appendChild(deptHTML);  // rootDept에 해당하는 HTML 요소 추가
+    } else {
+        console.error('최상위 부서를 찾을 수 없습니다.');
+    }
 }
 
 // 부서 트리 HTML을 재귀적으로 생성
@@ -211,12 +435,27 @@ function generateDeptHTML(dept) {
     const deptElement = document.createElement('div');
     deptElement.classList.add('dept-item');
 
+    // null 값을 방지하기 위해 기본값 처리
+    const deptNo = dept.deptNo !== null ? dept.deptNo : 'N/A';
     const deptName = dept.deptName !== null ? dept.deptName : 'N/A';
     const empCnt = dept.empCnt !== null ? dept.empCnt : '0';
 
     deptElement.innerHTML = `
         <div class="dept-info">${deptName} (사원 수: ${empCnt})</div>
     `;
+
+    // 자식 부서가 있는 경우
+    if (dept.children && dept.children.length > 0) {
+        const childContainer = document.createElement('div');
+        childContainer.classList.add('child-container');
+        
+        dept.children.forEach(childDept => {
+            const childDeptHTML = generateDeptHTML(childDept);  // 재귀적으로 자식 부서도 생성
+            childContainer.appendChild(childDeptHTML);
+        });
+
+        deptElement.appendChild(childContainer);
+    }
 
     return deptElement;
 }
