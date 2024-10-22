@@ -92,11 +92,98 @@
 	
 	
 	<!-- 파일 폴더 전체조회 -->
-	<select id="selectfileAll" resultType="ProjectFoldersVO">
-		SELECT PF_NO, NAME, PW_NO, REG_DATE, PARENT_PF_NO
+	<select id="selectfolderAll" resultType="ProjectFoldersVO">
+		SELECT PF_NO, 
+				NAME, 
+				PW_NO, 
+				REG_DATE, 
+				PARENT_PF_NO
 		FROM DBUSER.PROJFOLDERS
 		START WITH PARENT_PF_NO = 0  
 		CONNECT BY PRIOR PF_NO = PARENT_PF_NO
 	</select>
+	
+	<!-- 파일 전체조회 -->
+	<select id="selectfileAll" resultType="ProjectFilesVO">
+		SELECT proj_file_no
+				, pf_no
+				, name
+				, content
+				, file_size
+				, file_path
+				, reg_date
+				, extension
+		FROM projfiles 
+		WHERE pf_no = #{pfNo}
+	</select>
+	
+	<!-- 파일 등록 -->
+<insert id="fileinsert" parameterType="ProjectFilesVO">
+    <selectKey keyProperty="projFileNo" resultType="Integer" order="BEFORE">
+        SELECT NVL(MAX(proj_file_no), 0) + 1 FROM projfiles
+    </selectKey>
+    INSERT INTO projfiles (
+        proj_file_no,
+        pf_no,
+        name,
+        content,
+        file_size,
+        file_path,
+        reg_date,
+        extension
+    ) VALUES (
+        #{projFileNo},
+        #{pfNo},
+        #{name},
+        #{content}, 
+        #{fileSize},
+        #{filePath},
+        SYSDATE,
+        #{extension}
+    )
+</insert>
 
+<!-- 단건조회 -->
+	<select id="filedetail" resultType="ProjectFilesVO">
+		SELECT proj_file_no,
+		pf_no,
+        name,
+        content,
+        file_size,
+        file_path,
+        reg_date,
+        extension
+		FROM projfiles
+		WHERE proj_file_no = #{projFileNo}
+	</select>
+	
+	<!-- 전체조회 -->
+	<select id="projecttree" resultType="ProjectVO">
+SELECT LEVEL, tree.*
+    FROM (
+        SELECT 'P' || proj_no as no
+            , null as parent_no
+            , name
+        FROM proj
+        UNION
+        SELECT 'W' || pw_no
+            ,  'P' || proj_no
+            , name
+        FROM 
+            projwrks
+        UNION
+        SELECT 
+            TO_CHAR(pdw_no)
+            , CASE WHEN parent_pdw_no IS NULL THEN 'W' || pw_no ELSE TO_CHAR(parent_pdw_no) END
+            , name
+        FROM 
+            projdwrks 
+    ) tree
+    START WITH 
+        parent_no IS NULL
+    CONNECT BY 
+        PRIOR no = parent_no
+    ORDER SIBLINGS BY 
+        no
+	</select>	
 </mapper>

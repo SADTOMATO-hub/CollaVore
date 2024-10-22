@@ -2,7 +2,8 @@ package com.collavore.app.project.service;
 
 import java.util.Date;
 
-import lombok.Builder;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 
 @Data
@@ -13,9 +14,13 @@ public class ProjectFilesVO {
 	private Integer pfNo;
 	private String name;
 	private String content;
-	private String size;
+	//private String fileSize;
 	private String extension;
-	private String path;
+	private String filePath;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date regDate;
+    private long fileSize;
+	
+	
 
 }

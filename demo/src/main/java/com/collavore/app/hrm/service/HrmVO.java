@@ -18,6 +18,7 @@ public class HrmVO {
    private Date leaveDate;       // 퇴사일
    private Date regDate;         // 등록일
    private String gitToken;      // 개별토큰
+   private String img;           // 이미지
    
    private Integer deptNo;       // 부서번호
    private String deptName;      // 부서명
