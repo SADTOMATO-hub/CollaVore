@@ -2,8 +2,297 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
-	
-	
-	
-	
+
+	<style>
+/* 페이지 기본 스타일 */
+.body-page-wrapper {
+	padding: 20px;
+	background-color: #f9f9f9;
+	align-items: center;
+}
+
+/* Breadcrumb 스타일 */
+.breadcrumb {
+	background-color: #ffffff;
+	padding: 10px 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	height: 70px;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	color: #333;
+	position: relative;
+}
+
+.breadcrumb h4 {
+	margin: 0;
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+}
+
+.breadcrumb-left {
+	display: flex; /* flexbox로 요소 정렬 */
+	flex-direction: column; /* 세로로 배치 */
+	justify-content: center; /* 세로 중앙 정렬 */
+}
+
+.breadcrumb-left h4 {
+	font-size: 22px;
+	font-weight: bold;
+	margin: 0; /* 기본 마진 제거 */
+	margin-top: 2px;
+}
+
+.breadcrumb-left p {
+	font-size: 14px;
+	color: #666;
+	margin-top: 2px;
+	margin-bottom: 0;
+}
+
+.breadcrumb-right span {
+	font-size: 14px;
+	color: #999;
+	white-space: nowrap;
+	position: relative;
+	top: -12px;
+}
+
+.card_memberInsert {
+	background-color: #ffffff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+}
+
+.insert-btn {
+	display: flex;
+	justify-content: flex-end; /* 오른쪽으로 정렬 */
+	margin-right: 20px; /* 필요에 따라 여백 조정 */
+}
+
+button {
+	padding: 5px 10px;
+	background-color: #9b8df6;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: background-color 0.3s ease;
+}
+
+/* 마우스 호버 시 효과 */
+button:hover {
+	background-color: #5a4bcf;
+}
+
+/* 추가적인 버튼 스타일링 */
+button:active {
+	background-color: #4839a9;
+}
+</style>
+
+	<div class="body-page-wrapper">
+		<div class="purple-background-container">
+
+			<!-- 상단 이미지와 타이틀 -->
+			<div class="breadcrumb">
+				<div class="breadcrumb-left">
+					<h4>사원 정보 수정</h4>
+					<p>사원의 정보를 수정할 수 있습니다.</p>
+				</div>
+				<div class="breadcrumb-right">
+					<span>관리자 페이지 > 사원관리 > 사원 수정</span>
+				</div>
+			</div>
+
+			<div class="card_memberInsert">
+				<!-- 데이터를 서버로 전송하기 위한 폼 -->
+				<form class="form-horizontal" action="/memberUpdate" method="post"
+					enctype="multipart/form-data">
+					<input type="hidden" name="empNo" th:value="${member.empNo}" />
+					
+					<div class="col-md-9">
+						<!-- 이미지 업로드 및 미리보기 -->
+						<div class="form-group row">
+							<label for="profileImage"
+								class="col-sm-3 text-end control-label col-form-label">프로필
+								사진</label>
+
+							<div class="col-sm-9">
+								<div class="image-preview mb-3">
+									<img id="imgPreview" th:src="@{/assets/images/users/default.png}"
+										alt="이미지 미리보기"
+										style="display: block; max-width: 200px; max-height: 200px;" />
+								</div>
+								<input type="file" class="form-control" id="profileImage"
+									name="profileImage" accept="image/*"
+									onchange="previewImage(event)" /> <small
+									class="form-text text-muted">* 프로필 사진 권장 크기는
+									330x330px(10MB 이하)입니다.</small>
+							</div>
+
+						</div>
+
+						<div class="form-group row">
+							<label for="empName"
+								class="col-sm-3 text-end control-label col-form-label">이름</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control" id="empName"
+									name="empName" th:value="${member.empName}" />
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label for="password"
+								class="col-sm-3 text-end control-label col-form-label">비밀번호</label>
+							<div class="col-sm-9">
+								<input type="password" class="form-control" id="password"
+									name="password" th:value="${member.password}" />
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label for="tel"
+								class="col-sm-3 text-end control-label col-form-label">연락처</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control" id="tel" name="tel"
+									th:value="${member.tel}" />
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label for="email"
+								class="col-sm-3 text-end control-label col-form-label">이메일</label>
+							<div class="col-sm-9">
+								<input type="email" class="form-control" id="email" name="email"
+									th:value="${member.email}" />
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label for="address"
+								class="col-sm-3 text-end control-label col-form-label">주소</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control" id="address"
+									name="address" th:value="${member.address}" />
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label for="empNo"
+								class="col-sm-3 text-end control-label col-form-label">사번</label>
+							<div class="col-sm-9">
+								<!-- 사번을 readonly로 보여주되 수정 불가능하게 설정 -->
+								<input type="text" class="form-control" id="empNo" name="empNo"
+									th:value="${member.empNo}" readonly />
+							</div>
+						</div>
+
+
+						<div class="form-group row">
+							<label for="workType"
+								class="col-sm-3 text-end control-label col-form-label">근로상태</label>
+							<div class="col-md-9">
+								<select class="select2 form-select shadow-none" name="workType"
+									id="workType" style="width: 100%; height: 36px">
+									<option value="">재직중/퇴사</option>
+									<option th:selected="${member.workType == '재직중'}"
+										value="재직중">재직중</option>
+									<option th:selected="${member.workType == '퇴사'}"
+										value="퇴사">퇴사</option>
+								</select>
+							</div>
+						</div>
+
+
+						<div class="form-group row">
+							<label for="joinDate"
+								class="col-sm-3 text-end control-label col-form-label">입사일</label>
+							<div class="col-sm-9">
+								<input type="date" class="form-control" id="joinDate"
+									name="joinDate" th:value="${#dates.format(member.joinDate, 'yyyy-MM-dd')}" />
+							</div>
+						</div>
+						
+						<div class="form-group row">
+							<label for="deptName"
+								class="col-sm-3 text-end control-label col-form-label">소속조직</label>
+							<div class="col-md-9">
+								<select class="select2 form-select shadow-none" name="deptNo"
+									id="deptNo" style="width: 100%; height: 36px">
+									<option value="">소속조직 선택</option>
+									<option th:each="dept : ${departments}"
+										th:selected="${dept.deptNo == member.deptNo}"
+										th:value="${dept.deptNo}" th:text="${dept.deptName}"></option>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label for="posiName"
+								class="col-sm-3 text-end control-label col-form-label">직위</label>
+							<div class="col-md-9">
+								<select class="form-select" name="posiNo" id="posiNo"
+									style="width: 100%; height: 36px">
+									<option value="">직위 선택</option>
+									<option th:each="posi : ${positions}"
+										th:selected="${posi.posiNo == member.posiNo}"
+										th:value="${posi.posiNo}" th:text="${posi.posiName}"></option>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label for="jobName"
+								class="col-sm-3 text-end control-label col-form-label">직무</label>
+							<div class="col-md-9">
+								<select class="form-select" name="jobNo" id="jobNo"
+									style="width: 100%; height: 36px">
+									<option value="">직무 선택</option>
+									<option th:each="job : ${jobs}"
+										th:selected="${job.jobNo == member.jobNo}"
+										th:value="${job.jobNo}" th:text="${job.jobName}"></option>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label for="info"
+								class="col-sm-3 text-end control-label col-form-label">자기소개</label>
+							<div class="col-sm-9">
+								<textarea class="form-control" id="info" name="info"
+									th:text="${member.info}"></textarea>
+							</div>
+						</div>
+					</div>
+
+					<div class="insert-btn">
+						<button type="submit" class="btn btn-primary">수정</button>
+						<button type="reset" class="btn btn-secondary">취소</button>
+					</div>
+
+				</form>
+			</div>
+		</div>
 	</div>
+</div>
+
+<!-- 이미지 미리보기 스크립트 -->
+<script>
+	function previewImage(event) {
+		var reader = new FileReader();
+		reader.onload = function() {
+			var output = document.getElementById('imgPreview');
+			output.src = reader.result;
+			output.style.display = 'block';
+		};
+		reader.readAsDataURL(event.target.files[0]);
+	}
+</script>

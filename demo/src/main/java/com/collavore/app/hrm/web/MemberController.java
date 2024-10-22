@@ -50,21 +50,26 @@ public class MemberController {
 
 	// 로그인 처리
 	@PostMapping("/login")
-	public String login(@RequestParam("email") String email, @RequestParam("password") String password, Model model,
-			HttpSession session) {
+	public String login(@RequestParam("email") String email, @RequestParam("password") String password, 
+	                    Model model, HttpSession session) {
 
-		HrmVO user = memberService.findByEmail(email); // 이메일로 사용자 조회
-		if (user != null && password.equals(user.getPassword())) {
-			// 로그인 성공 시 세션에 사용자 정보 저장
-			session.setAttribute("userEmail", user.getEmail());
-			session.setAttribute("userEmpNo", user.getEmpNo()); // 사원 번호 저장
+	    HrmVO user = memberService.findByEmail(email); // 이메일로 사용자 조회
+	    if (user == null) {
+	        // 이메일이 등록되지 않은 경우
+	        model.addAttribute("loginError", "등록되지 않은 이메일입니다. 관리자에게 문의 해주세요.");
+	        return "member/login"; // 로그인 화면으로 다시 이동
+	    }
 
-			return "redirect:/main"; // 로그인 후 메인 페이지로 리다이렉트
-		} else {
-			// 로그인 실패 시 에러 메시지 전달
-			model.addAttribute("loginError", "Invalid email or password.");
-			return "member/login";
-		}
+	    if (!password.equals(user.getPassword())) {
+	        // 비밀번호가 틀린 경우
+	        model.addAttribute("loginError", "비밀번호가 올바르지 않습니다.");
+	        return "member/login"; // 로그인 화면으로 다시 이동
+	    }
+
+	    // 로그인 성공 시 세션에 사용자 정보 저장
+	    session.setAttribute("userEmail", user.getEmail());
+	    session.setAttribute("userEmpNo", user.getEmpNo()); // 사원 번호 저장
+	    return "redirect:/main"; // 로그인 후 메인 페이지로 리다이렉트
 	}
 
 	// 로그인 후 메인 페이지로 이동
@@ -153,7 +158,7 @@ public class MemberController {
 	@PostMapping("/memberEdit")
 	public String updateMemberInfo(@ModelAttribute HrmVO hrmVO, HttpSession session) {
 		Integer empNo = (Integer) session.getAttribute("userEmpNo");
-
+		 System.out.println("입력된 비밀번호: " + hrmVO.getPassword());
 		if (empNo == null) {
 			return "redirect:/login";
 		}
@@ -172,6 +177,10 @@ public class MemberController {
 		if (hrmVO.getTel() == null || hrmVO.getTel().isEmpty()) {
 			hrmVO.setTel(originalMember.getTel());
 		}
+		
+		if (hrmVO.getPassword() == null || hrmVO.getPassword().isEmpty()) {
+	        hrmVO.setPassword(originalMember.getPassword());
+	    }
 
 		// 이후에 업데이트 처리
 		memberService.memberUpdate(hrmVO);
@@ -226,7 +235,36 @@ public class MemberController {
 		}
 		return "redirect:/memberList";
 	}
+	
+	@GetMapping("/memberUpdate")
+	public String updateMemberForm(@RequestParam("empNo") Integer empNo, Model model) {
+	    // 사원 정보 조회
+	    HrmVO member = memberService.memberInfoByEmpNo(empNo);
+	    model.addAttribute("member", member);
 
+	    // 부서, 직위, 직무 목록을 가져와서 모델에 추가
+	    List<HrmVO> departments = deptService.getExistingDepts();
+	    List<HrmVO> positions = posiService.getExistingPositions();
+	    List<HrmVO> jobs = jobService.getExistinJobs();
+	    model.addAttribute("departments", departments);
+	    model.addAttribute("positions", positions);
+	    model.addAttribute("jobs", jobs);
+
+	    return "member/memberUpdate"; // memberUpdate 뷰 파일로 이동
+	}
+	
+	@PostMapping("/memberUpdate")
+	public String updateMember(HrmVO hrmVO, RedirectAttributes redirectAttributes) {
+	    int result = memberService.updateMemberByAdmin(hrmVO); // 사원 정보 수정 처리
+
+	    if (result > 0) {
+	        redirectAttributes.addFlashAttribute("message", "사원이 성공적으로 수정되었습니다.");
+	    } else {
+	        redirectAttributes.addFlashAttribute("message", "사원 수정에 실패했습니다.");
+	    }
+	    return "redirect:/memberList"; // 수정 후 리스트 페이지로 리다이렉트
+	}
+	
 	// 사원 삭제 처리 (관리자)
 	@PostMapping("/memberDelete/{empNo}")
 	public String deleteMember(@PathVariable("empNo") int empNo, RedirectAttributes redirectAttributes) {

@@ -59,14 +59,12 @@
 }
 
 .breadcrumb-right span {
-    font-size: 14px;
-    color: #999;
-    white-space: nowrap;
-    position: relative;
-    top: -12px;
+	font-size: 14px;
+	color: #999;
+	white-space: nowrap;
+	position: relative;
+	top: -12px;
 }
-
-
 
 /* 카드 스타일 */
 .card_userInfo, .card_table {
@@ -409,7 +407,9 @@ td {
 									alt="프로필 이미지" width="100" height="100">
 							</div>
 							<div class="modal-profile-photo">
-								<input type="file" id="profileImage" name="profileImage" accept="image/*" onchange="previewImage(event)" style="padding-left: 100px">
+								<input type="file" id="profileImage" name="profileImage"
+									accept="image/*" onchange="previewImage(event)"
+									style="padding-left: 100px">
 							</div>
 						</div>
 						<!-- 소개글 수정 -->
@@ -425,10 +425,27 @@ td {
 								type="text" id="name" name="name" class="modal-input"
 								th:field="*{empName}">
 						</div>
+
 						<div class="modal-form-group">
 							<label for="tel" class="modal-label">연락처 :</label> <input
 								type="text" id="tel" name="tel" class="modal-input"
 								th:field="*{tel}">
+							<!-- 연락처 유효성 검사 결과 표시 -->
+							<small id="telError" style="color: red; display: none;">유효하지
+								않은 연락처 형식입니다. (010-XXXX-XXXX)</small> <small id="telSuccess"
+								style="color: green; display: none;">정상적인 연락처입니다.</small>
+						</div>
+
+						<div class="modal-form-group">
+							<label for="password" class="modal-label">비밀번호 :</label> <input
+								type="password" id="password" name="password"
+								class="modal-input" th:field="*{password}"
+								placeholder="비밀번호 (최소 8자, 대소문자, 숫자, 특수문자 포함)">
+							<!-- 비밀번호 유효성 검사 결과 표시 -->
+							<small id="passwordError" style="color: red; display: none;">비밀번호는
+								최소 8자 이상이어야 하며, 대문자, 소문자, 숫자, 특수 문자를 포함해야 합니다.</small> <small
+								id="passwordSuccess" style="color: green; display: none;">정상적인
+								비밀번호입니다.</small>
 						</div>
 
 						<!-- 이메일 및 부서/직책 정보는 읽기 전용 -->
@@ -461,24 +478,6 @@ td {
 		// 수정 버튼을 클릭하면 모달을 엽니다.
 		btn.onclick = function() {
 			modal.style.display = "block";
-
-			// 사용자의 프로필 이미지를 불러와서 기본 이미지가 없으면 default.png를 표시
-			var imgPath = /*[[${member.img}]]*/'';
-			var profilePreview = document.getElementById("profilePreview");
-
-			if (!imgPath || imgPath === '') {
-				profilePreview.src = '/assets/images/users/default.png'; // 기본 이미지 경로
-			} else {
-				profilePreview.src = '/assets/images/users/' + imgPath;
-			}
-
-			// 현재 값을 저장 (수정 전 원래 값)
-			document.getElementById("info").setAttribute("data-original-value",
-					document.getElementById("info").value);
-			document.getElementById("name").setAttribute("data-original-value",
-					document.getElementById("name").value);
-			document.getElementById("tel").setAttribute("data-original-value",
-					document.getElementById("tel").value);
 		}
 
 		// X 버튼을 클릭하면 모달을 닫습니다.
@@ -493,6 +492,48 @@ td {
 			}
 		}
 
+		// 비밀번호 유효성 검사
+		const passwordField = document.getElementById('password');
+		const passwordError = document.getElementById('passwordError');
+		const passwordSuccess = document.getElementById('passwordSuccess');
+
+		passwordField
+				.addEventListener(
+						'input',
+						function() {
+							// 입력 값에서 공백 제거
+							const passwordValue = passwordField.value.trim();
+
+							// 특수문자 포함된 비밀번호 유효성 검사 (모든 특수문자 허용)
+							const passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z\d])[A-Za-z\d@$!%*?&]{8,}$/;
+
+							if (!passwordPattern.test(passwordValue)) {
+								passwordError.style.display = 'block';
+								passwordSuccess.style.display = 'none';
+							} else {
+								passwordError.style.display = 'none';
+								passwordSuccess.style.display = 'block';
+							}
+						});
+
+		// 연락처 유효성 검사
+		const telField = document.getElementById('tel');
+		const telError = document.getElementById('telError');
+		const telSuccess = document.getElementById('telSuccess');
+
+		// 한국 연락처 형식: 010-XXXX-XXXX 
+		const telPattern = /^010-\d{4}-\d{4}$/;
+
+		telField.addEventListener('input', function() {
+			if (!telPattern.test(telField.value)) {
+				telError.style.display = 'block';
+				telSuccess.style.display = 'none';
+			} else {
+				telError.style.display = 'none';
+				telSuccess.style.display = 'block';
+			}
+		});
+
 		// 이미지 미리보기
 		function previewImage(event) {
 			const reader = new FileReader();
@@ -502,25 +543,14 @@ td {
 			};
 			reader.readAsDataURL(event.target.files[0]);
 		}
-
-		// 저장 버튼을 누를 때 값이 변경되지 않으면 원래 값을 저장
-		document.getElementById("editForm").onsubmit = function(e) {
-			const infoField = document.getElementById("info");
-			const nameField = document.getElementById("name");
-			const telField = document.getElementById("tel");
-
-			// 수정된 값이 없으면 원래 값을 다시 입력
-			if (infoField.value === "") {
-				infoField.value = infoField.getAttribute("data-original-value");
+		
+		// 폼 제출 전에 모든 유효성 검사를 확인하는 함수
+		document.getElementById("editForm").onsubmit = function (event) {
+			// 연락처 및 비밀번호 유효성 검사를 통과하지 못하면 제출을 중단
+			if (!validateTel() || !validatePassword()) {
+				event.preventDefault(); // 폼 제출 중단
+				alert("유효한 정보를 입력해주세요.");
 			}
-
-			if (nameField.value === "") {
-				nameField.value = nameField.getAttribute("data-original-value");
-			}
-
-			if (telField.value === "") {
-				telField.value = telField.getAttribute("data-original-value");
-			}
-		}
+		};
 	</script>
 </div>
