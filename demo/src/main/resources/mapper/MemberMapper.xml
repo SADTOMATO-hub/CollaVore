@@ -1,99 +1,119 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.collavore.app.hrm.mapper.MemberMapper">
-    <!-- 사원 전체 리스트 -->
-    <select id="selectMemberAll"
-            resultType="com.collavore.app.hrm.service.HrmVO">
-        SELECT e.name AS empName,
-               e.tel,
-               e.email,
-               d.name AS deptName,
-               j.name AS jobName,
-               p.name AS posiName,
-               e.work_type
-        FROM employees e
-                 LEFT JOIN departments d ON e.dept_no = d.dept_no
-                 LEFT JOIN jobs j ON e.job_no = j.job_no
-                 LEFT JOIN positions p ON e.posi_no = p.posi_no
-        ORDER BY e.name
-    </select>
 
-    <!-- 사원 등록 -->
-    <insert id="insertMember"
-            parameterType="com.collavore.app.hrm.service.HrmVO">
-        INSERT INTO employees
-            (name,
-             password,
-             tel,
-             email,
-             address,
-             emp_no,
-             work_type,
-             join_date,
-             dept_no,
-             posi_no,
-             job_no)
-        VALUES
-            (#empName},
-             #{password},
-             #{tel},
-             #{email},
-             #{address},
-             #{empNo},
-             #{workType},
-             #{joinDate},
-             #{deptNo},
-             #{posiNo},
-             #{jobNo})
-    </insert>
+	<!-- 이메일로 사용자 정보 조회 -->
+	<select id="findByEmail" parameterType="string"
+		resultType="com.collavore.app.hrm.service.HrmVO">
+		SELECT * FROM employees WHERE email = #{email}
+	</select>
 
-    <!-- 사원 단건 조회 -->
-    <select id="selectMemberInfo"
-            resultType="com.collavore.app.hrm.service.HrmVO">
-        SELECT e.info,
-               e.name AS empName,
-               e.tel,
-               e.email,
-               e.emp_no,
-               e.work_type,
-               e.img,
-               e.join_date,
-               d.name AS deptName,
-               p.name AS posiName,
-               j.name AS jobName
-        FROM employees e
-                 LEFT JOIN departments d ON e.dept_no = d.dept_no
-                 LEFT JOIN positions p ON e.posi_no = p.posi_no
-                 LEFT JOIN jobs j ON e.job_no = j.job_no
-        WHERE e.emp_no = #{empNo}
-    </select>
+	<!-- 사원 전체 리스트 -->
+	<select id="selectMemberAll"
+		resultType="com.collavore.app.hrm.service.HrmVO">
+		SELECT e.name AS empName,
+		e.tel,
+		e.email,
+		d.name AS deptName,
+		j.name AS jobName,
+		p.name AS posiName,
+		e.work_type
+		FROM employees e
+		LEFT JOIN departments d ON e.dept_no = d.dept_no
+		LEFT JOIN jobs j ON e.job_no = j.job_no
+		LEFT JOIN positions p ON e.posi_no = p.posi_no
+		ORDER BY e.name
+	</select>
 
-    <!-- 사원 정보 수정 -->
-    <update id="updateMember"
-            parameterType="com.collavore.app.hrm.service.HrmVO">
-        UPDATE employees
-        SET name = #{empName},
-            tel = #{tel},
-            email = #{email},
-            password = #{password},
-            dept_no = #{deptNo},
-            posi_no = #{posiNo},
-            job_no = #{jobNo}
-        WHERE emp_no = #{empNo}
-    </update>
+	<!-- 사원 단건 조회 -->
+	<select id="selectMemberInfo"
+		resultType="com.collavore.app.hrm.service.HrmVO">
+		SELECT e.info,
+		e.name AS empName,
+		e.tel,
+		e.email,
+		e.emp_no,
+		e.work_type,
+		e.img,
+		e.join_date,
+		d.name AS deptName,
+		p.name AS posiName,
+		j.name AS jobName
+		FROM employees e
+		LEFT JOIN departments d ON e.dept_no = d.dept_no
+		LEFT JOIN positions p ON e.posi_no = p.posi_no
+		LEFT JOIN jobs j ON e.job_no = j.job_no
+		WHERE e.emp_no = #{empNo}
+	</select>
 
-    <!-- 사원 삭제 -->
-    <delete id="deleteMember"
-            parameterType="int">
-        DELETE FROM employees
-        WHERE emp_no = #{empNo}
-    </delete>
+	<!-- 사원 정보 수정 -->
+	<update id="updateMember"
+		parameterType="com.collavore.app.hrm.service.HrmVO">
+		UPDATE employees
+		SET info = #{info},
+		name = #{empName},
+		tel = #{tel}
+		WHERE emp_no = #{empNo}
+	</update>
 
-    <!-- 이메일로 사용자 정보 조회 -->
-    <select id="findByEmail"
-            parameterType="string"
-            resultType="com.collavore.app.hrm.service.HrmVO">
-        SELECT * FROM employees WHERE email = #{email}
-    </select>
+	<!-- 관리자 영역 -->
+	<!-- 사원 등록 -->
+	<insert id="insertMember"
+		parameterType="com.collavore.app.hrm.service.HrmVO">
+		<selectKey keyProperty="empNo" resultType="Integer"
+			order="BEFORE">
+			SELECT TO_NUMBER(TO_CHAR(SYSDATE, 'YYMMDD') || LPAD(NVL(MAX(SUBSTR(emp_no, 7, 3)), 99) + 1, 3, '0'))
+			FROM EMPLOYEES
+			WHERE emp_no LIKE TO_CHAR(SYSDATE, 'YYMMDD') || '%'
+		</selectKey>
+
+		INSERT INTO EMPLOYEES (
+		emp_no,
+		email,
+		password,
+		name,
+		tel,
+		address,
+		work_type,
+		info,
+		join_date,
+		reg_date,
+		dept_no,
+		job_no,
+		posi_no,
+		git_token,
+		img
+		)
+		VALUES (
+		#{empNo}, 
+		#{email},
+		#{password},
+		#{empName},
+		#{tel},
+		#{address},
+		#{workType},
+		#{info},
+		#{joinDate},
+		sysdate,
+		#{deptNo}, 
+		#{jobNo},
+		#{posiNo},
+		#{gitToken},
+		#{img}
+		)
+	</insert>
+
+	<!-- 사원 삭제 -->
+	<delete id="deleteMember" parameterType="Integer">
+		DELETE FROM employees WHERE emp_no = #{empNo}
+	</delete>
+
+	<!-- 오늘 날짜로 시작하는 가장 큰 사번을 조회 -->
+	<select id="getMaxEmpNo" parameterType="String"
+		resultType="Integer">
+		SELECT MAX(emp_no)
+		FROM EMPLOYEES
+		WHERE emp_no LIKE CONCAT(#{today}, '%')
+	</select>
 
 </mapper>
