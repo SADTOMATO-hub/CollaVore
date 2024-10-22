@@ -13,7 +13,24 @@
 		, cal_no
 		, is_alarm
 		FROM schs
+		<!-- WHERE isDelete = 'h2' 미삭제된 일정만 조회 -->
 	</select>
+
+	<!-- 단건 일정 조회 -->
+	<select id="selectSchsInfo" parameterType="SchsVO"
+		resultType="SchsVO">
+		SELECT
+		sch_no
+		, title
+		,
+		start_date
+		, end_date
+		, cal_no
+		, is_alarm
+		FROM schs
+		<!-- WHERE schNo = #{schNo} AND isDelete = 'h2' 미삭제된 일정만 조회 -->
+	</select>
+
 	<insert id="insertSchsInfo" parameterType="SchsVO">
 
 		<selectKey keyProperty="schNo" resultType="Integer"
@@ -64,11 +81,13 @@
 
 
 	<select id="selectAllCalendars" resultType="CalsVO">
-		SELECT 		cal_no
-					, name, type
-					, reg_date
-		FROM 		cals
-		WHERE 		is_delete = 'h2'
+		SELECT cal_no
+		, name
+		,
+		type
+		, reg_date
+		FROM cals
+		WHERE is_delete = 'h2'
 	</select>
 
 
@@ -81,7 +100,7 @@
 		,delete_date
 		,color
 		FROM cals
-		
+
 	</select>
 
 
@@ -97,24 +116,45 @@
 		</selectKey>
 
 		INSERT INTO cals (
-							cal_no
-							, name
-							, type
-							, reg_date
-							, is_delete
-							, delete_date
-							, color
+		cal_no
+		, name
+		, type
+		, reg_date
+		, is_delete
+		, delete_date
+		, color
 		)
 		VALUES (
-							#{calNo}
-							, #{name}
-							, #{type}
-							, SYSDATE
-							, #{isDelete}
-							, NULL
-							, #{color}
+		#{calNo}
+		, #{name}
+		, #{type}
+		, SYSDATE
+		, #{isDelete}
+		, NULL
+		, #{color}
 		)
 	</insert>
+
+
+	<!-- 캘린더 정보를 calNo로 가져오는 쿼리 -->
+	<update id="updateCalsInfo" parameterType="CalsVO">
+		UPDATE cals
+		SET
+		name = #{name},
+		color = #{color}
+		WHERE cal_no = #{calNo}
+	</update>
+
+
+	<!-- 캘린더를 휴지통으로 이동 (isDelete = 'h1'로 업데이트하고 deleteDate 설정) -->
+	<update id="updateCalToTrash" parameterType="String">
+		UPDATE cals
+		SET
+		is_delete = 'h1', delete_date = SYSDATE
+		WHERE cal_No = #{calNo}
+	</update>
+
+
 	<!--==============================END 개인 캘린더 ==================================== -->
 
 

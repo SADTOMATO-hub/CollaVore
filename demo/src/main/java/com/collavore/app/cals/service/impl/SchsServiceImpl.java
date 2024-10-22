@@ -1,5 +1,6 @@
 package com.collavore.app.cals.service.impl;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,8 @@ public class SchsServiceImpl implements SchsService {
 		return result == 1 ? schsVO.getSchNo() : -1;
 
 	}
-
+	
+	//수정
 	@Override
 	public Map<String, Object> updateSchs(SchsVO schsVO) {
 		Map<String, Object> resultMap = new HashMap<>();
@@ -71,7 +73,7 @@ public class SchsServiceImpl implements SchsService {
 	public List<CalsVO> allCal() {
 		return schsMapper.selectSoloCal();
 	}
-	
+
 	// 개인캘린더
 	@Override
 	public List<CalsVO> soloCal() {
@@ -90,12 +92,51 @@ public class SchsServiceImpl implements SchsService {
 		return schsMapper.selectProjCal();
 	}
 
-	// 등록
+	// 캘린더 등록
 	@Override
 	public int insertCals(CalsVO calsVO) {
 		int result = schsMapper.insertCalsInfo(calsVO);
 		return result == 1 ? calsVO.getCalNo() : -1;
 
+	}
+	
+	// 캘린더 수정
+	@Override
+	public Map<String, Object> updateCals(CalsVO calsVO) {
+	    Map<String, Object> resultMap = new HashMap<>();
+	    try {
+	        int updatedRows = schsMapper.updateCalsInfo(calsVO); // 매퍼 호출
+
+	        if (updatedRows > 0) {
+	            resultMap.put("result", true);
+	        } else {
+	            resultMap.put("result", false);
+	        }
+	    } catch (Exception e) {
+	        resultMap.put("result", false);
+	    }
+	    return resultMap;
+	}
+
+	// 캘린더를 휴지통으로 이동 (isDelete = 'h1')
+	@Override
+	public String moveTrash(String calNo) {
+		int result = schsMapper.updateCalToTrash(calNo);
+		return result > 0 ? "Success" : null;
+	}
+
+	// 휴지통에서 캘린더 복원 (isDelete = 'h2')
+	@Override
+	public String calRestore(String calNo) {
+		int result = schsMapper.restoreCalFromTrash(calNo);
+		return result > 0 ? "Success" : null;
+	}
+
+	// 캘린더 완전 삭제
+	@Override
+	public String permanentlyDel(String calNo) {
+		int result = schsMapper.permanentlyDeleteCal(calNo);
+		return result > 0 ? "Success" : null;
 	}
 
 	// =====================END 캘린더 사이드바=====================

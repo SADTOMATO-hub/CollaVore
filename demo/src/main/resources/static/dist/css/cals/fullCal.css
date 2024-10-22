@@ -278,3 +278,41 @@ button.close:hover {
 }
 
 
+
+
+
+
+
+
+/* 기본적으로 연필 아이콘을 숨김 */
+.edit-icon {
+    display: none;
+}
+
+/* 캘린더 항목에 마우스를 올리면 연필 아이콘 표시 */
+li:hover .edit-icon {
+    display: inline-block;
+    margin-left: 10px;  /* 캘린더 이름과 연필 아이콘 사이의 여백 */
+}
+
+/* 아이콘을 캘린더 이름 옆에 배치 */
+.calendar-item-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+/* 연필 아이콘 스타일 */
+.edit-icon {
+    display: inline-block;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.edit-icon i {
+    color: gray;
+    font-size: 1.2rem;  /* 아이콘 크기 */
+}
+
+.edit-icon i:hover {
+    color: black;  /* 마우스를 올렸을 때 아이콘 색상 변경 */
+}
