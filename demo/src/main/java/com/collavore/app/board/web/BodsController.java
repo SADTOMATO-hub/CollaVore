@@ -27,6 +27,7 @@ public class BodsController {
 
 	private BodsService bodsService;
 
+
 	@Autowired
 	public BodsController(BodsService bodsService) {
 		this.bodsService = bodsService;
@@ -99,15 +100,19 @@ public class BodsController {
 	// 댓글등록 - 페이지 : URI - boardInsert / RETURN - board/boardInsert
 	@GetMapping("/board/bodsComts")
 	public String bodsComtsInsertForm(BodsComtsVO bodsComtsVO) {
+		
 		return "/board/bodsComts";
+		
 	}
 
 	// 댓글등록 - 처리 : URI - boardInsert / PARAMETER - BoardVO(QueryString)
 	// RETURN - 단건조회 다시 호출
 	@PostMapping("/board/bodsComts")
-	public String bodsComtsInsertProcess(BodsComtsVO bodsComtsVO) {// <form/> 활용한 submit
+	@ResponseBody
+	public BodsComtsVO bodsComtsInsertProcess(BodsComtsVO bodsComtsVO) {// <form/> 활용한 submit
 		int eid = bodsService.insertBodsComts(bodsComtsVO);
-		return "redirect:bodsComtsInfo?cmtNo=" + eid;
+		System.out.println(bodsComtsVO);
+		return bodsComtsVO;
 	}
 
 }

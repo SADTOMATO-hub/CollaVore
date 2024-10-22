@@ -80,13 +80,13 @@
 	
 	
 	<!-- 댓글 등록 -->
-	<insert id="insertBodsComts" parameterType="BodsComtsVO">
+	<insert id="insertBodsComtsInfo" parameterType="BodsComtsVO">
 		<selectKey keyProperty="cmtNo" resultType="Integer"
 			order="BEFORE">
-			SELECT NVL(MAX(cmt_no),1000) + 1
-			FROM bods
+			SELECT NVL(MAX(cmt_no),0) + 1
+			FROM bodscomts
 		</selectKey>
-		INSERT INTO bods
+		INSERT INTO bodscomts
 		(
 		cmt_no
 		, content

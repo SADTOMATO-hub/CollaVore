@@ -19,7 +19,11 @@ public interface BodsService {
 	// 게시글 삭제
 	public int deleteBods(int bodVO);
 
+	// 댓글 등록
 	public int insertBodsComts(BodsComtsVO bodsComtsVO);
+	
+	// 댓글 전체조회
+	public List<BodsComtsVO> bodsComtsList(BodsComtsVO bodsComtsVO);
 	
 	// 게시판 생성
 	

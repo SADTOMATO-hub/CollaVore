@@ -2,6 +2,10 @@ package com.collavore.app.board.service;
 
 import java.sql.Date;
 
+import lombok.Data;
+
+
+@Data
 public class BodsComtsVO {
 	private Integer cmtNo;  // 댓글번호
 	private String content;  // 댓글내용
