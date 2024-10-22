@@ -22,7 +22,14 @@ public interface BodsService {
 	// 게시글 삭제
 	public int deleteBods(int bodVO);
 
+	// 댓글 등록
 	public int insertBodsComts(BodsComtsVO bodsComtsVO);
+	
+	// 댓글 전체조회
+	public List<BodsComtsVO> bodsComtsList(int postNo);
+	
+	// 댓글 삭제
+	public int deleteBodsComts(int bodsComtsVO);
 	
 	// 게시판 생성
 	

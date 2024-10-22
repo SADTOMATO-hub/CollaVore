@@ -2,6 +2,7 @@ package com.collavore.app.board.mapper;
 
 import java.util.List;
 
+import com.collavore.app.board.service.BodsComtsVO;
 import com.collavore.app.board.service.BodsVO;
 
 public interface BodsMapper {
@@ -19,20 +20,28 @@ public interface BodsMapper {
 
 	// 게시글수정(수정)
 	public int updateBodsInfo(BodsVO bodsVO);
-	
+
 	// 게시글삭제
 	public int deleteBodsInfo(int postNO);
 
+	// 댓글 등록
+	public int insertBodsComtsInfo(BodsComtsVO bodsComtsVO);
+	
+	// 댓글 조회(전체 조회)
+	public List<BodsComtsVO>selectBodsComtsAll(int postNo);
+	
+	// 댓글 삭제(단건 삭제)
+	public int delectBodsComtsInfo(int cmtNo);
+	
 	// 게시판 생성(등록)
 	// public int insertBodsInfo();
-	
-	/*// 게시판 수정
-	public int UpdateBodsInfo();
-	
-	// 게시판 삭제
-	public int delectBodsInfo(int post_no); 
-	
-	// 게시판 전체 조회
-	public List<BodsVO> getlist();*/
+
+	/*
+	 * // 게시판 수정 public int UpdateBodsInfo();
+	 * 
+	 * // 게시판 삭제 public int delectBodsInfo(int post_no);
+	 * 
+	 * // 게시판 전체 조회 public List<BodsVO> getlist();
+	 */
 
 }

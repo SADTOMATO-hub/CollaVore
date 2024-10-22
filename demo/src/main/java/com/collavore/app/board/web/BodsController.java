@@ -20,6 +20,8 @@ import com.collavore.app.common.service.PageDTO;
 
 @Controller
 public class BodsController {
+	private static final String Intger = null;
+
 	@ModelAttribute
 	public void addAttributes(Model model) {
 		model.addAttribute("sidemenu", "board_sidebar");
@@ -36,14 +38,14 @@ public class BodsController {
 	@GetMapping("/board/bodsList") // 인터넷창에 치는 주소
 	public String bodsList(BodsVO bodsVO, Model model) {
 		String page = bodsVO.getPage() == null ? "1" : bodsVO.getPage();
-		
+
 		List<BodsVO> list = bodsService.bodsList(bodsVO);
 		model.addAttribute("bodsList", list);
-		
+
 		int totalCnt = bodsService.totalListCnt(bodsVO);
 		PageDTO pageing = new PageDTO(page, totalCnt);
 		model.addAttribute("pageing", pageing);
-		
+
 		return "board/bodsList"; // 불러오는 html 경로
 // prefix  + return + suffix
 // classpath:/templates/  +  board/boardList  +  .html
@@ -58,6 +60,10 @@ public class BodsController {
 	public String bodsInfo(BodsVO bodsVO, Model model) {
 		BodsVO findVO = bodsService.bodsInfo(bodsVO);
 		model.addAttribute("bods", findVO);
+		int postNo = bodsVO.getPostNo();
+		List<BodsComtsVO> list = bodsService.bodsComtsList(postNo);
+		model.addAttribute("comtsList", list);
+
 		return "board/bodsInfo";
 	}
 
@@ -107,14 +113,26 @@ public class BodsController {
 	@GetMapping("/board/bodsComts")
 	public String bodsComtsInsertForm(BodsComtsVO bodsComtsVO) {
 		return "/board/bodsComts";
+
 	}
 
 	// 댓글등록 - 처리 : URI - boardInsert / PARAMETER - BoardVO(QueryString)
 	// RETURN - 단건조회 다시 호출
 	@PostMapping("/board/bodsComts")
-	public String bodsComtsInsertProcess(BodsComtsVO bodsComtsVO) {// <form/> 활용한 submit
+	@ResponseBody
+	public BodsComtsVO bodsComtsInsertProcess(BodsComtsVO bodsComtsVO) {// <form/> 활용한 submit
 		int eid = bodsService.insertBodsComts(bodsComtsVO);
-		return "redirect:bodsComtsInfo?cmtNo=" + eid;
+		System.out.println(bodsComtsVO);
+		return bodsComtsVO;
+	}
+	
+	// 댓글 삭제
+	@GetMapping("/board/bodsComtsDelete")
+	public String bodsComtsDelete(@RequestParam Integer cmtNo,@RequestParam Integer boardNo) {
+		bodsService.deleteBodsComts(cmtNo);
+		
+		return "board/bodsInfo";
+		
 	}
 
 }

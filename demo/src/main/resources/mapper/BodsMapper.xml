@@ -86,13 +86,13 @@
 	
 	
 	<!-- 댓글 등록 -->
-	<insert id="insertBodsComts" parameterType="BodsComtsVO">
+	<insert id="insertBodsComtsInfo" parameterType="BodsComtsVO">
 		<selectKey keyProperty="cmtNo" resultType="Integer"
 			order="BEFORE">
-			SELECT NVL(MAX(cmt_no),1000) + 1
-			FROM bods
+			SELECT NVL(MAX(cmt_no),0) + 1
+			FROM bodscomts
 		</selectKey>
-		INSERT INTO bods
+		INSERT INTO bodscomts
 		(
 		cmt_no
 		, content
@@ -110,7 +110,25 @@
 		)
 	</insert>
 	
+	<!-- 댓글 전체 조회 -->
+	<select id="selectBodsComtsAll" resultType="BodsComtsVO"> 
+	SELECT cmt_no
+		,(select name
+            from employees
+           where emp_no = writer) writerName
+		, content
+		, reg_date
+
+		FROM bodscomts
+		where post_no = #{postNo}
+		ORDER BY cmt_no DESC
+	</select>
 	
+	<!-- 댓글 삭제 -->
+	<delete id="delectBodsComtsInfo" parameterType="BodsComtsVO">
+		DELETE FROM bodscomts  
+		WHERE cmt_no = #{cmtNo}
+	</delete> 
 	
 
 </mapper>

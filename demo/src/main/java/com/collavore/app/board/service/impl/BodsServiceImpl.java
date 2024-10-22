@@ -29,23 +29,23 @@ public class BodsServiceImpl implements BodsService {
 		return bodsMapper.totalBoardCnt(bodsVO);
 	}
 
-	@Override
+	@Override //전체조회
 	public List<BodsVO> bodsList(BodsVO bodsVO) {
 		return bodsMapper.selectBoardAll(bodsVO);
 	}
 
-	@Override
+	@Override // 상세조회
 	public BodsVO bodsInfo(BodsVO bodsVO) {
 		return bodsMapper.selectBodsInfo(bodsVO);
 	}
 
-	@Override
+	@Override // 등록
 	public int insertBods(BodsVO bodsVO) {
 		int result = bodsMapper.insertBodsInfo(bodsVO);
 		return result == 1 ? bodsVO.getPostNo() : -1;
 	}
 
-	@Override
+	@Override //수정
 	public Map<String, Object> updateBods(BodsVO bodsVO) {
 		Map<String, Object> map = new HashMap<>();
 		boolean isSuccessed = false;
@@ -73,15 +73,28 @@ public class BodsServiceImpl implements BodsService {
 		// return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
 	}
 
-	@Override
+	@Override //삭제
 	public int deleteBods(int bodsVO) {
 		return bodsMapper.deleteBodsInfo(bodsVO);
 		//return 0;
 	}
-
-	@Override
+	
+	
+	@Override //댓글등록
 	public int insertBodsComts(BodsComtsVO bodsComtsVO) {
-		// TODO Auto-generated method stub
-		return 0;
+		int result = bodsMapper.insertBodsComtsInfo(bodsComtsVO);
+		return result == 1 ? bodsComtsVO.getCmtNo() : -1;
 	}
+	
+	@Override //댓글 전체조회
+	public List<BodsComtsVO> bodsComtsList(int postNo) {
+		return bodsMapper.selectBodsComtsAll(postNo);
+	}
+
+	@Override // 댓글 삭제
+	public int deleteBodsComts(int bodsComtsVO) {
+		return bodsMapper.delectBodsComtsInfo(bodsComtsVO);
+	}
+
+	
 }
