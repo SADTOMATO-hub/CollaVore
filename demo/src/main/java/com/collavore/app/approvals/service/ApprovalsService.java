@@ -16,7 +16,10 @@ public interface ApprovalsService {
 	// 템플릿 삭제
 	public int deleteTemplate(ApprovalstempVO eatNo);
 	// 전자결재 생성
-	public int createAppovals (ApprovalsVO approvalsVO);
+		//전자결재 테이블에 데이터 넣기
+	public int createApprsEaTable (ApprovalsVO approvalsVO);
+		//결재자 테이블에 데이터 넣기
+	public int createApprsEarTable (ApprovalsVO approvalsVO);
 	// 진행 중인 전자결재 목록 조회
 	// 전체 전자결재 목록 조회
 	// 전자결재 상세 조회

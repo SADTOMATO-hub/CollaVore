@@ -53,34 +53,65 @@
 	<select id="" resultType="HrmVO" parameterType="String">
 		SELECT emp_no, d.name, e.info
 		FROM employees 
-		WHERE name = "#{empName}"
+		WHERE name = #{empName}
 	</select>
 	
 	<!-- 전자결재를 생성하는 기능 -->
-	<insert id="createApprs" parameterType="ApprovalsVO">
+	<!-- approvals테이블에 넣기 -->
+	<insert id="createApprsEaTable" parameterType="ApprovalsVO">
 	  <selectKey keyProperty="eaNo"
-	   resultType="Integer"
+	   resultType="ApprovalsVO"
 	   order="BEFORE">
-	   	SELECT NVL(MAX(ea_no),0) + 1
+	   	SELECT NVL(MAX(approvals.ea_no),0) + 1
 	  	FROM approvals
 	  </selectKey>
 		INSERT INTO approvals(
-								ea_no,
-								title,
-								eat_no,
-								content
-							 )	
-				values       (
-								#{eaNo},
-								#{title},
-								#{eatNo},
-								#{content}
-							 )
+							  approvals.ea_no,
+							  title,
+							  eat_no,
+							  approvals.status,
+							  approvals.emp_no,
+							  content
+							  )
+         	  		 VALUES (
+         	   				 #{eaNo},
+         	   				 #{title},
+         	   				 #{eatNo},
+         	   				 #{status},
+         	   				 #{drafterEmpNo},
+         	   				 #{content}
+         	   			     )
 	</insert>
+	<!-- approvers테이블에 넣기 -->
+	<insert id="createApprsEarTable" parameterType="ApprovalsVO">
+	  <selectKey keyProperty="earNo"
+	   resultType="ApprovalsVO"
+	   order="BEFORE">
+	   	SELECT NVL(MAX(ear_no),0) + 1
+	  	FROM approvers
+	  </selectKey>
+		INSERT INTO approvers(
+							  ear_no,
+							  approvers.ea_no,
+							  approvers.emp_no,
+							  approvers.status,
+							  sort
+							  )
+         	  		 VALUES (
+         	   				 #{eaNo},
+         	   				 #{title},
+         	   				 #{eatNo},
+         	   				 #{status},
+         	   				 #{sort}
+         	   			     )
+	</insert>
+	
 	
 	<!-- 결재자 입력에 필요한 사원 정보를 출력하는 기능 -->
 	<select id="employeesInfo" resultType="HrmVO">
-		SELECT emp_no, name, info
+		SELECT emp_no as empNo, 
+			   name as empName,
+			   info
 		FROM employees
 	</select>	
 </mapper>
