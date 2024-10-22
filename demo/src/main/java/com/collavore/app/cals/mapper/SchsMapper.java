@@ -22,20 +22,24 @@ public interface SchsMapper {
 	// 삭제 조건
 	public int deleteSchsInfo(int schsNO);
 
-	// 전체조회
+	// 캘린더 전체조회
 	public List<CalsVO> selectAllCal();
 
-	public List<CalsVO> selectSoloCal(); // 개인 일정 조회
+	public List<CalsVO> selectSoloCal(); // 캘린더 개인 일정 조회
 
-	public List<CalsVO> selectTeamCal(); // 공유 일정 조회
+	public List<CalsVO> selectTeamCal(); // 캘린더 공유 일정 조회
 
-	public List<CalsVO> selectProjCal(); // 공유 일정 조회
-
-	// 등록
-	public int insertCalsInfo(CalsVO calsVO);
-
+	public List<CalsVO> selectProjCal(); // 캘린더 공유 일정 조회
 	
-	//삭제
+	
+
+	// 캘린더 등록
+	public int insertCalsInfo(CalsVO calsVO);
+	
+	// 캘린더 수정
+	public int updateCalsInfo(CalsVO calsVO);
+	
+	// 캘린더삭제
 	
 	public int updateCalToTrash(String calNo); // 캘린더를 휴지통으로 이동 (isDelete를 'h1'로 업데이트)
     

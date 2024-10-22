@@ -112,9 +112,9 @@ public class SchsController {
 	public Map<String, Object> insertCals(@RequestBody CalsVO calsVO) {
 	    Map<String, Object> result = new HashMap<>();
 	    try {
-	        int calNo = schsService.insertCals(calsVO);  // Service를 통해 캘린더 등록
+	        schsService.insertCals(calsVO);  // Service를 통해 캘린더 등록
 	        result.put("success", true);
-	        result.put("calNo", calNo);  // 등록된 캘린더 번호 반환
+	        result.put("calsVO", calsVO);  // 등록된 캘린더 번호 반환
 	    } catch (Exception e) {
 	        result.put("success", false);
 	        result.put("message", "캘린더 등록에 실패했습니다.");
@@ -122,13 +122,48 @@ public class SchsController {
 	    return result;
 	}
 	
+	//캘린더 수정
+	@PostMapping("/cal/calUpdate")
+	@ResponseBody
+	public Map<String, Object> updateCal(@RequestBody CalsVO calsVO) {
+	    Map<String, Object> resultMap = schsService.updateCals(calsVO);
+
+	    if (resultMap.get("result").equals(true)) {
+	        resultMap.put("message", "캘린더가 성공적으로 수정되었습니다.");
+	    } else {
+	        resultMap.put("message", "캘린더 수정에 실패했습니다.");
+	    }
+
+	    return resultMap;
+	}
+	
 	   // 캘린더 휴지통으로 이동
-    @PostMapping("/cal/calTrash")
-    @ResponseBody
-    public String moveToTrash(@RequestParam String calNo) {
-        String result = schsService.moveTrash(calNo);
-        return result != null ? "캘린더가 휴지통으로 이동되었습니다." : "캘린더 이동에 실패했습니다.";
-    }
+	@PostMapping("/cal/calTrash")
+	@ResponseBody
+	public Map<String, Object> moveTrash(@RequestBody Map<String, String> params) {
+	    String calNo = params.get("calNo");
+	    String result = schsService.moveTrash(calNo);
+	    Map<String, Object> response = new HashMap<>();
+	    if (result != null) {
+	        response.put("success", true);
+	        response.put("message", "캘린더가 휴지통으로 이동되었습니다.");
+	    } else {
+	        response.put("success", false);
+	        response.put("message", "캘린더 이동에 실패했습니다.");
+	    }
+	    return response;
+	}
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 	
     // 캘린더 복원
     @PostMapping("/cal/calRestore")

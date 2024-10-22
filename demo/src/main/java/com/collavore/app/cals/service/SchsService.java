@@ -30,6 +30,9 @@ public interface SchsService {
 
 	// 캘린더 등록
 	public int insertCals(CalsVO calsVO);
+	
+	// 캘린더 수정
+	public Map<String, Object> updateCals(CalsVO calsVO);
 
 	// 캘린더 삭제
 	public String moveTrash(String calNo); // 캘린더 휴지통으로 이동
