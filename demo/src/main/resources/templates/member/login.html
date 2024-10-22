@@ -12,7 +12,7 @@ body, html {
 }
 /* 배경 이미지 설정 */
 .bg-image {
-	background-image: url('/image.png'); /* 정적 폴더에 있는 이미지 경로 */
+	background-image: url('[[@{/assets/images/users/login.png}]]');  /* 정적 폴더에 있는 이미지 경로 */
 	background-size: cover;
 	background-position: center;
 	height: 100%;
@@ -23,18 +23,19 @@ body, html {
 /* 로그인 창 스타일 */
 .login-container {
 	background-color: rgba(255, 255, 255, 0.9); /* 반투명한 배경 */
-	padding: 40px;
+	padding: 20px;
 	border-radius: 10px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 	text-align: center;
+	width: 20%;
 }
 
 .login-container img {
-	width: 150px; /* 로고 이미지 크기 */
+	width: 250px; /* 로고 이미지 크기 */
 }
 
 .login-container input {
-	width: 100%;
+	width: 80%;
 	padding: 10px;
 	margin: 10px 0;
 	border: 1px solid #ccc;
@@ -47,7 +48,8 @@ body, html {
 	border: none;
 	padding: 10px 20px;
 	cursor: pointer;
-	width: 100%;
+	width: 80%;
+	margin-top: 15px;
 	border-radius: 5px;
 }
 
@@ -65,19 +67,52 @@ body, html {
 <body>
 	<div class="bg-image">
 		<div class="login-container">
-			<img th:src="@{/logo.png}" alt="로고">
+			<img th:src="@{/assets/images/users/logo.png}" alt="로고">
 			<!-- 로고 이미지 Thymeleaf로 동적 경로 처리 -->
 			<form th:action="@{/login}" method="post">
-				<input type="email" name="email" class="form-control" placeholder="Email" required> 
+				<input list="email-suggestions" type="email" id="email" name="email" class="form-control" placeholder="Email" required> 
+				<datalist id="email-suggestions"></datalist>
+
 				<input type="password" name="password" class="form-control" placeholder="Password" autocomplete="current-password" required>
 				<button type="submit">로그인</button>
 
 				<div th:if="${loginError}" class="error">
 					<p th:text="${loginError}"></p>
 				</div>
-				
 			</form>
 		</div>
 	</div>
+
+	<script>
+		// 이메일 필드 자동 완성 기능
+		const emailInput = document.getElementById('email');
+		const emailSuggestions = document.getElementById('email-suggestions');
+		const emailDomains = ['gmail.com', 'naver.com', 'daum.net', 'yahoo.com', 'hotmail.com'];
+
+		emailInput.addEventListener('input', function() {
+			const inputValue = this.value;
+			const atIndex = inputValue.indexOf('@');
+
+			// '@'가 입력되면 도메인 부분을 추출하여 필터링
+			if (atIndex > -1) {
+				const userPart = inputValue.slice(0, atIndex + 1);
+				const domainPart = inputValue.slice(atIndex + 1);
+				
+				// 도메인 필터링
+				const filteredDomains = emailDomains.filter(domain => domain.startsWith(domainPart));
+
+				// datalist 옵션 설정
+				emailSuggestions.innerHTML = ''; // 기존 옵션 삭제
+				filteredDomains.forEach(domain => {
+					const option = document.createElement('option');
+					option.value = userPart + domain;
+					emailSuggestions.appendChild(option);
+				});
+			} else {
+				// '@'가 없을 경우 datalist 초기화
+				emailSuggestions.innerHTML = '';
+			}
+		});
+	</script>
 </body>
 </html>

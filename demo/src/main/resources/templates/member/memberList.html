@@ -105,33 +105,31 @@
 }
 
 .insert-btn {
-    display: flex;
-    justify-content: flex-end; /* 오른쪽으로 정렬 */
-    margin-right: 20px; /* 필요에 따라 여백 조정 */
-
+	display: flex;
+	justify-content: flex-end; /* 오른쪽으로 정렬 */
+	margin-right: 20px; /* 필요에 따라 여백 조정 */
 }
 
 button {
-    padding: 5px 10px;
-    background-color: #9b8df6;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
+	padding: 5px 10px;
+	background-color: #9b8df6;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: background-color 0.3s ease;
 }
 
 /* 마우스 호버 시 효과 */
 button:hover {
-    background-color: #5a4bcf;
+	background-color: #5a4bcf;
 }
 
 /* 추가적인 버튼 스타일링 */
 button:active {
-    background-color: #4839a9;
+	background-color: #4839a9;
 }
-
 </style>
 
 	<div class="body-page-wrapper">
@@ -171,8 +169,13 @@ button:active {
 								<td>[[${info.jobName}]]</td>
 								<td>[[${info.posiName}]]</td>
 								<td>[[${info.workType}]]</td>
-								<td><button type="button"
-										th:onclick="|location.href='@{/memberInsert}'|">보기</button></td>
+								<td>
+									<button type="button" th:onclick="|location.href='@{/memberUpdate(empNo=${info.empNo})}'|">보기</button>
+
+
+								</td>
+
+
 							</tr>
 						</th:block>
 					</tbody>
