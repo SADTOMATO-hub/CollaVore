@@ -2,58 +2,186 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
+	<style>
+/* 페이지 기본 스타일 */
+.body-page-wrapper {
+	padding: 20px;
+	background-color: #f9f9f9;
+	align-items: center;
+}
 
-	<div class="container">
-		<!-- 왼쪽 상단에 관리자 페이지 경로 추가 -->
-		<div>관리자 페이지 > 사원관리</div>
-		<div>
-			<p class="title">
-				<b>사원관리 |</b> 사원관리
-			</p>
-			<p class="subtitle">전체 사원의 관리 페이지 입니다.</p>
-		</div>
-	</div>
+/* Breadcrumb 스타일 */
+.breadcrumb {
+	background-color: #ffffff;
+	padding: 10px 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	height: 70px;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	color: #333;
+	position: relative;
+}
 
-	<div class="card">
-		<table class="table">
-			<thead>
-				<tr>
-					<th scope="col">이름</th>
-					<th scope="col">연락처</th>
-					<th scope="col">이메일</th>
-					<th scope="col">소속</th>
-					<th scope="col">직무</th>
-					<th scope="col">직위(직책)</th>
-					<th scope="col">상태</th>
-					<th scope="col"></th>
-				</tr>
-			</thead>
-			<tbody>
-				<th:block th:each="info : ${members}">
-					<tr>
-						<td>[[${info.empName}]]</td>
-						<td>[[${info.tel}]]</td>
-						<td>[[${info.email}]]</td>
-						<td>[[${info.deptName}]]</td>
-						<td>[[${info.jobName}]]</td>
-						<td>[[${info.posiName}]]</td>
-						<td>[[${info.workType}]]</td>
-						<td><button type="button" th:onclick="|location.href='@{/memberInsert}'|">상세보기</button></td>
-					</tr>
-				</th:block>
-			</tbody>
-		</table>
-		<div>
-			<button type="button" th:onclick="|location.href='@{/memberInsert}'|" > 등록 </button>
+.breadcrumb h4 {
+	margin: 0;
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+}
+
+.breadcrumb-left {
+	display: flex; /* flexbox로 요소 정렬 */
+	flex-direction: column; /* 세로로 배치 */
+	justify-content: center; /* 세로 중앙 정렬 */
+}
+
+.breadcrumb-left h4 {
+	font-size: 22px;
+	font-weight: bold;
+	margin: 0; /* 기본 마진 제거 */
+	margin-top: 2px;
+}
+
+.breadcrumb-left p {
+	font-size: 14px;
+	color: #666;
+	margin-top: 2px;
+	margin-bottom: 0;
+}
+
+.breadcrumb-right span {
+	font-size: 14px;
+	color: #999;
+	white-space: nowrap;
+	position: relative;
+	top: -12px;
+}
+
+/* 카드 스타일 */
+.card_memberList {
+	background-color: #ffffff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+}
+
+/* 테이블 스타일 */
+.memberList_table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 14px;
+	text-align: left;
+	margin-bottom: 5px;
+}
+
+.memberList_table thead th {
+	text-align: center;
+	font-weight: bold;
+	color: #555;
+	padding: 12px;
+	border-bottom: 2px solid #ddd;
+	font-weight: bold;
+}
+
+.memberList_table tbody td {
+	text-align: center;
+	font-size: 12px;
+	color: #666666;;
+	padding: 5px 20px;
+	border-bottom: 1px solid #ddd;
+	color: #333;
+	white-space: nowrap; /* 텍스트가 여러 줄로 나뉘지 않고 한 줄로 유지됩니다 */
+	overflow: hidden; /* 넘친 텍스트를 숨깁니다 */
+	text-overflow: ellipsis; /* 넘친 텍스트는 "..."으로 표시됩니다 */
+}
+
+.memberList_table tbody tr:hover {
+	background-color: #f9f9f9; /* 마우스 오버 시 행 배경색 변경 */
+}
+
+.insert-btn {
+    display: flex;
+    justify-content: flex-end; /* 오른쪽으로 정렬 */
+    margin-right: 20px; /* 필요에 따라 여백 조정 */
+
+}
+
+button {
+    padding: 5px 10px;
+    background-color: #9b8df6;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+/* 마우스 호버 시 효과 */
+button:hover {
+    background-color: #5a4bcf;
+}
+
+/* 추가적인 버튼 스타일링 */
+button:active {
+    background-color: #4839a9;
+}
+
+</style>
+
+	<div class="body-page-wrapper">
+		<div class="purple-background-container">
+			<div class="breadcrumb">
+				<div class="breadcrumb-left">
+					<h4>사원관리</h4>
+					<p>전체 사원의 관리 페이지 입니다.</p>
+				</div>
+				<div class="breadcrumb-right">
+					<span>관리자 페이지 > 사원관리</span>
+				</div>
+			</div>
+
+
+			<div class="card_memberList">
+				<table class="memberList_table">
+					<thead>
+						<tr>
+							<th scope="col">이름</th>
+							<th scope="col">연락처</th>
+							<th scope="col">이메일</th>
+							<th scope="col">소속</th>
+							<th scope="col">직무</th>
+							<th scope="col">직위(직책)</th>
+							<th scope="col">상태</th>
+							<th scope="col">보기</th>
+						</tr>
+					</thead>
+					<tbody>
+						<th:block th:each="info : ${members}">
+							<tr>
+								<td>[[${info.empName}]]</td>
+								<td>[[${info.tel}]]</td>
+								<td>[[${info.email}]]</td>
+								<td>[[${info.deptName}]]</td>
+								<td>[[${info.jobName}]]</td>
+								<td>[[${info.posiName}]]</td>
+								<td>[[${info.workType}]]</td>
+								<td><button type="button"
+										th:onclick="|location.href='@{/memberInsert}'|">보기</button></td>
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+				<div class="insert-btn">
+					<button type="button"
+						th:onclick="|location.href='@{/memberInsert}'|">등록</button>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
-<!-- <script> 사원이 단건조회시 사이드바에 넣을 아이
-	const context = $('meta[name="ctxPath"]').attr('value'); // val();
-	$('tbody > tr').on('click', function(e){
-		let trTag = e.currentTarget;
-		let eid = $(trTag).children().eq(1).text();
-		let url = (context==undefined?'':context) + '/empInfo?empNo=' + eid;
-		location.href=url;
-	});
-</script> -->

@@ -3,9 +3,10 @@
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
 
-<style>
+	<style>
+
 /* 페이지 기본 스타일 */
-.page-wrapper {
+.body-page-wrapper {
 	padding: 20px;
 	background-color: #f9f9f9;
 	display: flex;
@@ -16,7 +17,7 @@
 /* Breadcrumb 스타일 */
 .breadcrumb {
 	background-color: #ffffff;
-	padding: 5px 20px;
+	padding: 10px 20px;
 	border-radius: 10px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	height: 70px;
@@ -30,22 +31,42 @@
 	position: relative;
 }
 
-.breadcrumb-left h4 {
+.breadcrumb h4 {
+	margin: 0;
 	font-size: 24px;
 	font-weight: bold;
+	color: #333;
+}
+
+.breadcrumb-left {
+	display: flex; /* flexbox로 요소 정렬 */
+	flex-direction: column; /* 세로로 배치 */
+	justify-content: center; /* 세로 중앙 정렬 */
+}
+
+.breadcrumb-left h4 {
+	font-size: 22px;
+	font-weight: bold;
+	margin: 0; /* 기본 마진 제거 */
+	margin-top: 2px;
 }
 
 .breadcrumb-left p {
-	margin-top: 5px;
 	font-size: 14px;
 	color: #666;
+	margin-top: 2px;
+	margin-bottom: 0;
 }
 
-.breadcrumb-right {
-	position: absolute;
-	right: 20px;
-	top: 20px;
+.breadcrumb-right span {
+    font-size: 14px;
+    color: #999;
+    white-space: nowrap;
+    position: relative;
+    top: -12px;
 }
+
+
 
 /* 카드 스타일 */
 .card_userInfo, .card_table {
@@ -65,39 +86,50 @@
 .profile-section {
 	display: flex;
 	align-items: flex-start;
-	margin-bottom: 20px;
 	position: relative;
 }
 
 /* 프로필 이미지 스타일 */
 .profile-photo img {
-	width: 100px;
-	height: 100px;
+	width: 120px;
+	height: 120px;
 	border-radius: 50%;
-	margin-right: 20px;
+	margin: 20px 20px;
 }
 
 /* 프로필 정보 */
 .profile-details {
 	flex-grow: 1;
-	margin-right: 120px;
+	margin-left: 15px;
+}
+
+.profile-details p {
+	font-size: 16px; /* 폰트 크기 설정 */
+	margin-bottom: 10px; /* 각 p 요소 사이의 간격 설정 */
+	line-height: 1.5; /* 줄 간격 설정 */
+	font-weight: 400; /* 글자 굵기 설정 (일반) */
+	color: #333; /* 텍스트 색상 설정 */
 }
 
 /* 텍스트 영역 크기 조정 */
 .profile-details textarea {
-	width: 100%;
-	height: 60px;
+	width: 80%;
+	height: 120px;
 	resize: none;
 	font-size: 14px;
 	padding: 10px;
+	margin-top: 25px;
+	margin-bottom: 20px;
+	border-radius: 4px;
+	border: 1px solid #ddd;
 	margin-bottom: 20px;
 }
 
 /* 정보 수정 버튼 */
 .edit-button {
 	position: absolute;
-	top: 10px;
-	right: 10px;
+	top: 5px;
+	right: 0;
 	padding: 8px 12px;
 	background-color: #6c5ce7;
 	color: white;
@@ -145,87 +177,6 @@ td {
 	color: #333;
 }
 
-/* 모달 창 스타일 */
-.modal {
-	display: none;
-	position: fixed;
-	z-index: 1000;
-	left: 50%;
-	top: 50%;
-	transform: translate(-50%, -50%);
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0, 0, 0, 0.5);
-}
-
-.modal-content {
-	background-color: #fff;
-	margin: auto;
-	padding: 20px;
-	border-radius: 10px;
-	width: 50%;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-	position: relative;
-}
-
-.close {
-	color: #aaa;
-	float: right;
-	font-size: 28px;
-	font-weight: bold;
-}
-
-.close:hover, .close:focus {
-	color: #000;
-	text-decoration: none;
-	cursor: pointer;
-}
-
-/* 프로필 이미지 스타일 */
-.profile-photo {
-	display: flex;
-	justify-content: center; /* 이미지가 중앙에 배치되도록 설정 */
-	margin-bottom: 15px;
-}
-
-.profile-photo img {
-	width: 100px;
-	height: 100px;
-	border-radius: 50%;
-}
-
-/* 폼 요소 스타일 */
-.form-group {
-	margin-bottom: 15px;
-}
-
-label {
-	display: block;
-	font-weight: bold;
-}
-
-input[type="text"], textarea {
-	width: 100%;
-	padding: 8px;
-	margin-top: 5px;
-	border-radius: 4px;
-	border: 1px solid #ddd;
-	box-sizing: border-box;
-}
-
-button {
-	padding: 10px 20px;
-	background-color: #5cb85c;
-	color: white;
-	border: none;
-	border-radius: 5px;
-	cursor: pointer;
-}
-
-button:hover {
-	background-color: #4cae4c;
-}
-
 /* 수정된 프로필 이미지 스타일 */
 .profile-photo img.default-image {
 	width: 100px;
@@ -234,178 +185,342 @@ button:hover {
 	background-color: #f0f0f0; /* 기본 이미지의 배경색 설정 */
 	object-fit: cover;
 }
+
+/* 모달 영역 시작 */
+.modal {
+	display: none;
+	position: fixed;
+	z-index: 1000;
+	left: 50%; /* 모달을 중앙에 위치 */
+	top: 60%; /* 모달을 중앙에 위치 */
+	transform: translate(-50%, -50%); /* 정확한 중앙 정렬을 위한 transform */
+	width: 50%; /* 모달 너비 설정 */
+	max-width: 600px; /* 모달 최대 너비 제한 */
+}
+
+/* 모달 내용 스타일 */
+.modal-content {
+	background-color: #fff;
+	margin: 0; /* 불필요한 외부 여백 제거 */
+	border-radius: 10px; /* 상단 둥글게 */
+	width: 100%; /* 모달 내용 너비 100%로 설정 */
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	position: relative;
+}
+
+/* 모달 헤더 스타일 */
+.modal-header {
+	display: flex;
+	justify-content: center; /* 제목을 중앙 정렬 */
+	align-items: center;
+	position: relative; /* X 버튼 위치 조정을 위해 상대 위치 사용 */
+	background-color: #000; /* 배경색 설정 */
+	color: #fff; /* 글자색 설정 */
+	padding: 10px;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	margin: 0; /* 불필요한 외부 여백 제거 */
+	box-sizing: border-box; /* 전체 박스를 균형 있게 맞춤 */
+}
+
+/* h2 중앙 정렬 */
+.modal-header h2 {
+	flex-grow: 1; /* 가운데 공간을 채워서 중앙 정렬 효과 */
+	text-align: center;
+	margin: 0; /* 기본 margin 제거 */
+}
+
+/* X 버튼 스타일 */
+.modal-close {
+	position: absolute;
+	right: 20px; /* 오른쪽에 고정 */
+	color: #fff;
+	font-size: 34px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.modal-close:hover, .modal-close:focus {
+	color: #ccc;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+/* 모달 안의 사진 중앙 정렬 */
+.modal-profile-photo {
+	display: flex;
+	justify-content: center; /* 수평 중앙 정렬 */
+	align-items: center; /* 수직 중앙 정렬 */
+	width: 100%; /* 부모 컨테이너가 이미지의 너비를 꽉 채움 */
+	margin-bottom: 15px; /* 아래쪽 여백 */
+}
+
+.modal-profile-photo img {
+	width: 100px;
+	height: 100px;
+	border-radius: 50%; /* 이미지 둥글게 */
+	object-fit: cover; /* 이미지가 잘려도 비율 유지 */
+	display: block; /* 이미지를 블록 요소로 설정하여 정확한 정렬 */
+	margin: 0 auto; /* 이미지가 중앙에 오도록 마진 자동 */
+	background-color: #f0f0f0;
+}
+
+/* 모달 폼 그룹 스타일 */
+.modal-form-group {
+	margin-bottom: 15px;
+	display: flex;
+	justify-content: flex-start; /* 라벨과 인풋 필드를 동일 라인에 배치 */
+	align-items: center;
+}
+
+/* 라벨 스타일 */
+.modal-label {
+	display: inline-block;
+	width: 100px; /* 라벨 가로 사이즈 조정 */
+	font-weight: bold;
+	margin-right: 10px;
+	text-align: right; /* 라벨 텍스트 우측 정렬 */
+}
+
+/* 인풋, 텍스트 영역 스타일 */
+.modal-input, .modal-textarea, .modal-span {
+	width: calc(100% - 160px); /* 인풋, 텍스트 영역 가로 사이즈 조정 */
+	padding: 8px;
+	border-radius: 4px;
+	border: 1px solid #ddd;
+	box-sizing: border-box;
+	font-size: 14px;
+}
+
+/* 텍스트 영역 높이 */
+.modal-textarea {
+	height: 100px; /* 텍스트 영역 높이 */
+	resize: none;
+}
+/* 저장 버튼 스타일 */
+.modal-button {
+	display: block; /* 중앙 정렬을 위해 block 요소로 변경 */
+	padding: 10px 20px;
+	background-color: #6c5ce7;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	margin: 20px auto; /* 버튼을 중앙에 배치 */
+	font-size: 14px; /* 텍스트 크기 조정 */
+}
+
+/* 마우스 호버 시 효과 */
+.modal-button :hover {
+	background-color: #5a4bcf; /* 호버 시 더 어두운 보라색으로 변경 */
+}
+/* 모달 영역 끝 */
 </style>
-	<div class="purple-background-container">
-		<div class="breadcrumb">
-			<div class="breadcrumb-left">
-				<h4>인사정보기록</h4>
-				<p>나의 인사 기본정보를 볼 수 있는 공간입니다.</p>
-			</div>
-			<div class="breadcrumb-right">
-				<span>관리자 페이지 > 조직관리</span>
-			</div>
-		</div>
-
-		<!-- 인사정보 Section -->
-		<div class="card_userInfo">
-			<!-- 프로필 이미지와 사용자 정보 -->
-			<div class="profile-section">
-				<div class="profile-photo">
-					<img
-						th:src="${member.img != null and member.img != '' ? '/assets/images/users/' + member.img : '/assets/images/users/default.png'}"
-						alt="사용자 이미지">
+	<div class="body-page-wrapper">
+		<div class="purple-background-container">
+			<div class="breadcrumb">
+				<div class="breadcrumb-left">
+					<h4>인사정보기록</h4>
+					<p>나의 인사 기본정보를 볼 수 있는 공간입니다.</p>
 				</div>
-				<div class="profile-details">
-					<textarea rows="3" cols="100" th:text="${member.info}" readonly></textarea>
-					<h3 th:text="${member.empName}">이름</h3>
-					<p th:text="${member.tel}">전화번호</p>
-					<p th:text="${member.email}">이메일</p>
-					<p th:text="${member.workType}">근무형태</p>
-					<p th:text="${member.deptName}">사원번호</p>
+				<div class="breadcrumb-right">
+					<span>마이 페이지 > 나의 기본 정보</span>
 				</div>
-				<!-- 정보 수정 버튼 -->
-				<button class="edit-button" id="editBtn">정보 수정</button>
 			</div>
-		</div>
 
-		<div class="card_table">
-			<h4>인사정보</h4>
-			<table>
-				<tr>
-					<th>고용형태</th>
-					<th>입사일자</th>
-					<th>소속</th>
-					<th>직책</th>
-					<th>직급</th>
-				</tr>
-				<tr>
-					<td th:text="${member.workType}"></td>
-					<td th:text="${#dates.format(member.joinDate, 'yyyy-MM-dd')}"></td>
-					<td th:text="${member.deptName}"></td>
-					<td th:text="${member.jobName}"></td>
-					<td th:text="${member.posiName}"></td>
-				</tr>
-			</table>
-		</div>
+			<!-- 인사정보 Section -->
+			<div class="card_userInfo">
+				<!-- 프로필 이미지와 사용자 정보 -->
+				<div class="profile-section">
+					<div class="profile-photo">
+						<img
+							th:src="${member.img != null and member.img != '' ? '/assets/images/users/' + member.img : '/assets/images/users/default.png'}"
+							alt="사용자 이미지">
+					</div>
+					<div class="profile-details">
+						<textarea th:text="${member.info}" readonly></textarea>
+						<p th:text="${member.empName}">이름</p>
+						<p th:text="${member.tel}">전화번호</p>
+						<p th:text="${member.email}">이메일</p>
+						<p th:text="${member.workType}">근무형태</p>
+						<p th:text="${member.deptName}">사원번호</p>
+					</div>
+					<!-- 정보 수정 버튼 -->
+					<button class="edit-button" id="editBtn">정보 수정</button>
+				</div>
+			</div>
 
-		<div class="card_table">
-			<h4>전자결재 이력 OR 바로가기</h4>
-			<table>
-				<tr>
-					<th>우상이가</th>
-					<th>완료하면</th>
-					<th>추가</th>
-					<th>할</th>
-					<th>예정</th>
-				</tr>
-				<tr>
-					<td th:text="${member.workType}"></td>
-					<td th:text="${#dates.format(member.joinDate, 'yyyy-MM-dd')}"></td>
-					<td th:text="${member.deptName}"></td>
-					<td th:text="${member.jobName}"></td>
-					<td th:text="${member.posiName}"></td>
-				</tr>
-			</table>
-		</div>
-		<!-- 모달 구조 -->
-		<div id="editModal" class="modal">
-			<div class="modal-content">
-				<span class="close">&times;</span>
-				<h2>정보 수정</h2>
-				<form id="editForm" enctype="multipart/form-data"
-					th:action="@{/memberEdit}" th:object="${member}" method="post">
-					<div class="form-group" style="text-align: center;">
-						<div style="display: inline-block; position: relative;">
-							<div class="profile-photo">
+			<div class="card_table">
+				<h4>인사정보</h4>
+				<table>
+					<tr>
+						<th>고용형태</th>
+						<th>입사일자</th>
+						<th>소속</th>
+						<th>직책</th>
+						<th>직급</th>
+					</tr>
+					<tr>
+						<td th:text="${member.workType}"></td>
+						<td th:text="${#dates.format(member.joinDate, 'yyyy-MM-dd')}"></td>
+						<td th:text="${member.deptName}"></td>
+						<td th:text="${member.jobName}"></td>
+						<td th:text="${member.posiName}"></td>
+					</tr>
+				</table>
+			</div>
+
+			<div class="card_table">
+				<h4>전자결재 이력 OR 바로가기</h4>
+				<table>
+					<tr>
+						<th>우상이가</th>
+						<th>완료하면</th>
+						<th>추가</th>
+						<th>할</th>
+						<th>예정</th>
+					</tr>
+					<tr>
+						<td th:text="${member.workType}"></td>
+						<td th:text="${#dates.format(member.joinDate, 'yyyy-MM-dd')}"></td>
+						<td th:text="${member.deptName}"></td>
+						<td th:text="${member.jobName}"></td>
+						<td th:text="${member.posiName}"></td>
+					</tr>
+				</table>
+			</div>
+			<!-- 모달 구조 -->
+			<div id="editModal" class="modal">
+				<div class="modal-content">
+					<!-- 모달 헤더 영역 -->
+					<div class="modal-header">
+						<h2>정보 수정</h2>
+						<span class="modal-close">&times;</span>
+					</div>
+
+					<form id="editForm" enctype="multipart/form-data"
+						th:action="@{/memberEdit}" th:object="${member}" method="post">
+						<input type="hidden" name="empNo" th:value="${member.empNo}">
+
+						<div style="position: relative;">
+							<div class="modal-profile-photo">
 								<img id="profilePreview"
 									th:src="${member.img != null ? '/assets/images/users/' + member.img : '/assets/images/users/default.png'}"
 									alt="프로필 이미지" width="100" height="100">
 							</div>
-							<input type="file" id="profileImage" name="profileImage"
-								accept="image/*" onchange="previewImage(event)"> <label>이미지
-								파일 선택</label>
+							<div class="modal-profile-photo">
+								<input type="file" id="profileImage" name="profileImage" accept="image/*" onchange="previewImage(event)" style="padding-left: 100px">
+							</div>
 						</div>
-					</div>
+						<!-- 소개글 수정 -->
+						<div class="modal-form-group">
+							<label for="info" class="modal-label">소개글 :</label>
+							<textarea id="info" name="info" rows="3" class="modal-textarea"
+								placeholder="본인이 쓸 수 있는 소개글 공간" th:field="*{info}"></textarea>
+						</div>
 
-					<!-- 소개글 수정 -->
-					<div class="form-group" style="text-align: center;">
-						<textarea id="info" name="info" rows="3"
-							placeholder="본인이 쓸 수 있는 소개글 공간" th:field="*{info}"></textarea>
-					</div>
+						<!-- 이름 및 전화번호 수정 -->
+						<div class="modal-form-group">
+							<label for="name" class="modal-label">이름 :</label> <input
+								type="text" id="name" name="name" class="modal-input"
+								th:field="*{empName}">
+						</div>
+						<div class="modal-form-group">
+							<label for="tel" class="modal-label">연락처 :</label> <input
+								type="text" id="tel" name="tel" class="modal-input"
+								th:field="*{tel}">
+						</div>
 
-					<!-- 이름 및 전화번호 수정 -->
-					<div style="text-align: left; margin: 0 auto; width: 80%;">
-						<div class="form-group">
-							<label for="name">이름 :</label> <input type="text" id="name"
-								name="name" th:field="*{empName}">
-						</div>
-						<div class="form-group">
-							<label for="tel">연락처 :</label> <input type="text" id="tel"
-								name="tel" th:field="*{tel}">
-						</div>
 						<!-- 이메일 및 부서/직책 정보는 읽기 전용 -->
-						<div class="form-group">
-							<label>이메일 :</label> <span th:text="*{email}"></span>
+						<div class="modal-form-group">
+							<label class="modal-label">이메일 :</label> <span class="modal-span"
+								th:text="*{email}"></span>
 						</div>
-						<div class="form-group">
-							<label>부서/직책 :</label> <span
-								th:text="*{deptName} + ' | ' + *{jobName}"></span>
+						<div class="modal-form-group">
+							<label class="modal-label">부서/직책 :</label> <span
+								class="modal-span" th:text="*{deptName} + ' | ' + *{jobName}"></span>
 						</div>
-						<div class="form-group">
-							<label>사원번호 :</label> <span th:text="*{empNo}"></span>
-						</div>
-					</div>
 
-					<!-- 저장 버튼 -->
-					<div style="text-align: center; margin-top: 20px;">
-						<button type="submit">정보 수정</button>
-					</div>
-				</form>
+						<!-- 저장 버튼 -->
+						<div style="text-align: center; margin-top: 20px;">
+							<button type="submit" class="modal-button">정보 수정</button>
+						</div>
+					</form>
+				</div>
 			</div>
+
 		</div>
 	</div>
 
 	<script>
-	// 모달 관련 요소 가져오기
-    var modal = document.getElementById("editModal");
-    var btn = document.getElementById("editBtn"); // '정보 수정' 버튼
-    var span = document.querySelector(".close");
+		// 모달 관련 요소 가져오기
+		var modal = document.getElementById("editModal");
+		var btn = document.getElementById("editBtn"); // '정보 수정' 버튼
+		var closeBtn = document.querySelector(".modal-close");
 
-    // 수정 버튼을 클릭하면 모달을 엽니다.
-    btn.onclick = function() {
-        modal.style.display = "block";
+		// 수정 버튼을 클릭하면 모달을 엽니다.
+		btn.onclick = function() {
+			modal.style.display = "block";
 
-        // 사용자의 프로필 이미지를 불러와서 기본 이미지가 없으면 default.png를 표시
-        var imgPath = /*[[${member.img}]]*/ '';
-        var profilePreview = document.getElementById("profilePreview");
-        
-        if (!imgPath || imgPath === '') {
-            profilePreview.src = '/assets/images/users/default.png'; // 기본 이미지 경로
-        } else {
-            profilePreview.src = '/assets/images/users/' + imgPath;
-        }
-    }
+			// 사용자의 프로필 이미지를 불러와서 기본 이미지가 없으면 default.png를 표시
+			var imgPath = /*[[${member.img}]]*/'';
+			var profilePreview = document.getElementById("profilePreview");
 
-    // X 버튼을 클릭하면 모달을 닫습니다.
-    span.onclick = function() {
-        modal.style.display = "none";
-    }
+			if (!imgPath || imgPath === '') {
+				profilePreview.src = '/assets/images/users/default.png'; // 기본 이미지 경로
+			} else {
+				profilePreview.src = '/assets/images/users/' + imgPath;
+			}
 
-    // 바깥을 클릭하면 모달을 닫습니다.
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
+			// 현재 값을 저장 (수정 전 원래 값)
+			document.getElementById("info").setAttribute("data-original-value",
+					document.getElementById("info").value);
+			document.getElementById("name").setAttribute("data-original-value",
+					document.getElementById("name").value);
+			document.getElementById("tel").setAttribute("data-original-value",
+					document.getElementById("tel").value);
+		}
 
-    // 이미지 미리보기
-    function previewImage(event) {
-        const reader = new FileReader();
-        reader.onload = function() {
-            const output = document.getElementById('profilePreview');
-            output.src = reader.result;
-        };
-        reader.readAsDataURL(event.target.files[0]);
-    }
+		// X 버튼을 클릭하면 모달을 닫습니다.
+		closeBtn.onclick = function() {
+			modal.style.display = "none";
+		}
+
+		// 바깥을 클릭하면 모달을 닫습니다.
+		window.onclick = function(event) {
+			if (event.target == modal) {
+				modal.style.display = "none";
+			}
+		}
+
+		// 이미지 미리보기
+		function previewImage(event) {
+			const reader = new FileReader();
+			reader.onload = function() {
+				const output = document.getElementById('profilePreview');
+				output.src = reader.result;
+			};
+			reader.readAsDataURL(event.target.files[0]);
+		}
+
+		// 저장 버튼을 누를 때 값이 변경되지 않으면 원래 값을 저장
+		document.getElementById("editForm").onsubmit = function(e) {
+			const infoField = document.getElementById("info");
+			const nameField = document.getElementById("name");
+			const telField = document.getElementById("tel");
+
+			// 수정된 값이 없으면 원래 값을 다시 입력
+			if (infoField.value === "") {
+				infoField.value = infoField.getAttribute("data-original-value");
+			}
+
+			if (nameField.value === "") {
+				nameField.value = nameField.getAttribute("data-original-value");
+			}
+
+			if (telField.value === "") {
+				telField.value = telField.getAttribute("data-original-value");
+			}
+		}
 	</script>
-</div>  
+</div>
