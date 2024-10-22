@@ -2,7 +2,6 @@ package com.collavore.app.approvals.web;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.collavore.app.approvals.service.ApprovalsService;
 import com.collavore.app.approvals.service.ApprovalsVO;
 import com.collavore.app.approvals.service.ApprovalstempVO;
-import com.collavore.app.approvals.service.ApproversVO;
 import com.collavore.app.hrm.service.HrmVO;
 
 @Controller
@@ -109,9 +107,11 @@ public class ApprovalsController {
 	 @PostMapping("/createAppr")
 	 @ResponseBody
 	 public String createAppr(ApprovalsVO approvalVO) {
-		 int result = approvalsService.createAppovals(approvalVO);
-		 if(result >= 0) {
-			 return "redirect:/approvals/tempList";
+		//전자결재문서등록
+		 int result1 = approvalsService.createApprsEaTable(approvalVO);
+		 //전자결재자
+		 if(result1 >= 0) {
+			 int result2 = approvalsService.createApprsEarTable(approvalVO);			 
 		 }
 		 return null;			 
 	 }

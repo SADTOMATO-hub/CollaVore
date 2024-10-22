@@ -1,23 +1,22 @@
 package com.collavore.app.approvals.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.collavore.app.approvals.mapper.ApprovalsMapper;
 import com.collavore.app.approvals.service.ApprovalsService;
 import com.collavore.app.approvals.service.ApprovalsVO;
 import com.collavore.app.approvals.service.ApprovalstempVO;
-import com.collavore.app.approvals.service.ApproversVO;
 import com.collavore.app.hrm.service.HrmVO;
 
 @Service
 public class ApprovalsImpl implements ApprovalsService {
 	//mapper와 연결
 	private ApprovalsMapper approvalsMapper;
+	
 		//생성자
 	@Autowired
 	public ApprovalsImpl(ApprovalsMapper approvalsMapper) {
@@ -58,9 +57,18 @@ public class ApprovalsImpl implements ApprovalsService {
 		return result == 1 ? apprsVO.getEatNo() : -1;
 	}
 	// 전자결재 생성
+		//전자결재 테이블
 	@Override
-	public int createAppovals(ApprovalsVO approvalsVO) {
-		int result = approvalsMapper.createApprs(approvalsVO);
+	@Transactional
+	public int createApprsEaTable(ApprovalsVO approvalsVO) {
+		int result = approvalsMapper.createApprsEaTable(approvalsVO);
+		return result;
+	}
+		//전자결재자 테이블
+	@Override
+	@Transactional
+	public int createApprsEarTable(ApprovalsVO approvalsVO) {
+		int result = approvalsMapper.createApprsEarTable(approvalsVO);
 		return result;						
 	}
 	// 진행 중인 전자결재 목록 조회
