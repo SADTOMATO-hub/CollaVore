@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.collavore.app.cals.service.CalsVO;
@@ -120,6 +121,30 @@ public class SchsController {
 	    }
 	    return result;
 	}
+	
+	   // 캘린더 휴지통으로 이동
+    @PostMapping("/cal/calTrash")
+    @ResponseBody
+    public String moveToTrash(@RequestParam String calNo) {
+        String result = schsService.moveTrash(calNo);
+        return result != null ? "캘린더가 휴지통으로 이동되었습니다." : "캘린더 이동에 실패했습니다.";
+    }
+	
+    // 캘린더 복원
+    @PostMapping("/cal/calRestore")
+    @ResponseBody
+    public String restoreCalendar(@RequestParam String calNo) {
+        String result = schsService.calRestore(calNo);
+        return result != null ? "캘린더가 복원되었습니다." : "캘린더 복원에 실패했습니다.";
+    }
+    
+ // 캘린더 완전 삭제
+    @PostMapping("/cal/calDel")
+    @ResponseBody
+    public String permanentlyDelete(@RequestParam String calNo) {
+        String result = schsService.permanentlyDel(calNo);
+        return result != null ? "캘린더가 완전히 삭제되었습니다." : "캘린더 삭제에 실패했습니다.";
+    }
 
 
 

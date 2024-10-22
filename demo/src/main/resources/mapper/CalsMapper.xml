@@ -13,7 +13,23 @@
 		, cal_no
 		, is_alarm
 		FROM schs
+       <!-- WHERE isDelete = 'h2'  미삭제된 일정만 조회 --> 
 	</select>
+	
+	 <!-- 단건 일정 조회 -->
+    <select id="selectSchsInfo" parameterType="SchsVO" resultType="SchsVO">
+       SELECT
+		sch_no
+		, title
+		,
+		start_date
+		, end_date
+		, cal_no
+		, is_alarm
+        FROM schs
+       <!-- WHERE schNo = #{schNo} AND isDelete = 'h2'  미삭제된 일정만 조회 -->
+    </select>
+	
 	<insert id="insertSchsInfo" parameterType="SchsVO">
 
 		<selectKey keyProperty="schNo" resultType="Integer"
@@ -115,6 +131,27 @@
 							, #{color}
 		)
 	</insert>
+	
+	
+	<!-- 캘린더를 휴지통으로 이동 (isDelete = 'h1'로 업데이트하고 deleteDate 설정) -->
+    <update id="updateCalToTrash" parameterType="String">
+        UPDATE cals
+        SET isDelete = 'h1', deleteDate = NOW()
+        WHERE calNo = #{calNo}
+    </update>
+    
+    <!-- 캘린더 복원 (isDelete = 'h2'로 업데이트하고 deleteDate 초기화) -->
+    <update id="restoreCalFromTrash" parameterType="String">
+        UPDATE cals
+        SET isDelete = 'h2', deleteDate = NULL
+        WHERE calNo = #{calNo}
+    </update>
+    
+    <!-- 캘린더 완전 삭제 -->
+    <delete id="permanentlyDeleteCal" parameterType="String">
+        DELETE FROM cals
+        WHERE calNo = #{calNo} AND isDelete = 'h1' <!-- 휴지통에 있는 것만 삭제 -->
+    </delete>
 	<!--==============================END 개인 캘린더 ==================================== -->
 
 

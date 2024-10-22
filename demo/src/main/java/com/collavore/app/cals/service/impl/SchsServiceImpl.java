@@ -1,5 +1,6 @@
 package com.collavore.app.cals.service.impl;
 
+import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,7 @@ public class SchsServiceImpl implements SchsService {
 	public List<CalsVO> allCal() {
 		return schsMapper.selectSoloCal();
 	}
-	
+
 	// 개인캘린더
 	@Override
 	public List<CalsVO> soloCal() {
@@ -96,6 +97,27 @@ public class SchsServiceImpl implements SchsService {
 		int result = schsMapper.insertCalsInfo(calsVO);
 		return result == 1 ? calsVO.getCalNo() : -1;
 
+	}
+
+	// 캘린더를 휴지통으로 이동 (isDelete = 'h1')
+	@Override
+	public String moveTrash(String calNo) {
+		int result = schsMapper.updateCalToTrash(calNo);
+		return result > 0 ? "Success" : null;
+	}
+
+	// 휴지통에서 캘린더 복원 (isDelete = 'h2')
+	@Override
+	public String calRestore(String calNo) {
+		int result = schsMapper.restoreCalFromTrash(calNo);
+		return result > 0 ? "Success" : null;
+	}
+
+	// 캘린더 완전 삭제
+	@Override
+	public String permanentlyDel(String calNo) {
+		int result = schsMapper.permanentlyDeleteCal(calNo);
+		return result > 0 ? "Success" : null;
 	}
 
 	// =====================END 캘린더 사이드바=====================
