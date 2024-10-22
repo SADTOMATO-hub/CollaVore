@@ -7,21 +7,23 @@
 		FROM approvalstemp
 		ORDER BY eat_no 
 	</select>
+	
 	<!-- 템플릿 상세 -->
 	<select id="readTemp" resultType="ApprovalstempVO" parameterType="int">
 		SELECT *
 		FROM approvalstemp
 		WHERE eat_no = #{eatNo}
 	</select>
+	
 	<!-- 템플릿 생성 -->
 	<insert id="createApprsTemp" parameterType="ApprovalstempVO">
 	  <selectKey keyProperty="eatNo"
 	  			 resultType="Integer"
 	  			 order="BEFORE">
-	  	SELECT NVL(MAX(eat_no),1) + 1
+	  	SELECT NVL(MAX(eat_no),0) + 1
 	  	FROM approvalstemp
 	  </selectKey>
-		INSERT INTO approvalstemp (
+	   		INSERT INTO approvalstemp (
 									eat_no
 								   ,title
 								   ,content
@@ -32,10 +34,54 @@
 									,#{content}
 									)
 	</insert>
+	
 	<!-- 템플릿 삭제 -->
 	<delete id="deleteTemp" parameterType="int">
-	 DELETE approvalstemp
-	 WHERE eat_no = #{eatNo}
+		DELETE approvalstemp
+		WHERE eat_no = #{eatNo}
 	</delete>
+	
+	<!-- 템플릿 수정 -->
+	<update id="updateTemp" parameterType="ApprovalstempVO">
+		UPDATE approvalstemp
+		SET    title = #{title}
+			   ,content = #{content}
+		WHERE eat_no = #{eatNo}		
+	</update>
+	
+	<!-- 결재자 이름을 검색하면 그 대상의 정보를 호출하는 기능 -->
+	<select id="" resultType="HrmVO" parameterType="String">
+		SELECT emp_no, d.name, e.info
+		FROM employees 
+		WHERE name = "#{empName}"
+	</select>
+	
+	<!-- 전자결재를 생성하는 기능 -->
+	<insert id="createApprs" parameterType="ApprovalsVO">
+	  <selectKey keyProperty="eaNo"
+	   resultType="Integer"
+	   order="BEFORE">
+	   	SELECT NVL(MAX(ea_no),0) + 1
+	  	FROM approvals
+	  </selectKey>
+		INSERT INTO approvals(
+								ea_no,
+								title,
+								eat_no,
+								content
+							 )	
+				values       (
+								#{eaNo},
+								#{title},
+								#{eatNo},
+								#{content}
+							 )
+	</insert>
+	
+	<!-- 결재자 입력에 필요한 사원 정보를 출력하는 기능 -->
+	<select id="employeesInfo" resultType="HrmVO">
+		SELECT emp_no, name, info
+		FROM employees
+	</select>	
 </mapper>
 <!-- 3번째 -->

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	layout:fragment="Content">
+<head>
+<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js"
+	charset="utf-8"></script>
+</head>
+<body>
+	<div class="page-wrapper">
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-12">
+					<div class="card">
+						<form action="createAppr" method="post" class="form-horizontal"
+							name="insertForm">
+							<div class="form-group row">
+								<label for="approvalTitle">
+								 <input type="text"
+									id="approvalTitle" name="title" required
+									placeholder="전자결재명을 입력해주세요">
+								</label>
+							<div class="card-body">
+								<h4 class="card-title">전자결재 기안 페이지</h4>
+								<hr>
+								
+								<div class="col-sm-6">
+									<select id="selectContent" class="form-select">
+										<option value="">==템플릿 선택==</option>
+										<option th:each="temps : ${tempInfo}"
+											th:value="${temps.eatNo}">[[${temps.title}]]</option>
+									</select>
+								</div>
+								<!-- 선택한 option의 value를 eatNO로 저장하기 위한 태그 -->
+								<input type="hidden" id="eatNo" name="eatNo" />
+							</div>
+							<div>
+								<textarea name="content" id="content" rows="2"
+									style="resize: none;" spellcheck="false"></textarea>
+							</div>
+							</div>
+							<div class="border-top">
+								<div class="card-body text-center">
+									<button type="button" id="createButton" class="btn btn-primary">기안</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+<script>
+	// SmartEditor 참조를 위한 배열
+	let oEditors = [];
+	function smartEditor() {
+		console.log("Naver SmartEditor");
+		nhn.husky.EZCreator.createInIFrame({
+			oAppRef : oEditors,
+			elPlaceHolder : "content",
+			sSkinURI : "/smarteditor/SmartEditor2Skin.html",
+			fCreator : "createSEditor2"
+		});
+	}
+
+	$(document).ready(
+			function() {
+				smartEditor();
+				// 템플릿 선택 시 내용 불러오기
+				$("#selectContent").on(
+						"change",
+						function(event) {
+							var selectedVal = $(this).val();
+							console.log(selectedVal + '번 호출');
+							var eatNo = $("#eatNo").val(selectedVal);
+							console.log(eatNo)
+							//	if (selectedVal != null) {
+							$.ajax({
+								url : `/approvals/temp?eatNo=` + selectedVal,
+								type : 'GET',
+								success : function(response) {
+									oEditors.getById["content"].exec(
+											"UPDATE_CONTENTS_FIELD", []);
+									oEditors.getById["content"].exec("SET_IR",
+											[ response.content ]);
+									$('#content').val(response.content);
+								},
+								error : function(xhr, status, error) {
+									alert('데이터 호출 실패: ' + error);
+								}
+							});
+							//	} else {
+							// oEditors.getById["content"].exec("SET_IR", [ "" ]); //내용초기화
+							//	}
+						});
+				// 버튼 클릭 시 폼 제출
+				$("#createButton").on("click", function(event) {
+					submitPost(event);
+				});
+			});
+
+	function submitPost(event) {
+		event.preventDefault(); // 폼 제출 방지
+		oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
+		if (!content || content === '' || content === '&nbsp;'
+				|| content === '<br>' || content === '<p>&nbsp;</p>'
+				|| content === '<p></p>') {
+			alert("템플릿을 정해주세요.");
+			oEditors.getById["content"].exec("FOCUS");
+			return;
+		} else {
+			console.log(content);
+			console.log()
+			insertForm.submit(); // 폼 제출
+		}
+	}
+</script>

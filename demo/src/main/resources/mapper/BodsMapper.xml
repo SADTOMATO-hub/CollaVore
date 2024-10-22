@@ -2,6 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.collavore.app.board.mapper.BodsMapper">
 
+	<select id="totalBoardCnt" resultType="int">
+		SELECT COUNT(post_no) AS totalCnt
+		FROM bods
+		WHERE board_no = #{boardNo}
+	</select>
+
 	<!-- 전체조회 boarㅇNo에 따라서 다른 게시판으로 이동  -->
 	<select id="selectBoardAll" resultType="BodsVO"> 
 		SELECT post_no
@@ -104,7 +110,25 @@
 		)
 	</insert>
 	
+	<!-- 댓글 전체 조회 -->
+	<select id="selectBodsComtsAll" resultType="BodsComtsVO"> 
+	SELECT cmt_no
+		,(select name
+            from employees
+           where emp_no = writer) writerName
+		, content
+		, reg_date
+
+		FROM bodscomts
+		where post_no = #{postNo}
+		ORDER BY cmt_no DESC
+	</select>
 	
+	<!-- 댓글 삭제 -->
+	<delete id="delectBodsComtsInfo" parameterType="BodsComtsVO">
+		DELETE FROM bodscomts  
+		WHERE cmt_no = #{cmtNo}
+	</delete> 
 	
 
 </mapper>

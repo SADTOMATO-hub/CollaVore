@@ -39,61 +39,77 @@
 			<button type="button"
 				th:onclick='|location.href="@{/board/bodsDelete(postNo=${bods.postNo}, boardNo=${bods.boardNo})}"|'>삭제</button>
 		</form>
+
+		<!-- 댓글창 -->
 		<div class="text-center">
 			<form name="insertBodsComts" th:action="@{/board/bodsComts}"
 				method="post">
+				<input type="hidden" name="postNo" th:value="${param.postNo}">
 				<h3>댓글 등록</h3>
-				<input type="text" name="postNo" th:value="${param.postNo}">
-				<h4>댓글을 입력해 주세요</h4>
-				
+
+				<th>작성자</th>
+				<td><input type="text" name="writer"></td>
+
+				<th>내용</th>
+				<td><textarea name="content"></textarea></td>
+
 				<button type="button" id="btninsert">등록</button>
-
-
 			</form>
-		</div>
-		<script>
-			// submit을 하기 전 제목, 작성자, 작성일자 확인
-			$("#btninsert").on('click', boardInsertHandler);
 
-			function boardInsertHandler() {
+			<div>
+				<div th:each="reply : ${comtsList}" style="margin-bottom: 20px">
+					<div>[[${reply.cmtNo}]]</div>
+					<div>[[${reply.content}]]</div>
+					<div>[[${reply.writer}]]</div>
+					<div>[[${reply.regDate}]]</div>
+					 <input type="button" value="삭제" 
+					th:onclick='|location.href="@{board/bodsComtsDelete(postNo=${bods.postNo})}"|'> 
+				</div>
+				<script>
+					// submit을 하기 전 제목, 작성자, 작성일자 확인
+					$("#btninsert").on('click', boardInsertHandler);
 
-				let writer = $('form [name="writer"]');
-				if (writer.val() == '') {
-					alert('작성자가 입력되지 않았습니다.');
-					writer.focus();
-					return;
-				}
+					function boardInsertHandler() {
 
-				let content = $('form [name="content"]');
-				if (content.val() == '') {
-					alert('내용이 입력되지 않았습니다.');
-					content.focus();
-					return;
-				}
-
-				//document.insertBodsComts.submit();
-				console.log($(document.insertBodsComts).serialize());
-
-				//이부분을 아작스로 변경 페치나
-				$.ajax({
-					type : 'post',
-					url : '/board/bodsComts',
-					data : $(document.insertBodsComts).serialize(),
-					success : function(data) {
-						if (data == "success") {
-
-							// getCommentList();
-							content.val("");
+						let writer = $('form [name="writer"]');
+						if (writer.val() == '') {
+							alert('작성자가 입력되지 않았습니다.');
+							writer.focus();
+							return;
 						}
 
-					},
-					error : function(request, status, error) {
-						//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-					}
+						let content = $('form [name="content"]');
+						if (content.val() == '') {
+							alert('내용이 입력되지 않았습니다.');
+							content.focus();
+							return;
+						}
 
-				});
-				alert('댓글이 등록되었습니다.');
-			}
-		</script>
+						//document.insertBodsComts.submit();
+						console.log($(document.insertBodsComts).serialize());
+
+						//이부분을 아작스로 변경 페치나
+						$.ajax({
+							type : 'post',
+							url : '/board/bodsComts',
+							data : $(document.insertBodsComts).serialize(),
+							success : function(data) {
+								if (data == "success") {
+
+									// getCommentList();
+									content.val("");
+								}
+
+							},
+							error : function(request, status, error) {
+								//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+							}
+
+						});
+						alert('댓글이 등록되었습니다.');
+					}
+				</script>
+			</div>
+		</div>
 	</div>
 </div>

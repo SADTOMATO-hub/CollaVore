@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 public interface BodsService {
+	// 게시글 전체 건수 확인하기(페이징을 위함)
+	public int totalListCnt(BodsVO bodsVO);
+	
 	// 게시글 전체 목록 전체조회
 	public List<BodsVO> bodsList(BodsVO bodsVO);
 
@@ -23,7 +26,10 @@ public interface BodsService {
 	public int insertBodsComts(BodsComtsVO bodsComtsVO);
 	
 	// 댓글 전체조회
-	public List<BodsComtsVO> bodsComtsList(BodsComtsVO bodsComtsVO);
+	public List<BodsComtsVO> bodsComtsList(int postNo);
+	
+	// 댓글 삭제
+	public int deleteBodsComts(int bodsComtsVO);
 	
 	// 게시판 생성
 	

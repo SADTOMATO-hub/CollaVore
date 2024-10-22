@@ -5,9 +5,8 @@ import java.util.Map;
 
 public interface JobService {
 	
-	// 직무 전체조회
-	// 직무 등록
-	// 직무 수정
-	// 직무 삭제
-
+	public int jobsInsert(HrmVO hrmVO) throws Exception;
+	public int updateJobs(HrmVO hrmVO) throws Exception;
+	public int deleteJobs(Integer posiNo) throws Exception;
+	public List<HrmVO> getExistinJobs();
 }

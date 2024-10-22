@@ -3,157 +3,96 @@
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
 
-	<style>
-table {
-	width: 100%;
-	border-collapse: collapse;
-}
+	<div class="purple-background-container">
+		<div class="breadcrumb">
+			<div class="breadcrumb-left">
+				<h4>조직관리</h4>
+				<nav>
+					<a href="#position-section">직위관리</a> | <a href="#job-section">직무관리</a>
+					| <a href="#org-section">조직관리</a>
+				</nav>
+			</div>
+			<div class="breadcrumb-right">
+				<span>관리자 페이지 > 조직관리</span>
+			</div>
+		</div>
 
-th, td {
-	padding: 8px;
-	text-align: left;
-	border: 1px solid #ddd;
-}
+		<!-- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
 
-button {
-	margin-top: 10px;
-	padding: 5px 10px;
-	background-color: #007bff;
-	color: white;
-	border: none;
-	cursor: pointer;
-}
+		<div class="card_posi" id="position-section">
+			<div class="inline-container">
+				<h4>
+					직위 관리 <i class="fas fa-question-circle tooltip-icon"></i>
+					<div class="tooltip-text">직위 관리에 대한 안내</div>
+				</h4>
+				<button onclick="addLevel()">
+					<i class="fas fa-plus"></i>
+				</button>
+			</div>
 
-button:hover {
-	background-color: #0056b3;
-}
-</style>
+			<table id="positionTable">
+				<tr>
+					<th>Level</th>
+					<th>직위</th>
+					<th></th>
+				</tr>
+			</table>
+			<div class="button-container">
+				<button onclick="saveData()">저장</button>
+			</div>
+		</div>
 
-	<div class="card">
-		<table id="positionTable">
-			<tr>
-				<th>Level</th>
-				<th>직위</th>
-				<th>추가/삭제</th>
-			</tr>
-			<tr>
-				<td>Level. 1</td>
-				<td><input type="text" placeholder="대표이사"></td>
-				<td><button onclick="addLevel()">+</button></td>
-			</tr>
-		</table>
+		<!-- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
 
-		<button onclick="saveData()">저장</button>
+		<div class="card_jobs" id="job-section">
+			<div class="inline-container">
+				<h4>
+					직무 관리 <i class="fas fa-question-circle tooltip-icon"></i>
+					<div class="tooltip-text">직무 관리에 대한 안내</div>
+				</h4>
+				<button onclick="addJob()">
+					<i class="fas fa-plus"></i>
+				</button>
+			</div>
+
+			<div class="inline-jobs-container" id="jobsTable">
+				<!-- 직무들이 여기에 동적으로 추가됩니다 -->
+			</div>
+
+			<div class="button-container">
+				<button onclick="saveJobs()">저장</button>
+			</div>
+		</div>
+
+
+		<!-- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
+
+
+		<div class="card_org" id="org-section">
+			<div class="inline-container">
+				<h4>
+					조직 관리 <i class="fas fa-question-circle tooltip-icon"></i>
+					<div class="tooltip-text">조직 관리에 대한 안내</div>
+				</h4>
+				<button onclick="addDept()">
+					<i class="fas fa-plus"></i>
+				</button>
+			</div>
+
+			<div class="inline-Dept-container" id="DeptTable">
+				<!-- 조직도 뿌려지는 곳 -->
+			</div>
+
+			<div class="button-container">
+				<button onclick="saveDept()">저장</button>
+			</div>
+		</div>
+
+
 	</div>
-
 </div>
-<script>
-    let levelCounter = 1;
 
-    // 페이지 로드 시 기존 데이터 불러오기
-    function loadExistingData() {
-        fetch('/positions/getExistingPositions')
-            .then(response => response.json())
-            .then(data => {
-                const table = document.getElementById('positionTable');
-                data.forEach((item, index) => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>Level. ${index + 1}</td>
-                        <td><input type="text" value="${item.posiName}" data-posi-no="${item.posiNo}" /></td>
-                        <td><button onclick="removeLevel(this, ${item.posiNo})">-</button></td>
-                    `;
-                    table.appendChild(row);
-                    levelCounter = index + 1; // 레벨 카운터 업데이트
-                });
-            });
-    }
-
-    // 새 레벨 추가 함수
-    function addLevel() {
-        levelCounter++;
-        const table = document.getElementById('positionTable');
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>Level. ${levelCounter}</td>
-            <td><input type="text" placeholder="새 직위 입력" /></td>
-            <td><button onclick="removeLevel(this)">-</button></td>
-        `;
-        table.appendChild(row);
-    }
-
-    // 레벨 삭제 함수
-    function removeLevel(button, posiNo = null) {
-        if (posiNo) {
-            // 서버로 삭제 요청
-            fetch(`/positions/delete/${posiNo}`, {
-                method: 'DELETE'
-            })
-            .then(response => response.text())
-            .then(result => {
-                if (result === 'success') {
-                    button.parentElement.parentElement.remove();
-                    reorderLevels();
-                } else {
-                    alert('삭제에 실패했습니다.');
-                }
-            });
-        } else {
-            button.parentElement.parentElement.remove();
-            reorderLevels();
-        }
-    }
-
-    // 레벨 재정렬
-    function reorderLevels() {
-        const rows = document.querySelectorAll('#positionTable tr');
-        rows.forEach((row, index) => {
-            if (index === 0) return; // 헤더는 제외
-            row.cells[0].textContent = `Level. ${index}`;
-        });
-    }
-
- // 데이터 저장 함수
-    function saveData() {
-        const rows = document.querySelectorAll('#positionTable tr');
-        const positions = [];
-
-        rows.forEach((row, index) => {
-            if (index === 0) return; // 첫 번째는 헤더이므로 제외
-            const posiNo = row.cells[1].querySelector('input').dataset.posiNo || null;
-            const posiName = row.cells[1].querySelector('input').value.trim();
-
-            positions.push({
-                posiNo: posiNo,
-                posiName: posiName,
-                grade: index // 레벨을 등급으로 사용
-            });
-        });
-
-        console.log(positions);  // 전송할 데이터를 콘솔에 출력
-        // 서버에 데이터 전송 (AJAX 사용)
-        fetch('/positions/save', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(positions)
-        })
-        .then(response => response.text())
-        .then(result => {
-            console.log(result);  // 서버로부터 받은 응답을 콘솔에 출력
-            if (result === 'success') {
-                alert('저장되었습니다.');
-                loadExistingData();
-            } else {
-                alert('저장에 실패했습니다.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('에러 발생!');
-        });
-    }
-    // 페이지 로드 시 기존 데이터 불러오기
-    document.addEventListener('DOMContentLoaded', loadExistingData);
-</script>
+<link rel="stylesheet" href="/dist/css/hrm/hrm.css">
+<script src="/dist/js/hrm/posi.js"></script>
+<script src="/dist/js/hrm/jobs.js"></script>
+<script src="/dist/js/hrm/dept.js"></script>

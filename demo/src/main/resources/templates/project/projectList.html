@@ -2,14 +2,15 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
-<style>
-  textarea {
-    width: 100%;
-    height: 6.25em;
-    border: none;
-    resize: none;
-  }
-</style>	
+	<style>
+textarea {
+	width: 100%;
+	height: 6.25em;
+	border: none;
+	resize: none;
+}
+;
+</style>
 	<div class="page-breadcrumb">
 		<div class="row">
 			<div class="col-12 d-flex no-block align-items-center">
@@ -54,139 +55,353 @@
 							<tr>
 								<th scope="row">[[${info.projNo}]]</th>
 								<td>[[${info.name}]]</td>
-								<td><span th:if="${info.status == 'j1'}">진행전</span> <span
+								<td><span class="badge rounded-pill bg-secondary"
+									th:if="${info.status == 'j1'}">진행전</span> <span
+									class="badge rounded-pill bg-info"
 									th:if="${info.status == 'j2'}">진행중</span> <span
-									th:if="${info.status == 'j3'}">완료</span></td>
+									class="badge rounded-pill bg-success"
+									th:if="${info.status == 'j3'}">완&nbsp&nbsp&nbsp&nbsp료</span></td>
 								<td>[[${#dates.format(info.startDate, "yyyy년MM월dd일")}]]</td>
 								<td>[[${#dates.format(info.endDate, "yyyy년MM월dd일")}]]</td>
 								<td>[[${info.pMgrNo}]]</td>
 								<td>
-								<button type="button" class="btn btn-warning">수정</button>
-								 <button type="button" class="btn btn-danger text-white delete-btn" data-proj-no="[[${info.projNo}]]">삭제</button>
+									<button type="button" class="btn btn-warning"
+										data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
+									<button type="button"
+										class="btn btn-danger text-white delete-btn"
+										th:attr="data-proj-no=${info.projNo}">삭제</button>
 								</td>
 							</tr>
 						</th:block>
 					</tbody>
 				</table>
+
 			</div>
 		</div>
 	</div>
 </div>
 
 <!-- 모달 폼 -->
-	<div class="modal fade" id="projectModal" tabindex="-1"
-		aria-labelledby="projectModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="projectModalLabel">프로젝트 생성</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<form id="projectForm">
-						<div class="mb-3">
-							<label for="projName" class="form-label">프로젝트 이름</label> 
-							<input type="text" class="form-control" name="name" id="projName" required>
-						</div>
-						<div class="mb-3">
-							<label for="projContent" class="form-label">프로젝트 개요</label> 
-							<textarea class="form-control" name="content" id="projContent" rows="5" required></textarea>
-						</div>
-						<div class="mb-3">
-							<label for="projManager" class="form-label">담당자</label> 
-							<input type="text" class="form-control" name="pMgrNo" id="projManager" required>
-						</div>
-						<div class="mb-3">
-							<label for="projManager" class="form-label">프로젝트Git주소</label> 
-							<input type="text" class="form-control" name="projectGitUrl" id="projGit" required>
-						</div>
-						<div class="mb-3">
-							<label for="projStatus" class="form-label">템플릿</label> 
-							<select class="form-select" name="isTemplate" id="projTemp">
-								<option value="i1">선택하세요</option>
-							</select>
-						</div>
-						<div class="mb-3">
-							<label for="projStatus" class="form-label">진행상태</label> 
-							<select class="form-select" name="status" id="projStatus" required>
-								<option value="">선택하세요</option>
-								<option value="j1">진행전</option>
-								<option value="j2">진행중</option>
-								<option value="j3">완료</option>
-							</select>
-						</div>
-						<div class="mb-3">
-							<label for="projStartDate" class="form-label">시작일</label> 
-							<input type="date" class="form-control" name="startDate" id="projStartDate" required>
-						</div>
-						<div class="mb-3">
-							<label for="projEndDate" class="form-label">마감일</label> 
-							<input type="date" class="form-control" name="endDate" id="projEndDate" required>
-						</div>
-						<button type="submit" class="btn btn-primary">생성</button>
-					</form>
-				</div>
+<div class="modal fade" id="projectModal" tabindex="-1"
+	aria-labelledby="projectModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="projectModalLabel">프로젝트 생성</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"
+					aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="projectForm">
+					<div class="mb-3">
+						<label for="projName" class="form-label">프로젝트 이름</label> <input
+							type="text" class="form-control" name="name" id="projName"
+							required>
+					</div>
+					<div class="mb-3">
+						<label for="projContent" class="form-label">프로젝트 개요</label>
+						<textarea class="form-control" name="content" id="projContent"
+							rows="5" required></textarea>
+					</div>
+					<div class="mb-3">
+						<label for="projManager" class="form-label">담당자</label> <input
+							type="text" class="form-control" name="pMgrNo" id="projManager"
+							required>
+					</div>
+					<div class="mb-3">
+						<label for="projManager" class="form-label">프로젝트Git주소</label> <input
+							type="text" class="form-control" name="projectGitUrl"
+							id="projGit" required>
+					</div>
+					<div class="mb-3">
+						<label for="projStatus" class="form-label">템플릿 사용여부</label> <select
+							class="form-select" name="isTemplate" id="isTemplate">
+							<option value="i1">사용안함</option>
+							<option value="i2">사용함</option>
+						</select>
+					</div>
+					<div class="mb-3" id="templateDiv" style="display: none;">
+						<label for="projTempNo" class="form-label">템플릿</label> <select
+							class="form-select" name="projTempNo" id="projTempNo">
+							<option value="0">선택하세요</option>
+							<option th:each="temp : ${templist}"
+								th:value="${temp.projTempNo}">[[${temp.name}]]</option>
+						</select>
+					</div>
+					<div class="mb-3">
+						<label for="projStatus" class="form-label">진행상태</label> <select
+							class="form-select" name="status" id="projStatus" required>
+							<option value="0">선택하세요</option>
+							<option value="j1">진행전</option>
+							<option value="j2">진행중</option>
+							<option value="j3">완료</option>
+						</select>
+					</div>
+					<div class="mb-3">
+						<label for="projStartDate" class="form-label">시작일</label> <input
+							type="date" class="form-control" name="startDate"
+							id="projStartDate" required>
+					</div>
+					<div class="mb-3">
+						<label for="projEndDate" class="form-label">마감일</label> <input
+							type="date" class="form-control" name="endDate" id="projEndDate"
+							required>
+					</div>
+					<button type="submit" class="btn btn-primary">생성</button>
+				</form>
 			</div>
 		</div>
 	</div>
-
+</div>
+<!-- 수정 모달 폼 -->
+<div class="modal fade" id="editProjectModal" tabindex="-1"
+	aria-labelledby="editProjectModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="editProjectModalLabel">프로젝트 수정</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"
+					aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form id="editProjectForm">
+					<input type="hidden" name="projNo" id="editProjNo">
+					<div class="mb-3">
+						<label for="editProjName" class="form-label">프로젝트 이름</label> <input
+							type="text" class="form-control" name="name" id="editProjName"
+							required>
+					</div>
+					<div class="mb-3">
+						<label for="editProjContent" class="form-label">프로젝트 개요</label>
+						<textarea class="form-control" name="content" id="editProjContent"
+							rows="5" required></textarea>
+					</div>
+					<div class="mb-3">
+						<label for="editProjManager" class="form-label">담당자</label> <input
+							type="text" class="form-control" name="pMgrNo"
+							id="editProjManager" required>
+					</div>
+					<div class="mb-3">
+						<label for="editProjGit" class="form-label">프로젝트 Git 주소</label> <input
+							type="text" class="form-control" name="projectGitUrl"
+							id="editProjGit" required>
+					</div>
+					<div class="mb-3">
+						<label for="editProjStatus" class="form-label">진행상태</label> <select
+							class="form-select" name="status" id="editProjStatus" required>
+							<option value="">선택하세요</option>
+							<option value="j1">진행전</option>
+							<option value="j2">진행중</option>
+							<option value="j3">완료</option>
+						</select>
+					</div>
+					<div class="mb-3">
+						<label for="editProjStartDate" class="form-label">시작일</label> <input
+							type="date" class="form-control" name="startDate"
+							id="editProjStartDate" required>
+					</div>
+					<div class="mb-3">
+						<label for="editProjEndDate" class="form-label">마감일</label> <input
+							type="date" class="form-control" name="endDate"
+							id="editProjEndDate" required>
+					</div>
+					<button type="submit" class="btn btn-primary">수정</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('#projectForm').on('submit', function(event) {
-            event.preventDefault(); 
+//프로젝트생성 모달폼 
+$(document).ready(function() {
+    $('#projectForm').on('submit', function(event) {
+        event.preventDefault(); 
 
-            $.ajax({
-                url: '/project/projectinsert', 
-                type: 'POST',
-                data: $(this).serialize(), 
-                success: function(response) {
-                    const newProject = response.data; 
-                    function formatDate(dateString) {
-                        const date = new Date(dateString);
-                        const year = date.getFullYear();
-                        const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더함
-                        const day = String(date.getDate()).padStart(2, '0');
-                        return `${year}년${month}월${day}일`;
-                    }
-                    $('table tbody').append(`
-                        <tr>
-                            <th scope="row">${newProject.projNo}</th>
-                            <td>${newProject.name}</td>
-                            <td><span>${newProject.status === 'j1' ? '진행전' : newProject.status === 'j2' ? '진행중' : '완료'}</span></td>
-                            <td>${formatDate(newProject.startDate)}</td>
-                            <td>${formatDate(newProject.endDate)}</td>
-                            <td>${newProject.pMgrNo}</td>
-                        </tr>
-                    `);
-
-                    alert('프로젝트가 성공적으로 생성되었습니다!');
-                    $('#projectModal').modal('hide'); 
-                },
-                error: function(xhr, status, error) {
-                    alert('프로젝트 생성에 실패했습니다: ' + error);
+        $.ajax({
+            url: '/project/projectinsert', 
+            type: 'POST',
+            data: $(this).serialize(), 
+            success: function(response) {
+                const newProject = response.data; 
+                function formatDate(dateString) {
+                    const date = new Date(dateString);
+                    const year = date.getFullYear();
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    return `${year}년${month}월${day}일`;
                 }
-            });
-        });
-    });
-   /*  $(document).ready(function() {
-        $(document).on('click', '.delete-btn', function() {
-            const projNo = $(this).data('proj-no'); 
+                
+                let statusClass;
+                let statusText;
+                switch (newProject.status) {
+                    case 'j1':
+                        statusClass = 'bg-secondary';
+                        statusText = '진행전';
+                        break;
+                    case 'j2':
+                        statusClass = 'bg-info';
+                        statusText = '진행중';
+                        break;
+                    case 'j3':
+                        statusClass = 'bg-success';
+                        statusText = '완료';
+                        break;
+                }
+                $('table tbody').append(`
+                    <tr>
+                        <th scope="row">${newProject.projNo}</th>
+                        <td>${newProject.name}</td>
+                        <td>
+                        <span class="badge rounded-pill ${statusClass}">${statusText}</span>
+                    	</td>
+                        <td>${formatDate(newProject.startDate)}</td>
+                        <td>${formatDate(newProject.endDate)}</td>
+                        <td>${newProject.pmgrNo}</td>
+                        <td>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
+                        <button type="button" class="btn btn-danger text-white delete-btn" data-proj-no="${newProject.projNo}">삭제</button>
+                        </td>                            
+                    </tr>
+                `);
 
-            if (confirm('정말로 이 프로젝트를 삭제하시겠습니까?')) {
-                $.ajax({
-                    url: `/project/projectdelete/${projNo}`, 
-                    type: 'DELETE',
-                    success: function(response) {
-                        alert('프로젝트가 성공적으로 삭제되었습니다!');
-                        $(`button[data-proj-no="${projNo}"]`).closest('tr').remove();
-                    },
-                    error: function(xhr, status, error) {
-                        alert('프로젝트 삭제에 실패했습니다: ' + error);
-                    }
-                });
+                alert('프로젝트가 성공적으로 생성되었습니다!');
+                $('#projectModal').modal('hide'); 
+            },
+            error: function(xhr, status, error) {
+                alert('프로젝트 생성에 실패했습니다: ' + error);
             }
         });
-    }); */
+    });
+    // 모달이 숨겨질 때 입력 필드 초기화
+    $('#projectModal').on('hide.bs.modal', function() {
+        $('#projectForm')[0].reset(); // 폼의 모든 필드를 초기화
+    });
+});
+	// 프로젝트 삭제 ajax
+    $(document).on('click', '.delete-btn', function() {
+        const projNo = $(this).data('proj-no'); 
+
+        if (confirm('정말로 이 프로젝트를 삭제하시겠습니까?')) {
+            $.ajax({
+                url: `/project/projectdelete/${projNo}`, 
+                type: 'DELETE',
+                success: function(response) {
+                    alert('프로젝트가 성공적으로 삭제되었습니다!');
+                    $(`button[data-proj-no="${projNo}"]`).closest('tr').remove();
+                },
+                error: function(xhr, status, error) {
+                	console.log(`${projNo}`);
+                    alert('프로젝트 삭제에 실패했습니다: ' + error);
+                }
+            });
+        }
+    });
+	
+	//프로젝트 수정 모달 폼
+$(document).on('click', '.btn-warning', function() {
+    const projNo = $(this).closest('tr').find('.delete-btn').data('proj-no'); 
+
+    $.ajax({
+        url: `/project/projectinfo/${projNo}`, 
+        type: 'GET',
+        success: function(response) {
+        	//console.log(response); 
+        	
+            $('#editProjNo').val(response.projNo);
+            $('#editProjName').val(response.name);
+            $('#editProjContent').val(response.content);
+            $('#editProjManager').val(response.pmgrNo);
+            $('#editProjGit').val(response.projectGitUrl);
+            $('#editProjStatus').val(response.status);
+            const formatDate = (dateString) => {
+                const date = new Date(dateString);
+                return date.toISOString().split('T')[0]; 
+            }; 
+            $('#editProjStartDate').val(formatDate(response.startDate));
+            $('#editProjEndDate').val(formatDate(response.endDate));            
+
+            $('#editProjectModal').modal('show');
+        },
+        error: function(xhr, status, error) {
+            alert('프로젝트 정보를 가져오는 데 실패했습니다: ' + error);
+        }
+    });
+});
+	//수정 처리
+$('#editProjectForm').on('submit', function(e) {
+    e.preventDefault();
+    const projNo = $('#editProjNo').val();
+    
+    $.ajax({
+        url: `/project/projectupdate`,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            projNo: projNo,
+            name: $('#editProjName').val(),
+            content: $('#editProjContent').val(),
+            pmgrNo: $('#editProjManager').val(),
+            projectGitUrl: $('#editProjGit').val(),
+            status: $('#editProjStatus').val(),
+            startDate: $('#editProjStartDate').val(),
+            endDate: $('#editProjEndDate').val()
+        }),
+        success: function(response) {
+            alert('프로젝트가 성공적으로 수정되었습니다!');
+
+            // 상태에 따라 배지 결정
+            const status = $('#editProjStatus').val();
+            let statusBadge = '';
+            if (status === 'j1') {
+                statusBadge = `<span class="badge rounded-pill bg-secondary">진행전</span>`;
+            } else if (status === 'j2') {
+                statusBadge = `<span class="badge rounded-pill bg-info">진행중</span>`;
+            } else if (status === 'j3') {
+                statusBadge = `<span class="badge rounded-pill bg-success">완료</span>`;
+            }
+
+            // 날짜 포맷팅
+            const formatDate = (dateString) => {
+                const date = new Date(dateString);
+                const year = date.getFullYear();
+                const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더함
+                const day = String(date.getDate()).padStart(2, '0');
+                return `${year}년${month}월${day}일`;
+            };
+
+            const updatedRow = `
+                <tr>
+                    <th scope="row">${projNo}</th>
+                    <td>${$('#editProjName').val()}</td>
+                    <td>${statusBadge}</td>
+                    <td>${formatDate($('#editProjStartDate').val())}</td>
+                    <td>${formatDate($('#editProjEndDate').val())}</td>
+                    <td>${$('#editProjManager').val()}</td>
+                    <td>
+                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
+                        <button type="button" class="btn btn-danger text-white delete-btn" data-proj-no="${projNo}">삭제</button>
+                    </td>
+                </tr>
+            `;
+            $(`tr:has(th:contains(${projNo}))`).replaceWith(updatedRow);
+            $('#editProjectModal').modal('hide'); // 수정 모달 닫기
+        },
+        error: function(xhr, status, error) {
+            alert('프로젝트 수정에 실패했습니다: ' + error);
+        }
+    });
+});
+
+$(document).ready(function() {
+    // 템플릿 사용 여부에 따라 선택 박스 노출/숨김
+    $('#isTemplate').on('change', function() {
+        if ($(this).val() === 'i2') { // "사용함" 선택
+            $('#templateDiv').show(); // 템플릿 선택 박스 표시
+        } else { // "사용안함" 선택
+            $('#templateDiv').hide(); // 템플릿 선택 박스 숨김
+            $('#projTempNo').val(''); // 선택 초기화
+        }
+    });
+});
 </script>

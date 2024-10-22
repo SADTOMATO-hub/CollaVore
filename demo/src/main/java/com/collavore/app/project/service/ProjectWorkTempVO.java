@@ -5,11 +5,9 @@ import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import lombok.Builder;
 import lombok.Data;
 
 @Data
-@Builder
 public class ProjectWorkTempVO {
 	
 	//프로젝트 업무 템플릿 관리
@@ -18,6 +16,7 @@ public class ProjectWorkTempVO {
 	private String content;
 	private Integer projTempNo;
 	private String jobType;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date regDate;
 
 	

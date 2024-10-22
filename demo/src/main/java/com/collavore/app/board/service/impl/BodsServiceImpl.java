@@ -23,7 +23,13 @@ public class BodsServiceImpl implements BodsService {
 		this.bodsMapper = bodsMapper;
 	}
 
-	@Override // 전체조회
+	// 전체 게시글 수 확인하기.
+	@Override
+	public int totalListCnt(BodsVO bodsVO) {
+		return bodsMapper.totalBoardCnt(bodsVO);
+	}
+
+	@Override //전체조회
 	public List<BodsVO> bodsList(BodsVO bodsVO) {
 		return bodsMapper.selectBoardAll(bodsVO);
 	}
@@ -81,8 +87,13 @@ public class BodsServiceImpl implements BodsService {
 	}
 	
 	@Override //댓글 전체조회
-	public List<BodsComtsVO> bodsComtsList(BodsComtsVO bodsComtsVO) {
-		return bodsMapper.selectBodsComtsAll(bodsComtsVO);
+	public List<BodsComtsVO> bodsComtsList(int postNo) {
+		return bodsMapper.selectBodsComtsAll(postNo);
+	}
+
+	@Override // 댓글 삭제
+	public int deleteBodsComts(int bodsComtsVO) {
+		return bodsMapper.delectBodsComtsInfo(bodsComtsVO);
 	}
 
 	

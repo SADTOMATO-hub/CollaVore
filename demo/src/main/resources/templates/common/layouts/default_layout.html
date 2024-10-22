@@ -1,4 +1,5 @@
-q<!DOCTYPE html>
+q
+<!DOCTYPE html>
 <html xmlns:th="https://www.thymeleaf.org/"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
@@ -15,9 +16,7 @@ q<!DOCTYPE html>
 			<div class="scroll-sidebar">
 				<nav class="sidebar-nav">
 					<ul id="sidebarnav" class="pt-4"
-					
-						th:replace="|common/sidebar/${sidemenu}| :: sidebar">
-						
+						th:replace="~{|common/sidebar/${sidemenu}| :: sidebar}">
 					</ul>
 				</nav>
 			</div>

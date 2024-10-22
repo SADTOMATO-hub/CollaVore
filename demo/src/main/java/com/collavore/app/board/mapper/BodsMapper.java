@@ -6,6 +6,9 @@ import com.collavore.app.board.service.BodsComtsVO;
 import com.collavore.app.board.service.BodsVO;
 
 public interface BodsMapper {
+	// 게시글 전체 수 조회
+	public int totalBoardCnt(BodsVO bodsVO);
+	
 	// 게시글 전체 목록 전체조회
 	public List<BodsVO> selectBoardAll(BodsVO bodsVO);
 
@@ -25,8 +28,11 @@ public interface BodsMapper {
 	public int insertBodsComtsInfo(BodsComtsVO bodsComtsVO);
 	
 	// 댓글 조회(전체 조회)
-	public List<BodsComtsVO> selectBodsComtsAll(BodsComtsVO bodsComtsVO);
-
+	public List<BodsComtsVO>selectBodsComtsAll(int postNo);
+	
+	// 댓글 삭제(단건 삭제)
+	public int delectBodsComtsInfo(int cmtNo);
+	
 	// 게시판 생성(등록)
 	// public int insertBodsInfo();
 

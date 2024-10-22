@@ -18,13 +18,14 @@ public class HrmVO {
    private Date leaveDate;       // 퇴사일
    private Date regDate;         // 등록일
    private String gitToken;      // 개별토큰
+   private String img;           // 이미지
    
    private Integer deptNo;       // 부서번호
    private String deptName;      // 부서명
    private Integer mgrNo;        // 부서장 사원번호
    private Integer parentDeptNo; // 상위부서번호
-   private Integer sort;         // 정렬순서
    private Date deptDate;        // 부서 등록일
+   private Integer empCnt;       // 사원수
    
    private Integer jobNo;        // 직무번호
    private String jobName;       // 직무명

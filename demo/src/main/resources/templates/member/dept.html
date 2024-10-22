@@ -1,0 +1,275 @@
+<div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	layout:fragment="Content">
+
+	<style>
+/* card_org 스타일 */
+.card_org {
+	background-color: #ffffff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	width: calc(100% - 40px);
+	max-width: 1000px;
+	margin: 20px auto;
+	box-sizing: border-box;
+	overflow-x: auto; /* 가로 스크롤 추가 */
+}
+
+.inline-Dept-container {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	padding: 20px 0;
+}
+
+.dept-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: relative;
+	margin-bottom: 20px;
+}
+
+.dept-info {
+	cursor: pointer;
+	font-weight: bold;
+	padding: 8px 12px;
+	border-radius: 5px;
+	background-color: #e6ecf7;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 0.9em;
+	color: #333;
+	margin-bottom: 10px;
+	position: relative;
+	width: 150px;
+}
+
+.options-menu {
+	background-color: white;
+	border: 1px solid #ccc;
+	padding: 10px;
+	border-radius: 5px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	position: absolute;
+	top: 100%;
+	right: 0;
+	z-index: 10;
+}
+
+.options-menu ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.options-menu li {
+	padding: 5px 10px;
+	cursor: pointer;
+}
+
+.options-menu li:hover {
+	background-color: #f0f0f0;
+}
+</style>
+
+
+
+	<div class="card_org" id="org-section">
+		<div class="inline-container">
+			<h4>
+				조직 관리 <i class="fas fa-question-circle tooltip-icon"></i>
+				<div class="tooltip-text">조직 관리에 대한 안내</div>
+			</h4>
+			<button onclick="addDept()">
+				<i class="fas fa-plus"></i>
+			</button>
+		</div>
+
+		<div class="inline-Dept-container" id="DeptTable">
+			<!-- 조직도 뿌려지는 곳 -->
+		</div>
+
+		<div class="button-container">
+			<button onclick="saveDept()">저장</button>
+		</div>
+	</div>
+</div>
+
+<script>
+//──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────// 서버에서 부서 데이터를 가져오는 함수
+// 서버에서 부서 데이터를 가져오는 함수
+async function fetchDeptData() {
+    try {
+        const response = await fetch('/dept/getExistingDepts');  // 실제 API 엔드포인트로 수정
+        const departments = await response.json();  // JSON 형태로 변환
+
+        if (departments && departments.length > 0) {
+            // 받아온 데이터를 트리 형태로 렌더링
+            renderDeptTree(departments);
+        } else {
+            console.error('서버로부터 받은 부서 데이터가 비어있습니다.');
+        }
+    } catch (error) {
+        console.error('부서 데이터를 가져오는 중 오류 발생:', error);
+    }
+}
+
+// 부서 데이터를 트리 구조로 렌더링
+function renderDeptTree(departments) {
+    const deptTable = document.getElementById('DeptTable');
+    deptTable.innerHTML = ''; // 기존 내용을 초기화
+
+    const deptMap = {};
+    const levelMap = {};
+
+    departments.forEach(dept => {
+        deptMap[dept.deptNo] = { ...dept, children: [] }; // 각 부서에 children 배열을 미리 초기화
+    });
+
+    departments.forEach(dept => {
+        if (dept.parentDeptNo !== null && dept.parentDeptNo !== 0 && deptMap[dept.parentDeptNo]) {
+            deptMap[dept.parentDeptNo].children.push(deptMap[dept.deptNo]);
+        }
+    });
+
+    function calculateLevel(deptNo, currentLevel = 1) {
+        const dept = deptMap[deptNo];
+        if (!levelMap[currentLevel]) levelMap[currentLevel] = [];
+        levelMap[currentLevel].push(dept);
+        
+        dept.children.forEach(child => {
+            calculateLevel(child.deptNo, currentLevel + 1);
+        });
+    }
+
+    const rootDepartments = departments.filter(dept => dept.parentDeptNo === null || dept.parentDeptNo === 0);
+    rootDepartments.forEach(rootDept => {
+        calculateLevel(rootDept.deptNo);  // 레벨별로 부서를 계산
+    });
+
+    Object.keys(levelMap).forEach(level => {
+        const levelContainer = document.createElement('div');
+        levelContainer.classList.add('level-container');
+        levelContainer.innerHTML = `<h4>Level.${level}</h4>`;
+
+        levelMap[level].forEach(dept => {
+            const deptHTML = generateDeptHTML(dept);
+            levelContainer.appendChild(deptHTML);
+        });
+
+        deptTable.appendChild(levelContainer);
+    });
+}
+
+// 부서 트리 HTML을 재귀적으로 생성
+function generateDeptHTML(dept) {
+    const deptElement = document.createElement('div');
+    deptElement.classList.add('dept-item');
+
+    const deptName = dept.deptName !== null ? dept.deptName : 'N/A';
+    const empCnt = dept.empCnt !== null ? dept.empCnt : '0';
+
+    deptElement.innerHTML = `
+        <div class="dept-info">
+            <span class="dept-name" onclick="editDeptName(this, ${dept.deptNo})">${deptName}</span>
+            <span class="options-icon" onclick="showOptionsMenu(this, ${dept.deptNo})"> 
+                <i class="fas fa-ellipsis-h"></i> 
+            </span>
+            <span class="emp-count" onclick="viewEmployees(${dept.deptNo})">
+                <i class="fas fa-user"></i> ${empCnt}
+            </span>
+        </div>
+        <div class="options-menu" id="options-menu-${dept.deptNo}" style="display: none; position: absolute;">
+            <ul>
+                <li onclick="createSubDept(${dept.deptNo})">하위조직 생성</li>
+                <li onclick="openMoveModal(${dept.deptNo})">이동</li>
+                <li onclick="changeOrder(${dept.deptNo})">순서변경</li>
+                <li onclick="deleteDept(${dept.deptNo})">삭제</li>
+            </ul>
+        </div>
+    `;
+
+    return deptElement;
+}
+
+// 부서 이름 수정 기능
+function editDeptName(element, deptNo) {
+    const currentName = element.textContent;
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.value = currentName;
+    input.onblur = () => {
+        element.textContent = input.value;
+        // 서버에 새로운 이름 저장
+        saveDeptName(deptNo, input.value);
+    };
+    element.textContent = '';
+    element.appendChild(input);
+    input.focus();
+}
+
+// 옵션 메뉴 표시 기능
+function showOptionsMenu(element, deptNo) {
+    const optionsMenu = document.getElementById(`options-menu-${deptNo}`);
+    const isVisible = optionsMenu.style.display === 'block';
+    // 모든 메뉴 숨기기
+    document.querySelectorAll('.options-menu').forEach(menu => menu.style.display = 'none');
+    // 클릭한 메뉴만 표시
+    optionsMenu.style.display = isVisible ? 'none' : 'block';
+}
+
+// 부서에 있는 사원들을 확인하는 페이지로 이동
+function viewEmployees(deptNo) {
+    window.location.href = `/employees?deptNo=${deptNo}`;
+}
+
+// 하위조직 생성, 이동, 순서변경, 삭제 기능
+function createSubDept(deptNo) {
+    // 하위 부서 생성 로직 구현
+    alert(`하위 부서를 생성합니다. 부서 번호: ${deptNo}`);
+}
+
+function openMoveModal(deptNo) {
+    // 모달창 띄우는 로직 구현
+    alert(`이동할 모달창을 띄웁니다. 부서 번호: ${deptNo}`);
+}
+
+function changeOrder(deptNo) {
+    // 순서 변경 로직 구현
+    alert(`순서를 변경합니다. 부서 번호: ${deptNo}`);
+}
+
+function deleteDept(deptNo) {
+    // 부서 삭제 로직 구현
+    alert(`부서를 삭제합니다. 부서 번호: ${deptNo}`);
+}
+
+// 서버에 새로운 부서 이름을 저장하는 함수
+function saveDeptName(deptNo, newName) {
+    fetch(`/dept/updateName`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ deptNo, newName })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('부서 이름이 성공적으로 저장되었습니다.');
+        } else {
+            alert('부서 이름 저장 중 오류가 발생했습니다.');
+        }
+    })
+    .catch(error => console.error('Error updating department name:', error));
+}
+
+// 페이지가 로드될 때 데이터를 가져와서 트리 구조로 렌더링
+document.addEventListener('DOMContentLoaded', () => {
+    fetchDeptData();  // 서버에서 데이터를 받아와 렌더링
+});
+</script>
