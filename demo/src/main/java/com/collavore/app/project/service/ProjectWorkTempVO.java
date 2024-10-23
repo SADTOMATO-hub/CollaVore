@@ -15,7 +15,7 @@ public class ProjectWorkTempVO {
 	private String name;
 	private String content;
 	private Integer projTempNo;
-	private String jobType;
+	private Integer jobNo;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date regDate;
 

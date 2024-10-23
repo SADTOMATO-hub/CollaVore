@@ -1,60 +1,123 @@
 <div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{common/layouts/default_layout}"
-	layout:fragment="Content">
-	<head>
-		<link rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
-	</head>
-	<style>
-		.no-border-button {
-			border: none;
-			background: transparent; 
-			padding: 0; 
-			cursor: pointer; 
-		}
-	</style>
-	<div class="container-fluid">
-		<div class="row">
-			<div id="jstree">
-				<ul>
-					<th:block th:each="project : ${projects}">
-						<th:block th:if="${project.parentNo == null}">
-							<li th:id="'node_' + ${project.no}">[[${project.name}]]
-							<button id="Folderinsertbutton" class="btn btn-info btn-lg no-border-button">
-								<i class="mdi mdi-plus-circle-outline" style="color:black;"></i>
-							</button>
-								<ul>
-									<th:block th:each="child : ${projects}" th:if="${child.parentNo == project.no}">
-										<li class="test" th:id="'node_' + ${child.no}"
-											th:attr="data-pf-no=${child.no}">[[${child.name}]]
-											<button id="Fileinsertbutton" class="btn btn-info btn-lg no-border-button">
-												<i class="mdi mdi-plus-circle-outline" style="color:black;"></i>
-											</button>
-											<ul>
-												<th:block th:each="subChild : ${projects}" th:if="${subChild.parentNo == child.no}">
-													<li th:id="'node_' + ${subChild.no}" th:attr="data-pf-no=${subChild.no}">[[${subChild.name}]]</li>
-												</th:block>
-											</ul>
-										</li>
-									</th:block>
-								</ul>
-							</li>
-						</th:block>
-					</th:block>
-				</ul>
-			</div>
-		</div>
-	</div>
+     xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+     layout:decorate="~{common/layouts/default_layout}"
+     layout:fragment="Content">
+    <head>
+        <link rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+    </head>
+    <style>
+        .no-border-button {
+            border: none;
+            background: transparent; 
+            padding: 0; 
+            cursor: pointer; 
+        }
+        .insert-panel {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-left: 20px;
+            display: none; 
+        }
+    </style>
+    <div class="container-fluid" th:data-current-table="${table}">
+        <div class="row">
+            <div id="jstree" class="col-md-6">
+                <ul>
+                    <th:block th:each="project : ${projects}" th:if="${project.parentNo == null}">
+                        <th:block th:replace="~{::renderNode(projno=${project.no}, projname=${project.name}, parentNo=${project.parentNo}, table=${project.table})}"></th:block>
+                    </th:block>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <th:block th:if="${table == 'projwrks'}">
+                    <div class="insert-panel" id="insertPanelProjwrks">
+                        <h4>Insert Project</h4>
+                        <form id="insertFormProjwrks">
+                            <div>
+                                <label for="projName">Project Name:2</label>
+                                <input type="text" id="projName" name="projName" required>
+                            </div>                  
+                            <div>
+                                <button type="submit">생성</button>
+                            </div>
+                        </form>
+                    </div>
+                </th:block>
+                <th:block th:if="${table == 'projdwrks'}">
+                    <div class="insert-panel" id="insertPanelProjdwrks">
+                        <h4>Insert Project</h4>
+                        <form id="insertFormProjdwrks">
+                            <div>
+                                <label for="projNameDwrks">Project Name:</label>
+                                <input type="text" id="projNameDwrks" name="projName" required>
+                            </div>                 
+                            <div>
+                                <button type="submit">생성</button>
+                            </div>
+                        </form>
+                    </div>
+                </th:block>            
+            </div>
+        </div>
+    </div>
 
-	<!-- Include jQuery library -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
-	<!-- Include jsTree -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+    <!-- Include jQuery library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+    <!-- Include jsTree -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 
-	<script>
-		$(document).ready(function() {
-			$('#jstree').jstree(); // jstree 초기화
-		});
-	</script>
+    <script>
+        $(document).ready(function() {
+            $('#jstree').jstree(); 
+
+            $('#jstree').on('click', '.no-border-button', function(e) {
+                e.stopPropagation(); 
+                $(this).siblings('ul').toggle(); 
+                
+                const projectName = $(this).parent().contents().filter(function() {
+                    return this.nodeType === 3; 
+                }).text().trim();
+
+                // currentTable 값 가져오기
+                const currentTable = $('.container-fluid').data('current-table');
+
+                $('#insertPanelProjwrks h4').text(projectName + ' 상세업무 등록');
+                $('#insertPanelProjwrks').show();
+                $('#insertPanelProjdwrks').hide(); 
+
+                console.log('Current Table:', currentTable); 
+            });
+
+            $('#insertFormProjwrks').on('submit', function(e) {
+                e.preventDefault(); 
+                const projName = $('#projName').val();
+                alert('상세업무을(를) "' + projName + '" 만들었어'); 
+                $('#projName').val(''); 
+            });
+
+            $('#insertFormProjdwrks').on('submit', function(e) {
+                e.preventDefault(); 
+                const projName = $('#projNameDwrks').val();
+                alert('상세업무을(를) "' + projName + '" 만들었어'); 
+                $('#projNameDwrks').val(''); 
+            });
+        });
+    </script>
+
+    <!-- 재귀 함수 정의 -->
+    <th:block th:fragment="renderNode(projno, projname, parentNo, table)">
+        <li th:id="'node_' + ${projno}" style="display: none;">[[${projname}]]/ [[${table}]]
+            <th:block th:if="${parentNo != null}">
+                <button class="btn btn-info btn-lg no-border-button">
+                    <i class="mdi mdi-plus-circle-outline" style="color:black;"></i>
+                </button>
+            </th:block>
+            <ul style="display: none;"> 
+                <th:block th:each="child : ${projects}" th:if="${child.parentNo == projno}">
+                    <th:block th:replace="~{::renderNode(projno=${child.no}, projname=${child.name}, parentNo=${projno}, table=${child.table})}"></th:block>
+                </th:block>
+            </ul>
+        </li>
+    </th:block>
 </div>
