@@ -30,8 +30,43 @@
 		FROM schs
 		<!-- WHERE schNo = #{schNo} AND isDelete = 'h2' 미삭제된 일정만 조회 -->
 	</select>
-
+	
+	
+	
 	<insert id="insertSchsInfo" parameterType="SchsVO">
+    <selectKey keyProperty="schNo" resultType="Integer" order="BEFORE">
+        SELECT NVL(MAX(sch_no), 0)+1
+        FROM schs
+    </selectKey>
+    INSERT INTO schs (
+        sch_no,
+        title,
+        start_Date,
+        end_date,
+        cal_no,  <!-- 캘린더 번호 저장 -->
+        type,    <!-- 캘린더 타입 저장 -->
+        is_alarm
+    )
+    VALUES (
+        #{schNo},
+        #{title},
+        #{startDate,jdbcType=TIMESTAMP},
+        #{endDate,jdbcType=TIMESTAMP},
+        #{calNo},    <!-- 캘린더 번호 -->
+        #{type},     <!-- 캘린더 타입 (g1: 개인, g2: 공유) -->
+        #{isAlarm}
+    )
+</insert>
+
+
+<!-- 캘린더 타입에 따른 cal_no 조회 -->
+    <select id="selectCalType" resultType="Integer" parameterType="int">
+        SELECT cal_no
+        FROM cals
+        WHERE type = #{type} AND is_delete = 'h2'
+    </select>
+
+	<!-- <insert id="insertSchsInfo" parameterType="SchsVO">
 
 		<selectKey keyProperty="schNo" resultType="Integer"
 			order="BEFORE">
@@ -39,20 +74,24 @@
 			FROM schs
 		</selectKey>
 		INSERT INTO schs (
-		sch_no
-		,title
-		,start_Date
-		,end_date
-		,cal_no
-		,is_alarm)
+					sch_no
+					,title
+					,start_Date
+					,end_date
+					,cal_no
+					,is_alarm
+					
+					)
 		VALUES (
 		#{schNo}
 		,#{title}
 		,#{startDate,jdbcType=TIMESTAMP}
 		,#{endDate,jdbcType=TIMESTAMP}
 		,#{calNo}
-		,#{isAlarm})
-	</insert>
+		,#{isAlarm}
+		
+		)
+	</insert> -->
 
 
 	<delete id="deleteSchsInfo" parameterType="int">
@@ -80,28 +119,15 @@
 	<!--==============================개인 캘린더==================================== -->
 
 
-	<select id="selectAllCalendars" resultType="CalsVO">
-		SELECT cal_no
-		, name
-		,
-		type
-		, reg_date
+	<select id="selectTeamCal" resultType="CalsVO">
+		SELECT *
 		FROM cals
 		WHERE is_delete = 'h2'
+		AND type = 'g2'  <!-- 공유 캘린더만 조회 -->
 	</select>
 
 
-	<select id="selectSoloCal" resultType="CalsVO">
-		SELECT cal_no
-		,name
-		,type
-		,reg_date
-		,is_delete
-		,delete_date
-		,color
-		FROM cals
 
-	</select>
 
 
 
@@ -140,24 +166,50 @@
 	<update id="updateCalsInfo" parameterType="CalsVO">
 		UPDATE cals
 		SET
-		name = #{name},
+		name =
+		#{name},
 		color = #{color}
 		WHERE cal_no = #{calNo}
 	</update>
 
 
 	<!-- 캘린더를 휴지통으로 이동 (isDelete = 'h1'로 업데이트하고 deleteDate 설정) -->
-	<update id="updateCalToTrash" parameterType="String">
+	<update id="updateCalToTrash" parameterType="int">
 		UPDATE cals
 		SET
 		is_delete = 'h1', delete_date = SYSDATE
-		WHERE cal_No = #{calNo}
+		WHERE cal_no = #{calNo}
 	</update>
 
 
+	<!-- 캘린더를 복원 (isDelete = 'h2'로 업데이트하고 deleteDate를 NULL로 설정) -->
+	<update id="restoreCalFromTrash" parameterType="int">
+		UPDATE cals
+		SET
+		is_delete = 'h2', delete_date = NULL
+		WHERE cal_no = #{calNo}
+	</update>
+
+
+
+
+	<!-- 휴지통에 있는 캘린더 조회 -->
+	<select id="selectToTrash" resultType="CalsVO">
+		SELECT *
+		FROM cals
+		WHERE
+		is_delete = 'h1'
+	</select>
+
+
+
+
+	<!-- 캘린더 완전 삭제  -->
+	<delete id="permanentlyDeleteCal" parameterType="int">
+		DELETE FROM cals
+		WHERE cal_no = #{calNo} AND is_delete = 'h1'  <!-- 휴지통에 있는 캘린더만 삭제 -->
+	</delete>
 	<!--==============================END 개인 캘린더 ==================================== -->
-
-
 
 
 

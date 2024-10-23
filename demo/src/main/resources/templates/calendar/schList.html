@@ -17,13 +17,21 @@
 <div id="scheduleModal" class="modal">
 	<div class="modal-content">
 		<h2>일정 생성</h2>
-		<form id="scheduleForm">
-			<label for="calendarType">캘린더</label> 
-			<select id="calendarType">
-				<option value="내캘린더">내캘린더</option>
-				<option value="공유캘린더">공유캘린더</option>
-				<option value="프로젝트">프로젝트</option>
-			</select> 
+		 <form id="scheduleForm">
+      <!-- 캘린더 선택 -->
+      		<label for="calendarType">캘린더 선택</label> 
+     	<select id="calendarType" required>
+        		<option value="g1">내캘린더</option>
+        		<option value="g2">공유캘린더</option>
+      	</select>
+      	
+      	<!-- 공유캘린더 리스트 (공유캘린더 선택 시만 보임) -->
+      <div id="sharedCalendarOptions" style="display:none;">
+        <label for="sharedCalendar">공유 캘린더 선택</label>
+        <select id="sharedCalendar">
+          <!-- 공유캘린더 리스트는 동적으로 불러와집니다 -->
+        </select>
+      </div>
 
 			<label for="title">일정 제목</label> 
 			<input type="text" id="title" placeholder="내용 입력" required>

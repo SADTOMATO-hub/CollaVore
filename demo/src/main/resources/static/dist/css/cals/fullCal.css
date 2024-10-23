@@ -195,61 +195,6 @@ button.close:hover {
 
 
 /* 사이드바 관련 CSS */
-/* 기본적으로 캘린더 추가 버튼을 숨김 */
-#addPersonalCalendarBtn,
-#addSharedCalendarBtn {
-    display: none;
-}
-
-/* 개인/공유/프로젝트 캘린더 항목에 마우스 올리면 추가 버튼 표시 */
-#personalCalendar:hover #addPersonalCalendarBtn,
-#sharedCalendar:hover #addSharedCalendarBtn {
-    display: block;
-    margin-left: 20px;
-}
-
-/* 개인/공유/프로젝트 캘린더 하위 항목 기본적으로 숨김 */
-#personalCalendarList,
-#sharedCalendarList,
-#projectCalendarList {
-    display: none;
-    list-style-type: none;
-    padding-left: 0;
-}
-
-/* 개인/공유/프로젝트 캘린더 항목에 마우스 올리면 하위 항목 표시 */
-#personalCalendar:hover #personalCalendarList,
-#sharedCalendar:hover #sharedCalendarList,
-#projectCalendar:hover #projectCalendarList {
-    display: block;
-}
-
-/* 개인/공유/프로젝트 캘린더 리스트 스타일 */
-#personalCalendarList li,
-#sharedCalendarList li,
-#projectCalendarList li {
-    padding: 2px 40px; /* 들여쓰기 */
-    margin: 0;
-    color: #fff;
-    font-size: 15px;
-    transition: background-color 0.3s ease;
-}
-
-#personalCalendarList li a,
-#sharedCalendarList li a,
-#projectCalendarList li a {
-    color: #fff;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-}
-
-#personalCalendarList li:hover,
-#sharedCalendarList li:hover,
-#projectCalendarList li:hover {
-    background-color: #2a3b4c; /* hover 효과 */
-    cursor: pointer;
-}
 
 
 /*사이드바 캘린더추가 색깔*/
@@ -285,26 +230,22 @@ button.close:hover {
 
 
 /* 기본적으로 연필 아이콘을 숨김 */
-.edit-icon {
-    display: none;
-}
+
 
 /* 캘린더 항목에 마우스를 올리면 연필 아이콘 표시 */
 li:hover .edit-icon {
     display: inline-block;
     margin-left: 10px;  /* 캘린더 이름과 연필 아이콘 사이의 여백 */
 }
-
 /* 아이콘을 캘린더 이름 옆에 배치 */
 .calendar-item-wrapper {
     display: flex;
     align-items: center;
 }
 
-/* 연필 아이콘 스타일 */
 .edit-icon {
     display: inline-block;
-    margin-left: 10px;
+    margin-left: 10px;  /* 캘린더 이름과 연필 아이콘 사이의 여백 */
     cursor: pointer;
 }
 

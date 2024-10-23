@@ -21,7 +21,6 @@ import com.collavore.app.cals.service.SchsVO;
 @Controller // @Controller 대신 @RestController 사용
 public class SchsController {
 	private final SchsService schsService;
-	
 
 	// 생성자 주입
 	@Autowired
@@ -55,11 +54,11 @@ public class SchsController {
 		Map<String, Object> result = new HashMap<>();
 		try {
 			// 받은 데이터 확인용 로그
-	        System.out.println("Received Title: " + schsVO.getTitle());
-	        System.out.println("Received Start Date: " + schsVO.getStartDate());
-	        System.out.println("Received End Date: " + schsVO.getEndDate());
-	        
-	        // DB에 저장
+			System.out.println("Received Title: " + schsVO.getTitle());
+			System.out.println("Received Start Date: " + schsVO.getStartDate());
+			System.out.println("Received End Date: " + schsVO.getEndDate());
+
+			// DB에 저장
 			int id = schsService.insertSchs(schsVO);
 			result.put("success", true);
 			result.put("id", id);
@@ -68,6 +67,28 @@ public class SchsController {
 		}
 		return result;
 	}
+	
+	// 캘린더 타입에 따른 cal_no 조회 API
+    @GetMapping("/getCalNoByType")
+    @ResponseBody
+    public Map<String, Object> getCalType(@RequestParam("type") String type) {
+        Map<String, Object> result = new HashMap<>();
+        try {
+            // 서비스에서 해당 캘린더 타입에 따른 cal_no 조회
+            Integer calNo = schsService.getCalType(type);
+            if (calNo != null) {
+                result.put("success", true);
+                result.put("calNo", calNo);
+            } else {
+                result.put("success", false);
+                result.put("message", "해당 캘린더 타입에 맞는 cal_no를 찾을 수 없습니다.");
+            }
+        } catch (Exception e) {
+            result.put("success", false);
+            result.put("message", "캘린더 번호를 가져오는 중 오류가 발생했습니다.");
+        }
+        return result;
+    }
 
 	// 수정
 	@PostMapping("/sch/schUpdate")
@@ -91,96 +112,95 @@ public class SchsController {
 		}
 		return result;
 	}
-	
+
 //==============================END 일정관리 ===============================
-	
-	
-	
-	
-	//전체조회
+
+	// 전체조회
 	@GetMapping("/cal/calList")
 	@ResponseBody
-	public List<CalsVO> getAllCalendars() {
-	    return schsService.allCal();  // 서비스에서 DB의 캘린더 목록을 가져옴
+	public List<CalsVO> getTeamCalendars() {
+		return schsService.teamCal();
 	}
-	
-	
-	
+
 	// 등록
 	@PostMapping("/cal/calInsert")
 	@ResponseBody
 	public Map<String, Object> insertCals(@RequestBody CalsVO calsVO) {
-	    Map<String, Object> result = new HashMap<>();
-	    try {
-	        schsService.insertCals(calsVO);  // Service를 통해 캘린더 등록
-	        result.put("success", true);
-	        result.put("calsVO", calsVO);  // 등록된 캘린더 번호 반환
-	    } catch (Exception e) {
-	        result.put("success", false);
-	        result.put("message", "캘린더 등록에 실패했습니다.");
-	    }
-	    return result;
+		Map<String, Object> result = new HashMap<>();
+		try {
+			schsService.insertCals(calsVO); // Service를 통해 캘린더 등록
+			result.put("success", true);
+			result.put("calsVO", calsVO); // 등록된 캘린더 번호 반환
+		} catch (Exception e) {
+			result.put("success", false);
+			result.put("message", "캘린더 등록에 실패했습니다.");
+		}
+		return result;
 	}
-	
-	//캘린더 수정
+
+	// 캘린더 수정
 	@PostMapping("/cal/calUpdate")
 	@ResponseBody
 	public Map<String, Object> updateCal(@RequestBody CalsVO calsVO) {
-	    Map<String, Object> resultMap = schsService.updateCals(calsVO);
+		Map<String, Object> resultMap = schsService.updateCals(calsVO);
 
-	    if (resultMap.get("result").equals(true)) {
-	        resultMap.put("message", "캘린더가 성공적으로 수정되었습니다.");
-	    } else {
-	        resultMap.put("message", "캘린더 수정에 실패했습니다.");
-	    }
+		if (resultMap.get("result").equals(true)) {
+			resultMap.put("message", "캘린더가 성공적으로 수정되었습니다.");
+		} else {
+			resultMap.put("message", "캘린더 수정에 실패했습니다.");
+		}
 
-	    return resultMap;
+		return resultMap;
 	}
-	
-	   // 캘린더 휴지통으로 이동
+
+	// 캘린더 휴지통으로 이동
 	@PostMapping("/cal/calTrash")
 	@ResponseBody
 	public Map<String, Object> moveTrash(@RequestBody Map<String, String> params) {
-	    String calNo = params.get("calNo");
-	    String result = schsService.moveTrash(calNo);
-	    Map<String, Object> response = new HashMap<>();
-	    if (result != null) {
-	        response.put("success", true);
-	        response.put("message", "캘린더가 휴지통으로 이동되었습니다.");
-	    } else {
-	        response.put("success", false);
-	        response.put("message", "캘린더 이동에 실패했습니다.");
-	    }
-	    return response;
+		int calNo = Integer.parseInt(params.get("calNo")); // String을 int로 변환
+
+		int result = schsService.moveTrash(calNo); // int로 처리
+		Map<String, Object> response = new HashMap<>();
+		if (result > 0) {
+			response.put("success", true);
+			response.put("message", "캘린더가 휴지통으로 이동되었습니다.");
+		} else {
+			response.put("success", false);
+			response.put("message", "캘린더 이동에 실패했습니다.");
+		}
+		return response;
 	}
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-	
-    // 캘린더 복원
-    @PostMapping("/cal/calRestore")
-    @ResponseBody
-    public String restoreCalendar(@RequestParam String calNo) {
-        String result = schsService.calRestore(calNo);
-        return result != null ? "캘린더가 복원되었습니다." : "캘린더 복원에 실패했습니다.";
-    }
-    
- // 캘린더 완전 삭제
-    @PostMapping("/cal/calDel")
-    @ResponseBody
-    public String permanentlyDelete(@RequestParam String calNo) {
-        String result = schsService.permanentlyDel(calNo);
-        return result != null ? "캘린더가 완전히 삭제되었습니다." : "캘린더 삭제에 실패했습니다.";
-    }
 
+	@PostMapping("/cal/calRestore")
+	@ResponseBody
+	public Map<String, Object> calRestore(@RequestBody Map<String, String> params) {
+		int calNo = Integer.parseInt(params.get("calNo"));
 
+		int result = schsService.calRestore(calNo);
+		Map<String, Object> response = new HashMap<>();
+		if (result > 0) {
+			response.put("success", true);
+			response.put("message", "캘린더가 복원되었습니다.");
+		} else {
+			response.put("success", false);
+			response.put("message", "캘린더 복원에 실패했습니다.");
+		}
+		return response;
+	}
+
+	// 휴지통에 있는 캘린더 목록 조회
+	@GetMapping("/cal/trashList")
+	@ResponseBody
+	public List<CalsVO> trashList() {
+		return schsService.trashList(); // 휴지통에 있는 캘린더 목록 조회
+	}
+
+	@PostMapping("/cal/calDel")
+	@ResponseBody
+	public String permanentlyDelete(@RequestBody Map<String, Integer> params) {
+	    int calNo = params.get("calNo");
+	    int result = schsService.permanentlyDel(calNo);
+	    return result > 0 ? "캘린더가 완전히 삭제되었습니다." : "캘린더 삭제에 실패했습니다.";
+	}
 
 }
