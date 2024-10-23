@@ -10,7 +10,7 @@ public class ProjectWorkVO {
 	private Integer pwNo;
 	private String name;
 	private String content;
-	private String workType;
+	private Integer jobNo;
 	private Integer mgrNo;
 	private Date regDate;
 	private Integer projNo;

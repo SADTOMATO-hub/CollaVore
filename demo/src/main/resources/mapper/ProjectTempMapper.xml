@@ -63,7 +63,7 @@
 				,name
 				,content
 				,proj_temp_no
-				,job_type
+				,job_no
 				,reg_date
 		FROM projwrktemps
 		ORDER BY pwt_no
@@ -77,7 +77,7 @@
     						  name, 
     						  content, 
     						  proj_temp_no, 
-    						  job_type, 
+    						  job_no, 
     						  reg_date
     						  )
 			    VALUES (
@@ -85,7 +85,7 @@
 					        #{name},
 					        #{content},
 					        #{projTempNo},
-					        #{jobType},
+					        #{jobNo},
 					        SYSDATE  
 			    )
 	</insert>
@@ -101,7 +101,7 @@
 		SET name = #{name},
 			content = #{content},
 			proj_temp_no = #{projTempNo}, 
-			job_type = #{jobType}
+			job_no = #{jobNo}
 
 		WHERE pwt_no = #{pwtNo}
 	</update>
@@ -112,7 +112,7 @@
 				name,
 				content,
 				proj_temp_no,
-				job_type
+				job_no
 		FROM projwrktemps
 		WHERE pwt_no = #{pwtNo}
 	</select>

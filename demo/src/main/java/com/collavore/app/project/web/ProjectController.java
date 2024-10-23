@@ -54,7 +54,7 @@ public class ProjectController {
 	public String projectList(Model model) {
 		List<ProjectVO> list = pjService.projectList();
 		List<ProjectTempVO> templist = pjtempService.projecttempList();
-
+		
 		model.addAttribute("projects", list);
 		model.addAttribute("templist", templist);
 		return "project/projectList";
@@ -195,7 +195,7 @@ public class ProjectController {
 	@GetMapping("project/projectworklist")
 	public String projectworkList(Model model) {
 		List<ProjectVO> list = pjService.projecttreeList();
-		
+		System.err.println(list);
 		model.addAttribute("projects", list);
 		return "project/projectWorkList";
 	}
