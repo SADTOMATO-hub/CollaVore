@@ -21,10 +21,12 @@
 		e.img,
 		e.join_date,
 		d.name AS deptName,
-		p.name AS posiName,
+		p.name AS
+		posiName,
 		j.name AS jobName
 		FROM employees e
-		LEFT JOIN departments d ON e.dept_no
+		LEFT JOIN departments d ON
+		e.dept_no
 		= d.dept_no
 		LEFT JOIN positions p ON e.posi_no = p.posi_no
 		LEFT JOIN
@@ -37,9 +39,9 @@
 		parameterType="com.collavore.app.hrm.service.HrmVO">
 		UPDATE employees
 		SET info = #{info},
-			name = #{empName},
-			tel = #{tel},
-			password = #{password}
+		name = #{empName},
+		tel = #{tel},
+		password = #{password}
 		WHERE emp_no = #{empNo}
 	</update>
 
@@ -91,6 +93,20 @@
 		)
 	</insert>
 
+	<!-- 연락처 중복 확인 -->
+    <select id="checkTelDuplicate" resultType="int">
+        SELECT COUNT(*) 
+        FROM employees 
+        WHERE tel = #{tel}
+    </select>
+
+    <!-- 이메일 중복 확인 -->
+    <select id="checkEmailDuplicate" resultType="int">
+        SELECT COUNT(*) 
+        FROM employees 
+        WHERE email = #{email}
+    </select>
+
 	<!-- 사원 전체 리스트 -->
 	<select id="selectMemberAll"
 		resultType="com.collavore.app.hrm.service.HrmVO">
@@ -104,13 +120,16 @@
 		e.work_type
 		FROM employees e
 		LEFT
-		JOIN departments d ON e.dept_no = d.dept_no 
-		LEFT JOIN jobs j ON e.job_no = j.job_no
-		LEFT JOIN positions p ON e.posi_no = p.posi_no
+		JOIN departments d ON e.dept_no = d.dept_no
+		LEFT
+		JOIN jobs j ON e.job_no = j.job_no
+		LEFT JOIN positions p ON e.posi_no
+		=
+		p.posi_no
 		ORDER BY e.name
 	</select>
-	
-	
+
+
 	<!-- 관리자에 의한 사원 단건 조회 -->
 	<select id="selectMemberById" parameterType="int"
 		resultType="com.collavore.app.hrm.service.HrmVO">
@@ -119,13 +138,16 @@
 		, tel
 		, email
 		, address
-		, work_type
+		,
+		work_type
 		, info
 		, join_date
+		, leave_date
 		, dept_no
 		, job_no
 		, posi_no
-		FROM employees
+		FROM
+		employees
 		WHERE emp_no = #{empNo}
 	</select>
 
@@ -135,17 +157,27 @@
 		UPDATE employees
 		SET name = #{empName}
 		, tel = #{tel}
-		, email = #{email}
+		,
+		email = #{email}
 		, address = #{address}
 		, work_type = #{workType}
-		, info = #{info}
+		, info
+		= #{info}
 		, join_date = #{joinDate}
-		, dept_no = #{deptNo}
+		, leave_date = #{leaveDate}
+		, dept_no
+		= #{deptNo}
 		, job_no = #{jobNo}
 		, posi_no = #{posiNo}
-		WHERE emp_no = #{empNo}
+		WHERE emp_no =
+		#{empNo}
 	</update>
 
+	<!-- 사원 정보 조회 -->
+	<select id="getMemberById"
+		resultType="com.collavore.app.hrm.service.HrmVO">
+		SELECT * FROM employees WHERE emp_no = #{empNo}
+	</select>
 
 	<!-- 사원 삭제 -->
 	<delete id="deleteMember" parameterType="Integer">

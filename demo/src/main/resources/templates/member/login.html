@@ -27,7 +27,7 @@ body, html {
 	border-radius: 10px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 	text-align: center;
-	width: 20%;
+	width: 450px;
 }
 
 .login-container img {
@@ -70,7 +70,8 @@ body, html {
 			<img th:src="@{/assets/images/users/logo.png}" alt="로고">
 			<!-- 로고 이미지 Thymeleaf로 동적 경로 처리 -->
 			<form th:action="@{/login}" method="post">
-				<input list="email-suggestions" type="email" id="email" name="email" class="form-control" placeholder="Email" required> 
+				<input list="email-suggestions" type="email" id="email" name="email" class="form-control"
+				 placeholder="Email" required> 
 				<datalist id="email-suggestions"></datalist>
 
 				<input type="password" name="password" class="form-control" placeholder="Password" autocomplete="current-password" required>
