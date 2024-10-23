@@ -7,7 +7,7 @@
 			  쩜쩜쩜 캘린더 mdi-calendar-range
 			  체크 캘린더  mdi-calendar-check 
 			  더블체크 캘린더 mdi-calendar-multiple-check
-			  열리 휴지통 mdi-delete-empty
+			  열리 휴지통 mdi-delete-empty 
 			  닫긴 휴지통 mdi-delete
 			  -->
 
@@ -15,27 +15,27 @@
 
 
 		<!-- 일정 생성 버튼 -->
-		<li class="sidebar-item"><a
-			class="sidebar-link waves-effect waves-dark"
-			href="javascript:void(0)" aria-expanded="false"
-			id="createScheduleBtn"> <i class="mdi mdi-calendar-plus"></i> <span
-				class="hide-menu">일정 생성</span>
-		</a></li>
-
-
-
-		<!-- 개인 캘린더 섹션 -->
-		<li class="sidebar-item" id="personalCalendar"><a
-			class="sidebar-link waves-effect waves-dark"
-			href="javascript:void(0)" aria-expanded="false"> <i
-				class="mdi mdi-calendar-check"></i> <span class="hide-menu">내
-					캘린더</span>
+		<li class="sidebar-item">
+		<a  class="sidebar-link waves-effect waves-dark" 
+			href="javascript:void(0)" 
+			aria-expanded="false" 
+			id="createScheduleBtn"> 
+		<i  class="mdi mdi-calendar-plus"></i> 
+		<span class="hide-menu">일정생성</span>
 		</a>
-			<ul id="personalCalendarList" aria-expanded="false"
-				class="collapse first-level">
-				<!-- 동적으로 생성될 개인 캘린더 리스트 -->
-
-			</ul></li>
+		</li>
+		
+		<!-- 개인 캘린더 섹션 -->
+		<li class="sidebar-item" id="personalCalendar">
+		<a class="sidebar-link waves-effect waves-dark"
+			href="javascript:void(0)" 
+			aria-expanded="false"> 
+			<i class="mdi mdi-calendar-check"></i> 
+			<span class="hide-menu">내 캘린더</span>
+		</a>
+		</li>
+			 
+			
 
 		<!-- 수정 모달 -->
 		<div id="editCalendarModal" class="modal">
@@ -44,7 +44,7 @@
 				<h2>공유 캘린더 수정</h2>
 				<form id="editCalendarForm">
 
-					
+					<input type="hidden" id="selectedCalNo" value="">
 					
 					 <label
 						for="editCalendarName">캘린더 이름</label> <input type="text"
@@ -121,8 +121,11 @@
 		</a>
 			<ul id="wasteCalendarList" aria-expanded="false"
 				class="collapse first-level">
-				<!-- 쓰레기통 리스트 -->
+				<!-- 쓰레기통 리스트 동적으로 추가 -->
 			</ul></li>
+			
+			
+			
 
 	</ul>
 
@@ -206,59 +209,43 @@
 			</form>
 		</div>
 	</div>
+	
+	
+	
+	<!-- 휴지통에서 캘린더 삭제/복원 모달 -->
+<div id="trashCalendarModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>캘린더 삭제/복원</h2>
+
+        <!-- 휴지통 캘린더 수정 폼 -->
+        <form id="trashCalendarForm">
+            <input type="hidden" id="trashSelectedCalNo" value="">
+
+            <label for="trashCalendarName">캘린더 이름</label> 
+            <input type="text" id="trashCalendarName" placeholder="캘린더 이름" disabled>
+
+            <label for="trashCalendarColor">캘린더 색상</label>
+            <div id="trashColorPalette" class="color-selection">
+                <input type="radio" name="color" value="red" id="trashRed" disabled> 
+                <label for="trashRed" style="background-color: red;"></label>
+                
+                <input type="radio" name="color" value="orange" id="trashOrange" disabled> 
+                <label for="trashOrange" style="background-color: orange;"></label>
+
+                <!-- 더 많은 색상... -->
+            </div>
+
+            <div class="modal-buttons">
+                <button type="button" id="restoreCalendarBtn" class="btn btn-primary">복원</button>
+                <button type="button" id="permanentlyDeleteBtn" class="btn btn-danger">삭제</button>
+                <button type="button" class="close btn btn-secondary">취소</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 
-	<!-- 휴지통 모달 -->
-
-	<div id="trashModal" class="modal">
-		<div class="modal-content">
-			<span class="close" id="cancelPersonalCalendar">&times;</span>
-			<h2>휴지통</h2>
-
-
-
-			<!-- 휴지통 -->
-			<form id="addPersonalCalendarForm">
-				<label for="calendarName">캘린더 이름</label> <input type="text"
-					id="calendarName" placeholder="캘린더 이름 입력" required> <label
-					for="calendarColor">색상</label>
-				<div id="colorPalette" class="color-selection">
-
-					<input type="radio" name="color" value="red" id="red"> <label
-						for="red" style="background-color: red;"></label> <input
-						type="radio" name="color" value="orange" id="orange"> <label
-						for="orange" style="background-color: orange;"></label> <input
-						type="radio" name="color" value="violet" id="violet"> <label
-						for="violet" style="background-color: violet;"></label> <input
-						type="radio" name="color" value="pink" id="pink"> <label
-						for="pink" style="background-color: pink;"></label> <input
-						type="radio" name="color" value="yellow" id="yellow"> <label
-						for="yellow" style="background-color: yellow;"></label> <input
-						type="radio" name="color" value="cyan" id="cyan"> <label
-						for="cyan" style="background-color: cyan;"></label> <input
-						type="radio" name="color" value="skyblue" id="skyblue"> <label
-						for="skyblue" style="background-color: skyblue;"></label> <input
-						type="radio" name="color" value="blue" id="blue"> <label
-						for="blue" style="background-color: blue;"></label>
-				</div>
-
-				<button id="restoreBtn" class="btn btn-primary">복원</button>
-				<button id="permanentlyDeleteBtn" class="btn btn-danger">완전
-					삭제</button>
-				<button id="cancelBtn" class="btn btn-secondary">취소</button>
-			</form>
-		</div>
-
-
-
-
-
-		<ul id="wasteCalendarList">
-			<li class="trash-item" data-calno="1"><i class="mdi mdi-delete"></i>
-			</li>
-			<li class="trash-item" data-calno="2"><i class="mdi mdi-delete"></i>
-			</li>
-		</ul>
-	</div>
+	
 
 </th:block>

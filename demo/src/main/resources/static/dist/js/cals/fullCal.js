@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
 
+
 	// 종일 체크박스 이벤트 처리
 	document.getElementById('allDay').addEventListener('change', function() {
 		var startTime = document.getElementById('startTime');
@@ -82,6 +83,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				selectMirror: true,
 				editable: true,
 				dayMaxEvents: true,
+
+				//events 안에서 캘린더 리스트 출력 출력할것들 여기 안에서 해결하
 				events: sList, //풀캘린더 리스트
 
 
@@ -124,36 +127,23 @@ document.addEventListener('DOMContentLoaded', function() {
 						document.getElementById('editScheduleForm').onsubmit = function(e) {
 							e.preventDefault();
 
-							const schNo = info.event.id;
-							const title = document.getElementById('editTitle').value;
-							const startDate = document.getElementById('editStartDate').value;
-							const endDate = document.getElementById('editEndDate').value;
-							const calNo = 0;  // 임시로 0 설정
-							const isAlarm = document.getElementById('editAlarm').checked ? "Y" : "N";
 
-							// POST 요청으로 일정 수정하는 부분
-							fetch('/sch/schUpdate', {
+							const calNo = document.getElementById('selectedCalNo').value;
+							const name = document.getElementById('editCalendarName').value;
+
+							// 서버로 수정 요청 보내기
+							fetch('/cal/calUpdate', {
 								method: 'POST',
 								headers: { 'Content-Type': 'application/json' },
-								body: JSON.stringify({ schNo, title, startDate, endDate, calNo, isAlarm })
+								body: JSON.stringify({ calNo: calNo, name: name, color: color })
 							})
 								.then(response => response.json())
 								.then(data => {
 									if (data.result) {
-										// 캘린더의 일정을 업데이트
-										// 변경된 내용을 즉시 반영하기 위해 info.event 객체를 업데이트
-										info.event.setProp('title', title);
-										info.event.setStart(startDate);
-										info.event.setEnd(endDate);
-
-										// 수정 완료 후 모달 닫기 
-										editModal.style.display = 'none';
-
-										// 성공 메시지 출력 
-										alert(data.message);
+										alert('캘린더 수정이 성공적으로 완료되었습니다.');
+										location.reload();  // 새로고침하여 변경 사항 반영
 									} else {
-										// 실패 메시지 출력 
-										alert(data.message);
+										alert('캘린더 수정에 실패했습니다.');
 									}
 								})
 								.catch(error => console.error('Error:', error));
@@ -187,6 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				//============END 단건조회 ============
 
 				//============ 일정생성 ============
+				//캘린더 안에서 일정생성 API 안에서 일정생성 일어나는것들 모두 여기서 처리 
 				select: function(arg) {
 					// 일정 추가 모달 창 열기
 					var modal = document.getElementById('scheduleModal');
@@ -259,11 +250,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-					// 폼 제출 처리
-					form.onsubmit = function(e) {
+					document.getElementById('scheduleForm').onsubmit = function(e) {
 						e.preventDefault();
 
 						// 폼 데이터 가져오기
+
 						var title = document.getElementById('title').value;
 						var startDate = document.getElementById('startDate').value;
 						var startTime = document.getElementById('startTime').value;
@@ -274,26 +265,24 @@ document.addEventListener('DOMContentLoaded', function() {
 						var startDateTime = new Date(startDate + 'T' + startTime).toISOString(); // ISO 형식으로 변환
 						var endDateTime = new Date(endDate + 'T' + endTime).toISOString(); // ISO 형식으로 변환
 
-						// 선택된 캘린더가 없으면 경고 메시지
-						if (!selectedCalNo) {
-							alert('캘린더를 먼저 선택해주세요!');
-							return;
-						}
+						// 캘린더 타입 선택 (g1: 개인캘린더, g2: 공유캘린더, g3: 프로젝트캘린더)
+						var calendarType = document.getElementById('calendarType').value;
+
+						// 서버에 전달할 데이터 구성
+						var schsData = {
+							title: title,
+							startDate: startDateTime,
+							endDate: endDateTime,
+							calNo: calNo,  // 선택된 캘린더 ID 전송
+							type: calendarType  // 캘린더 타입 (g1: 개인, g2: 공유)
+						};
 
 						// 일정생성 
 						if (title) {
 							fetch('/sch/schInsert', {  // 등록 API 호출
 								method: 'POST',
-								headers: {
-									'Content-Type': 'application/json',
-								},
-								body: JSON.stringify({
-									title: title,
-									startDate: startDateTime,
-									endDate: endDateTime,
-									calNo: selectedCalNo,  // 선택된 캘린더 ID 전송
-									allDay: arg.allDay
-								})
+								headers: { 'Content-Type': 'application/json' },
+								body: JSON.stringify(schsData)
 							})
 								.then(response => response.json())
 								.then(data => {
@@ -304,6 +293,8 @@ document.addEventListener('DOMContentLoaded', function() {
 											title: title,
 											start: new Date(startDate + 'T' + startTime), // 여기에서 Date 객체로 변환
 											end: new Date(endDate + 'T' + endTime), // 여기에서 Date 객체로 변환
+											calNo: calNo,  // 선택된 캘린더 ID 전송
+											type: calendarType,  // 캘린더 타입 (g1: 개인, g2: 공유)
 											allDay: arg.allDay,
 
 
@@ -351,21 +342,20 @@ document.addEventListener('DOMContentLoaded', function() {
 	//============ 사이드바 리스트===========
 
 
-	// 서버에서 캘린더 목록을 불러와서 사이드바에 추가하는 함수
-	function loadCalendars() {
+	function loadSharedCalendars() {
 		fetch('/cal/calList')
 			.then(response => response.json())
 			.then(data => {
-				const sharedCalendarList = document.getElementById('sharedCalendarList'); //개인캘린더리스트
-				sharedCalendarList.innerHTML = '';  // 기존 목록을 초기화
+				const sharedCalendarList = document.getElementById('sharedCalendarList');
+				sharedCalendarList.innerHTML = '';  // 기존 목록 초기화
 
 				data.forEach(calendar => {
-					//li추가
 					const newCalendarItem = document.createElement('li');
 					newCalendarItem.innerHTML = makeSidEvent(calendar);
-
-
 					sharedCalendarList.appendChild(newCalendarItem);
+
+
+
 
 
 					//============ 사이드바 내 캘린더 수정 ==============
@@ -399,42 +389,39 @@ document.addEventListener('DOMContentLoaded', function() {
 					// 연필 아이콘 클릭 이벤트 바로 추가
 					const editIcon = newCalendarItem.querySelector('.edit-icon');
 					editIcon.addEventListener('click', function() {
-						const editModal = document.getElementById('editCalendarModal');
-						if (editModal) {
-							editModal.style.display = 'block';  // 모달을 열기
-						} else {
-							console.error('Edit modal not found');
-						}
+						const calendarItem = this.closest('.calendar-item-wrapper');
+						const selectedCalNo = calendarItem.querySelector('.calendar-item').getAttribute('data-calno');
+
+						// 선택된 calNo 값을 hidden input에 설정
+						document.getElementById('selectedCalNo').value = selectedCalNo;
+
+						// 모달 열기
+						document.getElementById('editCalendarModal').style.display = 'block';
 					});
 					//============END 사이드바 내 캘린더 수정 ==============
 					// 연필 아이콘 클릭 이벤트 바로 추가
 					// 사이드바의 전체 영역에 이벤트 위임을 사용하여 edit-icon 클릭 이벤트 처리
-					document.getElementById('sharedCalendarList').addEventListener('click', function(event) {
-						if (event.target && event.target.classList.contains('edit-icon')) {
-							const calendarItem = event.target.closest('.calendar-item-wrapper');
-							const selectedCalNo = calendarItem.querySelector('.calendar-item').getAttribute('data-calno');
-							const calendarName = calendarItem.querySelector('.calendar-item').textContent.trim();
-							const calendarIcon = calendarItem.querySelector('i');
-							const calendarColor = window.getComputedStyle(calendarIcon).color;
+					editIcon.addEventListener('click', function() {
+						const calendarItem = event.target.closest('.calendar-item-wrapper');
+						const selectedCalNo = calendarItem.querySelector('.calendar-item').getAttribute('data-calno');
+						const calendarName = calendarItem.querySelector('.calendar-item').textContent.trim();
+						const calendarIcon = calendarItem.querySelector('i');
+						const calendarColor = window.getComputedStyle(calendarIcon).color;
 
-							// 모달창에 기존 값 설정
-							document.getElementById('editCalendarName').value = calendarName;
+						// 모달창에 기존 값 설정
+						document.getElementById('editCalendarName').value = calendarName;
 
-							// 색상 설정
-							const colorRadios = document.querySelectorAll('input[name="color"]');
-							colorRadios.forEach(radio => {
-								const radioLabel = document.querySelector(`label[for="${radio.id}"]`);
-								if (radioLabel && window.getComputedStyle(radioLabel).backgroundColor === calendarColor) {
-									radio.checked = true;
-								}
-							});
+						// 색상 설정
+						const colorRadios = document.querySelectorAll('input[name="color"]');
+						colorRadios.forEach(radio => {
+							const radioLabel = document.querySelector(`label[for="${radio.id}"]`);
+							if (radioLabel && window.getComputedStyle(radioLabel).backgroundColor === calendarColor) {
+								radio.checked = true;
+							}
+						});
 
-							// selectedCalNo를 전역변수 또는 hidden input에 저장
-							document.getElementById('selectedCalNo').value = selectedCalNo;
-
-							// 모달창 열기
-							document.getElementById('editCalendarModal').style.display = 'block';
-						}
+						// 모달창 열기
+						document.getElementById('editCalendarModal').style.display = 'block';
 					});
 
 
@@ -461,7 +448,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// 페이지 로드 시 캘린더 목록 불러오기
 
-	loadCalendars();
+	loadSharedCalendars();
 
 	//============ END 사이드바 리스트===========
 	//============ 사이드바 내 캘린더 생성 ===========
@@ -518,6 +505,8 @@ document.addEventListener('DOMContentLoaded', function() {
 					sharedCalendarList.appendChild(newCalendarItem);
 
 
+
+
 					// 폼 초기화 
 					//document.getElementById('sharedCalendarName').value = ''; // 캘린더 이름 필드 초기화
 					//const colorInputs = document.querySelectorAll('input[name="color"]'); // 색상 선택 필드 가져오기
@@ -552,33 +541,160 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 	//============END 사이드바 공유 캘린더 생성 ===========
-	//============ 사이드바 휴지통  ===========
-	// 삭제 버튼 클릭 시 이벤트 (이벤트 위임 방식으로 수정)
-	document.getElementById('sharedCalendarList').addEventListener('click', function(event) {
-		if (event.target && event.target.id === 'deleteBtn') {
-			const calendarItem = event.target.closest('.calendar-item-wrapper');
-			const selectedCalNo = calendarItem.querySelector('.calendar-item').getAttribute('data-calno');
+	//============ 사이드바 휴지통 보내기  ===========
+	// 삭제 버튼 클릭 시 이벤트 
+	document.getElementById('deleteBtn').addEventListener('click', function() {
+		const calNo = parseInt(document.getElementById('selectedCalNo').value); // 문자열을 숫자로 변환
 
-			console.log("선택된 캘린더 번호:", selectedCalNo);  // 값 확인용 로그 추가
-			if (confirm('정말로 이 캘린더를 삭제하시겠습니까?')) { // confirm 확인
-				fetch('/cal/calTrash', {  // 캘린더를 휴지통으로 이동하는 API 호출
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ calNo: selectedCalNo })
+		if (confirm('정말로 이 캘린더를 삭제하시겠습니까?')) {
+			fetch('/cal/calTrash', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ calNo: calNo }) // 선택된 캘린더 번호를 전송
+			})
+				.then(response => response.json())
+				.then(data => {
+					if (data.success) {
+						alert('캘린더가 휴지통으로 이동되었습니다.');
+						document.getElementById('editCalendarModal').style.display = 'none';
+						location.reload();  // 페이지 새로고침하여 변경 반영
+					} else {
+						alert('캘린더 삭제에 실패했습니다.');
+					}
 				})
-					.then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('캘린더가 휴지통으로 이동되었습니다.');
-                    calendarItem.remove();
-                } else {
-                    alert('캘린더 삭제에 실패했습니다.');
-                }
-            })
-            .catch(error => console.error('Error:', error));
-			}
+				.catch(error => console.error('Error:', error));
 		}
 	});
+	//============ 사이드바 휴지통 보내기   ===========
+
+	//============ 사이드바 휴지통에서 복원 ==============
+
+
+	//============ 사이드바 휴지통에서 복원 ==============
+
+	//============ 휴지통 리스트 불러오기 ===========
+	fetch('/cal/trashList')
+		.then(response => response.json())
+		.then(data => {
+			const wasteCalendarList = document.getElementById('wasteCalendarList');
+			wasteCalendarList.innerHTML = '';  // 기존 리스트 초기화
+
+			data.forEach(calendar => {
+				const newTrashItem = document.createElement('li');
+				newTrashItem.classList.add('trash-item');
+				newTrashItem.setAttribute('data-calno', calendar.calNo);
+				newTrashItem.innerHTML = makeSidEvent(calendar);
+				wasteCalendarList.appendChild(newTrashItem);
+				//========================= 휴지통 리스트 옆 연필 아이콘 클릭 모달 ==================================
+				const editIcon = newTrashItem.querySelector('.edit-icon');
+				editIcon.addEventListener('click', function() {
+					const calendarItem = this.closest('.trash-item');
+					const selectedCalNo = calendarItem.getAttribute('data-calno');
+					const calendarName = calendarItem.textContent.trim();
+
+					// 모달창에 기존 값 설정
+					document.getElementById('trashSelectedCalNo').value = selectedCalNo;
+					document.getElementById('trashCalendarName').value = calendarName;
+
+					// 모달 열기
+					document.getElementById('trashCalendarModal').style.display = 'block';
+
+					//========================= END 휴지통 리스트 옆 연필 아이콘 클릭 모달 ==================================
+
+				});
+
+			});
+
+
+
+
+
+
+
+
+		})
+		.catch(error => console.error('Error loading trash calendars:', error));
+
+
+	//=========================  휴지통 리스트 옆 연필 아이콘 클릭 모달 ==================================
+	// 모달 닫기 버튼 처리
+	document.querySelectorAll('.close').forEach(closeBtn => {
+		closeBtn.addEventListener('click', function() {
+			const modal = this.closest('.modal');
+			modal.style.display = 'none'; // 모달 닫기
+		});
+	});
+	//=========================  휴지통 리스트 옆 연필 아이콘 클릭 모달 ==================================
+
+	//============ 사이드바 휴지통 복원   ===========
+
+	// 휴지통에서 복원 버튼 클릭 시 복원 처리
+	document.getElementById('restoreCalendarBtn').addEventListener('click', function() {
+		const calNo = document.getElementById('trashSelectedCalNo').value;
+
+		fetch('/cal/calRestore', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ calNo: calNo })
+		})
+			.then(response => response.json())
+			.then(data => {
+				if (data.success) {
+					alert('캘린더가 복원되었습니다.');
+					document.getElementById('trashCalendarModal').style.display = 'none';
+
+				} else {
+					alert('복원에 실패했습니다.');
+				}
+			})
+			.catch(error => console.error('Error:', error));
+	});
+
+
+
+	//============END 사이드바 휴지통 복원   ===========
+
+	//============ 사이드바 휴지통 완전삭제 =============
+	//============ 휴지통에서 영구 삭제  ===========
+	// 영구 삭제 버튼 클릭 시 이벤트 처리
+	//============ 휴지통에서 영구 삭제  ===========
+	// 기존에 등록된 이벤트 리스너 제거 후 새로 등록
+	const deleteBtn = document.getElementById('permanentlyDeleteBtn');
+
+	// 기존 이벤트 리스너 제거
+	deleteBtn.removeEventListener('click', handlePermanentlyDelete);
+
+	// 삭제 처리 함수
+	function handlePermanentlyDelete() {
+		const calNo = parseInt(document.getElementById('trashSelectedCalNo').value);  // 선택된 캘린더 번호 가져오기
+
+		if (confirm('정말로 이 캘린더를 완전히 삭제하시겠습니까?')) {
+			fetch('/cal/calDel', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ calNo: calNo })  // JSON 데이터로 전송
+			})
+				.then(response => response.json())
+				.then(data => {
+					if (data === "캘린더가 완전히 삭제되었습니다.") {
+						alert('캘린더가 영구적으로 삭제되었습니다.');
+						document.getElementById('trashCalendarModal').style.display = 'none';
+					} else {
+						alert('캘린더 삭제에 실패했습니다.');
+					}
+				})
+				.catch(error => console.error('Error:', error));
+		}
+	}
+
+	// 새로운 이벤트 리스너 등록
+	deleteBtn.addEventListener('click', handlePermanentlyDelete);
+
+
+	//============ 사이드바 휴지통 완전삭제 =============
+
+	//============ 사이드바 휴지통 리스트  ===========
+
 	//============END 사이드바 휴지통  ===========
 
 
@@ -588,14 +704,14 @@ document.addEventListener('DOMContentLoaded', function() {
 	//============END 사이드바 ============
 
 });
-
+//location.reload();  //페이지 새로고침 ㅎㅎㅎㅎ
 //=================================함수모음======================================
 // 오늘 날짜를 YYYY-MM-DD 형식으로 반환하는 함수
 function getTodayDate() {
 	return new Date().toISOString().slice(0, 10);
 }
 
-//사이드바  내 캘린더 하위 생
+//사이드바  캘린더 리스트 생성 뿌리기 
 function makeSidEvent(calendar) {
 	let tag =
 		`
