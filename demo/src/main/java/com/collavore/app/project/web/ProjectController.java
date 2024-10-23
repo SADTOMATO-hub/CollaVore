@@ -196,6 +196,7 @@ public class ProjectController {
 	public String projectworkList(Model model) {
 		List<ProjectVO> list = pjService.projecttreeList();
 		System.err.println(list);
+		
 		model.addAttribute("projects", list);
 		return "project/projectWorkList";
 	}

@@ -20,22 +20,21 @@
             display: none; 
         }
     </style>
-    <div class="container-fluid" th:data-current-table="${table}">
+    <div class="container-fluid" th:data-current-table="${table}" id="fluidDiv">
         <div class="row">
             <div id="jstree" class="col-md-6">
                 <ul>
                     <th:block th:each="project : ${projects}" th:if="${project.parentNo == null}">
-                        <th:block th:replace="~{::renderNode(projno=${project.no}, projname=${project.name}, parentNo=${project.parentNo}, table=${project.table})}"></th:block>
+                        <th:block th:replace="~{::renderNode(projno=${project.no}, projname=${project.name}, parentNo=${project.parentNo}, table=${project.table}, level=${project.level})}"></th:block>
                     </th:block>
                 </ul>
             </div>
             <div class="col-md-6">
-                <th:block th:if="${table == 'projwrks'}">
                     <div class="insert-panel" id="insertPanelProjwrks">
                         <h4>Insert Project</h4>
                         <form id="insertFormProjwrks">
                             <div>
-                                <label for="projName">Project Name:2</label>
+                                <label for="projName">폼1</label>
                                 <input type="text" id="projName" name="projName" required>
                             </div>                  
                             <div>
@@ -43,13 +42,11 @@
                             </div>
                         </form>
                     </div>
-                </th:block>
-                <th:block th:if="${table == 'projdwrks'}">
                     <div class="insert-panel" id="insertPanelProjdwrks">
                         <h4>Insert Project</h4>
                         <form id="insertFormProjdwrks">
                             <div>
-                                <label for="projNameDwrks">Project Name:</label>
+                                <label for="projNameDwrks">폼2</label>
                                 <input type="text" id="projNameDwrks" name="projName" required>
                             </div>                 
                             <div>
@@ -57,7 +54,6 @@
                             </div>
                         </form>
                     </div>
-                </th:block>            
             </div>
         </div>
     </div>
@@ -75,18 +71,7 @@
                 e.stopPropagation(); 
                 $(this).siblings('ul').toggle(); 
                 
-                const projectName = $(this).parent().contents().filter(function() {
-                    return this.nodeType === 3; 
-                }).text().trim();
-
-                // currentTable 값 가져오기
-                const currentTable = $('.container-fluid').data('current-table');
-
-                $('#insertPanelProjwrks h4').text(projectName + ' 상세업무 등록');
-                $('#insertPanelProjwrks').show();
-                $('#insertPanelProjdwrks').hide(); 
-
-                console.log('Current Table:', currentTable); 
+                
             });
 
             $('#insertFormProjwrks').on('submit', function(e) {
@@ -103,19 +88,40 @@
                 $('#projNameDwrks').val(''); 
             });
         });
+        
+        function myFunction(buttonElement, level)  {
+        	const projectName = $(buttonElement).parent().contents().filter(function() {
+                return this.nodeType === 3; 
+            }).text().trim();
+        	
+        	console.log(level);
+        	if(level == 2){
+        	console.log(level);
+        	 $('#insertPanelProjwrks h4').text(projectName + ' 상세업무 등록');
+             $('#insertPanelProjwrks').show();
+             $('#insertPanelProjdwrks').hide();
+        	}else{
+        		console.log(level);
+           	 $('#insertPanelProjdwrks h4').text(projectName + ' 상세업무 등록');
+             $('#insertPanelProjwrks').hide();
+             $('#insertPanelProjdwrks').show();        		
+        	}
+        	
+        }
     </script>
 
     <!-- 재귀 함수 정의 -->
-    <th:block th:fragment="renderNode(projno, projname, parentNo, table)">
-        <li th:id="'node_' + ${projno}" style="display: none;">[[${projname}]]/ [[${table}]]
+    <th:block th:fragment="renderNode(projno, projname, parentNo, table, level)" th:data-current-table="${table}" id="'test'+${status.index}" th:data-index="${status.index}">
+        <li th:id="'node_' + ${projno}" style="display: none;">[[${projname}]]
             <th:block th:if="${parentNo != null}">
-                <button class="btn btn-info btn-lg no-border-button">
+                <button class="btn btn-info btn-lg no-border-button"  th:onclick="'myFunction(this, ' + ${level} + ')'">
                     <i class="mdi mdi-plus-circle-outline" style="color:black;"></i>
                 </button>
             </th:block>
             <ul style="display: none;"> 
-                <th:block th:each="child : ${projects}" th:if="${child.parentNo == projno}">
-                    <th:block th:replace="~{::renderNode(projno=${child.no}, projname=${child.name}, parentNo=${projno}, table=${child.table})}"></th:block>
+                <th:block th:each="child, status : ${projects}" th:if="${child.parentNo == projno}">
+			        <span th:data-current-table="${table}"  th:data-index="${status.index}" id="'test'+${status.index}"></span>
+                    <th:block th:replace="~{::renderNode(projno=${child.no}, projname=${child.name}, parentNo=${projno}, table=${child.table}, level=${child.level})}"></th:block>
                 </th:block>
             </ul>
         </li>
