@@ -60,10 +60,6 @@ public class BodsController {
 	public String bodsInfo(BodsVO bodsVO, Model model) {
 		BodsVO findVO = bodsService.bodsInfo(bodsVO);
 		model.addAttribute("bods", findVO);
-		int postNo = bodsVO.getPostNo();
-		List<BodsComtsVO> list = bodsService.bodsComtsList(postNo);
-		model.addAttribute("comtsList", list);
-
 		return "board/bodsInfo";
 	}
 
@@ -127,12 +123,18 @@ public class BodsController {
 	}
 	
 	// 댓글 삭제
-	@GetMapping("/board/bodsComtsDelete")
-	public String bodsComtsDelete(@RequestParam Integer cmtNo,@RequestParam Integer boardNo) {
+	@PostMapping("/board/bodsComtsDelete")
+	@ResponseBody
+	public String bodsComtsDelete(@RequestParam Integer cmtNo) {
 		bodsService.deleteBodsComts(cmtNo);
-		
-		return "board/bodsInfo";
-		
+		return "/board/bodsComtsDelete";
 	}
-
+	
+	//댓글 조회
+	@GetMapping("/board/comtsList")
+	@ResponseBody
+	public List<BodsComtsVO> comtsList(int postNo){
+		List<BodsComtsVO> list = bodsService.bodsComtsList(postNo);
+		return list;
+	}
 }
