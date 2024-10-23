@@ -1,5 +1,6 @@
 package com.collavore.app.api.service;
 
+import java.text.ParseException;
 import java.util.List;
 
 public interface FlutterService {
@@ -16,10 +17,10 @@ public interface FlutterService {
 	public int pwdModify(FlutterVO flutterVO);
 	
 	// 일정목록조회
-	public List<FlutterSchsVO> schsAll(int empNo);
+	public List<FlutterSchsVO> schsAll(int empNo, String dateString) throws ParseException;
 	
 	// 일정등록
-	public int schsAdd(FlutterVO flutterVO);
+	public int schsAdd(FlutterSchsVO flutterSchsVO);
 	
 	// 일정상세
 	public FlutterSchsVO schsInfo(int schsNo);
@@ -49,10 +50,10 @@ public interface FlutterService {
 	public int projCommentRemove(FlutterVO flutterVO);
 	
 	// 전자결재문서목록조회
-	public List<FlutterVO> apprAll(FlutterVO flutterVO);
+	public List<FlutterApprVO> apprAll(int empNo, String appType);
 	
 	// 전자결재문서상세보기
-	public FlutterVO apprInfo(FlutterVO flutterVO);
+	public FlutterApprVO apprInfo(int empNo, int eaNo);
 	
 	// 전자결재문서승인,반려처리
 	public int apprProc(FlutterVO flutterVO);

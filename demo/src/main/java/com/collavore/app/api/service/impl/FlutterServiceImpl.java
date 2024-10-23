@@ -1,11 +1,15 @@
 package com.collavore.app.api.service.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.collavore.app.api.mapper.FlutterMapper;
+import com.collavore.app.api.service.FlutterApprVO;
 import com.collavore.app.api.service.FlutterProjVO;
 import com.collavore.app.api.service.FlutterSchsVO;
 import com.collavore.app.api.service.FlutterService;
@@ -46,14 +50,16 @@ public class FlutterServiceImpl implements FlutterService {
 
 	// 일정목록조회
 	@Override
-	public List<FlutterSchsVO> schsAll(int empNo) {
-		return flutterMapper.selectMyAllSchsList(empNo);
+	public List<FlutterSchsVO> schsAll(int empNo, String dateString) throws ParseException {
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        Date selectDate = formatter.parse(dateString);
+		return flutterMapper.selectMyAllSchsList(empNo, selectDate);
 	}
 
 	// 일정등록
 	@Override
-	public int schsAdd(FlutterVO flutterVO) {
-		return 0;
+	public int schsAdd(FlutterSchsVO flutterSchsVO){
+		return flutterMapper.schsInsert(flutterSchsVO);
 	}
 
 	// 일정상세
@@ -112,14 +118,20 @@ public class FlutterServiceImpl implements FlutterService {
 
 	// 전자결재문서목록조회
 	@Override
-	public List<FlutterVO> apprAll(FlutterVO flutterVO) {
-		return null;
+	public List<FlutterApprVO> apprAll(int empNo, String appType) {
+		if(appType.equals("draft")) {
+			return flutterMapper.selectMyDraftApprList(empNo);
+		}else if(appType.equals("approval")) {
+			return flutterMapper.selectMyApprList(empNo);
+		}else {
+			return flutterMapper.selectMyAllApprList(empNo);
+		}
 	}
 
 	// 전자결재무선상세보기
 	@Override
-	public FlutterVO apprInfo(FlutterVO flutterVO) {
-		return null;
+	public FlutterApprVO apprInfo(int empNo, int eaNo) {
+		return flutterMapper.selectAppInfo(eaNo);
 	}
 
 	// 전자결재문서승인,반려처리
