@@ -69,6 +69,18 @@ public class MemberServiceImpl implements MemberService {
 		return memberMapper.insertMember(hrmVO);
 	}
 
+	// 연락처 중복 확인
+    @Override
+    public boolean isTelDuplicate(String tel) {
+        return memberMapper.checkTelDuplicate(tel) > 0;
+    }
+
+    // 이메일 중복 확인
+    @Override
+    public boolean isEmailDuplicate(String email) {
+        return memberMapper.checkEmailDuplicate(email) > 0;
+    }
+    
 	// 사원 단건 조회 (사번으로 조회)
 	@Override
 	public HrmVO memberInfoByEmpNo(Integer empNo) {
@@ -80,10 +92,15 @@ public class MemberServiceImpl implements MemberService {
 	public int updateMemberByAdmin(HrmVO hrmVO) {
 		return memberMapper.updateMemberByAdmin(hrmVO);
 	}
+	 // 사원 정보 조회
+	@Override
+	public HrmVO getMemberById(Integer empNo) {
+	    return memberMapper.getMemberById(empNo);
+	}
 
 	// 사원 삭제
 	@Override
-	public int deleteMember(int empNo) {
+	public int deleteMember(Integer empNo) {
 		return memberMapper.deleteMember(empNo);
 	}
 
@@ -101,4 +118,5 @@ public class MemberServiceImpl implements MemberService {
 		// YYMMDD + 3자리 시퀀스를 결합한 사번 생성 (예: 241022100)
 		return Integer.parseInt(today + String.format("%03d", sequence));
 	}
+
 }
