@@ -13,9 +13,14 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="card">
-						<form action="createAppr" method="post" class="form-horizontal" name="insertForm" >
+						<form action="createAppr" method="post" class="form-horizontal"
+							name="insertForm">
 							<div class="form-group row">
 								<th:block th:object="${employeesInfo}">
+									<label for="approvalTitle"> <input type="text"
+										id="approvalTitle" name="title" required
+										placeholder="전자결재명을 입력해주세요">
+									</label>
 									<div class="table-responsive">
 										<table id="apprerTable"
 											class="table table-striped table-bordered">
@@ -23,30 +28,30 @@
 												<tr>
 													<td></td>
 													<!-- ------------------- -->
-													<td><button type="button" class="modalBtn" data-seq="1" 
-															data-bs-target="#approversSelect" data-bs-toggle="modal">결재자
-															선택</button></td>
+													<td><button type="button" class="modalBtn"
+															data-seq="1" data-bs-target="#approversSelect"
+															data-bs-toggle="modal">결재자 선택</button></td>
 													<!-- ------------------- -->
-													<td><button type="button" class="modalBtn" data-seq="2" 
-															data-bs-target="#approversSelect" data-bs-toggle="modal">결재자
-															선택</button></td>
+													<td><button type="button" class="modalBtn"
+															data-seq="2" data-bs-target="#approversSelect"
+															data-bs-toggle="modal">결재자 선택</button></td>
 													<!-- ------------------- -->
-													<td><button type="button" class="modalBtn" data-seq="3" 
-															data-bs-target="#approversSelect" data-bs-toggle="modal">결재자
-															선택</button></td>
+													<td><button type="button" class="modalBtn"
+															data-seq="3" data-bs-target="#approversSelect"
+															data-bs-toggle="modal">결재자 선택</button></td>
 													<!-- ------------------- -->
-													<td><button type="button" class="modalBtn" data-seq="4" 
-															data-bs-target="#approversSelect" data-bs-toggle="modal">결재자
-															선택</button></td>
+													<td><button type="button" class="modalBtn"
+															data-seq="4" data-bs-target="#approversSelect"
+															data-bs-toggle="modal">결재자 선택</button></td>
 												</tr>
 											</thead>
 											<tbody>
 												<tr>
 													<td>기안자 이름</td>
-													<td><input type="text" name="empNoList[]" readonly="readonly"></td>
-													<td><input type="text" name="empNoList[]" readonly="readonly"></td>
-													<td><input type="text" name="empNoList[]" readonly="readonly"></td>
-													<td><input type="text" name="empNoList[]" readonly="readonly"></td>
+													<td><span></span></td>
+													<td><span></span></td>
+													<td><span></span></td>
+													<td><span></span></td>
 												</tr>
 												<tr>
 													<td>기안자 직함</td>
@@ -57,19 +62,33 @@
 												</tr>
 											</tbody>
 										</table>
+										<input type="hidden" name="empNoList" value=""> <input
+											type="hidden" name="empNoList" value=""> <input
+											type="hidden" name="empNoList" value=""> <input
+											type="hidden" name="empNoList" value="">
+										<!--  
+										<input type="hidden" name="status" value=""> 
+										<input type="hidden" name="status" value=""> 
+										<input type="hidden" name="status" value="">
+										<input type="hidden" name="status" value="">
+										
+										<input type="hidden" name="procDate" value=""> 
+										<input type="hidden" name="procDate" value=""> 
+										<input type="hidden" name="procDate" value="">
+										<input type="hidden" name="procDate" value="">
+									-->
+										<input type="hidden" name="sort" value=""> 
+										<input type="hidden" name="sort" value=""> 
+										<input type="hidden" name="sort" value="">
+										<input type="hidden" name="sort" value="">
 									</div>
 								</th:block>
-								<label for="approvalTitle"> <input type="text"
-									id="approvalTitle" name="title" required
-									placeholder="전자결재명을 입력해주세요">
-								</label>
 								<div class="card-body">
 									<h4 class="card-title">전자결재 기안 페이지</h4>
 									<hr>
-
 									<div class="col-sm-6">
 										<select id="selectContent" class="form-select">
-											<option value="">==템플릿 선택==</option>
+											<option selected disabled>==템플릿 선택==</option>
 											<option th:each="temps : ${tempInfo}"
 												th:value="${temps.eatNo}">[[${temps.title}]]</option>
 										</select>
@@ -94,36 +113,55 @@
 			</div>
 		</div>
 	</div>
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
 	<!-- 모달 -->
 	<div class="modal fade" id="approversSelect" tabindex="-1"
 		aria-labelledby="approversModalLabel" aria-hidden="true">
+		<!-- 선택한 option의 seq를 저장하기 위한 태그 -->
 		<input type="hidden" id="seq">
+		<!-- --------------------------------- -->
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="projectModalLabel">프로젝트 템플릿 생성</h5>
+					<h5 class="modal-title" id="modalLabel">결재자 선택</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
 						aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
 					<form id="apprForm">
 						<div class="mb-3">
-							<label for="projContent" class="form-label">결재자 선택</label>
+							<label for="selectApprovers" class="form-label">결재자 선택</label>
 						</div>
 						<div class="mb-3">
 							<select id="selectApprovers" class="form-select">
-								<option value="">==결재자 선택==</option>
-								<option th:each="appver : ${employeesInfo}" 
+								<option selected disabled>==결재자 선택==</option>
+								<option th:each="appver : ${employeesInfo}"
 									th:value="${appver.empNo}">[[${appver.empName}]]/[[${appver.info}]]</option>
 							</select>
 						</div>
-						<button type="button" class="btn btn-primary" id="modalSubmit">결재자 선택</button>
+						<button type="button" class="btn btn-primary" id="modalSubmit">결재자
+							선택</button>
 					</form>
 				</div>
 			</div>
 		</div>
 	</div>
-	<!--  -->
+	<!-- -----------------모달----------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
 </body>
 <script>	
 	// SmartEditor 참조를 위한 배열
@@ -205,31 +243,46 @@ $(document).ready(
 	  $(document).ready(function(){
 			$("#modalSubmit").on("click", function(e){
 				e.preventDefault();
-				var selectedApprovers = $('#selectApprovers').val();
-				var text = $("#selectApprovers option:checked").text();
-				console.log(selectedApprovers);
 				var seq = $('#seq').val();
-				console.log('seq' + seq);
-				$('#apprerTable tbody tr').eq(0).children().eq(seq).find('input').val(text)
-				$('#apprerTable tbody tr').eq(1).children().eq(seq).find('span').html(text)
-			})
-		})
+				var selectedApprover = $("#selectApprovers option:checked").text();
+				var selectedApproversEmp = $("#selectApprovers option:checked").val();
+				var selectedApproversName = selectedApprover.split('/')[0];
+				var selectedApproversInfo = selectedApprover.split('/')[1];
+				var empNoListVal = $('[name=empNoList]').eq(seq-1).val(selectedApproversEmp);
+				var sortVal = $('[name=sort]').eq(seq-1).val(seq);
+				$('#apprerTable tbody tr').eq(0).children().eq(seq).find('span').html(selectedApproversName);
+				$('#apprerTable tbody tr').eq(1).children().eq(seq).find('span').html(selectedApproversInfo);					
+				$('#selectApprovers').prop('selectedIndex', 0);
+				$('#approversSelect').modal('hide');				
+				
+				console.log('================================================')
+				console.log('직함 = ' + selectedApproversInfo);
+				console.log('사원명 = ' + selectedApproversName);
+				console.log('사원 번호 = ' + selectedApproversEmp)
+				console.log('seq = ' + seq);
+				console.log('empNoList = ' + `${JSON.stringify(empNoListVal)}`);
+				console.log('sort = ' + `${JSON.stringify(sortVal)}`);
+				console.log('================================================')
+			});
+		});
 	//
 
 
 //기안버튼을 누르면 form의 데이터를 전부 넘김
-	function submitPost(event) {
+	function submitPost(event) {	
 		event.preventDefault(); // 폼 제출 방지
 		oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
-		if (!content || content === '' || content === '&nbsp;'
-				|| content === '<br>' || content === '<p>&nbsp;</p>'
-				|| content === '<p></p>') {
+		if ( 	!content 
+				|| content === '' 
+				|| content === '&nbsp;'
+				|| content === '<br>' 
+				|| content === '<p>&nbsp;</p>'
+				|| content === '<p></p>'){
 			alert("템플릿을 정해주세요.");
 			oEditors.getById["content"].exec("FOCUS");
 			return;
 		} else {
 			console.log(content);
-			console.log()
 			insertForm.submit(); // 폼 제출
 		}
 	}
