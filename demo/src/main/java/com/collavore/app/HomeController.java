@@ -12,9 +12,9 @@ public class HomeController {
 	public void addAttributes(Model model) {
 	    model.addAttribute("sidemenu", "default_sidebar");
 	}
-	
-	@GetMapping("/")
-	public String homePage() {
-		return "home";
-	}
+//	
+//	@GetMapping("/")
+//	public String homePage() {
+//		return "home";
+//	}
 }
