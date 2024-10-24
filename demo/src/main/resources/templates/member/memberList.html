@@ -289,31 +289,10 @@ button:active {
 							<th scope="col">이름</th>
 							<th scope="col">연락처</th>
 							<th scope="col">이메일</th>
-							<th scope="col"><select
-								class="select2 form-select shadow-none" name="deptNo"
-								id="deptNo">
-									<option value="" selected>조직</option>
-									<option th:each="dept : ${departments}"
-										th:value="${dept.deptNo}" th:text="${dept.deptName}"></option>
-							</select></th>
-							<th scope="col"><select class="form-select" name="jobNo"
-								id="jobNo">
-									<option value="" selected>직무</option>
-									<option th:each="job : ${jobs}" th:value="${job.jobNo}"
-										th:text="${job.jobName}"></option>
-							</select></th>
-							<th scope="col"><select class="form-select" name="posiNo"
-								id="posiNo">
-									<option value="" selected>직위</option>
-									<option th:each="posi : ${positions}" th:value="${posi.posiNo}"
-										th:text="${posi.posiName}"></option>
-							</select></th>
-							<th scope="col"><select class="form-select" name="workType"
-								id="workType">
-									<option value="" selected>상태</option>
-									<option th:each="info : ${members}" th:value="${info.workType}"
-										th:text="${info.workType}"></option>
-							</select></th>
+							<th scope="col">조직</th>
+							<th scope="col">직무</th>
+							<th scope="col">직위</th>
+							<th scope="col">상태</th>
 							<th scope="col">보기</th>
 						</tr>
 					</thead>
@@ -372,55 +351,4 @@ button:active {
 		</div>
 	</div>
 </div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const deptSelect = document.getElementById('deptNo');
-        const jobSelect = document.getElementById('jobNo');
-        const posiSelect = document.getElementById('posiNo');
-        const workTypeSelect = document.getElementById('workType');
-
-        const filterRows = () => {
-            const selectedDept = deptSelect.value;
-            const selectedJob = jobSelect.value;
-            const selectedPosi = posiSelect.value;
-            const selectedWorkType = workTypeSelect.value;
-
-            const rows = document.querySelectorAll('tbody tr');
-
-            rows.forEach(row => {
-                const dept = row.getAttribute('data-dept');
-                const job = row.getAttribute('data-job');
-                const posi = row.getAttribute('data-posi');
-                const workType = row.getAttribute('data-worktype');
-
-                let isVisible = true;
-
-                if (selectedDept && dept !== selectedDept) {
-                    isVisible = false;
-                }
-                if (selectedJob && job !== selectedJob) {
-                    isVisible = false;
-                }
-                if (selectedPosi && posi !== selectedPosi) {
-                    isVisible = false;
-                }
-                if (selectedWorkType && workType !== selectedWorkType) {
-                    isVisible = false;
-                }
-
-                if (isVisible) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        };
-
-        deptSelect.addEventListener('change', filterRows);
-        jobSelect.addEventListener('change', filterRows);
-        posiSelect.addEventListener('change', filterRows);
-        workTypeSelect.addEventListener('change', filterRows);
-    });
-</script>
 
