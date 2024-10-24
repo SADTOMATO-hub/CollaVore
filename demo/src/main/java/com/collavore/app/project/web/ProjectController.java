@@ -46,15 +46,12 @@ public class ProjectController {
 		model.addAttribute("sidemenu", "project_sidebar");
 	}
 
-
-	
-
 	// 프로젝트 리스트 출력
 	@GetMapping("project/projectlist")
 	public String projectList(Model model) {
 		List<ProjectVO> list = pjService.projectList();
 		List<ProjectTempVO> templist = pjtempService.projecttempList();
-		
+
 		model.addAttribute("projects", list);
 		model.addAttribute("templist", templist);
 		return "project/projectList";
@@ -65,36 +62,36 @@ public class ProjectController {
 	@ResponseBody
 	public Map<String, Object> insertAjax(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
-		 System.err.println(projectVO);
-		 pjService.projectinsert(projectVO);
-		
+		System.err.println(projectVO);
+		pjService.projectinsert(projectVO);
+
 		map.put("type", "postAjax");
 		map.put("data", projectVO);
 		return map;
 	}
-	// 프로젝트 단건 조회 
+
+	// 프로젝트 단건 조회
 	@GetMapping("/project/projectinfo/{projNo}")
 	@ResponseBody
 	public ProjectVO getProjectInfo(@PathVariable int projNo) {
-	    return pjService.projectInfo(projNo); 
-	}	
-	
+		return pjService.projectInfo(projNo);
+	}
+
 	// 프로젝트 수정 요청 처리
 	@PostMapping("/project/projectupdate")
 	@ResponseBody
 	public Map<String, Object> updateProject(@RequestBody ProjectVO projectVO) {
-	    Map<String, Object> response = new HashMap<>();
-	    try {
-	        pjService.updateProject(projectVO);
-	        response.put("message", "수정 완료");
-	        response.put("status", "success");
-	    } catch (Exception e) {
-	        response.put("message", "수정 실패: " + e.getMessage());
-	        response.put("status", "error");
-	    }
-	    return response;
+		Map<String, Object> response = new HashMap<>();
+		try {
+			pjService.updateProject(projectVO);
+			response.put("message", "수정 완료");
+			response.put("status", "success");
+		} catch (Exception e) {
+			response.put("message", "수정 실패: " + e.getMessage());
+			response.put("status", "error");
+		}
+		return response;
 	}
-
 
 	// 프로젝트 삭제
 	@DeleteMapping("project/projectdelete/{projNo}")
@@ -103,105 +100,143 @@ public class ProjectController {
 		pjService.projectDelete(projNo);
 		return "삭제 완료";
 	}
-	
-	
+
 	// 프로젝트 폴더 관리
 	@GetMapping("project/projectfilelist")
 	public String projectFileList(Model model) {
-	    List<ProjectFoldersVO> list = pjService.projectfolderList();
-	    
-	    model.addAttribute("projects", list);
-	    return "project/projectFilesList"; // view 이름 수정 필요
+		List<ProjectFoldersVO> list = pjService.projectfolderList();
+
+		model.addAttribute("projects", list);
+		return "project/projectFilesList"; // view 이름 수정 필요
 	}
 
 	// 프로젝트 파일 관리
 	@GetMapping("project/projectfileslist/{pfNo}")
-	@ResponseBody 
+	@ResponseBody
 	public List<ProjectFilesVO> projectFilesList(@PathVariable int pfNo) {
-	    return pjService.projectfileList(pfNo); 
+		return pjService.projectfileList(pfNo);
 	}
-	
-    // 파일 업로드 처리 메소드
-    @PostMapping("/project/uploadfile")
-    public String uploadFile(@RequestParam("file") MultipartFile file,
-    						@ModelAttribute ProjectFilesVO ProjectFilesVO,
-                             Model model) {
-        if (file.isEmpty()) {
-            model.addAttribute("message", "파일이 비어 있습니다.");
-            return "redirect:/project/projectfilelist"; // 파일이 비어 있으면 목록으로 리다이렉트
-        }
 
-        try {
-            // 파일 저장 경로 설정
-            String uploadDir = "fileuploads/"; // 실제 파일이 저장될 경로 설정
-            Path path = Paths.get(uploadDir + file.getOriginalFilename());
-            Files.createDirectories(path.getParent()); // 필요한 디렉토리 생성
-            Files.write(path, file.getBytes()); // 파일 저장
+	// 파일 업로드 처리 메소드
+	@PostMapping("/project/uploadfile")
+	public String uploadFile(@RequestParam("file") MultipartFile file, @ModelAttribute ProjectFilesVO ProjectFilesVO,
+			Model model) {
+		if (file.isEmpty()) {
+			model.addAttribute("message", "파일이 비어 있습니다.");
+			return "redirect:/project/projectfilelist"; // 파일이 비어 있으면 목록으로 리다이렉트
+		}
 
-            // ProjectFilesVO에 파일 정보 설정
-            ProjectFilesVO.setFilePath(uploadDir);
-            ProjectFilesVO.setFileSize(file.getSize());
-            ProjectFilesVO.setName(file.getOriginalFilename());
-            ProjectFilesVO.setExtension(getFileExtension(file.getOriginalFilename()));
-            
-            
-            pjService.saveFile(file.getOriginalFilename(), ProjectFilesVO);
+		try {
+			// 파일 저장 경로 설정
+			String uploadDir = "fileuploads/"; // 실제 파일이 저장될 경로 설정
+			Path path = Paths.get(uploadDir + file.getOriginalFilename());
+			Files.createDirectories(path.getParent()); // 필요한 디렉토리 생성
+			Files.write(path, file.getBytes()); // 파일 저장
 
-            model.addAttribute("message", "파일 업로드 성공!");
-        } catch (Exception e) {
-            model.addAttribute("message", "파일 업로드 실패: " + e.getMessage());
-        }
+			// ProjectFilesVO에 파일 정보 설정
+			ProjectFilesVO.setFilePath(uploadDir);
+			ProjectFilesVO.setFileSize(file.getSize());
+			ProjectFilesVO.setName(file.getOriginalFilename());
+			ProjectFilesVO.setExtension(getFileExtension(file.getOriginalFilename()));
 
-        return "redirect:/project/projectfilelist"; // 처리 후 목록으로 리다이렉트
-    }
+			pjService.saveFile(file.getOriginalFilename(), ProjectFilesVO);
+
+			model.addAttribute("message", "파일 업로드 성공!");
+		} catch (Exception e) {
+			model.addAttribute("message", "파일 업로드 실패: " + e.getMessage());
+		}
+
+		return "redirect:/project/projectfilelist"; // 처리 후 목록으로 리다이렉트
+	}
 
 	// 파일 확장자 추출 메소드
-    private String getFileExtension(String originalFilename) {
-        int lastIndex = originalFilename.lastIndexOf('.');
-        return (lastIndex == -1) ? "" : originalFilename.substring(lastIndex + 1);
-    }
-    // 
-    @GetMapping("/project/downloadfile/{projFileNo}")
-    public ResponseEntity<FileSystemResource> downloadFile(@PathVariable Long projFileNo) {
-        // 파일 정보를 가져오는 서비스 메소드
-        ProjectFilesVO fileDetails = pjService.getFileDetails(projFileNo); 
-        if (fileDetails == null) {
-            return ResponseEntity.notFound().build();
-        }
+	private String getFileExtension(String originalFilename) {
+		int lastIndex = originalFilename.lastIndexOf('.');
+		return (lastIndex == -1) ? "" : originalFilename.substring(lastIndex + 1);
+	}
 
-        Path filePath = Paths.get(fileDetails.getFilePath(), fileDetails.getName()); // 파일 경로
-        FileSystemResource resource = new FileSystemResource(filePath.toFile());
+	//
+	@GetMapping("/project/downloadfile/{projFileNo}")
+	public ResponseEntity<FileSystemResource> downloadFile(@PathVariable Long projFileNo) {
+		// 파일 정보를 가져오는 서비스 메소드
+		ProjectFilesVO fileDetails = pjService.getFileDetails(projFileNo);
+		if (fileDetails == null) {
+			return ResponseEntity.notFound().build();
+		}
 
-        // 파일이 존재하는지 체크
-        if (!resource.exists() || !resource.isFile()) {
-            return ResponseEntity.notFound().build();
-        }
+		Path filePath = Paths.get(fileDetails.getFilePath(), fileDetails.getName()); // 파일 경로
+		FileSystemResource resource = new FileSystemResource(filePath.toFile());
 
-        try {
-            // 파일명 URL 인코딩
-            String encodedFileName = URLEncoder.encode(fileDetails.getName(), StandardCharsets.UTF_8.toString());
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFileName + "\"")
-                    .header(HttpHeaders.CONTENT_TYPE, "application/octet-stream") // 콘텐츠 타입 설정
-                    .body(resource);
-        } catch (UnsupportedEncodingException e) {
-            // 인코딩 오류 처리
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-    
-    
+		// 파일이 존재하는지 체크
+		if (!resource.exists() || !resource.isFile()) {
+			return ResponseEntity.notFound().build();
+		}
+
+		try {
+			// 파일명 URL 인코딩
+			String encodedFileName = URLEncoder.encode(fileDetails.getName(), StandardCharsets.UTF_8.toString());
+			return ResponseEntity.ok()
+					.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + encodedFileName + "\"")
+					.header(HttpHeaders.CONTENT_TYPE, "application/octet-stream") // 콘텐츠 타입 설정
+					.body(resource);
+		} catch (UnsupportedEncodingException e) {
+			// 인코딩 오류 처리
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
 	// 프로젝트 리스트 출력
 	@GetMapping("project/projectworklist")
 	public String projectworkList(Model model) {
 		List<ProjectVO> list = pjService.projecttreeList();
-		System.err.println(list);
-		
+//		System.err.println(list);
+
 		model.addAttribute("projects", list);
 		return "project/projectWorkList";
 	}
 
+	// 프로젝트 업무 모달
+	@PostMapping("project/projectwrkinsert")
+	@ResponseBody
+	public Map<String, Object> insertwrkAjax(ProjectVO projectVO) {
+		Map<String, Object> map = new HashMap<>();
+//			 System.err.println(projectVO);
+		pjService.projectwrkinsert(projectVO);
 
+		map.put("type", "postAjax");
+		map.put("data", projectVO);
+		return map;
+	}
+
+	// 프로젝트 상세업무 모달
+	@PostMapping("project/projectdwrkinsert")
+	@ResponseBody
+	public Map<String, Object> inserdtwrkAjax(ProjectVO projectVO) {
+		Map<String, Object> map = new HashMap<>();
+		String selNo = projectVO.getSelPwNo();
+		String selParentNo = projectVO.getSelParentPdwNo();
+
+		switch (selParentNo.substring(0, 1)) {
+		case "W":
+			projectVO.setPwNo(Integer.parseInt(selParentNo.replace("W", "")));
+			projectVO.setParentPdwNo(null);
+			break;
+		default:
+			int searchPwNo = pjService.selectPwNo(Integer.parseInt(selParentNo));
+			projectVO.setPwNo(searchPwNo);
+			projectVO.setParentPdwNo(Integer.parseInt(selParentNo));
+		}
+		pjService.projectdwrkinsert(projectVO);
+
+		map.put("type", "postAjax");
+		map.put("data", projectVO);
+		return map;
+	}
+
+	// 프로젝트 단건 조회
+	@GetMapping("/project/projectwrkinfo/{projNo}")
+	@ResponseBody
+	public ProjectVO getProjectwrkInfo(@PathVariable int projNo) {
+		return pjService.projectInfo(projNo);
+	}
 }
-	
-

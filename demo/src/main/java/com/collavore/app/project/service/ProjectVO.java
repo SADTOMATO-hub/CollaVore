@@ -30,16 +30,26 @@ public class ProjectVO {
 	private String workType;
 	private Integer mgrNo;
 	private Integer sort;
+	private Integer jobNo;
 	
 	//프로젝트 상세 업무 관리
-	private Integer pdwcNo;
-	private Integer writerNo;
 	private Integer pdwNo;
+	private Integer parentPdwNo;
 	private Date regDate;
+	private String isStatus;
+    private Date reqDate;
+    private Date compDate;
+    private String commitId;
+    private String importance;
 	
 	private String parentNo;
 	private String no;
+	private String selPwNo;
+	private String selParentPdwNo;
 	private Integer level ;
+	
+	
+	
 	
 	private String table;
 	
