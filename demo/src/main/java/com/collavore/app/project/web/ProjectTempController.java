@@ -115,7 +115,7 @@ public class ProjectTempController {
 	        response.put("name", projectworktempVO.getName());
 	        response.put("content", projectworktempVO.getContent());
 	        response.put("projTempNo", projTempNo);
-	        response.put("jobType", projectworktempVO.getJobType());
+	        response.put("jobType", projectworktempVO.getJobNo());
 	        
 	        //System.err.println(response);
 	        return response;

@@ -46,13 +46,13 @@ public class MemberController {
 	}
 
 	// 로그인 페이지
-	@GetMapping("/login")
+	@GetMapping("/member/login")
 	public String loginForm() {
 		return "member/login"; // 로그인 페이지로 이동
 	}
 
 	// 로그인 처리
-	@PostMapping("/login")
+	@PostMapping("/member/login")
 	public String login(@RequestParam("email") String email, @RequestParam("password") String password, Model model,
 			HttpSession session) {
 

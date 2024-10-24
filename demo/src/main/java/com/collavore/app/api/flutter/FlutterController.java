@@ -1,7 +1,11 @@
 package com.collavore.app.api.flutter;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.collavore.app.api.service.FlutterApprVO;
 import com.collavore.app.api.service.FlutterProjVO;
 import com.collavore.app.api.service.FlutterSchsVO;
 import com.collavore.app.api.service.FlutterService;
@@ -53,12 +58,19 @@ public class FlutterController {
 
 	// 일정목록조회
 	@GetMapping("/schsSelectAll")
-	public List<FlutterSchsVO> selSchsAllList(@RequestParam int empNo) {
-		List<FlutterSchsVO> mySchs = flutterService.schsAll(empNo);
+	public List<FlutterSchsVO> selSchsAllList(@RequestParam int empNo, @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date selectDate) throws ParseException {
+		List<FlutterSchsVO> mySchs = flutterService.schsAll(empNo, new SimpleDateFormat("yyyy-MM-dd").format(selectDate));
 		return mySchs;
 	}
 
 	// 일정등록
+	@PostMapping("/schsAdd")
+	public int schsAdd(@RequestBody FlutterSchsVO flutterSchsVO){
+		System.out.println(flutterSchsVO);
+		int result = flutterService.schsAdd(flutterSchsVO);
+		return result;
+	}
+	
 	// 일정상세
 	@GetMapping("/schsInfo")
 	public FlutterSchsVO schsInfo(@RequestParam int schNo) {
@@ -92,8 +104,21 @@ public class FlutterController {
 	// 프로젝트상세업무상세보기-댓글조회
 	// 프로젝트상세업무상세보기-댓글등록
 	// 프로젝트상세업무상세보기-댓글삭제
+	
 	// 전자결재문서목록조회
+	@GetMapping("/apprAll")
+	public List<FlutterApprVO> selApprAllList(@RequestParam int empNo, @RequestParam String appType){
+		List<FlutterApprVO> myApprList = flutterService.apprAll(empNo, appType);		
+		return myApprList;
+	}
+	
 	// 전자결재문서상세보기
+	@GetMapping("/appInfo")
+	public FlutterApprVO selAppr(@RequestParam int empNo, @RequestParam int eaNo) {
+			FlutterApprVO apprInfo = flutterService.apprInfo(empNo, eaNo);
+			return apprInfo;
+	}
+	
 	// 전자결재문서승인,반려처리
 	// 회원정보수정
 }

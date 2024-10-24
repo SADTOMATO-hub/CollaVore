@@ -41,4 +41,6 @@ public class ProjectVO {
 	private String no;
 	private Integer level ;
 	
+	private String table;
+	
 }

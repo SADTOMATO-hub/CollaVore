@@ -30,7 +30,7 @@
 		WHERE email = #{email}
 	</update>
 	
-	<select id="selectMyAllSchsList" parameterType="int" resultType="FlutterSchsVO">
+	<select id="selectMyAllSchsList" parameterType="map" resultType="FlutterSchsVO">
 		<![CDATA[
 		    SELECT 
 		        s.sch_no,
@@ -39,9 +39,21 @@
 		    INNER JOIN cals c ON s.cal_no = c.cal_no
 		    INNER JOIN calshares cs ON c.cal_no = cs.cal_no
 		    WHERE cs.emp_no = #{empNo}
-		      	AND (s.start_date <= TRUNC(sysdate) OR s.end_date >= TRUNC(sysdate))
+		      	AND TRUNC(#{selectDate}) BETWEEN TRUNC(s.start_date) AND TRUNC(s.end_date)
 	    ]]>
 	</select>
+	
+	<insert id="schsInsert"  parameterType="FlutterSchsVO" >
+		<selectKey keyProperty="schNo,calNo" resultType="FlutterSchsVO"
+			order="BEFORE">
+			SELECT (SELECT NVL(MAX(sch_no),0) + 1 FROM schs) as sch_no
+			    , (SELECT c.cal_no FROM cals c INNER JOIN calshares cs ON c.cal_no = cs.cal_no AND c.type = 'g1' WHERE cs.emp_no = #{empNo}) as cal_no
+			FROM dual
+		</selectKey>
+		INSERT INTO schs(sch_no, title, start_date, end_date, cal_no)
+		VALUES(#{schNo}, #{schTitle}, #{selectDate}, #{selectDate}, #{calNo})
+	</insert>
+	
 	<select id="selectSchsInfo" parameterType="int" resultType="FlutterSchsVO">
 		SELECT s.sch_no
 			, s.title AS schTitle
@@ -196,6 +208,61 @@
 		    ORDER SIBLINGS BY 
 		        no) alltree
 		WHERE alltree.parent_no LIKE 'W%'
+	</select>
+	
+	<select id="selectMyAllApprList"  resultType="FlutterApprVO">
+		SELECT ea_no
+		    , title 
+		    , content
+		    , status
+		    , reg_date
+		    , comp_date
+		FROM approvals
+		WHERE emp_no =  #{empNo}
+		UNION  ALL
+		SELECT a.ea_no
+		    , a.title 
+		    , a.content
+		    , a.status
+		    , a.reg_date
+		    , a.comp_date
+		FROM approvals a
+		    INNER JOIN approvers ar ON a.ea_no = ar.ea_no
+		WHERE ar.emp_no = #{empNo}
+	</select>
+	
+	<select id="selectMyDraftApprList"  resultType="FlutterApprVO">
+		SELECT ea_no
+		    , title 
+		    , content
+		    , status
+		    , reg_date
+		    , comp_date
+		FROM approvals
+		WHERE emp_no =  #{empNo}
+	</select>
+	
+	<select id="selectMyApprList"  resultType="FlutterApprVO">
+		SELECT a.ea_no
+		    , a.title 
+		    , a.content
+		    , a.status
+		    , a.reg_date
+		    , a.comp_date
+		FROM approvals a
+		    INNER JOIN approvers ar ON a.ea_no = ar.ea_no
+		WHERE ar.emp_no = #{empNo}
+	</select>
+	
+	<select id="selectAppInfo" resultType="FlutterApprVO">
+		SELECT ea_no
+		    , title 
+		    , content
+		    , status
+		    , reg_date
+		    , comp_date
+		FROM approvals
+		WHERE ea_no =  #{eaNo}
 	</select>
 </mapper>
 <!-- 3번째 -->
