@@ -24,9 +24,11 @@
         <div class="row">
             <div id="jstree" class="col-md-6">
                 <ul>
+                <li>Collavore
                     <th:block th:each="project : ${projects}" th:if="${project.parentNo == null}">
                         <th:block th:replace="~{::renderNode(projno=${project.no}, projname=${project.name}, parentNo=${project.parentNo}, table=${project.table}, level=${project.level})}"></th:block>
                     </th:block>
+                    </li>
                 </ul>
             </div>
             <div class="col-md-6">
