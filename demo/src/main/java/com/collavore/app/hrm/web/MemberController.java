@@ -207,10 +207,10 @@ public class MemberController {
 	    // 페이지 정보 설정
 	    page = (page == null) ? "1" : page;
 	    
-	    // 총 사원 수 조회 (필터 적용 가능)
+	    /*// 총 사원 수 조회 (필터 적용 가능)
 	    int totalCnt = memberService.totalListCnt(deptNo, jobNo, posiNo, workType);
 	    PageDTO pageing = new PageDTO(page, 15, totalCnt);
-	    model.addAttribute("pageing", pageing);
+	    model.addAttribute("pageing", pageing);*/
 	    
 	    // 필터 조건에 맞는 사원 목록 조회
 	    List<HrmVO> memberList = memberService.selectMemberFiltered(deptNo, jobNo, posiNo, workType, page);

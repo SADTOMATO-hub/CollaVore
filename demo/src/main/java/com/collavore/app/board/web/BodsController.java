@@ -121,7 +121,7 @@ public class BodsController {
 		System.out.println(bodsComtsVO);
 		return bodsComtsVO;
 	}
-	
+
 	// 댓글 삭제
 	@PostMapping("/board/bodsComtsDelete")
 	@ResponseBody
@@ -129,20 +129,36 @@ public class BodsController {
 		int result = bodsService.deleteBodsComts(cmtNo);
 		return result > 0 ? true : false;
 	}
-	
-	//댓글 조회
+
+	// 댓글 조회
 	@GetMapping("/board/comtsList")
 	@ResponseBody
-	public List<BodsComtsVO> comtsList(int postNo){
+	public List<BodsComtsVO> comtsList(int postNo) {
 		List<BodsComtsVO> list = bodsService.bodsComtsList(postNo);
 		return list;
 	}
-	
-	//댓글 수정
+
+	// 댓글 상세조회 : URI - boardInfo / PARAMETER - BoardVO(QueryString)
+	@GetMapping("/board/comtsInfo")
+	public BodsComtsVO emtInfo(int cmtNo) {
+		BodsComtsVO cmtInfo = bodsService.cmtInfo(cmtNo);
+		return cmtInfo;
+	}
+
+	/*// 댓글 수정
 	@GetMapping("/board/bodsComtsUpdate")
-	public String boardUpdateForm(BodsComtsVO bodsComtsVO, Model model) {
-		//BodsVO findVO = bodsService.updateBodsComts(bodsComtsVO);
-		//model.addAttribute("bods", findVO);
-		return "board/bodsUpdate";
+	@ResponseBody
+	public String boardUpdateForm(int cmtNo) {
+		BodsComtsVO bodsComtsVO = bodsService.cmtInfo(cmtNo);
+		return board/bodsComtsUpdate;
+	}*/
+
+	// 댓글 수정 - 처리 : URI - boardUpdate / PARAMETER - BoardVO(JSON)
+	// RETURN - 수정결과 데이터(Map)
+	// => 등록(내부에서 수행하는 쿼리문 - UPDATE문)
+	@PostMapping("/board/bodsUpdate1")
+	@ResponseBody
+	public Map<String, Object> bodsComtsUpdateProcess(@RequestBody BodsComtsVO bodsComtsVO) {
+		return bodsService.updateBodsComts(bodsComtsVO);
 	}
 }
