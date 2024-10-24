@@ -71,7 +71,7 @@ public class SpringSecurityConfig {
                 HttpSession session = request.getSession();
                 session.setAttribute("userEmpNo", userVO.getEmpNo());
 
-                response.sendRedirect("/myPage");
+                response.sendRedirect("/dashboard");
             }
         };
     }

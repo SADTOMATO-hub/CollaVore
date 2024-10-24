@@ -72,6 +72,24 @@ public class ProjectServiceImpl implements PjService{
 		return projectMapper.projecttree();
 	}
 
+	@Override
+	public int projectwrkinsert(ProjectVO projectVO) {
+		int result = projectMapper.ProjectwrkInsert(projectVO);
+		return result;
+	}
+
+	@Override
+	public int projectdwrkinsert(ProjectVO projectVO) {
+		int result = projectMapper.ProjectdwrkInsert(projectVO);
+		return result;
+	}
+	// pdwNo를 기반으로 pwNo 조회하기
+	
+	@Override
+	public int selectPwNo(int pdwNo) {
+		int result = projectMapper.searchPwNo(pdwNo);
+		return result;
+	}
 
 //    public List<ProjectVO> getProjects(int page, int size) {
 //        // 페이지 번호와 크기에 맞춰 데이터 조회

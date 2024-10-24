@@ -112,17 +112,17 @@ public class ApprovalsController {
 		model.addAttribute("employeesInfo", employeesInfo);
 		return "approvals/createApprovalForm";
 	}
-	// 전자결재 데이터를 받는 곳
+	// 전자결재 생성 시, 데이터를 받는 곳
 	@PostMapping("/createAppr")
-	//@ResponseBody
+	@ResponseBody
 	@Transactional
-	public String createAppr(ApprovalsVO approvalVO) {
-		System.out.println(approvalVO);
-		int result2 = approvalsService.insertApprsEaTable(approvalVO); 
-		if (result2 >= 0) {
-			approvalVO.setEaNo(result2);
-			int result = approvalsService.insertApprsEarTable(approvalVO); // 전자결재 //원래 없던 ea가 들어감
-			if (result >= 0) {
+	public String createAppr(ApprovalsVO apprVO) {
+		System.out.println(apprVO);
+		int EaNo = approvalsService.insertApprsEaTable(apprVO); 
+		if (EaNo >= 0) {
+			apprVO.setEaNo(EaNo); //새로 만들어진 전자결재에 전자결재 번호를 매겨 줌
+			int resultOfEar = approvalsService.insertApprsEarTable(apprVO); // 전자결재 //원래 없던 ea가 들어감
+			if (resultOfEar >= 0) {
 				return "redirect:/approvals/tempList";
 			}
 		}

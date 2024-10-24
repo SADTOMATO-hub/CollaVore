@@ -125,9 +125,9 @@ public class BodsController {
 	// 댓글 삭제
 	@PostMapping("/board/bodsComtsDelete")
 	@ResponseBody
-	public String bodsComtsDelete(@RequestParam Integer cmtNo) {
-		bodsService.deleteBodsComts(cmtNo);
-		return "/board/bodsComtsDelete";
+	public boolean bodsComtsDelete(@RequestParam Integer cmtNo) {
+		int result = bodsService.deleteBodsComts(cmtNo);
+		return result > 0 ? true : false;
 	}
 	
 	//댓글 조회
@@ -136,5 +136,13 @@ public class BodsController {
 	public List<BodsComtsVO> comtsList(int postNo){
 		List<BodsComtsVO> list = bodsService.bodsComtsList(postNo);
 		return list;
+	}
+	
+	//댓글 수정
+	@GetMapping("/board/bodsComtsUpdate")
+	public String boardUpdateForm(BodsComtsVO bodsComtsVO, Model model) {
+		//BodsVO findVO = bodsService.updateBodsComts(bodsComtsVO);
+		//model.addAttribute("bods", findVO);
+		return "board/bodsUpdate";
 	}
 }

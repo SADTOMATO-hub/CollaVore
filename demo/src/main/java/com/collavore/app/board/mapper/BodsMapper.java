@@ -33,6 +33,9 @@ public interface BodsMapper {
 	// 댓글 삭제(단건 삭제)
 	public int delectBodsComtsInfo(int cmtNo);
 	
+	// 댓글 수정
+	public int updateBodsComtsInfo(BodsComtsVO bodsComtsVO);  
+	
 	// 게시판 생성(등록)
 	// public int insertBodsInfo();
 

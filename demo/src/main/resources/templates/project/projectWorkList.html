@@ -30,30 +30,76 @@
                 </ul>
             </div>
             <div class="col-md-6">
-                    <div class="insert-panel" id="insertPanelProjwrks">
-                        <h4>Insert Project</h4>
-                        <form id="insertFormProjwrks">
-                            <div>
-                                <label for="projName">폼1</label>
-                                <input type="text" id="projName" name="projName" required>
-                            </div>                  
-                            <div>
-                                <button type="submit">생성</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="insert-panel" id="insertPanelProjdwrks">
-                        <h4>Insert Project</h4>
-                        <form id="insertFormProjdwrks">
-                            <div>
-                                <label for="projNameDwrks">폼2</label>
-                                <input type="text" id="projNameDwrks" name="projName" required>
-                            </div>                 
-                            <div>
-                                <button type="submit">생성</button>
-                            </div>
-                        </form>
-                    </div>
+                <div class="insert-panel" id="insertPanelProjwrks">
+                    <h4>Insert Project</h4>
+                    <form id="insertFormProjwrks">
+                        <div>
+                            <label for="nameProjWrks" class="form-label">업무 이름</label>
+                            <input type="text" id="nameProjWrks" name="name" class="form-control" required>
+                        </div>   
+                        <div>
+                            <label class="form-label">업무 내용</label>
+                            <input type="text" id="contentProjWrks" name="content" class="form-control" required>
+                        </div>   
+                        <div>
+                            <label class="form-label">업무 타입</label>
+                            <input type="text" id="jobNoProjWrks" name="jobNo" class="form-control" required>
+                        </div>   
+                        <div>
+                            <label class="form-label">업무 담당자</label>
+                            <input type="text" id="mgrNoProjWrks" name="mgrNo" class="form-control" required>
+                        </div>
+                        <input type="hidden" id="projNo" name="projNo">
+                        <div>
+                            <button type="submit" class="btn btn-primary">생성</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="insert-panel" id="insertPanelProjdwrks">
+                    <h4>Insert Project</h4>
+                    <form id="insertFormProjdwrks">
+                        <div>
+                            <label for="nameProjDwrks" class="form-label">업무 이름</label>
+                            <input type="text" id="nameProjDwrks" name="name" class="form-control" required>
+                        </div>                 
+                        <div>
+                            <label class="form-label">업무 내용</label>
+                            <input type="text" id="contentProjDwrks" name="content" class="form-control" required>
+                        </div>                  
+                        <label for="importance" class="form-label">중요도</label>
+                        <select class="form-select" name="importance" id="importance" required>
+                            <option value="" disabled selected>선택하세요</option>
+                            <option value="l1">낮음</option>
+                            <option value="l2">중간</option>
+                            <option value="l3">높음</option>
+                        </select>              
+                        <div>
+                            <label class="form-label">업무 시작일</label>
+                            <input type="date" id="startDate" name="startDate" class="form-control" required>
+                        </div>                 
+                        <div>
+                            <label class="form-label">업무 종료일</label>
+                            <input type="date" id="endDate" name="endDate" class="form-control" required>
+                        </div>                 
+                        <div>
+                            <label class="form-label">프로젝트 깃 커밋ID</label>
+                            <input type="text" id="commitId" name="commitId" class="form-control" required>
+                        </div>                 
+                        <div>
+                            <label class="form-label">업무 담당자</label>
+                            <input type="text" id="mgrNoProjDwrks" name="mgrNo" class="form-control" required>
+                        </div>
+                        <div>
+                            <input type="hidden" id="selPwNo" name="selPwNo">
+                        </div>	                 
+                        <div>
+                            <input type="hidden" id="selParentPdwNo" name="selParentPdwNo">
+                        </div>
+                        <div>
+                            <button type="submit" class="btn btn-primary">생성</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -70,57 +116,121 @@
             $('#jstree').on('click', '.no-border-button', function(e) {
                 e.stopPropagation(); 
                 $(this).siblings('ul').toggle(); 
-                
-                
             });
 
             $('#insertFormProjwrks').on('submit', function(e) {
-                e.preventDefault(); 
-                const projName = $('#projName').val();
-                alert('상세업무을(를) "' + projName + '" 만들었어'); 
-                $('#projName').val(''); 
+                e.preventDefault(); // 기본 제출 이벤트 방지
+                const formData = $(this).serialize(); // 폼 데이터 직렬화
+                
+                $.ajax({
+                    type: 'POST',
+                    url: '/project/projectwrkinsert', // 폼의 action URL
+                    data: formData,
+                    success: function(response) {
+                        alert('프로젝트가 성공적으로 추가되었습니다: ' + response.data.name);
+                        
+                        // jsTree에 새 노드 추가
+                        const newNode = {
+                            id: 'node_' + response.data.projNo, // 새 노드의 ID
+                            text: response.data.name, // 새 노드의 텍스트
+                            children: [] // 자식 노드 초기화
+                        };
+                        $('#jstree').jstree().create_node('#', newNode, 'last'); // jsTree에 노드 추가
+                        
+                        // 폼 초기화
+                        $('#insertFormProjwrks')[0].reset();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('오류가 발생했습니다: ' + error);
+                    }
+                });
             });
 
             $('#insertFormProjdwrks').on('submit', function(e) {
-                e.preventDefault(); 
-                const projName = $('#projNameDwrks').val();
-                alert('상세업무을(를) "' + projName + '" 만들었어'); 
-                $('#projNameDwrks').val(''); 
+                e.preventDefault(); // 기본 제출 이벤트 방지
+                const formData = $(this).serialize(); // 폼 데이터 직렬화
+                
+                $.ajax({
+                    type: 'POST',
+                    url: '/project/projectdwrkinsert', // 폼의 action URL
+                    data: formData,
+                    success: function(response) {
+                        alert('상세 업무가 성공적으로 추가되었습니다: ' + response.data.name);
+                        
+                        // jsTree에 새 상세 업무 노드 추가
+                        const parentNodeId = 'node_' + response.data.parentNo; // 부모 노드 ID
+                        const newDetailNode = {
+                            id: 'node_' + response.data.pdNo, // 새 상세 업무 노드의 ID
+                            text: response.data.name, // 새 상세 업무 노드의 텍스트
+                            children: [] // 자식 노드 초기화
+                        };
+
+                        $('#jstree').jstree().create_node(parentNodeId, newDetailNode, 'last'); // jsTree에 노드 추가
+
+                        // 폼 초기화
+                        $('#insertFormProjdwrks')[0].reset();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('오류가 발생했습니다: ' + error);
+                    }
+                });
             });
         });
-        
-        function myFunction(buttonElement, level)  {
-        	const projectName = $(buttonElement).parent().contents().filter(function() {
+
+        function myFunction(buttonElement, level) {
+            const projectName = $(buttonElement).parent().contents().filter(function() {
                 return this.nodeType === 3; 
             }).text().trim();
-        	
-        	console.log(level);
-        	if(level == 2){
-        	console.log(level);
-        	 $('#insertPanelProjwrks h4').text(projectName + ' 상세업무 등록');
-             $('#insertPanelProjwrks').show();
-             $('#insertPanelProjdwrks').hide();
-        	}else{
-        		console.log(level);
-           	 $('#insertPanelProjdwrks h4').text(projectName + ' 상세업무 등록');
-             $('#insertPanelProjwrks').hide();
-             $('#insertPanelProjdwrks').show();        		
-        	}
-        	
+            
+            const projNo = $(buttonElement).parent().attr('id').split('_')[1];
+
+            let currentNode = $(buttonElement).parent();
+            let pwNo = null;
+
+            // 최상위 부모 찾기
+            while (currentNode.length) {
+                const currentPwNo = currentNode.attr('id').split('_')[1];
+                
+                // pwNo 값이 존재하면 저장
+                if (currentPwNo) {
+                    pwNo = currentPwNo; // 최상위 부모의 pwNo로 업데이트
+                }
+
+                // 부모 노드로 이동
+                currentNode = currentNode.parent().closest('li'); // 부모 <li>를 찾기
+            }
+
+            console.log(level);
+            if (level <= 1) {
+                $('#insertPanelProjwrks h4').text(projectName + ' 업무 등록');
+                $('#insertPanelProjwrks').show();
+                $('#insertPanelProjdwrks').hide();
+            } else {
+                $('#insertPanelProjdwrks h4').text(projectName + ' 상세업무 등록');
+                $('#insertPanelProjwrks').hide();
+                $('#insertPanelProjdwrks').show();        
+            }
+
+            $('#projNo').val(projNo.replace(/^[PW]/, ''));
+            /* $('#parentPdwNo').val(projNo.replace(/^[PW]/, ''));
+            $('#pwNo').val(pwNo.replace(/^[PW]/, '')); */
+            //$('#projNo').val(projNo);
+            $('#selParentPdwNo').val(projNo);
+            $('#selPwNo').val(pwNo);
+
         }
+
     </script>
 
     <!-- 재귀 함수 정의 -->
     <th:block th:fragment="renderNode(projno, projname, parentNo, table, level)" th:data-current-table="${table}" id="'test'+${status.index}" th:data-index="${status.index}">
         <li th:id="'node_' + ${projno}" style="display: none;">[[${projname}]]
-            <th:block th:if="${parentNo != null}">
-                <button class="btn btn-info btn-lg no-border-button"  th:onclick="'myFunction(this, ' + ${level} + ')'">
-                    <i class="mdi mdi-plus-circle-outline" style="color:black;"></i>
-                </button>
-            </th:block>
+            <button class="btn btn-info btn-lg no-border-button"  th:onclick="'myFunction(this, ' + ${level} + ')'">
+                <i class="mdi mdi-plus-circle-outline" style="color:black;"></i>
+            </button>
             <ul style="display: none;"> 
                 <th:block th:each="child, status : ${projects}" th:if="${child.parentNo == projno}">
-			        <span th:data-current-table="${table}"  th:data-index="${status.index}" id="'test'+${status.index}"></span>
+                    <span th:data-current-table="${table}"  th:data-index="${status.index}" id="'test'+${status.index}"></span>
                     <th:block th:replace="~{::renderNode(projno=${child.no}, projname=${child.name}, parentNo=${projno}, table=${child.table}, level=${child.level})}"></th:block>
                 </th:block>
             </ul>

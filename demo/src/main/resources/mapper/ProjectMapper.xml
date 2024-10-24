@@ -191,4 +191,72 @@ SELECT LEVEL, tree.*
     ORDER SIBLINGS BY 
         no
 	</select>	
+
+	<insert id="ProjectwrkInsert" parameterType="ProjectVO">
+		<selectKey keyProperty="pwNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(pw_no), 0)+1
+			FROM projwrks
+		</selectKey>
+		INSERT INTO projwrks(
+		pw_no
+		,name
+		,content
+		,job_no
+		,mgr_no
+		,reg_date
+		,proj_no
+		<!-- ,sort -->
+		)
+		VALUES(
+		#{pwNo}
+		,#{name}
+		,#{content}
+		,#{jobNo}
+		,#{mgrNo}
+		,sysdate
+		,#{projNo}
+		<!-- ,#{sort} -->
+		)
+	</insert>
+	<insert id="ProjectdwrkInsert" parameterType="ProjectVO">
+		<selectKey keyProperty="pdwNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(pdw_no), 0)+1
+			FROM projdwrks
+		</selectKey>
+		INSERT INTO projdwrks(
+		pdw_no
+		,parent_pdw_no
+		,name
+		,content
+		,reg_date
+		,is_status
+		,start_date
+		,req_date
+		,comp_date
+		,pw_no
+		<!-- ,sort -->
+		)
+		VALUES(
+		#{pdwNo}
+		,#{parentPdwNo}
+		,#{name}
+		,#{content}
+		,sysdate
+		,#{isStatus}
+		,#{startDate}
+		,#{reqDate}
+		,#{compDate}
+		,#{pwNo}
+		<!-- ,#{sort} -->
+		)
+	</insert>
+	
+	<select id="searchPwNo" resultType="int">
+		SELECT pw_no
+		FROM projdwrks
+		WHERE pdw_no = #{pdwNo}
+	</select>
+	
 </mapper>

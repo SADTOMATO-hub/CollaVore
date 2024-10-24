@@ -60,15 +60,15 @@ public class ApprovalsImpl implements ApprovalsService {
 		//전자결재 테이블
 	@Override
 	@Transactional
-	public int insertApprsEaTable(ApprovalsVO approvalsVO) {
-		int result = approvalsMapper.createApprsEaTable(approvalsVO);
-		return result > 0 ? approvalsVO.getEaNo() : -1 ;
+	public int insertApprsEaTable(ApprovalsVO apprVO) {
+		int EaNo = approvalsMapper.createApprsEaTable(apprVO);
+		return EaNo > 0 ? apprVO.getEaNo() : -1 ;
 	}
-		//전자결재자 테이블
+		//결재자 테이블
 	@Override
 	@Transactional
-	public int insertApprsEarTable(ApprovalsVO approvalsVO) {
-		int result = approvalsMapper.createApprsEarTable(approvalsVO);
+	public int insertApprsEarTable(ApprovalsVO apprVO) {
+		int result = approvalsMapper.createApprsEarTable(apprVO);
 		return result;						
 	}
 	// 진행 중인 전자결재 목록 조회
