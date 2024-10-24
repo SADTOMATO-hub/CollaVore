@@ -54,7 +54,7 @@
 								<td>[[${info.name}]]</td>
 								<td>[[${info.content}]]</td>
 								<td>[[${info.projTempNo}]]</td>
-								<td>[[${info.jobType}]]</td>
+								<td>[[${info.jobNo}]]</td>
 								<td>[[${#dates.format(info.regDate, 'yyyy년MM월dd일')}]]</td>
 								<td>
 									<button type="button" class="btn btn-warning edit-btn" data-bs-toggle="modal" data-bs-target="#editTemplateModal" th:attr="data-proj-temp-no=${info.pwtNo}">수정</button>
@@ -96,7 +96,7 @@
 					</div>
 					<div class="mb-3">
 						<label for="inputJobType" class="form-label">업무 타입</label>
-						<input type="text" class="form-control" name="jobType" id="inputJobType" required>
+						<input type="text" class="form-control" name="jobNo" id="inputJobType" required>
 					</div>
 					<button type="submit" class="btn btn-primary">생성</button>
 				</form>
@@ -135,7 +135,7 @@
 					</div>
 					<div class="mb-3">
 						<label for="editInputJobType" class="form-label">업무 타입</label>
-						<input type="text" class="form-control" name="jobType" id="editInputJobType" required>
+						<input type="text" class="form-control" name="jobNo" id="editInputJobType" required>
 					</div>
 					<button type="submit" class="btn btn-primary">수정</button>
 				</form>
@@ -162,7 +162,7 @@ $('#createTemplateForm').on('submit', function(event) {
         projTempNo: $('#selectProjTempNo').val(),
         name: $('#inputTemplateName').val(),
         content: $('#textareaContent').val(),
-        jobType: $('#inputJobType').val()
+        jobNo: $('#inputJobType').val()
     };
 
     $.ajax({
@@ -179,7 +179,7 @@ $('#createTemplateForm').on('submit', function(event) {
                     <td>${response.name}</td>
                     <td>${response.content}</td>
                     <td>${response.projTempNo}</td>
-                    <td>${response.jobType}</td>
+                    <td>${response.jobNo}</td>
                     <td>${formatCurrentDate()}</td>
                     <td>
                         <button type="button" class="btn btn-warning edit-btn" data-bs-toggle="modal" data-bs-target="#editTemplateModal" data-proj-temp-no="${response.pwtNo}">수정</button>
@@ -231,7 +231,7 @@ $(document).on('click', '.edit-btn', function() {
                 $('#editSelectProjTempNo').val(response.projTempNo);
                 $('#editInputTemplateName').val(response.name);
                 $('#editTextareaContent').val(response.content);
-                $('#editInputJobType').val(response.jobType);
+                $('#editInputJobType').val(response.jobNo);
 
                 $('#editTemplateModal').modal('show');
             } else {
@@ -253,7 +253,7 @@ $(document).on('submit', '#editTemplateForm', function(event) {
         projTempNo: $('#editSelectProjTempNo').val(),
         name: $('#editInputTemplateName').val(),
         content: $('#editTextareaContent').val(),
-        jobType: $('#editInputJobType').val()
+        jobNo: $('#editInputJobType').val()
     };
 
     $.ajax({
@@ -266,7 +266,7 @@ $(document).on('submit', '#editTemplateForm', function(event) {
                 const row = $(`button[data-proj-temp-no="${pwtNo}"]`).closest('tr');
                 row.find('td:nth-child(2)').text(updatedData.name);
                 row.find('td:nth-child(3)').text(updatedData.content);
-                row.find('td:nth-child(5)').text(updatedData.jobType);
+                row.find('td:nth-child(5)').text(updatedData.jobNo);
 
                 alert('프로젝트가 성공적으로 수정되었습니다!');
                 $('#editTemplateModal').modal('hide');

@@ -35,6 +35,12 @@ public interface ProjectMapper {
 	
 	public List<ProjectVO> projecttree();
 	
+	// 프로젝트 업무 생성
+	public int ProjectwrkInsert(ProjectVO projectVO);
+	// 프로젝트 상세업무 생성
+	public int ProjectdwrkInsert(ProjectVO projectVO);
 	
+	// pwNo 조회하기
+	public int searchPwNo(int pdwNo);
 	
 }
