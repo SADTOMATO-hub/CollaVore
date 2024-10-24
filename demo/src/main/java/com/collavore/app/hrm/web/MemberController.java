@@ -196,6 +196,7 @@ public class MemberController {
 	// ────────────────────────────────────────────────────────────────────────────────────────────────────
 	// 사원 전체 조회 (관리자)
 	@GetMapping("/memberList")
+
 	public String selectMemberAll(HrmVO hrmVO, Model model) {
 		String page = hrmVO.getPage() == null ? "1" : hrmVO.getPage();
 		
