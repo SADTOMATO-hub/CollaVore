@@ -202,5 +202,19 @@ public class SchsController {
 	    int result = schsService.permanentlyDel(calNo);
 	    return result > 0 ? "캘린더가 완전히 삭제되었습니다." : "캘린더 삭제에 실패했습니다.";
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//테스트 
+	
 
 }

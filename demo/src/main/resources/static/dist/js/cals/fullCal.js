@@ -45,7 +45,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		}
 	};
 
-	//============ 캘린더 전체조회 ============
+
+	//============ 캘린더 전체조회 ============     
 	fetch('/sch/schList', {
 		method: "POST",
 		headers: { 'Content-Type': 'application/json' }
@@ -181,19 +182,34 @@ document.addEventListener('DOMContentLoaded', function() {
 				select: function(arg) {
 					// 일정 추가 모달 창 열기
 					var modal = document.getElementById('scheduleModal');
-					var form = document.getElementById('scheduleForm');
+					modal.style.display = 'block';
 
-					//============ 사이드바 ============
-					var selectedCalNo = null;  // 사이드바에서 선택된 캘린더 ID
+					// 캘린더 타입 선택에 따라 추가 필드를 동적으로 표시
+					document.getElementById('calendarType').addEventListener('change', function() {
+						var sharedCalendarOptions = document.getElementById('sharedCalendarOptions');
+						var sharedCalendar = document.getElementById('sharedCalendar');
 
-					// 사이드바에서 캘린더 선택 시 cal_no 저장 
-					document.querySelectorAll('.calendar-item').forEach(item => {
-						item.addEventListener('click', function() {
-							selectedCalNo = this.getAttribute('data-calno');  // 선택된 캘린더 ID 가져오기
-							alert('선택된 캘린더: ' + this.textContent + ' (ID: ' + selectedCalNo + ')');
-						});
+						if (this.value === 'g2') {
+							// 공유캘린더를 선택했을 때만 공유캘린더 리스트 표시
+							sharedCalendarOptions.style.display = 'block';
+
+							// 공유캘린더 리스트를 동적으로 가져와서 업데이트
+							fetch('/cal/calList')
+								.then(response => response.json())
+								.then(data => {
+									sharedCalendar.innerHTML = ''; // 기존 리스트 초기화
+									data.forEach(function(calendar) {
+										var option = document.createElement('option');
+										option.value = calendar.calNo;
+										option.text = calendar.name;
+										sharedCalendar.appendChild(option);
+									});
+								})
+								.catch(error => console.error('Error:', error));
+						} else {
+							sharedCalendarOptions.style.display = 'none'; // g2가 아닌 경우 숨김
+						}
 					});
-					//============END 사이드바 ============	
 
 
 					// 현재 시간을 로컬 시간으로 가져오기
@@ -249,11 +265,9 @@ document.addEventListener('DOMContentLoaded', function() {
 					modal.style.display = 'block'; // 모달 보이기
 
 
-
+					//							일정양식
 					document.getElementById('scheduleForm').onsubmit = function(e) {
 						e.preventDefault();
-
-						// 폼 데이터 가져오기
 
 						var title = document.getElementById('title').value;
 						var startDate = document.getElementById('startDate').value;
@@ -267,17 +281,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
 						// 캘린더 타입 선택 (g1: 개인캘린더, g2: 공유캘린더, g3: 프로젝트캘린더)
 						var calendarType = document.getElementById('calendarType').value;
+						var calNo;
 
-						// 서버에 전달할 데이터 구성
+						
+
+						// schsData 변수 초기화 및 데이터 설정
 						var schsData = {
 							title: title,
 							startDate: startDateTime,
 							endDate: endDateTime,
-							calNo: calNo,  // 선택된 캘린더 ID 전송
-							type: calendarType  // 캘린더 타입 (g1: 개인, g2: 공유)
+							calendarType: calendarType,  // 선택된 캘린더 타입
+							calNo: calNo  // 선택된 캘린더 번호
 						};
 
-						// 일정생성 
+
+
 						if (title) {
 							fetch('/sch/schInsert', {  // 등록 API 호출
 								method: 'POST',
@@ -288,7 +306,7 @@ document.addEventListener('DOMContentLoaded', function() {
 								.then(data => {
 									if (data.success) {
 
-										calendar.addEvent({
+										/*calendar.addEvent({
 											id: data.id,
 											title: title,
 											start: new Date(startDate + 'T' + startTime), // 여기에서 Date 객체로 변환
@@ -296,10 +314,10 @@ document.addEventListener('DOMContentLoaded', function() {
 											calNo: calNo,  // 선택된 캘린더 ID 전송
 											type: calendarType,  // 캘린더 타입 (g1: 개인, g2: 공유)
 											allDay: arg.allDay,
+											});*/
 
 
 
-										});
 									} else {
 										alert('일정 등록에 실패했습니다.');
 									}
@@ -725,6 +743,7 @@ function makeSidEvent(calendar) {
                         </div>`;
 	return tag;
 }
+
 
 
 //================================END 함수모음====================================
