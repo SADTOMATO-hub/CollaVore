@@ -1,7 +1,11 @@
 package com.collavore.app.api.mapper;
 
+import java.util.Date;
 import java.util.List;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import com.collavore.app.api.service.FlutterApprVO;
 import com.collavore.app.api.service.FlutterProjVO;
 import com.collavore.app.api.service.FlutterSchsVO;
 import com.collavore.app.api.service.FlutterVO;
@@ -20,7 +24,10 @@ public interface FlutterMapper {
 	public int updatePassword(FlutterVO flutterVO);
 	
 	// 일정목록조회
-	public List<FlutterSchsVO> selectMyAllSchsList(int empNo);
+	public List<FlutterSchsVO> selectMyAllSchsList(int empNo, @DateTimeFormat(pattern = "yyyy-MM-dd") Date selectDate);
+	
+	// 일정등록
+	public int schsInsert(FlutterSchsVO flutterSchsVO);
 	
 	// 일정상세
 	public FlutterSchsVO selectSchsInfo(int schsNo);
@@ -33,4 +40,16 @@ public interface FlutterMapper {
 	
 	// 프로젝트상세업무목록조회
 	public List<FlutterProjVO> selectMyAllProjDetailWorkList(int pwNo, int empNo);
+	
+	// 전자결재조회(전체)
+	public List<FlutterApprVO> selectMyAllApprList(int empNo);
+
+	// 전자결재조회(기안)
+	public List<FlutterApprVO> selectMyDraftApprList(int empNo);
+
+	// 전자결재조회(결재)
+	public List<FlutterApprVO> selectMyApprList(int empNo);
+	
+	// 전자결재상세보기
+	public FlutterApprVO selectAppInfo(int eaNo);
 }

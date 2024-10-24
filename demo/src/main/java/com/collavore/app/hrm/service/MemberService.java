@@ -23,6 +23,12 @@ public interface MemberService {
 	// 사원 등록
 	int insertMember(HrmVO hrmVO);
 
+	/// 연락처 중복 확인 메서드
+    boolean isTelDuplicate(String tel);
+
+    // 이메일 중복 확인 메서드
+    boolean isEmailDuplicate(String email);
+
 	// 사번 자동 생성 (정수형으로 변경)
 	Integer generateEmpNo();
 
@@ -30,8 +36,12 @@ public interface MemberService {
 	HrmVO memberInfoByEmpNo(Integer empNo);
 
 	// 사원 정보 수정
-    int updateMemberByAdmin(HrmVO hrmVO);
+	int updateMemberByAdmin(HrmVO hrmVO);
+
+	// 사원 정보 조회
+	HrmVO getMemberById(Integer empNo);
 
 	// 사원 삭제 (사번을 정수형으로 처리)
-	int deleteMember(int empNo);
+	int deleteMember(Integer empNo);
+
 }

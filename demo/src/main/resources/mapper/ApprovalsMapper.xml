@@ -57,10 +57,10 @@
 	</select>
 	
 	<!-- 전자결재를 생성하는 기능 -->
-	<!-- approvals테이블에 넣기 -->
+		<!-- approvals테이블에 넣기 -->
 	<insert id="createApprsEaTable" parameterType="ApprovalsVO">
 	  <selectKey keyProperty="eaNo"
-	   resultType="ApprovalsVO"
+	   resultType="Integer"
 	   order="BEFORE">
 	   	SELECT NVL(MAX(approvals.ea_no),0) + 1
 	  	FROM approvals
@@ -71,39 +71,45 @@
 							  eat_no,
 							  approvals.status,
 							  approvals.emp_no,
+							  approvals.reg_date,
 							  content
 							  )
          	  		 VALUES (
          	   				 #{eaNo},
          	   				 #{title},
          	   				 #{eatNo},
-         	   				 #{status},
+         	   				 default,
          	   				 #{drafterEmpNo},
+         	   				 sysdate,
          	   				 #{content}
          	   			     )
 	</insert>
-	<!-- approvers테이블에 넣기 -->
-	<insert id="createApprsEarTable" parameterType="ApprovalsVO">
+	
+		<!-- approvers테이블에 넣기 -->
+	<insert id="createApprsEarTable" parameterType="java.util.List">
 	  <selectKey keyProperty="earNo"
-	   resultType="ApprovalsVO"
+	   resultType="Integer"
 	   order="BEFORE">
-	   	SELECT NVL(MAX(ear_no),0) + 1
+	   	SELECT NVL(MAX(approvers.ear_no),0) + 1
 	  	FROM approvers
 	  </selectKey>
 		INSERT INTO approvers(
-							  ear_no,
+							  approvers.ear_no,
 							  approvers.ea_no,
 							  approvers.emp_no,
-							  approvers.status,
-							  sort
+						 	  <!-- approvers.status, -->	  
+					     	  sort
 							  )
-         	  		 VALUES (
+         	  		 VALUES 
+        <foreach collection="list" item="approvers" separator=",">
+         	  		        (
+         	   				 #{earNo},
          	   				 #{eaNo},
-         	   				 #{title},
-         	   				 #{eatNo},
-         	   				 #{status},
+         	   				 #{empNoList},
+         	   				 <!-- #{status}, --> 
          	   				 #{sort}
          	   			     )
+        </foreach>
 	</insert>
 	
 	

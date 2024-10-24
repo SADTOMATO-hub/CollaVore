@@ -45,30 +45,56 @@
 			<form name="insertBodsComts" th:action="@{/board/bodsComts}"
 				method="post">
 				<input type="hidden" name="postNo" th:value="${param.postNo}">
-				<h3>댓글 등록</h3>
-
-				<th>작성자</th>
-				<td><input type="text" name="writer"></td>
-
-				<th>내용</th>
-				<td><textarea name="content"></textarea></td>
-
-				<button type="button" id="btninsert">등록</button>
+				<!-- 댓글 작성 부분 -->
+				<h3>댓글 작성</h3>
+				<input type="text" name="writer" placeholder="작성자"> <input
+					type="text" name="content" placeholder="내용">
+				<button type="button" id="btninsert">댓글작성</button>
 			</form>
 
-			<div>
-				<div th:each="reply : ${comtsList}" style="margin-bottom: 20px">
-					<div>[[${reply.cmtNo}]]</div>
-					<div>[[${reply.content}]]</div>
-					<div>[[${reply.writer}]]</div>
-					<div>[[${reply.regDate}]]</div>
-					 <input type="button" value="삭제" 
-					th:onclick='|location.href="@{board/bodsComtsDelete(postNo=${bods.postNo})}"|'> 
-				</div>
-				<script>
-					// submit을 하기 전 제목, 작성자, 작성일자 확인
-					$("#btninsert").on('click', boardInsertHandler);
+			<!--  -->
+			<div id="comtslist">
+				<table>
+					<thead>
+						<tr>
+							<th>댓글번호</th>
+							<th>작성자</th>
+							<th>내용</th>
+							<th>작성시간</th>
+						</tr>
+					</thead>
+					<tbody id="bodsComts">
+					</tbody>
 
+				</table>
+			</div>
+
+
+
+		</div>
+		<script>
+
+		//ajax로 댓글 불러오기
+					$.ajax({
+							type: "get",
+							url: "/board/comtsList?postNo=26",
+							success: function(rs) {
+								console.log(rs);// 서버에서 받은 결과
+								rs.forEach(function(comt){
+									console.log(comt.cmtNo);
+									let row = '<tr>'+
+									'<td>' + comt.cmtNo + '</td>' +
+				                   '<td>' + comt.writer + '</td>' +
+				                   '<td>' + comt.content + '</td>' +
+				                   '<td>' + comt.regDate + '</td>' +
+				                   '</tr>';
+				                   console.log(row);
+								});
+								
+							}
+					});
+	
+					$("#btninsert").on('click', boardInsertHandler);
 					function boardInsertHandler() {
 
 						let writer = $('form [name="writer"]');
@@ -87,8 +113,13 @@
 
 						//document.insertBodsComts.submit();
 						console.log($(document.insertBodsComts).serialize());
+						
+						
+					
+					
 
-						//이부분을 아작스로 변경 페치나
+
+						//등록아작스
 						$.ajax({
 							type : 'post',
 							url : '/board/bodsComts',
@@ -108,8 +139,28 @@
 						});
 						alert('댓글이 등록되었습니다.');
 					}
+
+					// 삭제 아작스
+					function deletebodsComts(cmtNo) {
+
+						if (confirm("정말 삭제하시겠습니까?") == true) {
+
+							
+							$.ajax({
+								type : 'post',
+								url : '/board/bodsComtsDelete',
+								data : {cmtNo},
+								success : function() {
+
+								},
+								error : function() {
+									alert('ERROR')
+								}
+							})
+
+							loadComments(cmtNo, 0);
+						}
+					}
 				</script>
-			</div>
-		</div>
 	</div>
 </div>

@@ -265,7 +265,7 @@ td {
 
 /* 모달 폼 그룹 스타일 */
 .modal-form-group {
-	margin-bottom: 15px;
+	margin-top: 15px;
 	display: flex;
 	justify-content: flex-start; /* 라벨과 인풋 필드를 동일 라인에 배치 */
 	align-items: center;
@@ -278,10 +278,11 @@ td {
 	font-weight: bold;
 	margin-right: 10px;
 	text-align: right; /* 라벨 텍스트 우측 정렬 */
+	margin-bottom: 0;
 }
 
 /* 인풋, 텍스트 영역 스타일 */
-.modal-input, .modal-textarea, .modal-span {
+.modal-input, .modal-textarea {
 	width: calc(100% - 160px); /* 인풋, 텍스트 영역 가로 사이즈 조정 */
 	padding: 8px;
 	border-radius: 4px;
@@ -289,7 +290,11 @@ td {
 	box-sizing: border-box;
 	font-size: 14px;
 }
+.modal-span{
+	width: calc(100% - 160px); /* 인풋, 텍스트 영역 가로 사이즈 조정 */
+	padding: 8px;
 
+}
 /* 텍스트 영역 높이 */
 .modal-textarea {
 	height: 100px; /* 텍스트 영역 높이 */
@@ -312,6 +317,16 @@ td {
 .modal-button :hover {
 	background-color: #5a4bcf; /* 호버 시 더 어두운 보라색으로 변경 */
 }
+
+/* 연락처 유효성 검사 메시지 */
+    #telError, #telSuccess, #passwordError, #passwordSuccess  {
+        display: block; /* 메시지를 블록 요소로 표시하여 입력 필드 아래로 배치 */
+        margin-top: 2px;
+        margin-bottom: 5px; /* 입력 필드와의 간격 설정 */
+        text-align: center;
+    }
+
+    
 /* 모달 영역 끝 */
 </style>
 	<div class="body-page-wrapper">
@@ -373,10 +388,10 @@ td {
 				<table>
 					<tr>
 						<th>우상이가</th>
-						<th>완료하면</th>
-						<th>추가</th>
-						<th>할</th>
-						<th>예정</th>
+						<th>완료하면.....</th>
+						<th>근데언제</th>
+						<th>완료할려나</th>
+						<th>ㅠㅠ</th>
 					</tr>
 					<tr>
 						<td th:text="${member.workType}"></td>
@@ -427,35 +442,27 @@ td {
 						</div>
 
 						<div class="modal-form-group">
-							<label for="tel" class="modal-label">연락처 :</label> <input
-								type="text" id="tel" name="tel" class="modal-input"
-								th:field="*{tel}">
-							<!-- 연락처 유효성 검사 결과 표시 -->
-							<small id="telError" style="color: red; display: none;">유효하지
-								않은 연락처 형식입니다. (010-XXXX-XXXX)</small> <small id="telSuccess"
-								style="color: green; display: none;">정상적인 연락처입니다.</small>
+							<label for="tel" class="modal-label">연락처 :</label> 
+							<input type="text" id="tel" name="tel" class="modal-input" th:field="*{tel}"> 
 						</div>
+							<small id="telError" style="color: red; display: none;">유효하지 않은 연락처 형식입니다. (010-XXXX-XXXX)</small> 
+							<small id="telSuccess" style="color: green; display: none;">정상적인 연락처입니다.</small>
 
 						<div class="modal-form-group">
-							<label for="password" class="modal-label">비밀번호 :</label> <input
-								type="password" id="password" name="password"
-								class="modal-input" th:field="*{password}"
-								placeholder="비밀번호 (최소 8자, 대소문자, 숫자, 특수문자 포함)">
-							<!-- 비밀번호 유효성 검사 결과 표시 -->
-							<small id="passwordError" style="color: red; display: none;">비밀번호는
-								최소 8자 이상이어야 하며, 대문자, 소문자, 숫자, 특수 문자를 포함해야 합니다.</small> <small
-								id="passwordSuccess" style="color: green; display: none;">정상적인
-								비밀번호입니다.</small>
+							<label for="password" class="modal-label">비밀번호 :</label> 
+							<input type="password" id="password" name="password" class="modal-input" th:field="*{password}" placeholder="비밀번호 (수정시에만 입력하세요)"> 
 						</div>
+							<small id="passwordError" style="color: red; display: none;">비밀번호는 최소 8자 이상이어야 하며, 대문자, 소문자, 숫자, 특수 문자를 포함해야 합니다.</small> 
+							<small id="passwordSuccess" style="color: green; display: none;">정상적인 비밀번호입니다.</small>
 
-						<!-- 이메일 및 부서/직책 정보는 읽기 전용 -->
+						<!-- 이메일 및 부서/직위정보는 읽기 전용 -->
 						<div class="modal-form-group">
 							<label class="modal-label">이메일 :</label> <span class="modal-span"
 								th:text="*{email}"></span>
 						</div>
 						<div class="modal-form-group">
-							<label class="modal-label">부서/직책 :</label> <span
-								class="modal-span" th:text="*{deptName} + ' | ' + *{jobName}"></span>
+							<label class="modal-label">부서/직위 :</label> <span
+								class="modal-span" th:text="*{deptName} + ' | ' + *{posiName}"></span>
 						</div>
 
 						<!-- 저장 버튼 -->
@@ -472,12 +479,18 @@ td {
 	<script>
 		// 모달 관련 요소 가져오기
 		var modal = document.getElementById("editModal");
-		var btn = document.getElementById("editBtn"); // '정보 수정' 버튼
+		var btn = document.getElementById("editBtn");
 		var closeBtn = document.querySelector(".modal-close");
 
 		// 수정 버튼을 클릭하면 모달을 엽니다.
 		btn.onclick = function() {
 			modal.style.display = "block";
+			// 수정 전 원래 값을 저장
+			document.getElementById("password").setAttribute(
+					"data-original-value",
+					document.getElementById("password").value);
+			document.getElementById("tel").setAttribute("data-original-value",
+					document.getElementById("tel").value);
 		}
 
 		// X 버튼을 클릭하면 모달을 닫습니다.
@@ -501,13 +514,11 @@ td {
 				.addEventListener(
 						'input',
 						function() {
-							// 입력 값에서 공백 제거
 							const passwordValue = passwordField.value.trim();
-
-							// 특수문자 포함된 비밀번호 유효성 검사 (모든 특수문자 허용)
 							const passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[^A-Za-z\d])[A-Za-z\d@$!%*?&]{8,}$/;
 
-							if (!passwordPattern.test(passwordValue)) {
+							if (passwordValue
+									&& !passwordPattern.test(passwordValue)) {
 								passwordError.style.display = 'block';
 								passwordSuccess.style.display = 'none';
 							} else {
@@ -521,11 +532,10 @@ td {
 		const telError = document.getElementById('telError');
 		const telSuccess = document.getElementById('telSuccess');
 
-		// 한국 연락처 형식: 010-XXXX-XXXX 
 		const telPattern = /^010-\d{4}-\d{4}$/;
 
 		telField.addEventListener('input', function() {
-			if (!telPattern.test(telField.value)) {
+			if (telField.value && !telPattern.test(telField.value)) {
 				telError.style.display = 'block';
 				telSuccess.style.display = 'none';
 			} else {
@@ -534,23 +544,34 @@ td {
 			}
 		});
 
-		// 이미지 미리보기
-		function previewImage(event) {
-			const reader = new FileReader();
-			reader.onload = function() {
-				const output = document.getElementById('profilePreview');
-				output.src = reader.result;
-			};
-			reader.readAsDataURL(event.target.files[0]);
-		}
-		
-		// 폼 제출 전에 모든 유효성 검사를 확인하는 함수
-		document.getElementById("editForm").onsubmit = function (event) {
-			// 연락처 및 비밀번호 유효성 검사를 통과하지 못하면 제출을 중단
-			if (!validateTel() || !validatePassword()) {
+		// 폼 제출 시 유효성 검사 및 기존 값 유지
+		document.getElementById("editForm").onsubmit = function(event) {
+			const passwordValue = passwordField.value.trim();
+			const telValue = telField.value.trim();
+
+			// 비밀번호 및 연락처가 비어 있으면 원래 값을 유지
+			if (!passwordValue) {
+				passwordField.value = passwordField
+						.getAttribute("data-original-value");
+			}
+
+			if (!telValue) {
+				telField.value = telField.getAttribute("data-original-value");
+			}
+
+			// 수정된 값이 있을 때만 유효성 검사
+			if (passwordValue && !passwordPattern.test(passwordValue)) {
 				event.preventDefault(); // 폼 제출 중단
-				alert("유효한 정보를 입력해주세요.");
+				passwordError.style.display = 'block';
+				passwordSuccess.style.display = 'none';
+			}
+
+			if (telValue && !telPattern.test(telValue)) {
+				event.preventDefault(); // 폼 제출 중단
+				telError.style.display = 'block';
+				telSuccess.style.display = 'none';
 			}
 		};
 	</script>
+
 </div>

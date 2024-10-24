@@ -164,11 +164,14 @@ SELECT LEVEL, tree.*
         SELECT 'P' || proj_no as no
             , null as parent_no
             , name
+             , 'proj' AS "table"
         FROM proj
         UNION
         SELECT 'W' || pw_no
             ,  'P' || proj_no
             , name
+            , 'projwrks' AS "table"
+
         FROM 
             projwrks
         UNION
@@ -176,6 +179,8 @@ SELECT LEVEL, tree.*
             TO_CHAR(pdw_no)
             , CASE WHEN parent_pdw_no IS NULL THEN 'W' || pw_no ELSE TO_CHAR(parent_pdw_no) END
             , name
+             , 'projdwrks' AS "table"
+
         FROM 
             projdwrks 
     ) tree

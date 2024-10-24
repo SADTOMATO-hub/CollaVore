@@ -19,13 +19,22 @@ public interface MemberMapper {
 
 	// 사원 등록 (관리자)
 	int insertMember(HrmVO hrmVO);
+	
+	// 연락처 중복 확인
+    int checkTelDuplicate(String tel);
 
+    // 이메일 중복 확인
+    int checkEmailDuplicate(String email);
+    
 	// 사번으로 단건 조회
 	HrmVO selectMemberById(Integer empNo);
 
 	// 사원 정보 수정(관리자)
 	int updateMemberByAdmin(HrmVO hrmVO);
-
+	
+	 // 사원 정보 조회
+	HrmVO getMemberById(Integer empNo);
+	
 	// 사원 삭제 (관리자)
 	int deleteMember(Integer empNo); // 사번을 정수형으로 처리
 

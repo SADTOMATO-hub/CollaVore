@@ -1,13 +1,16 @@
 package com.collavore.app.hrm.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -43,33 +46,33 @@ public class MemberController {
 	}
 
 	// 로그인 페이지
-	@GetMapping("/login")
+	@GetMapping("/member/login")
 	public String loginForm() {
 		return "member/login"; // 로그인 페이지로 이동
 	}
 
 	// 로그인 처리
-	@PostMapping("/login")
-	public String login(@RequestParam("email") String email, @RequestParam("password") String password, 
-	                    Model model, HttpSession session) {
+	@PostMapping("/member/login")
+	public String login(@RequestParam("email") String email, @RequestParam("password") String password, Model model,
+			HttpSession session) {
 
-	    HrmVO user = memberService.findByEmail(email); // 이메일로 사용자 조회
-	    if (user == null) {
-	        // 이메일이 등록되지 않은 경우
-	        model.addAttribute("loginError", "등록되지 않은 이메일입니다. 관리자에게 문의 해주세요.");
-	        return "member/login"; // 로그인 화면으로 다시 이동
-	    }
+		HrmVO user = memberService.findByEmail(email); // 이메일로 사용자 조회
+		if (user == null) {
+			// 이메일이 등록되지 않은 경우
+			model.addAttribute("loginError", "등록되지 않은 이메일입니다. 관리자에게 문의 해주세요.");
+			return "member/login"; // 로그인 화면으로 다시 이동
+		}
 
-	    if (!password.equals(user.getPassword())) {
-	        // 비밀번호가 틀린 경우
-	        model.addAttribute("loginError", "비밀번호가 올바르지 않습니다.");
-	        return "member/login"; // 로그인 화면으로 다시 이동
-	    }
+		if (!password.equals(user.getPassword())) {
+			// 비밀번호가 틀린 경우
+			model.addAttribute("loginError", "비밀번호가 올바르지 않습니다.");
+			return "member/login"; // 로그인 화면으로 다시 이동
+		}
 
-	    // 로그인 성공 시 세션에 사용자 정보 저장
-	    session.setAttribute("userEmail", user.getEmail());
-	    session.setAttribute("userEmpNo", user.getEmpNo()); // 사원 번호 저장
-	    return "redirect:/main"; // 로그인 후 메인 페이지로 리다이렉트
+		// 로그인 성공 시 세션에 사용자 정보 저장
+		session.setAttribute("userEmail", user.getEmail());
+		session.setAttribute("userEmpNo", user.getEmpNo()); // 사원 번호 저장
+		return "redirect:/main"; // 로그인 후 메인 페이지로 리다이렉트
 	}
 
 	// 로그인 후 메인 페이지로 이동
@@ -158,7 +161,7 @@ public class MemberController {
 	@PostMapping("/memberEdit")
 	public String updateMemberInfo(@ModelAttribute HrmVO hrmVO, HttpSession session) {
 		Integer empNo = (Integer) session.getAttribute("userEmpNo");
-		 System.out.println("입력된 비밀번호: " + hrmVO.getPassword());
+		System.out.println("입력된 비밀번호: " + hrmVO.getPassword());
 		if (empNo == null) {
 			return "redirect:/login";
 		}
@@ -177,10 +180,10 @@ public class MemberController {
 		if (hrmVO.getTel() == null || hrmVO.getTel().isEmpty()) {
 			hrmVO.setTel(originalMember.getTel());
 		}
-		
+
 		if (hrmVO.getPassword() == null || hrmVO.getPassword().isEmpty()) {
-	        hrmVO.setPassword(originalMember.getPassword());
-	    }
+			hrmVO.setPassword(originalMember.getPassword());
+		}
 
 		// 이후에 업데이트 처리
 		memberService.memberUpdate(hrmVO);
@@ -197,84 +200,139 @@ public class MemberController {
 		return "member/memberList"; // 뷰 파일 반환
 	}
 
-	// 사번 등록 폼 이동 (관리자)
+	// 사원 등록 폼 이동 (관리자)
 	@GetMapping("/memberInsert")
 	public String memberInsertForm(Model model) {
-		// 사번 자동 생성
-		Integer empNo = memberService.generateEmpNo();
-		model.addAttribute("empNo", empNo);
+	    // 빈 hrmVO 객체를 초기화하여 전달
+	    model.addAttribute("hrmVO", new HrmVO());
 
-		// 부서 목록을 가져와서 모델에 추가
-		List<HrmVO> departments = deptService.getExistingDepts();
-		model.addAttribute("departments", departments);
+	    // 사번 자동 생성
+	    Integer empNo = memberService.generateEmpNo();
+	    model.addAttribute("empNo", empNo);
 
-		// 직위 목록을 가져와서 모델에 추가
-		List<HrmVO> positions = posiService.getExistingPositions();
-		model.addAttribute("positions", positions);
+	    // 부서 목록을 가져와서 모델에 추가
+	    List<HrmVO> departments = deptService.getExistingDepts();
+	    model.addAttribute("departments", departments);
 
-		// 직무 목록을 가져와서 모델에 추가
-		List<HrmVO> jobs = jobService.getExistinJobs();
-		model.addAttribute("jobs", jobs);
+	    // 직위 목록을 가져와서 모델에 추가
+	    List<HrmVO> positions = posiService.getExistingPositions();
+	    model.addAttribute("positions", positions);
 
-		return "member/memberInsert"; // memberInsert 뷰로 이동
+	    // 직무 목록을 가져와서 모델에 추가
+	    List<HrmVO> jobs = jobService.getExistinJobs();
+	    model.addAttribute("jobs", jobs);
+
+	    return "member/memberInsert"; // 명확하게 "member/memberInsert" 경로로 반환
 	}
 
 	// 사원 등록 처리 (관리자)
 	@PostMapping("/memberInsert")
-	public String memberInsert(HrmVO hrmVO, RedirectAttributes redirectAttributes) {
-		// 자동 생성된 사번을 HrmVO에 설정
-		Integer empNo = memberService.generateEmpNo(); // 사번을 Integer로 생성
-		hrmVO.setEmpNo(empNo); // Integer 사번 설정
+	public String memberInsert(@ModelAttribute("hrmVO") HrmVO hrmVO, Model model) {
+	    boolean hasErrors = false;
 
-		// 사원 등록 처리
-		int result = memberService.insertMember(hrmVO);
-		if (result > 0) {
-			redirectAttributes.addFlashAttribute("message", "사원이 성공적으로 등록되었습니다.");
-		} else {
-			redirectAttributes.addFlashAttribute("message", "사원 등록에 실패했습니다.");
-		}
-		return "redirect:/memberList";
+	    // 연락처 중복 검사
+	    if (memberService.isTelDuplicate(hrmVO.getTel())) {
+	        model.addAttribute("telDuplicateError", "해당 연락처는 이미 등록되어 있습니다.");
+	        hasErrors = true;
+	    }
+
+	    // 이메일 중복 검사
+	    if (memberService.isEmailDuplicate(hrmVO.getEmail())) {
+	        model.addAttribute("emailDuplicateError", "해당 이메일은 이미 등록되어 있습니다.");
+	        hasErrors = true;
+	    }
+
+	    // 오류가 있으면 입력 페이지로 다시 돌아가고, 입력된 데이터를 유지
+	    if (hasErrors) {
+	        model.addAttribute("hrmVO", hrmVO);  // 입력된 값 유지
+	        return "member/memberInsert";  // 입력 페이지로 유지
+	    }
+
+	    // 사원 등록 처리
+	    try {
+	        int result = memberService.insertMember(hrmVO);
+	        if (result > 0) {
+	            model.addAttribute("message", "사원이 성공적으로 등록되었습니다.");
+	            return "redirect:/memberList";  // 성공 시 리스트 페이지로 이동
+	        } else {
+	            model.addAttribute("errorMessage", "사원 등록에 실패했습니다.");
+	            return "member/memberInsert";  // 실패 시 입력 페이지로 유지
+	        }
+	    } catch (Exception e) {
+	        model.addAttribute("errorMessage", "처리 중 오류가 발생했습니다.");
+	        return "member/memberInsert";  // 예외 발생 시 입력 페이지로 유지
+	    }
 	}
+
 	
+	
+
 	@GetMapping("/memberUpdate")
 	public String updateMemberForm(@RequestParam("empNo") Integer empNo, Model model) {
-	    // 사원 정보 조회
-	    HrmVO member = memberService.memberInfoByEmpNo(empNo);
-	    model.addAttribute("member", member);
+		// 사원 정보 조회
+		HrmVO member = memberService.memberInfoByEmpNo(empNo);
+		model.addAttribute("member", member);
 
-	    // 부서, 직위, 직무 목록을 가져와서 모델에 추가
-	    List<HrmVO> departments = deptService.getExistingDepts();
-	    List<HrmVO> positions = posiService.getExistingPositions();
-	    List<HrmVO> jobs = jobService.getExistinJobs();
-	    model.addAttribute("departments", departments);
-	    model.addAttribute("positions", positions);
-	    model.addAttribute("jobs", jobs);
+		// 부서, 직위, 직무 목록을 가져와서 모델에 추가
+		List<HrmVO> departments = deptService.getExistingDepts();
+		List<HrmVO> positions = posiService.getExistingPositions();
+		List<HrmVO> jobs = jobService.getExistinJobs();
+		model.addAttribute("departments", departments);
+		model.addAttribute("positions", positions);
+		model.addAttribute("jobs", jobs);
 
-	    return "member/memberUpdate"; // memberUpdate 뷰 파일로 이동
+		return "member/memberUpdate"; // memberUpdate 뷰 파일로 이동
 	}
-	
+
+
 	@PostMapping("/memberUpdate")
-	public String updateMember(HrmVO hrmVO, RedirectAttributes redirectAttributes) {
-	    int result = memberService.updateMemberByAdmin(hrmVO); // 사원 정보 수정 처리
+	public String updateMember(HrmVO hrmVO, Model model, RedirectAttributes redirectAttributes) {
+		int result = memberService.updateMemberByAdmin(hrmVO); // 사원 정보 수정 처리
 
-	    if (result > 0) {
-	        redirectAttributes.addFlashAttribute("message", "사원이 성공적으로 수정되었습니다.");
-	    } else {
-	        redirectAttributes.addFlashAttribute("message", "사원 수정에 실패했습니다.");
-	    }
-	    return "redirect:/memberList"; // 수정 후 리스트 페이지로 리다이렉트
-	}
-	
-	// 사원 삭제 처리 (관리자)
-	@PostMapping("/memberDelete/{empNo}")
-	public String deleteMember(@PathVariable("empNo") int empNo, RedirectAttributes redirectAttributes) {
-		int result = memberService.deleteMember(empNo);
 		if (result > 0) {
-			redirectAttributes.addFlashAttribute("message", "사원이 성공적으로 삭제되었습니다.");
+			// 수정된 사원 정보를 다시 조회하여 모델에 담기
+			HrmVO updatedMember = memberService.getMemberById(hrmVO.getEmpNo());
+			model.addAttribute("member", updatedMember); // 수정된 데이터를 모델에 추가
+
+			// 성공 메시지 추가
+			model.addAttribute("message", "사원이 성공적으로 수정되었습니다.");
+
+			// 수정이 완료된 후 같은 화면으로 이동하게 설정
+			return "redirect:/memberUpdate?empNo=" + hrmVO.getEmpNo(); // 업데이트된 내용을 다시 표시
 		} else {
-			redirectAttributes.addFlashAttribute("message", "사원 삭제에 실패했습니다.");
+			// 수정 실패 메시지 설정
+			redirectAttributes.addFlashAttribute("message", "사원 수정에 실패했습니다.");
+			return "redirect:/memberList"; // 실패 시 리스트 페이지로 리다이렉트
 		}
-		return "redirect:/members";
+	}
+
+	@GetMapping("/checkDuplicateTel")
+	public ResponseEntity<Map<String, Boolean>> checkDuplicateTel(@RequestParam("tel") String tel) {
+		boolean isDuplicate = memberService.isTelDuplicate(tel);
+		Map<String, Boolean> response = new HashMap<>();
+		response.put("isTelDuplicate", isDuplicate);
+		return ResponseEntity.ok(response);
+	}
+
+	// 이메일 중복 확인 API
+	@GetMapping("/checkDuplicateEmail")
+	public ResponseEntity<Map<String, Boolean>> checkDuplicateEmail(@RequestParam("email") String email) {
+		boolean isDuplicate = memberService.isEmailDuplicate(email);
+		Map<String, Boolean> response = new HashMap<>();
+		response.put("isEmailDuplicate", isDuplicate);
+		return ResponseEntity.ok(response);
+	}
+
+	// 사원 삭제 처리 (관리자)
+	@PostMapping("/deleteMember")
+	public ResponseEntity<Void> deleteMember(@RequestParam("empNo") Integer empNo) {
+		try {
+			memberService.deleteMember(empNo); // 사원 삭제 서비스 호출
+			return ResponseEntity.ok().build(); // 성공 시 OK 응답
+		} catch (Exception e) {
+			// 에러 발생 시 에러 응답 반환
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
 }

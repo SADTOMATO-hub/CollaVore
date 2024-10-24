@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>로그인 페이지</title>
+<th:block th:replace="~{common/configs/default_config :: ConfigFrag}"></th:block>
+<title>CollaVore : 그룹협업툴</title>
+</head>
 <style>
 body, html {
 	height: 100%;
@@ -12,7 +14,7 @@ body, html {
 }
 /* 배경 이미지 설정 */
 .bg-image {
-	background-image: url('[[@{/assets/images/users/login.png}]]');  /* 정적 폴더에 있는 이미지 경로 */
+	background-image: url('/assets/images/users/login.png');  /* 정적 폴더에 있는 이미지 경로 */
 	background-size: cover;
 	background-position: center;
 	height: 100%;
@@ -68,10 +70,9 @@ body, html {
 	<div class="bg-image">
 		<div class="login-container">
 			<img th:src="@{/assets/images/users/logo.png}" alt="로고">
-			<!-- 로고 이미지 Thymeleaf로 동적 경로 처리 -->
 			<form th:action="@{/login}" method="post">
-				<input list="email-suggestions" type="email" id="email" name="email" class="form-control"
-				 placeholder="Email" required> 
+				<input list="email-suggestions" type="email" id="username" name="username" class="form-control"
+				 placeholder="username" required> 
 				<datalist id="email-suggestions"></datalist>
 
 				<input type="password" name="password" class="form-control" placeholder="Password" autocomplete="current-password" required>
@@ -86,7 +87,7 @@ body, html {
 
 	<script>
 		// 이메일 필드 자동 완성 기능
-		const emailInput = document.getElementById('email');
+		const emailInput = document.getElementById('username');
 		const emailSuggestions = document.getElementById('email-suggestions');
 		const emailDomains = ['gmail.com', 'naver.com', 'daum.net', 'yahoo.com', 'hotmail.com'];
 

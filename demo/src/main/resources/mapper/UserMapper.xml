@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.collavore.app.security.mapper.UserMapper">
+	<select id="findByEmail" resultType="UserVO">
+        SELECT DISTINCT
+            e.emp_no,
+            e.email,
+            e.password,
+            e.name
+        FROM 
+            employees e
+        LEFT JOIN 
+            employee_roles er ON e.emp_no = er.emp_no
+        WHERE 
+            e.email = #{email}
+    </select>
+
+    <select id="findRolesByEmail" resultType="String">
+        SELECT 
+            r.role_name
+        FROM 
+            employee_roles er
+        JOIN 
+            roles r ON er.role_id = r.role_id
+        JOIN 
+            employees e ON er.emp_no = e.emp_no
+        WHERE 
+            e.email = #{email}
+    </select>
+</mapper>
