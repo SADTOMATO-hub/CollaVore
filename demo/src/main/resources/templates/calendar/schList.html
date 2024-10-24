@@ -24,11 +24,11 @@
 					<option value="g2">공유캘린더</option>
 				</select>
 
-				<!-- 공유캘린더 리스트 (공유캘린더 선택 시만 보임) -->
+				<!-- 공유캘린더 하위 옵션이 표시될 곳 -->
 				<div id="sharedCalendarOptions" style="display: none;">
-					<label for="sharedCalendar">공유 캘린더 선택</label> <select
+					<label for="sharedCalendar">공유 캘린더 선택:</label> <select
 						id="sharedCalendar">
-						<!-- 공유캘린더 리스트는 동적으로 불러와집니다 -->
+						<!-- 동적으로 옵션이 추가될 자리 -->
 					</select>
 				</div>
 
@@ -42,6 +42,9 @@
 
 				<label for="endDate">종료</label> <input type="date" id="endDate"
 					required> <input type="time" id="endTime" required>
+
+				<!-- 알림 여부 -->
+				<label for="alarm">알림</label> <input type="checkbox" id="alarm">
 
 
 
