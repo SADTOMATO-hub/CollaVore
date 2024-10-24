@@ -196,6 +196,26 @@
 		    AND b.rn <=(#{page} * 15)
 		]]>
 </select>
+<select id="totalListCnt" resultType="int">
+    SELECT COUNT(*)
+    FROM employees e
+    LEFT JOIN departments d ON e.dept_no = d.dept_no
+    LEFT JOIN jobs j ON e.job_no = j.job_no
+    LEFT JOIN positions p ON e.posi_no = p.posi_no
+    WHERE 1=1
+    <if test="deptNo != null and deptNo != ''">
+        AND e.dept_no = #{deptNo}
+    </if>
+    <if test="jobNo != null and jobNo != ''">
+        AND e.job_no = #{jobNo}
+    </if>
+    <if test="posiNo != null and posiNo != ''">
+        AND e.posi_no = #{posiNo}
+    </if>
+    <if test="workType != null and workType != ''">
+        AND e.work_type = #{workType}
+    </if>
+</select>
 	
 	<!-- 				<include refid="selectCondition"></include> 149번째줄에 넣
 	 -->

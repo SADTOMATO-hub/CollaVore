@@ -20,8 +20,9 @@ public interface MemberService {
 
 	// 관리자 영역 ─────────────────────────────────────────
 	// 사원 전체 조회
-	List<HrmVO> selectMemberFiltered(String deptNo, String jobNo, String posiNo, String workType, String page);
-
+	 int totalListCnt(String deptNo, String jobNo, String posiNo, String workType);
+	    
+	    List<HrmVO> selectMemberFiltered(String deptNo, String jobNo, String posiNo, String workType, String page);
 	// 사원 등록
 	int insertMember(HrmVO hrmVO);
 
