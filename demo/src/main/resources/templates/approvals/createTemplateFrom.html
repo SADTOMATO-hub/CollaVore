@@ -14,6 +14,8 @@
 				<div class="card">
 					<form action="createTemp" method="post" class="form-horizontal"
 						name="insertForm">
+						<!-- 세큐리티 cors를 방지하는 기능  -->
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/> 
 						<div class="card-body">
 							<h4 class="card-title">템플릿 생성 페이지</h4>
 							<hr>
@@ -48,15 +50,16 @@
 </div>
 
 
+
 <script>
 	// 네이버 스마트 에디터 2.0 적용
 	let oEditors = [];
 
 	function smartEditor() {
-		console.log("Naver SmartEditor");
+		console.log("Naver SmartEditor를 사용");
 		nhn.husky.EZCreator.createInIFrame({
 			oAppRef : oEditors,
-			elPlaceHolder : "content",
+			elPlaceHolder :"content",
 			sSkinURI : "/smarteditor/SmartEditor2Skin.html",
 			fCreator : "createSEditor2"
 		});
@@ -75,11 +78,9 @@
 		oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
 		let title = document.getElementById("insertTitle").value;
 		let content = document.getElementById("content").value;
-
 		if (title == '' || title == null) {
 			alert("제목을 입력해주세요.");
 			document.getElementById("insertTitle").focus();
-
 		}
 		if (content == "" || content == null || content == '&nbsp;'
 				|| content == '<br>' || content == '<br/>'
@@ -89,7 +90,7 @@
 			return;
 		} else {
 			console.log(content);
-			insertForm.submit(); // 또는 $(this).closest('form').submit(); 사용
+			insertForm.submit();
 		}
 	}
 </script>
