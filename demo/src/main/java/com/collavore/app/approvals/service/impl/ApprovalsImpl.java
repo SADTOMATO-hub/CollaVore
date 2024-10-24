@@ -1,5 +1,6 @@
 package com.collavore.app.approvals.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +69,17 @@ public class ApprovalsImpl implements ApprovalsService {
 	@Override
 	@Transactional
 	public int insertApprsEarTable(ApprovalsVO apprVO) {
+//		List<ApprovalsVO> list = new ArrayList <>();
+//		int idx = 0 ;
+		for(ApprovalsVO appr : apprVO.getApprovers()) {
+//			ApprovalsVO appr = new ApprovalsVO();
+			  appr.setEaNo(apprVO.getEaNo());
+//			appr.setEmpNo(empNo);
+//			appr.setSort(apprVO.getSortList().get(idx));
+//			list.add(appr);
+//			idx ++;
+		}
+	//	apprVO.setApprovers(list);		
 		int result = approvalsMapper.createApprsEarTable(apprVO);
 		return result;						
 	}

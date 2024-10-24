@@ -1,5 +1,6 @@
 package com.collavore.app.approvals.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -22,12 +23,17 @@ public class ApprovalsVO {//전자결재 테이블
 	private Date compDate; 	//전자결재 완료 날짜
 	private Integer earNo;    //조회용, 결재자 사번
 		//결재자 테이블 필드
+	List<ApprovalsVO> approvers = new ArrayList<>();
 	//private Integer earNo; 	//결재자 번호
-	private List<Integer> empNoList; 	//입력용,결재자 사번
+	//private List<Integer> empNoList; 	//입력용,결재자 사번
 	//private Integer eaNo;  	//전자결재 번호
-	private List<String> status;	//결재 상태
-	private List<Date> procDate;  //결재 상태 처리일
-	private List<Integer> sort; 	//결재 순서
+	//private List<String> status;	//결재 상태
+	//private List<Date> procDate;  //결재 상태 처리일
+	//private List<Integer> sortList; 	//결재 순서
+	
+	private Integer empNo;
+	private Integer sort;
+	
 	
 	
 }
