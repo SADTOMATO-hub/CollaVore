@@ -54,7 +54,9 @@ public class SpringSecurityConfig {
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout=true")
                 .permitAll()
-            );
+            )
+            .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin())) // iframe 허용하는 명령어
+            ;
 
         return http.build();
     }
