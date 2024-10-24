@@ -196,31 +196,18 @@ public class MemberController {
 	// ────────────────────────────────────────────────────────────────────────────────────────────────────
 	// 사원 전체 조회 (관리자)
 	@GetMapping("/memberList")
-	public String selectMemberAll(
-	        @RequestParam(required = false) String deptNo, 
-	        @RequestParam(required = false) String jobNo, 
-	        @RequestParam(required = false) String posiNo, 
-	        @RequestParam(required = false) String workType,
-	        @RequestParam(required = false) String page,  // 페이지 번호 처리
-	        Model model) {
-
-	    // 페이지 번호가 전달되지 않으면 기본값 "1"로 설정
-	    page = (page == null) ? "1" : page;
-
-	    // 총 사원 수 조회 (필터 적용 가능)
-	    int totalCnt = memberService.totalListCnt(deptNo, jobNo, posiNo, workType);
-	    
-	    // 페이지네이션 처리 (한 페이지당 15개의 데이터를 보여줌)
-	    PageDTO paging = new PageDTO(page, 15, totalCnt);
-	    model.addAttribute("paging", paging);
-
-	    // 필터 조건과 페이지 시작값을 전달하여 필터링된 사원 목록을 가져옴
-	    List<HrmVO> memberList = memberService.selectMemberFiltered(deptNo, jobNo, posiNo, workType, page);
-	    model.addAttribute("members", memberList);
-
-	    return "member/memberList"; // 뷰 파일 반환
+	public String selectMemberAll(HrmVO hrmVO, Model model) {
+		String page = hrmVO.getPage() == null ? "1" : hrmVO.getPage();
+		
+		int totalCnt = memberService.totalListCnt();
+		PageDTO pageing = new PageDTO(page, 15, totalCnt);
+		model.addAttribute("pageing", pageing);
+		
+		List<HrmVO> memberList = memberService.selectMemberAll(page);
+		model.addAttribute("members", memberList);
+		
+		return "member/memberList"; // 뷰 파일 반환
 	}
-
 
 
 	// 사원 등록 폼 이동 (관리자)

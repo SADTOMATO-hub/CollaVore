@@ -1,9 +1,6 @@
 package com.collavore.app.hrm.mapper;
 
 import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-
 import com.collavore.app.hrm.service.HrmVO;
 
 public interface MemberMapper {
@@ -19,35 +16,27 @@ public interface MemberMapper {
 	// 사원 정보 수정
 	int updateMember(HrmVO hrmVO);
 
-	// 관리자 영역
 	// 사원 전체 조회 (관리자)
-	List<HrmVO> selectMemberAll(@Param("pageStart") int pageStart, @Param("pageSize") int pageSize);
-
-	int totalListCnt(@Param("deptNo") String deptNo, @Param("jobNo") String jobNo, @Param("posiNo") String posiNo,
-			@Param("workType") String workType);
-
-	List<HrmVO> selectMemberFiltered(@Param("deptNo") String deptNo, @Param("jobNo") String jobNo,
-			@Param("posiNo") String posiNo, @Param("workType") String workType, @Param("pageStart") int pageStart,
-			@Param("pageSize") int pageSize);
+	List<HrmVO> selectMemberAll(String page);
 
 	// 사원 등록 (관리자)
 	int insertMember(HrmVO hrmVO);
-
+	
 	// 연락처 중복 확인
-	int checkTelDuplicate(String tel);
+    int checkTelDuplicate(String tel);
 
-	// 이메일 중복 확인
-	int checkEmailDuplicate(String email);
-
+    // 이메일 중복 확인
+    int checkEmailDuplicate(String email);
+    
 	// 사번으로 단건 조회
 	HrmVO selectMemberById(Integer empNo);
 
 	// 사원 정보 수정(관리자)
 	int updateMemberByAdmin(HrmVO hrmVO);
-
-	// 사원 정보 조회
+	
+	 // 사원 정보 조회
 	HrmVO getMemberById(Integer empNo);
-
+	
 	// 사원 삭제 (관리자)
 	int deleteMember(Integer empNo); // 사번을 정수형으로 처리
 

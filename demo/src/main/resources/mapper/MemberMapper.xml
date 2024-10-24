@@ -65,10 +65,6 @@
 		WHERE emp_no = #{empNo}
 	</update>
 
-
-
-
-
 	<!-- 관리자 영역 -->
 	<!-- 사원 등록 -->
 	<insert id="insertMember"
@@ -132,7 +128,8 @@
     </select>
 
 	<!-- 사원 전체 리스트 -->
-	<!-- <select id="selectMemberAll" resultType="com.collavore.app.hrm.service.HrmVO">
+	<select id="selectMemberAll"
+		resultType="com.collavore.app.hrm.service.HrmVO">
 		SELECT b.*
 		FROM (
 		    SELECT rownum AS rn, a.*
@@ -157,66 +154,7 @@
 		<![CDATA[
 		    AND b.rn <=(#{page} * 15)
 		]]>
-	</select> -->
-	<select id="selectMemberFiltered" resultType="com.collavore.app.hrm.service.HrmVO">
-    SELECT b.*
-    FROM (
-        SELECT rownum AS rn, a.*
-        FROM (
-            SELECT e.emp_no AS empNo,
-                   e.name AS empName,
-                   e.tel,
-                   e.email,
-                   d.name AS deptName,
-                   j.name AS jobName,
-                   p.name AS posiName,
-                   e.work_type AS workType
-            FROM employees e
-            LEFT JOIN departments d ON e.dept_no = d.dept_no
-            LEFT JOIN jobs j ON e.job_no = j.job_no
-            LEFT JOIN positions p ON e.posi_no = p.posi_no
-            WHERE 1=1
-            <if test="deptNo != null and deptNo != ''">
-                AND e.dept_no = #{deptNo}
-            </if>
-            <if test="jobNo != null and jobNo != ''">
-                AND e.job_no = #{jobNo}
-            </if>
-            <if test="posiNo != null and posiNo != ''">
-                AND e.posi_no = #{posiNo}
-            </if>
-            <if test="workType != null and workType != ''">
-                AND e.work_type = #{workType}
-            </if>
-            ORDER BY e.join_date
-        ) a
-    ) b
-    WHERE b.rn > (#{page}-1) * 15
-		<![CDATA[
-		    AND b.rn <=(#{page} * 15)
-		]]>
-</select>
-<select id="totalListCnt" resultType="int">
-    SELECT COUNT(*)
-    FROM employees e
-    LEFT JOIN departments d ON e.dept_no = d.dept_no
-    LEFT JOIN jobs j ON e.job_no = j.job_no
-    LEFT JOIN positions p ON e.posi_no = p.posi_no
-    WHERE 1=1
-    <if test="deptNo != null and deptNo != ''">
-        AND e.dept_no = #{deptNo}
-    </if>
-    <if test="jobNo != null and jobNo != ''">
-        AND e.job_no = #{jobNo}
-    </if>
-    <if test="posiNo != null and posiNo != ''">
-        AND e.posi_no = #{posiNo}
-    </if>
-    <if test="workType != null and workType != ''">
-        AND e.work_type = #{workType}
-    </if>
-</select>
-	
+	</select>
 	<!-- 				<include refid="selectCondition"></include> 149번째줄에 넣
 	 -->
 

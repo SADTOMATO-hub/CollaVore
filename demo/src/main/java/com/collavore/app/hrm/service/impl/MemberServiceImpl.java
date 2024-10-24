@@ -65,20 +65,10 @@ public class MemberServiceImpl implements MemberService {
 	// 관리자 영역 ─────────────────────────────────────────
 	// 사원 전체 조회
 	@Override
-	public int totalListCnt(String deptNo, String jobNo, String posiNo, String workType) {
-		// 필터 조건을 전달하여 총 사원 수를 가져옵니다.
-		return memberMapper.totalListCnt(deptNo, jobNo, posiNo, workType);
+	public List<HrmVO> selectMemberAll(String page) {
+		return memberMapper.selectMemberAll(page);
 	}
 
-	@Override
-	public List<HrmVO> selectMemberFiltered(String deptNo, String jobNo, String posiNo, String workType, String page) {
-		int pageSize = 15; // 한 페이지에 보여줄 사원 수
-		int pageNo = Integer.parseInt(page); // 페이지 번호를 숫자로 변환
-		int pageStart = (pageNo - 1) * pageSize; // 시작 인덱스 계산
-
-		// 필터 조건과 페이지 시작값을 전달하여 필터링된 사원 목록을 가져옴
-		return memberMapper.selectMemberFiltered(deptNo, jobNo, posiNo, workType, pageStart, pageSize);
-	}
 
 	// 사원 등록
 	@Override
