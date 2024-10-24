@@ -9,16 +9,18 @@
 	<div class="page-wrapper">
 		<div class="container-fluid">
 			<div class="row">
-				<div>
+				<!-- 
+				 <div>
 					<button type="button" style="float: right; margin: auto;"
 						th:onclick="|location.href='@{/approvals/createTempForm}'|"
 						class="btn btn-lg btn-outline-success">새 템플릿 등록</button>
 				</div>
+				-->
 				<th:block th:each=" info : ${tempInfo}">
 					<div class="col-md-4 eatNo" th:data-no="${info.eatNo}">
 						<div class="card">
 							<div class="card-body">
-								<h4 class="card-title">[[${info.eatNo}]]</h4>
+								<h4 class="card-title">[[${info.regDate}]]</h4>
 								<h5 class="card-title">[[${info.title}]]</h5>
 							</div>
 						</div>
