@@ -76,51 +76,47 @@
 	  	FROM approvals
 	  </selectKey>
 		INSERT INTO approvals(
-							  approvals.ea_no,
-							  title,
-							  eat_no,
-							  approvals.status,
-							  approvals.emp_no,
-							  approvals.reg_date,
-							  content
+							  approvals.ea_no
+							  ,title
+							  ,eat_no
+							  ,approvals.status
+							 <!-- approvals.emp_no, --> 
+							  ,approvals.reg_date
+							  ,content
 							  )
          	  		 VALUES (
-         	   				 #{eaNo},
-         	   				 #{title},
-         	   				 #{eatNo},
-         	   				 default,
-         	   				 #{drafterEmpNo},
-         	   				 sysdate,
-         	   				 #{content}
+         	   				 #{eaNo}
+         	   				 ,#{title}
+         	   				 ,#{eatNo}
+         	   				 ,default
+         	   				<!-- ,#{drafterEmpNo} --> 
+         	   				 ,sysdate
+         	   				 ,#{content}
          	   			     )
 	</insert>
 	<!--  -->
 	
 		<!-- approvers테이블에 넣기 -->
-	<insert id="createApprsEarTable" parameterType="java.util.List">
-	  <selectKey keyProperty="earNo"
-	   resultType="Integer"
-	   order="BEFORE">
-	   	SELECT NVL(MAX(approvers.ear_no),0) + 1
-	  	FROM approvers
-	  </selectKey>
-		INSERT INTO approvers(
-							  approvers.ear_no
-							  ,approvers.ea_no
-							  ,approvers.emp_no
-						 	  <!-- approvers.status, -->	  
-					     	  ,sort
+	<insert id="createApprsEarTable" parameterType="ApprovalsVO">
+	INSERT ALL
+        <foreach collection="approvers" item="approvers" separator=","> 
+        <if test="approvers.empNo != null and approvers.empNo != ''">
+		INTO approvers(
+								  ear_no
+								  ,ea_no
+								  ,emp_no
+					     	  	  ,sort
 							  )
          	  		 VALUES 
-        <foreach collection="list" item="approvers" separator=",">
          	  		        (
-         	   				 #{earNo}
-         	   				 ,#{eaNo}
-         	   				 ,#{empNoList}
-         	   				 <!-- #{status}, --> 
-         	   				 ,#{sort}
+         	   				 	 (	SELECT NVL(MAX(approvers.ear_no),0) + 1	FROM approvers)
+         	   					 ,#{approvers.eaNo}
+         	   					 ,#{approvers.empNo}
+         	   					 ,#{approvers.sort}
          	   			     )
+        </if>
         </foreach>
+        select * from dual
 	</insert>
 	<!--  -->
 	
