@@ -2,6 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.collavore.app.hrm.mapper.MemberMapper">
 
+	<sql id="selectCondition">
+		WHERE
+		<choose>
+			<when test="searchCondition == 'T' .toString()">
+				title LIKE '%' || #{keyword} || '%'
+			</when>
+			<when test="searchCondition == 'W'.toString()">
+				writer LIKE '%' || #{keyword} || '%'
+			</when>
+			<when test="searchCondition == 'TW'.toString()">
+				title LIKE '%' || #{keyword} || '%' OR writer LIKE
+				'%' || #{keyword} || '%'
+			</when>
+			<otherwise>1 = 1</otherwise>
+		</choose>
+	</sql>
+	<select id="totalCnt" resultType="int">
+		SELECT COUNT(emp_no)
+		FROM employees
+	</select>
 	<!-- 이메일로 사용자 정보 조회 -->
 	<select id="findByEmail" parameterType="string"
 		resultType="com.collavore.app.hrm.service.HrmVO">
@@ -110,25 +130,33 @@
 	<!-- 사원 전체 리스트 -->
 	<select id="selectMemberAll"
 		resultType="com.collavore.app.hrm.service.HrmVO">
-		SELECT e.emp_no AS empNo,
-		e.name AS empName,
-		e.tel,
-		e.email,
-		d.name AS deptName,
-		j.name AS jobName,
-		p.name AS posiName,
-		e.work_type
-		FROM employees e
-		LEFT
-		JOIN departments d ON e.dept_no = d.dept_no
-		LEFT
-		JOIN jobs j ON e.job_no = j.job_no
-		LEFT JOIN positions p ON e.posi_no
-		=
-		p.posi_no
-		ORDER BY e.name
+		SELECT b.*
+		FROM (
+		    SELECT rownum AS rn, a.*
+		    FROM (
+		        SELECT e.emp_no AS empNo,
+					e.name AS empName,
+					e.tel,
+					e.email,
+					d.name AS deptName,
+					j.name AS jobName,
+					p.name AS posiName,
+					e.work_type
+				FROM employees e
+					LEFT JOIN departments d ON e.dept_no = d.dept_no
+					LEFT JOIN jobs j ON e.job_no = j.job_no
+					LEFT JOIN positions p ON e.posi_no = p.posi_no
+					
+		        ORDER BY e.join_date
+		    ) a
+		)b
+		WHERE b.rn > (#{page}-1) * 15
+		<![CDATA[
+		    AND b.rn <=(#{page} * 15)
+		]]>
 	</select>
-
+	<!-- 				<include refid="selectCondition"></include> 149번째줄에 넣
+	 -->
 
 	<!-- 관리자에 의한 사원 단건 조회 -->
 	<select id="selectMemberById" parameterType="int"

@@ -15,11 +15,13 @@
 					<div class="card">
 						<form action="createAppr" method="post" class="form-horizontal"
 							name="insertForm">
+								<!-- 세큐리티 cors를 방지하는 기능  -->
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/> 
 							<div class="form-group row">
 								<th:block th:object="${employeesInfo}">
 									<label for="approvalTitle"> <input type="text"
 										id="approvalTitle" name="title" required
-										placeholder="전자결재명을 입력해주세요">
+										placeholder="전자결재 제목을 입력해주세요">
 									</label>
 									<div class="table-responsive">
 										<table id="apprerTable"
@@ -272,12 +274,12 @@ $(document).ready(
 	function submitPost(event) {	
 		event.preventDefault(); // 폼 제출 방지
 		oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
-		if ( 	!content 
-				|| content === '' 
-				|| content === '&nbsp;'
-				|| content === '<br>' 
-				|| content === '<p>&nbsp;</p>'
-				|| content === '<p></p>'){
+		if ( 	content  == null
+				|| content == '' 
+				|| content == '&nbsp;'
+				|| content == '<br>' 
+				|| content == '<p>&nbsp;</p>'
+				|| content == '<p></p>'){
 			alert("템플릿을 정해주세요.");
 			oEditors.getById["content"].exec("FOCUS");
 			return;

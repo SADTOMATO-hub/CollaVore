@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.collavore.app.common.service.PageDTO;
 import com.collavore.app.hrm.service.DeptService;
 import com.collavore.app.hrm.service.HrmVO;
 import com.collavore.app.hrm.service.JobService;
@@ -195,10 +196,19 @@ public class MemberController {
 	// ────────────────────────────────────────────────────────────────────────────────────────────────────
 	// 사원 전체 조회 (관리자)
 	@GetMapping("/memberList")
-	public String selectMemberAll(Model model) {
-		model.addAttribute("members", memberService.selectMemberAll());
+	public String selectMemberAll(HrmVO hrmVO, Model model) {
+		String page = hrmVO.getPage() == null ? "1" : hrmVO.getPage();
+		
+		int totalCnt = memberService.totalListCnt();
+		PageDTO pageing = new PageDTO(page, 15, totalCnt);
+		model.addAttribute("pageing", pageing);
+		
+		List<HrmVO> memberList = memberService.selectMemberAll(page);
+		model.addAttribute("members", memberList);
+		
 		return "member/memberList"; // 뷰 파일 반환
 	}
+
 
 	// 사원 등록 폼 이동 (관리자)
 	@GetMapping("/memberInsert")

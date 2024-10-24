@@ -5,14 +5,21 @@ import lombok.Data;
 @Data
 public class PageDTO {
 	private int page; // 현재 페이지
-	int pageCnt = 10; // 페이지 당 출력되는 데이터 수
+	private int pageCnt; // 페이지 당 출력되는 데이터 수
 	int pageTCnt = 10; // 한 화면에 총 페이지 출력 수 (10개 페이지 출력한다는 의미)
 	private int startPage, endPage; // 현재 페이지 기준 첫 페이지와 마지막 페이지 번호
 	private boolean prev, next; // 이전페이지가 있는지 다음페이지가 있는지 여부를 출력
-
+	
+	// 기본 10개만 사용하고 싶을때
 	public PageDTO(String pageStr, int totalCnt) {
+        this(pageStr, 10, totalCnt);
+    }
+
+	// 페이지에 10개이상 하고 싶을때 
+	public PageDTO(String pageStr, int pageCnt, int totalCnt) {
 		// 현재 페이지를 정수로 변환
 		this.page = Integer.parseInt(pageStr);
+		this.pageCnt = (pageCnt <= 0) ? 10 : pageCnt;
 		// 총 페이지 수 계산
 		int totalPageCount = (int) Math.ceil(totalCnt / (double) pageCnt);
 		// 현재 페이지의 마지막 페이지 번호 계산

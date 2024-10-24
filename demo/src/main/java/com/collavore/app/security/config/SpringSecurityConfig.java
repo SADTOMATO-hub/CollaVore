@@ -2,8 +2,10 @@ package com.collavore.app.security.config;
 
 import java.io.IOException;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.Authentication;
@@ -23,9 +25,9 @@ import jakarta.servlet.http.HttpSession;
 @EnableWebSecurity
 @Configuration
 public class SpringSecurityConfig {
+
     private final UserDetailsService userDetailsService;
 
-    // UserDetailsService를 생성자 주입으로 받아 사용
     public SpringSecurityConfig(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
@@ -39,39 +41,49 @@ public class SpringSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/assets/**", "/").permitAll()
+                .requestMatchers("/assets/**", "/dist/**", "/smarteditor/**", "/").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
                 .loginPage("/login")
                 .loginProcessingUrl("/login")
-                .successHandler(customAuthenticationSuccessHandler()) // 성공 핸들러 설정
+                .successHandler(customAuthenticationSuccessHandler())
                 .permitAll()
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout=true")
                 .permitAll()
-            );
+            )
+            .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin())) // iframe 허용하는 명령어
+            ;
 
         return http.build();
     }
 
-    // 로그인 성공 시 userEmpNo를 세션에 저장하는 커스텀 AuthenticationSuccessHandler
     @Bean
     public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
         return new AuthenticationSuccessHandler() {
             @Override
             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                    Authentication authentication) throws IOException {
+                                                Authentication authentication) throws IOException {
                 LoginUserVO loginUser = (LoginUserVO) authentication.getPrincipal();
                 UserVO userVO = loginUser.getUserVO();
 
                 HttpSession session = request.getSession();
                 session.setAttribute("userEmpNo", userVO.getEmpNo());
 
-                response.sendRedirect("/myPage");
+                response.sendRedirect("/dashboard");
             }
         };
+    }
+
+    @Bean
+    public FilterRegistrationBean<CustomRedirectFilter> redirectFilterRegistration() {
+        FilterRegistrationBean<CustomRedirectFilter> registrationBean = new FilterRegistrationBean<>();
+        registrationBean.setFilter(new CustomRedirectFilter());
+        registrationBean.addUrlPatterns("/*");
+        registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE); // 필터 순서 설정
+        return registrationBean;
     }
 }

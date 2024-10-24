@@ -44,123 +44,124 @@
 		<div class="text-center">
 			<form name="insertBodsComts" th:action="@{/board/bodsComts}"
 				method="post">
-				<input type="hidden" name="postNo" th:value="${param.postNo}">
+				<input type="hidden" id="postNo" name="postNo"
+					th:value="${param.postNo}">
 				<!-- 댓글 작성 부분 -->
 				<h3>댓글 작성</h3>
 				<input type="text" name="writer" placeholder="작성자"> <input
 					type="text" name="content" placeholder="내용">
 				<button type="button" id="btninsert">댓글작성</button>
 			</form>
-
-			<!--  -->
-			<div id="comtslist">
-				<table>
-					<thead>
-						<tr>
-							<th>댓글번호</th>
-							<th>작성자</th>
-							<th>내용</th>
-							<th>작성시간</th>
-						</tr>
-					</thead>
-					<tbody id="bodsComts">
-					</tbody>
-
-				</table>
-			</div>
-
-
-
 		</div>
+
+		<table id="commentsTable">
+			<thead>
+				<tr>
+					<th>댓글 번호</th>
+					<th>작성자</th>
+					<th>내용</th>
+					<th>등록 날짜</th>
+				</tr>
+			</thead>
+			<tbody id="commentsBody">
+				<!-- AJAX로 불러온 댓글이 여기에 추가됩니다 -->
+			</tbody>
+		</table>
+
 		<script>
-
-		//ajax로 댓글 불러오기
-					$.ajax({
-							type: "get",
-							url: "/board/comtsList?postNo=26",
-							success: function(rs) {
-								console.log(rs);// 서버에서 받은 결과
-								rs.forEach(function(comt){
-									console.log(comt.cmtNo);
-									let row = '<tr>'+
-									'<td>' + comt.cmtNo + '</td>' +
-				                   '<td>' + comt.writer + '</td>' +
-				                   '<td>' + comt.content + '</td>' +
-				                   '<td>' + comt.regDate + '</td>' +
-				                   '</tr>';
-				                   console.log(row);
-								});
-								
-							}
-					});
+			//ajax로 댓글 불러오기
+			let postNo = $('#postNo').val();
+			
+			getCommentList();
+			
+			function getCommentList(){
+				$.ajax({
+					type : "get", // HTTP 요청 메소드를 GET으로 설정
+					url : `/board/comtsList?postNo=` + postNo, // URL에 postNo를 동적으로 추가
+					success : function(rs) { // 요청이 성공했을 때 실행되는 콜백 함수
+						console.log(rs);// 서버에서 받은 결과
+						let commentsBody = $('#commentsBody'); // 테이블 본문 요소를 선택
+						commentsBody.empty(); // 기존의 댓글 목록을 지움 (선택 사항)
+						rs.forEach(function(comt) { // 결과로 받은 댓글 목록을 순회
+							let row = '<tr>' + // HTML 테이블 행 생성
+							'<td>' + comt.cmtNo + '</td>' + // 댓글 번호
+							'<td>' + comt.writer + '</td>' + // 작성자
+							'<td>' + comt.content + '</td>' + // 댓글 내용
+							'<td>' + comt.regDate + '</td>' + // 등록 날짜
+							'<td><button type="button" onclick=\'deletebodsComts("'+comt.cmtNo+'")\'>삭제</button></td>'+ // 삭제버튼
+							'<td><button type="button" onclick=\'updateBodsComts("'+comt.cmtNo+'")\'>수정</button></td>'+ // 수정버튼
+							'</tr>';
 	
-					$("#btninsert").on('click', boardInsertHandler);
-					function boardInsertHandler() {
-
-						let writer = $('form [name="writer"]');
-						if (writer.val() == '') {
-							alert('작성자가 입력되지 않았습니다.');
-							writer.focus();
-							return;
-						}
-
-						let content = $('form [name="content"]');
-						if (content.val() == '') {
-							alert('내용이 입력되지 않았습니다.');
-							content.focus();
-							return;
-						}
-
-						//document.insertBodsComts.submit();
-						console.log($(document.insertBodsComts).serialize());
-						
-						
-					
-					
-
-
-						//등록아작스
-						$.ajax({
-							type : 'post',
-							url : '/board/bodsComts',
-							data : $(document.insertBodsComts).serialize(),
-							success : function(data) {
-								if (data == "success") {
-
-									// getCommentList();
-									content.val("");
-								}
-
-							},
-							error : function(request, status, error) {
-								//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-							}
-
+							commentsBody.append(row);
 						});
-						alert('댓글이 등록되었습니다.');
+	
 					}
-
-					// 삭제 아작스
-					function deletebodsComts(cmtNo) {
-
-						if (confirm("정말 삭제하시겠습니까?") == true) {
-
-							
-							$.ajax({
-								type : 'post',
-								url : '/board/bodsComtsDelete',
-								data : {cmtNo},
-								success : function() {
-
-								},
-								error : function() {
-									alert('ERROR')
-								}
-							})
-
-							loadComments(cmtNo, 0);
+				});
+			}
+			
+			$("#comtsdelete").on('click', deletebodsComts);
+			// 삭제 아작스
+			function deletebodsComts(cmtNo) {
+				if (confirm("정말 삭제하시겠습니까?") == true) {
+					$.ajax({
+						type : 'post',
+						url : '/board/bodsComtsDelete',
+						data : {
+							cmtNo : cmtNo
+						},
+						success : function(response) {
+							if (response) {
+								alert("댓글이 성공적으로 삭제되었습니다.");
+								getCommentList();
+							} else {
+								alert("댓글 삭제 실패.");
+							}
+						},
+						error : function() {
+							alert('서버 오류가 발생했습니다.');
 						}
+					});
+				}
+			}
+
+			$("#btninsert").on('click', boardInsertHandler);
+			function boardInsertHandler() {
+
+				let writer = $('form [name="writer"]');
+				if (writer.val() == '') {
+					alert('작성자가 입력되지 않았습니다.');
+					writer.focus();
+					return;
+				}
+
+				let content = $('form [name="content"]');
+				if (content.val() == '') {
+					alert('내용이 입력되지 않았습니다.');
+					content.focus();
+					return;
+				}
+
+				//document.insertBodsComts.submit();
+				console.log($(document.insertBodsComts).serialize());
+
+				//등록아작스
+				$.ajax({
+					type : 'post',
+					url : '/board/bodsComts',
+					data : $(document.insertBodsComts).serialize(),
+					success : function(data) {						
+							getCommentList();
+							content.val("");
+						
+
+					},
+					error : function(request, status, error) {
+						//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 					}
-				</script>
+
+				});
+				alert('댓글이 등록되었습니다.');
+			}
+		</script>
 	</div>
 </div>

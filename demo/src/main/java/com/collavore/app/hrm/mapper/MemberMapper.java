@@ -4,6 +4,8 @@ import java.util.List;
 import com.collavore.app.hrm.service.HrmVO;
 
 public interface MemberMapper {
+	// 전체 사원 수 가져오기
+	int totalCnt();
 
 	// 이메일을 통해 사용자 정보 조회
 	HrmVO findByEmail(String email);
@@ -15,7 +17,7 @@ public interface MemberMapper {
 	int updateMember(HrmVO hrmVO);
 
 	// 사원 전체 조회 (관리자)
-	List<HrmVO> selectMemberAll();
+	List<HrmVO> selectMemberAll(String page);
 
 	// 사원 등록 (관리자)
 	int insertMember(HrmVO hrmVO);
