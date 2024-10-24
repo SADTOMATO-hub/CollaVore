@@ -15,4 +15,6 @@ public interface DeptService {
     
     // 기존 부서 목록 가져오기
     public List<HrmVO> getExistingDepts();
+    
+    
 }

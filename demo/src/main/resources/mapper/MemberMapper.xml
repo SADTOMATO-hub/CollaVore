@@ -18,15 +18,14 @@
 			<otherwise>1 = 1</otherwise>
 		</choose>
 	</sql>
-	<select id="totalCnt" resultType="int">
-		SELECT COUNT(emp_no)
-		FROM employees
-	</select>
+
+
 	<!-- 이메일로 사용자 정보 조회 -->
 	<select id="findByEmail" parameterType="string"
 		resultType="com.collavore.app.hrm.service.HrmVO">
 		SELECT * FROM employees WHERE email = #{email}
 	</select>
+
 
 	<!-- 사원 단건 조회 -->
 	<select id="selectMemberInfo"
@@ -54,6 +53,7 @@
 		WHERE e.emp_no = #{empNo}
 	</select>
 
+
 	<!-- 사원 정보 수정 -->
 	<update id="updateMember"
 		parameterType="com.collavore.app.hrm.service.HrmVO">
@@ -64,6 +64,8 @@
 		password = #{password}
 		WHERE emp_no = #{empNo}
 	</update>
+
+
 
 	<!-- 관리자 영역 -->
 	<!-- 사원 등록 -->
@@ -114,49 +116,186 @@
 	</insert>
 
 	<!-- 연락처 중복 확인 -->
-    <select id="checkTelDuplicate" resultType="int">
-        SELECT COUNT(*) 
-        FROM employees 
-        WHERE tel = #{tel}
-    </select>
+	<select id="checkTelDuplicate" resultType="int">
+		SELECT COUNT(*)
+		FROM
+		employees
+		WHERE tel = #{tel}
+	</select>
 
-    <!-- 이메일 중복 확인 -->
-    <select id="checkEmailDuplicate" resultType="int">
-        SELECT COUNT(*) 
-        FROM employees 
-        WHERE email = #{email}
-    </select>
+	<!-- 이메일 중복 확인 -->
+	<select id="checkEmailDuplicate" resultType="int">
+		SELECT COUNT(*)
+		FROM
+		employees
+		WHERE email = #{email}
+	</select>
 
-	<!-- 사원 전체 리스트 -->
+
+	<select id="totalCnt" resultType="int">
+		SELECT COUNT(emp_no)
+		FROM
+		employees
+	</select>
+
+	<!-- 사원 전체 리스트 
 	<select id="selectMemberAll"
 		resultType="com.collavore.app.hrm.service.HrmVO">
 		SELECT b.*
 		FROM (
-		    SELECT rownum AS rn, a.*
-		    FROM (
-		        SELECT e.emp_no AS empNo,
-					e.name AS empName,
-					e.tel,
-					e.email,
-					d.name AS deptName,
-					j.name AS jobName,
-					p.name AS posiName,
-					e.work_type
-				FROM employees e
-					LEFT JOIN departments d ON e.dept_no = d.dept_no
-					LEFT JOIN jobs j ON e.job_no = j.job_no
-					LEFT JOIN positions p ON e.posi_no = p.posi_no
-					
-		        ORDER BY e.join_date
-		    ) a
+		SELECT rownum AS rn, a.*
+		FROM (
+		SELECT e.emp_no AS
+		empNo,
+		e.name AS empName,
+		e.tel,
+		e.email,
+		d.name AS deptName,
+		j.name AS
+		jobName,
+		p.name AS posiName,
+		e.work_type
+		FROM employees e
+		LEFT JOIN
+		departments d ON e.dept_no = d.dept_no
+		LEFT JOIN jobs j ON e.job_no =
+		j.job_no
+		LEFT JOIN positions p ON e.posi_no = p.posi_no
+		WHERE 1 = 1
+		<if test="deptFilter != null and deptFilter != ''">
+			AND d.name = #{deptFilter}
+		</if>
+		<if test="jobFilter != null and jobFilter != ''">
+			AND j.name = #{jobFilter}
+		</if>
+		<if test="posiFilter != null and posiFilter != ''">
+			AND p.name = #{posiFilter}
+		</if>
+		<if test="workTypeFilter != null and workTypeFilter != ''">
+			AND e.work_type = #{workTypeFilter}
+		</if>
+		ORDER BY e.join_date
+		) a
 		)b
 		WHERE b.rn > (#{page}-1) * 15
 		<![CDATA[
 		    AND b.rn <=(#{page} * 15)
 		]]>
+	</select>-->
+
+<select id="selectMemberAll" resultType="com.collavore.app.hrm.service.HrmVO">
+    SELECT * FROM (
+        SELECT 
+            e.emp_no AS empNo,
+            e.name AS empName,
+            e.tel,
+            e.email,
+            d.name AS deptName,
+            j.name AS jobName,
+            p.name AS posiName,
+            e.work_type,
+            ROW_NUMBER() OVER (ORDER BY e.join_date) AS rn
+        FROM employees e
+        LEFT JOIN departments d ON e.dept_no = d.dept_no
+        LEFT JOIN jobs j ON e.job_no = j.job_no
+        LEFT JOIN positions p ON e.posi_no = p.posi_no
+        WHERE 1 = 1
+        <if test="deptFilter != null and deptFilter != ''">
+            AND d.name = #{deptFilter}
+        </if>
+        <if test="jobFilter != null and jobFilter != ''">
+            AND j.name = #{jobFilter}
+        </if>
+        <if test="posiFilter != null and posiFilter != ''">
+            AND p.name = #{posiFilter}
+        </if>
+        <if test="workTypeFilter != null and workTypeFilter != ''">
+            AND e.work_type = #{workTypeFilter}
+        </if>
+    ) WHERE rn BETWEEN 
+    <![CDATA[ 
+        (#{page} - 1) * 15 + 1 AND #{page} * 15 
+    ]]>
+</select>
+
+
+	<!-- 필터링된 총 사원 수 -->
+	<select id="getTotalListCnt" resultType="int">
+		SELECT COUNT(e.emp_no)
+		FROM employees e
+		LEFT JOIN departments d ON
+		e.dept_no = d.dept_no
+		LEFT JOIN jobs j ON e.job_no = j.job_no
+		LEFT JOIN
+		positions p ON e.posi_no = p.posi_no
+		WHERE 1 = 1
+		<if test="deptFilter != null and deptFilter != ''">
+			AND d.name = #{deptFilter}
+		</if>
+		<if test="jobFilter != null and jobFilter != ''">
+			AND j.name = #{jobFilter}
+		</if>
+		<if test="posiFilter != null and posiFilter != ''">
+			AND p.name = #{posiFilter}
+		</if>
+		<if test="workTypeFilter != null and workTypeFilter != ''">
+			AND e.work_type = #{workTypeFilter}
+		</if>
 	</select>
-	<!-- 				<include refid="selectCondition"></include> 149번째줄에 넣
-	 -->
+
+	<select id="selectFilteredMembers" parameterType="map" resultType="com.collavore.app.hrm.service.HrmVO">
+    SELECT * FROM (
+        SELECT 
+            e.emp_no,
+        	e.name AS empName,
+        	e.tel,
+            e.email,
+            e.name,
+            d.name AS deptName,
+            j.name AS jobName,
+            p.name AS posiName,
+            e.work_type,
+            ROW_NUMBER() OVER (ORDER BY e.join_date) AS rn
+        FROM employees e
+        LEFT JOIN departments d ON e.dept_no = d.dept_no
+        LEFT JOIN jobs j ON e.job_no = j.job_no
+        LEFT JOIN positions p ON e.posi_no = p.posi_no
+        WHERE 1 = 1
+        <if test="deptFilter != null and deptFilter != ''">
+            AND d.name = #{deptFilter}
+        </if>
+        <if test="jobFilter != null and jobFilter != ''">
+            AND j.name = #{jobFilter}
+        </if>
+        <if test="posiFilter != null and posiFilter != ''">
+            AND p.name = #{posiFilter}
+        </if>
+        <if test="workTypeFilter != null and workTypeFilter != ''">
+            AND e.work_type = #{workTypeFilter}
+        </if>
+    )
+    WHERE rn BETWEEN #{offset} + 1 AND #{offset} + 15
+</select>
+
+<select id="getDepartments" resultType="String">
+    SELECT name AS deptName FROM departments
+</select>
+
+<select id="getJobs" resultType="String">
+    SELECT name AS jobName
+    FROM jobs
+</select>
+
+<select id="getPositions" resultType="String">
+    SELECT name AS posiName
+    FROM positions
+</select>
+
+<select id="getWorkType" resultType="String">
+    SELECT DISTINCT work_type AS workType
+    FROM employees
+</select>
+
 
 	<!-- 관리자에 의한 사원 단건 조회 -->
 	<select id="selectMemberById" parameterType="int"
@@ -222,4 +361,23 @@
 		CONCAT(#{today}, '%')
 	</select>
 
+
+
+
+<!--  모든 사원 목록 조회 (selectAllMembers)-->
+<select id="selectAllMembers" resultType="com.collavore.app.hrm.service.HrmVO">
+    SELECT EMP_NO, NAME AS empName, DEPT_NO, POSI_NO, IMG
+    FROM EMPLOYEES
+</select>
+<!--   부서 및 직위 정보를 포함한 사원 목록 조회 (selectMembersWithDeptAndPosition) -->
+<select id="selectMembersWithDeptAndPosition" resultType="com.collavore.app.hrm.service.HrmVO">
+    SELECT E.EMP_NO, 
+    	E.NAME AS empName, 
+    	D.NAME AS deptName, 
+    	P.NAME AS posiName, 
+    	E.IMG
+    FROM EMPLOYEES E
+    LEFT JOIN DEPARTMENTS D ON E.DEPT_NO = D.DEPT_NO
+    LEFT JOIN POSITIONS P ON E.POSI_NO = P.POSI_NO
+</select>
 </mapper>
