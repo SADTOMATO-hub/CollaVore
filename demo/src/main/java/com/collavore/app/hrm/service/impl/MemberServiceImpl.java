@@ -64,11 +64,47 @@ public class MemberServiceImpl implements MemberService {
 
 	// 관리자 영역 ─────────────────────────────────────────
 	// 사원 전체 조회
+	/*
+	 * @Override public List<HrmVO> selectMemberAll(String page) { return
+	 * memberMapper.selectMemberAll(page); }
+	 */
 	@Override
-	public List<HrmVO> selectMemberAll(String page) {
-		return memberMapper.selectMemberAll(page);
+	public List<HrmVO> selectMemberAll(String page, String deptFilter, String jobFilter, String posiFilter,
+			String workTypeFilter) {
+		int currentPage = Integer.parseInt(page);
+		int offset = (currentPage - 1) * 15; // 한 페이지에 15명씩 표시
+
+		// 필터 조건과 페이지 번호를 사용하여 필터링된 사원 목록 조회
+		return memberMapper.selectFilteredMembers(offset, deptFilter, jobFilter, posiFilter, workTypeFilter);
 	}
 
+	@Override
+	public int totalListCnt(String deptFilter, String jobFilter, String posiFilter, String workTypeFilter) {
+		return memberMapper.getTotalListCnt(deptFilter, jobFilter, posiFilter, workTypeFilter);
+	}
+
+	@Override
+	public List<String> getDepartmentsFromHrmVO() {
+		// 부서 목록 반환
+		return memberMapper.getDepartments();
+	}
+
+	@Override
+	public List<String> getJobsFromHrmVO() {
+		// 직무 목록 반환
+		return memberMapper.getJobs();
+	}
+
+	@Override
+	public List<String> getPositionsFromHrmVO() {
+		// 직위 목록 반환
+		return memberMapper.getPositions();
+	}
+
+	@Override
+	public List<String> getworkTypeFromHrmVO() {
+		return memberMapper.getWorkType();
+	}
 
 	// 사원 등록
 	@Override
@@ -132,6 +168,20 @@ public class MemberServiceImpl implements MemberService {
 
 		// YYMMDD + 3자리 시퀀스를 결합한 사번 생성 (예: 241022100)
 		return Integer.parseInt(today + String.format("%03d", sequence));
+	}
+
+	
+	
+	
+	// 모든 사원 정보를 가져오는 메서드
+	@Override
+	public List<HrmVO> getAllMembers() {
+		return memberMapper.selectAllMembers();  // Mapper에서 전체 사원을 조회
+	}
+    // 사원 정보 조회 (부서, 직위 정보 포함)
+	@Override
+	public List<HrmVO> getMembersWithDeptAndPosition() {
+		return memberMapper.selectMembersWithDeptAndPosition();  // 부서 및 직위 정보를 조인한 사원 목록 조회
 	}
 
 }
