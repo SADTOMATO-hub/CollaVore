@@ -28,6 +28,9 @@ public interface SchsMapper {
 
 	// 삭제 조건
 	public int deleteSchsInfo(int schsNO);
+	
+	
+	//===캘린더관련
 
 	// 공유캘린더 조회
 	public List<CalsVO> selectTeamCal(); // 공유 일정 조회
