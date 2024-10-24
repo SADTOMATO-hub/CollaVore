@@ -70,6 +70,23 @@
 	flex-direction: column;
 }
 
+/* 검색 기능을 위한 컨테이너 */
+.search-container {
+	display: flex;
+	justify-content: flex-end; /* 오른쪽 정렬 */
+	margin-bottom: 15px; /* 테이블과의 간격 */
+}
+
+/* 검색 입력 박스 스타일 */
+#searchBox {
+	padding: 8px;
+	font-size: 14px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	width: 200px;
+	margin-right: 10px;
+}
+
 /* 테이블 스타일 */
 .memberList_table {
 	width: 100%;
@@ -104,10 +121,29 @@
 	background-color: #f9f9f9; /* 마우스 오버 시 행 배경색 변경 */
 }
 
-.insert-btn {
+/* 부모 컨테이너를 flexbox로 설정 */
+.pagination-and-insert-wrapper {
 	display: flex;
-	justify-content: flex-end; /* 오른쪽으로 정렬 */
-	margin-right: 20px; /* 필요에 따라 여백 조정 */
+	justify-content: space-between; /* 좌우로 나뉘어 배치 */
+	align-items: center; /* 세로 중앙 정렬 */
+	width: 100%; /* 전체 너비 사용 */
+	padding: 0; /* 여백 없앰 */
+}
+
+/* 페이지네이션 컨테이너 */
+.pagination-container {
+	flex-grow: 1; /* 남은 공간을 차지해서 중앙에 배치 */
+	display: flex;
+	justify-content: center; /* 페이지네이션을 중앙 정렬 */
+	align-items: center; /* 세로 중앙 정렬 */
+}
+
+/* 등록 버튼 컨테이너 */
+.insert-btn-container {
+	flex-shrink: 0; /* 등록 버튼 크기를 줄이지 않음 */
+	margin-left: auto; /* 오른쪽 끝으로 밀어내기 */
+	display: flex;
+	align-items: center; /* 세로 중앙 정렬 */
 }
 
 button {
@@ -146,45 +182,144 @@ button:active {
 
 
 			<div class="card_memberList">
+				<div class="search-container">
+					<input type="text" id="searchBox" placeholder="검색어를 입력하세요">
+				</div>
 				<table class="memberList_table">
-					<thead>
-						<tr>
-							<th scope="col">이름</th>
-							<th scope="col">연락처</th>
-							<th scope="col">이메일</th>
-							<th scope="col">소속</th>
-							<th scope="col">직무</th>
-							<th scope="col">직위(직책)</th>
-							<th scope="col">상태</th>
-							<th scope="col">보기</th>
-						</tr>
-					</thead>
-					<tbody>
-						<th:block th:each="info : ${members}">
-							<tr>
-								<td>[[${info.empName}]]</td>
-								<td>[[${info.tel}]]</td>
-								<td>[[${info.email}]]</td>
-								<td>[[${info.deptName}]]</td>
-								<td>[[${info.jobName}]]</td>
-								<td>[[${info.posiName}]]</td>
-								<td>[[${info.workType}]]</td>
-								<td>
-									<button type="button" th:onclick="|location.href='@{/memberUpdate(empNo=${info.empNo})}'|">보기</button>
-									
+    <thead>
+        <tr>
+            <th scope="col">이름</th>
+            <th scope="col">연락처</th>
+            <th scope="col">이메일</th>
+            <th scope="col">
+                <select class="select2 form-select shadow-none" name="deptNo" id="deptNo">
+                    <option value="" selected>조직</option>
+                    <option th:each="dept : ${departments}" th:value="${dept.deptNo}" th:text="${dept.deptName}"></option>
+                </select>
+            </th>
+            <th scope="col">
+                <select class="form-select" name="jobNo" id="jobNo">
+                    <option value="" selected>직무</option>
+                    <option th:each="job : ${jobs}" th:value="${job.jobNo}" th:text="${job.jobName}"></option>
+                </select>
+            </th>
+            <th scope="col">
+                <select class="form-select" name="posiNo" id="posiNo">
+                    <option value="" selected>직위</option>
+                    <option th:each="posi : ${positions}" th:value="${posi.posiNo}" th:text="${posi.posiName}"></option>
+                </select>
+            </th>
+            <th scope="col">
+                <select class="form-select" name="workType" id="workType">
+                    <option value="" selected>상태</option>
+                    <option th:each="info : ${members}" th:value="${info.workType}" th:text="${info.workType}"></option>
+                </select>
+            </th>
+            <th scope="col">보기</th>
+        </tr>
+    </thead>
+    <tbody>
+        <th:block th:each="info : ${members}">
+            <tr data-dept="[[${info.deptNo}]]" data-job="[[${info.jobNo}]]" data-posi="[[${info.posiNo}]]" data-worktype="[[${info.workType}]]">
+                <td>[[${info.empName}]]</td>
+                <td>[[${info.tel}]]</td>
+                <td>[[${info.email}]]</td>
+                <td>[[${info.deptName}]]</td>
+                <td>[[${info.jobName}]]</td>
+                <td>[[${info.posiName}]]</td>
+                <td>[[${info.workType}]]</td>
+                <td>
+                    <button type="button" th:onclick="|location.href='@{/memberUpdate(empNo=${info.empNo})}'|">보기</button>
+                </td>
+            </tr>
+        </th:block>
+    </tbody>
+</table>
+				
 
-								</td>
+				<div class="pagination-and-insert-wrapper">
+					<div class="pagination-container">
+						<nav aria-label="Page navigation example">
+							<ul class="pagination">
+								<li class="page-item"
+									th:classappend="${!pageing.prev} ? 'disabled'"><a
+									class="page-link"
+									th:href="@{/memberList(page=${pageing.page - 1})}"
+									tabindex="-1" aria-disabled="${!pageing.prev}">이전</a></li>
+								<li class="page-item"
+									th:each="i : ${#numbers.sequence(pageing.startPage, pageing.endPage)}"
+									th:classappend="${i == pageing.page} ? 'active'"><a
+									class="page-link" th:href="@{/memberList(page=${i})}"
+									th:classappend="${i == pageing.page} ? 'active' : ''">[[${i}]]</a>
+								</li>
+								<li class="page-item"
+									th:classappend="${!pageing.next} ? 'disabled'"><a
+									class="page-link"
+									th:href="@{/memberList(page=${pageing.page + 1})}">다음</a></li>
+							</ul>
+						</nav>
+					</div>
 
-
-							</tr>
-						</th:block>
-					</tbody>
-				</table>
-				<div class="insert-btn">
-					<button type="button"
-						th:onclick="|location.href='@{/memberInsert}'|">등록</button>
+					<!-- 등록 버튼 -->
+					<div class="insert-btn-container">
+						<button type="button"
+							th:onclick="|location.href='@{/memberInsert}'|">등록</button>
+					</div>
 				</div>
 			</div>
+
 		</div>
 	</div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const deptSelect = document.getElementById('deptNo');
+        const jobSelect = document.getElementById('jobNo');
+        const posiSelect = document.getElementById('posiNo');
+        const workTypeSelect = document.getElementById('workType');
+
+        const filterRows = () => {
+            const selectedDept = deptSelect.value;
+            const selectedJob = jobSelect.value;
+            const selectedPosi = posiSelect.value;
+            const selectedWorkType = workTypeSelect.value;
+
+            const rows = document.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const dept = row.getAttribute('data-dept');
+                const job = row.getAttribute('data-job');
+                const posi = row.getAttribute('data-posi');
+                const workType = row.getAttribute('data-worktype');
+
+                let isVisible = true;
+
+                if (selectedDept && dept !== selectedDept) {
+                    isVisible = false;
+                }
+                if (selectedJob && job !== selectedJob) {
+                    isVisible = false;
+                }
+                if (selectedPosi && posi !== selectedPosi) {
+                    isVisible = false;
+                }
+                if (selectedWorkType && workType !== selectedWorkType) {
+                    isVisible = false;
+                }
+
+                if (isVisible) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        };
+
+        deptSelect.addEventListener('change', filterRows);
+        jobSelect.addEventListener('change', filterRows);
+        posiSelect.addEventListener('change', filterRows);
+        workTypeSelect.addEventListener('change', filterRows);
+    });
+</script>
+
