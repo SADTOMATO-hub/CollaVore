@@ -16,7 +16,7 @@ import com.collavore.app.hrm.service.MemberService;
 public class MemberServiceImpl implements MemberService {
 
 	private final MemberMapper memberMapper;
-    private final PasswordEncoder passwordEncoder;
+	private final PasswordEncoder passwordEncoder;
 
 	// 생성자 주입을 통해 MemberMapper를 주입 받음
 	@Autowired
@@ -24,7 +24,7 @@ public class MemberServiceImpl implements MemberService {
 		this.memberMapper = memberMapper;
 		this.passwordEncoder = passwordEncoder;
 	}
-	
+
 	@Override
 	public int totalListCnt() {
 		int cnt = memberMapper.totalCnt();
@@ -65,15 +65,10 @@ public class MemberServiceImpl implements MemberService {
 	// 관리자 영역 ─────────────────────────────────────────
 	// 사원 전체 조회
 	@Override
-    public List<HrmVO> selectMemberFiltered(String deptNo, String jobNo, String posiNo, String workType, String page) {
-        // 페이지 번호와 페이지 크기 설정 (예: 한 페이지당 15개 항목)
-        int pageSize = 15;
-        int pageNo = Integer.parseInt(page);
-        int pageStart = (pageNo - 1) * pageSize;
+	public List<HrmVO> selectMemberAll(String page) {
+		return memberMapper.selectMemberAll(page);
+	}
 
-        // Mapper에 필터 조건과 페이지 시작값을 전달하여 필터링된 사원 목록을 가져옴
-        return memberMapper.selectMemberFiltered(deptNo, jobNo, posiNo, workType, pageStart, pageSize);
-    }
 
 	// 사원 등록
 	@Override
@@ -81,25 +76,25 @@ public class MemberServiceImpl implements MemberService {
 		// 자동 생성된 사번을 설정하고 사원을 등록
 		Integer empNo = generateEmpNo(); // 사번 생성 메서드 호출
 		hrmVO.setEmpNo(empNo);
-		
-		String insPwd = hrmVO.getPassword(); // 입력한 비밀번호 가져오기 
+
+		String insPwd = hrmVO.getPassword(); // 입력한 비밀번호 가져오기
 		String encryptedPassword = passwordEncoder.encode(insPwd); // 입력한 비밀번호 암호화
 		hrmVO.setPassword(encryptedPassword); // 암호화된 비밀번호 다시 VO에 넣기
 		return memberMapper.insertMember(hrmVO);
 	}
 
 	// 연락처 중복 확인
-    @Override
-    public boolean isTelDuplicate(String tel) {
-        return memberMapper.checkTelDuplicate(tel) > 0;
-    }
+	@Override
+	public boolean isTelDuplicate(String tel) {
+		return memberMapper.checkTelDuplicate(tel) > 0;
+	}
 
-    // 이메일 중복 확인
-    @Override
-    public boolean isEmailDuplicate(String email) {
-        return memberMapper.checkEmailDuplicate(email) > 0;
-    }
-    
+	// 이메일 중복 확인
+	@Override
+	public boolean isEmailDuplicate(String email) {
+		return memberMapper.checkEmailDuplicate(email) > 0;
+	}
+
 	// 사원 단건 조회 (사번으로 조회)
 	@Override
 	public HrmVO memberInfoByEmpNo(Integer empNo) {
@@ -111,10 +106,11 @@ public class MemberServiceImpl implements MemberService {
 	public int updateMemberByAdmin(HrmVO hrmVO) {
 		return memberMapper.updateMemberByAdmin(hrmVO);
 	}
-	 // 사원 정보 조회
+
+	// 사원 정보 조회
 	@Override
 	public HrmVO getMemberById(Integer empNo) {
-	    return memberMapper.getMemberById(empNo);
+		return memberMapper.getMemberById(empNo);
 	}
 
 	// 사원 삭제

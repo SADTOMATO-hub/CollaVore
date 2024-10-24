@@ -51,22 +51,28 @@ public class SchsController {
 	@PostMapping("/sch/schInsert")
 	@ResponseBody
 	public Map<String, Object> insertSchs(@RequestBody SchsVO schsVO) {
-		Map<String, Object> result = new HashMap<>();
-		try {
-			// 받은 데이터 확인용 로그
-			System.out.println("Received Title: " + schsVO.getTitle());
-			System.out.println("Received Start Date: " + schsVO.getStartDate());
-			System.out.println("Received End Date: " + schsVO.getEndDate());
+	    Map<String, Object> result = new HashMap<>();
+	    try {
+	        // 받은 데이터 확인용 로그
+	        System.out.println("Received Title: " + schsVO.getTitle());
+	        System.out.println("Received Start Date: " + schsVO.getStartDate());
+	        System.out.println("Received End Date: " + schsVO.getEndDate());
+	        System.out.println("Received calNo: " + schsVO.getCalNo()); // calNo 확인
 
-			// DB에 저장
-			int id = schsService.insertSchs(schsVO);
-			result.put("success", true);
-			result.put("id", id);
-		} catch (Exception e) {
-			result.put("success", false);
-		}
-		return result;
+	        // DB에 저장
+	        int id = schsService.insertSchs(schsVO);
+	        System.out.println("Inserted schedule with ID: " + id); // 성공 로그
+	        result.put("success", true);
+	        result.put("id", id);
+	    } catch (Exception e) {
+	        System.out.println("Error inserting schedule: " + e.getMessage()); // 예외 발생 시 로그 출력
+	        e.printStackTrace(); // 예외 전체 스택 추적 로그
+	        result.put("success", false);
+	    }
+	    return result;
 	}
+	
+	
 	
 	// 캘린더 타입에 따른 cal_no 조회 API
     @GetMapping("/getCalNoByType")
@@ -202,5 +208,19 @@ public class SchsController {
 	    int result = schsService.permanentlyDel(calNo);
 	    return result > 0 ? "캘린더가 완전히 삭제되었습니다." : "캘린더 삭제에 실패했습니다.";
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	//테스트 
+	
 
 }

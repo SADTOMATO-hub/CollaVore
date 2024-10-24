@@ -20,16 +20,16 @@ public interface MemberService {
 
 	// 관리자 영역 ─────────────────────────────────────────
 	// 사원 전체 조회
-	List<HrmVO> selectMemberFiltered(String deptNo, String jobNo, String posiNo, String workType, String page);
+	List<HrmVO> selectMemberAll(String page);
 
 	// 사원 등록
 	int insertMember(HrmVO hrmVO);
 
 	/// 연락처 중복 확인 메서드
-    boolean isTelDuplicate(String tel);
+	boolean isTelDuplicate(String tel);
 
-    // 이메일 중복 확인 메서드
-    boolean isEmailDuplicate(String email);
+	// 이메일 중복 확인 메서드
+	boolean isEmailDuplicate(String email);
 
 	// 사번 자동 생성 (정수형으로 변경)
 	Integer generateEmpNo();
