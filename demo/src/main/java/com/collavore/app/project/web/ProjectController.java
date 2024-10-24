@@ -233,10 +233,24 @@ public class ProjectController {
 		return map;
 	}
 
-	// 프로젝트 단건 조회
-	@GetMapping("/project/projectwrkinfo/{projNo}")
+	// 업무 단건 조회
+	@GetMapping("/project/projectwrkinfo/{pdwNo}")
 	@ResponseBody
-	public ProjectVO getProjectwrkInfo(@PathVariable int projNo) {
-		return pjService.projectInfo(projNo);
+	public int getProjectwrkInfo(@PathVariable int pdwNo) {
+		return pjService.selectPwNo(pdwNo);
 	}
+	
+	// 업무 단건조회리스트
+	@GetMapping("/project/projectwrklistinfo/{pwNo}")
+	@ResponseBody
+	public ProjectVO getProjectwrklistInfo(@PathVariable int pwNo) {
+		return pjService.projectwrkInfo(pwNo);
+	}	
+	// 상세업무 단건조회리스트
+	@GetMapping("/project/projectdwrkinfo/{pdwNo}")
+	@ResponseBody
+	public ProjectVO getProjectdwrkInfo(@PathVariable int pdwNo) {
+		return pjService.projectdwrkInfo(pdwNo);
+	}	
+	
 }

@@ -24,10 +24,12 @@
         <div class="row">
             <div id="jstree" class="col-md-6">
                 <ul>
-                <li>Collavore
+                    <li id="node_collavore">Collavore
+                        <ul>
                     <th:block th:each="project : ${projects}" th:if="${project.parentNo == null}">
                         <th:block th:replace="~{::renderNode(projno=${project.no}, projname=${project.name}, parentNo=${project.parentNo}, table=${project.table}, level=${project.level})}"></th:block>
-                    </th:block>
+                    </th:block>                            <!-- 자식 노드가 여기에 추가될 수 있습니다. -->
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -105,6 +107,75 @@
             </div>
         </div>
     </div>
+
+
+<div class="col-md-6">
+    <div class="insert-panel" id="wrkInfo" style="display: none;">
+        <h4>Insert Project</h4>
+        <form id="insertFormProjwrks">
+            <div>
+                <label for="nameProjWrks" class="form-label">업무 이름</label>
+                <input type="text" id="nameProjWrks" name="name" class="form-control" required>
+            </div>
+            <div>
+                <label class="form-label">업무 내용</label>
+                <input type="text" id="contentProjWrks" name="content" class="form-control" required>
+            </div>
+            <div>
+                <label class="form-label">업무 타입</label>
+                <input type="text" id="jobNoProjWrks" name="jobNo" class="form-control" required>
+            </div>
+            <div>
+                <label class="form-label">업무 담당자</label>
+                <input type="text" id="mgrNoProjWrks" name="mgrNo" class="form-control" required>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary">생성</button>
+            </div>
+        </form>
+    </div>
+    <div class="insert-panel" id="dwrkInfo" style="display: none;">
+        <h4>Insert Project</h4>
+        <form id="insertFormProjdwrks">
+            <div>
+                <label for="nameProjDwrks" class="form-label">업무 이름</label>
+                <input type="text" id="nameProjDwrks" name="name" class="form-control" required>
+            </div>
+            <div>
+                <label class="form-label">업무 내용</label>
+                <input type="text" id="contentProjDwrks" name="content" class="form-control" required>
+            </div>
+            <label for="importance" class="form-label">중요도</label>
+            <select class="form-select" name="importance" id="importance" required>
+                <option value="" disabled selected>선택하세요</option>
+                <option value="l1">낮음</option>
+                <option value="l2">중간</option>
+                <option value="l3">높음</option>
+            </select>
+            <div>
+                <label class="form-label">업무 시작일</label>
+                <input type="date" id="startDate" name="startDate" class="form-control" required>
+            </div>
+            <div>
+                <label class="form-label">업무 종료일</label>
+                <input type="date" id="endDate" name="endDate" class="form-control" required>
+            </div>
+            <div>
+                <label class="form-label">프로젝트 깃 커밋ID</label>
+                <input type="text" id="commitId" name="commitId" class="form-control" required>
+            </div>
+            <div>
+                <label class="form-label">업무 담당자</label>
+                <input type="text" id="mgrNoProjDwrks" name="mgrNo" class="form-control" required>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary">생성</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 
     <!-- Include jQuery library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
@@ -201,7 +272,6 @@
                 // 부모 노드로 이동
                 currentNode = currentNode.parent().closest('li'); // 부모 <li>를 찾기
             }
-
             console.log(level);
             if (level <= 1) {
                 $('#insertPanelProjwrks h4').text(projectName + ' 업무 등록');
@@ -221,12 +291,29 @@
             $('#selPwNo').val(pwNo);
 
         }
-
+        function myInfo(buttonElement, level) {
+        	const projectName = (this).contents().filter(function() {
+                return this.nodeType === 3; 
+            }).text().trim();
+        	
+        	console.log(projectName);
+        	/* console.log(level); */
+        	 if (level <= 1) {
+                 $('#wrkInfo h4').text(projectName + ' 업무 등록');
+                 $('#wrkInfo').show();
+                 $('#dwrkInfo').hide();
+             } else {
+                 $('#dwrkInfo h4').text(projectName + ' 상세업무 등록');
+                 $('#wrkInfo').hide();
+                 $('#dwrkInfo').show();        
+             }
+        	
+        }
     </script>
 
     <!-- 재귀 함수 정의 -->
     <th:block th:fragment="renderNode(projno, projname, parentNo, table, level)" th:data-current-table="${table}" id="'test'+${status.index}" th:data-index="${status.index}">
-        <li th:id="'node_' + ${projno}" style="display: none;">[[${projname}]]
+        <li th:id="'node_' + ${projno}" style="display: none;" th:onclick="'myInfo(this, ' + ${level} + ')'">[[${projname}]]
             <button class="btn btn-info btn-lg no-border-button"  th:onclick="'myFunction(this, ' + ${level} + ')'">
                 <i class="mdi mdi-plus-circle-outline" style="color:black;"></i>
             </button>
