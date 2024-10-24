@@ -225,35 +225,96 @@ button.close:hover {
 
 
 
-
-
-
-
-/* 기본적으로 연필 아이콘을 숨김 */
-
-
-/* 캘린더 항목에 마우스를 올리면 연필 아이콘 표시 */
-li:hover .edit-icon {
-    display: inline-block;
-    margin-left: 10px;  /* 캘린더 이름과 연필 아이콘 사이의 여백 */
+/* 전체적인 사이드바 스타일 */
+#sidebarnav {
+    list-style: none;
+    padding: 0;
 }
-/* 아이콘을 캘린더 이름 옆에 배치 */
+
+/* 리스트 항목 스타일 */
 .calendar-item-wrapper {
     display: flex;
-    align-items: center;
+    align-items: center;  /* 아이콘과 텍스트 수평 정렬 */
+    justify-content: space-between;  /* 아이콘과 텍스트 사이의 간격 균일하게 */
+    padding: 10px 15px;  /* 리스트 항목 패딩 추가 */
+    margin: 5px 0;  /* 리스트 항목 간의 간격 */
+    background-color:RGB323844;  /* 배경색 (어두운 색상) */
+    border-radius: 5px;  /* 항목을 둥글게 */
+    transition: background-color 0.3s ease;  /* 호버 시 부드러운 색상 전환 */
 }
 
+/* 마우스를 올렸을 때 배경색 변화 */
+.calendar-item-wrapper:hover {
+    background-color: #34495e;  /* 밝은 어두운색으로 변경 */
+}
+
+/* 아이콘과 텍스트 간격 */
+.calendar-item {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    flex-grow: 1;  /* 텍스트가 차지하는 공간 조절 */
+}
+
+/* 연필 아이콘 숨기기 (기본 상태) */
 .edit-icon {
+    display: none;
+    cursor: pointer;
+}
+
+/* 마우스를 올렸을 때 연필 아이콘 표시 */
+.calendar-item-wrapper:hover .edit-icon {
     display: inline-block;
-    margin-left: 10px;  /* 캘린더 이름과 연필 아이콘 사이의 여백 */
+    margin-left: 10px;
+}
+
+/* 연필 아이콘 스타일 */
+.edit-icon i {
+    color: gray;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+/* 연필 아이콘에 마우스를 올렸을 때 색상 변화 */
+.edit-icon i:hover {
+    color: white;
+}
+
+/* 아이콘 색상과 크기 */
+.mdi-calendar-blank {
+    font-size: 1.2rem;
+    margin-right: 10px;
+}
+
+
+
+
+
+
+/* 기본적으로 연필 아이콘 숨기기 */
+.edit-icon {
+    display: none; /* 아이콘 숨김 */
+    margin-left: 10px; /* 캘린더 이름과 연필 아이콘 사이의 여백 */
     cursor: pointer;
 }
 
 .edit-icon i {
     color: gray;
-    font-size: 1.2rem;  /* 아이콘 크기 */
+    font-size: 1.5rem; /* 아이콘 크기 */
 }
 
+/* 마우스를 캘린더 항목에 올리면 연필 아이콘 표시 */
+.calendar-item-wrapper:hover .edit-icon {
+    display: inline-block; /* 마우스 올리면 아이콘 표시 */
+}
+
+/* 마우스를 올렸을 때 아이콘 색상 변경 */
 .edit-icon i:hover {
-    color: black;  /* 마우스를 올렸을 때 아이콘 색상 변경 */
+    color: black; /* 마우스 올렸을 때 색상 변경 */
+}
+
+/* 캘린더 이름과 아이콘을 옆으로 배치 */
+.calendar-item-wrapper {
+    display: flex;
+    align-items: center;
 }
