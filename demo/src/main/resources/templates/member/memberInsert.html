@@ -281,7 +281,7 @@ button:active {
 								class="col-sm-3 text-end control-label col-form-label">소속조직</label>
 							<div class="col-md-9">
 								<select class="select2 form-select shadow-none" name="deptNo"
-									id="deptNo" style="width: 100%; height: 36px">
+									id="deptNo">
 									<option value="" selected>소속조직 선택</option>
 									<option th:each="dept : ${departments}"
 										th:value="${dept.deptNo}" th:text="${dept.deptName}"></option>
@@ -347,6 +347,7 @@ button:active {
 
 		</div>
 	</div>
+</div>
 
 
 

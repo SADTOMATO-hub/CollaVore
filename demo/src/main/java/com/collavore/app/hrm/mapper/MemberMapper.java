@@ -1,9 +1,14 @@
 package com.collavore.app.hrm.mapper;
 
 import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
 import com.collavore.app.hrm.service.HrmVO;
 
 public interface MemberMapper {
+	// 전체 사원 수 가져오기
+	int totalCnt();
 
 	// 이메일을 통해 사용자 정보 조회
 	HrmVO findByEmail(String email);
@@ -14,9 +19,19 @@ public interface MemberMapper {
 	// 사원 정보 수정
 	int updateMember(HrmVO hrmVO);
 
+	// 관리자 영역
 	// 사원 전체 조회 (관리자)
-	List<HrmVO> selectMemberAll();
+    List<HrmVO> selectMemberAll(@Param("pageStart") int pageStart, @Param("pageSize") int pageSize);
 
+    List<HrmVO> selectMemberFiltered(
+            @Param("deptNo") String deptNo,
+            @Param("jobNo") String jobNo,
+            @Param("posiNo") String posiNo,
+            @Param("workType") String workType,
+            @Param("pageStart") int pageStart,
+            @Param("pageSize") int pageSize
+        );
+    
 	// 사원 등록 (관리자)
 	int insertMember(HrmVO hrmVO);
 	

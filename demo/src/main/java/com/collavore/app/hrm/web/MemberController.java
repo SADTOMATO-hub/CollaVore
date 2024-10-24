@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.collavore.app.common.service.PageDTO;
 import com.collavore.app.hrm.service.DeptService;
 import com.collavore.app.hrm.service.HrmVO;
 import com.collavore.app.hrm.service.JobService;
@@ -195,10 +196,29 @@ public class MemberController {
 	// ────────────────────────────────────────────────────────────────────────────────────────────────────
 	// 사원 전체 조회 (관리자)
 	@GetMapping("/memberList")
-	public String selectMemberAll(Model model) {
-		model.addAttribute("members", memberService.selectMemberAll());
-		return "member/memberList"; // 뷰 파일 반환
+	public String selectMemberAll(
+	        @RequestParam(required = false) String deptNo, 
+	        @RequestParam(required = false) String jobNo, 
+	        @RequestParam(required = false) String posiNo, 
+	        @RequestParam(required = false) String workType,
+	        @RequestParam(required = false) String page, 
+	        Model model) {
+	    
+	    // 페이지 정보 설정
+	    page = (page == null) ? "1" : page;
+	    
+	    // 총 사원 수 조회 (필터 적용 가능)
+	    int totalCnt = memberService.totalListCnt(deptNo, jobNo, posiNo, workType);
+	    PageDTO pageing = new PageDTO(page, 15, totalCnt);
+	    model.addAttribute("pageing", pageing);
+	    
+	    // 필터 조건에 맞는 사원 목록 조회
+	    List<HrmVO> memberList = memberService.selectMemberFiltered(deptNo, jobNo, posiNo, workType, page);
+	    model.addAttribute("members", memberList);
+	    
+	    return "member/memberList"; // 뷰 파일 반환
 	}
+
 
 	// 사원 등록 폼 이동 (관리자)
 	@GetMapping("/memberInsert")
