@@ -1,7 +1,10 @@
 package com.collavore.app.api.flutter;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +21,7 @@ import com.collavore.app.api.service.FlutterProjVO;
 import com.collavore.app.api.service.FlutterSchsVO;
 import com.collavore.app.api.service.FlutterService;
 import com.collavore.app.api.service.FlutterVO;
+import com.collavore.app.service.PdfMakeService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -26,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("api")
 public class FlutterController {
 
+    private final PdfMakeService pdfMakeService;
 	private final FlutterService flutterService;
 
 	// 로그인
@@ -114,11 +119,21 @@ public class FlutterController {
 	
 	// 전자결재문서상세보기
 	@GetMapping("/appInfo")
-	public FlutterApprVO selAppr(@RequestParam int empNo, @RequestParam int eaNo) {
+	public FlutterApprVO selAppr(@RequestParam int empNo, @RequestParam int eaNo) throws IOException {
 			FlutterApprVO apprInfo = flutterService.apprInfo(empNo, eaNo);
+			String pdfBase64  = downloadPdf(apprInfo.getContent());
+			apprInfo.setPdfInfo(pdfBase64);
+			apprInfo.setContent(null);
 			return apprInfo;
 	}
 	
 	// 전자결재문서승인,반려처리
 	// 회원정보수정
+	
+	public String downloadPdf(String content) throws IOException {
+
+        byte[] pdfBytes = pdfMakeService.createPdfWithHtml(content);
+
+        return Base64.getEncoder().encodeToString(pdfBytes);
+    }
 }

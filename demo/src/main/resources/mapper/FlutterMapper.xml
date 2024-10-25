@@ -47,7 +47,7 @@
 		<selectKey keyProperty="schNo,calNo" resultType="FlutterSchsVO"
 			order="BEFORE">
 			SELECT (SELECT NVL(MAX(sch_no),0) + 1 FROM schs) as sch_no
-			    , (SELECT c.cal_no FROM cals c INNER JOIN calshares cs ON c.cal_no = cs.cal_no AND c.type = 'g1' WHERE cs.emp_no = #{empNo}) as cal_no
+			    , (SELECT c.cal_no FROM cals c INNER JOIN calshares cs ON c.cal_no = cs.cal_no AND c.cal_type = 'g1' WHERE cs.emp_no = #{empNo}) as cal_no
 			FROM dual
 		</selectKey>
 		INSERT INTO schs(sch_no, title, start_date, end_date, cal_no)
