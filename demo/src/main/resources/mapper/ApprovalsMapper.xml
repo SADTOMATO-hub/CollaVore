@@ -1,132 +1,145 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.collavore.app.approvals.mapper.ApprovalsMapper">
+<mapper
+	namespace="com.collavore.app.approvals.mapper.ApprovalsMapper">
 
 	<!-- 템플릿 리스트 -->
 	<select id="tempList" resultType="ApprovalstempVO">
 		SELECT *
 		FROM approvalstemp
-		ORDER BY eat_no 
+		ORDER BY eat_no
 	</select>
-		
+
 	<!-- 템플릿 상세 -->
-	<select id="readTemp" resultType="ApprovalstempVO" parameterType="int">
+	<select id="readTemp" resultType="ApprovalstempVO"
+		parameterType="int">
 		SELECT *
 		FROM approvalstemp
 		WHERE eat_no = #{eatNo}
 	</select>
-	<!--  -->
-	
+	<!-- -->
+
 	<!-- 템플릿 생성 -->
 	<insert id="createApprsTemp" parameterType="ApprovalstempVO">
-	  <selectKey keyProperty="eatNo"
-	  			 resultType="Integer"
-	  			 order="BEFORE">
-	  	SELECT NVL(MAX(eat_no),0) + 1
-	  	FROM approvalstemp
-	  </selectKey>
-	   		INSERT INTO approvalstemp (
-									eat_no
-								   ,title
-								   ,content
-								   .reg_date
-								   )
-					VALUES         (
-									 #{eatNo}
-									,#{title}
-									,#{content}
-									,#{regDate}
-									)
+		<selectKey keyProperty="eatNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(eat_no),0) + 1
+			FROM approvalstemp
+		</selectKey>
+		INSERT INTO approvalstemp (
+		eat_no
+		,title
+		,content
+		.reg_date
+		)
+		VALUES (
+		#{eatNo}
+		,#{title}
+		,#{content}
+		,#{regDate}
+		)
 	</insert>
-	<!--  -->
-	
+	<!-- -->
+
 	<!-- 템플릿 삭제 -->
 	<delete id="deleteTemp" parameterType="int">
 		DELETE approvalstemp
-		WHERE eat_no = #{eatNo}
+		WHERE
+		eat_no = #{eatNo}
 	</delete>
 	<!-- -->
-	
+
 	<!-- 템플릿 수정 -->
 	<update id="updateTemp" parameterType="ApprovalstempVO">
 		UPDATE approvalstemp
-		SET    title = #{title}
-			   ,content = #{content}
-		WHERE eat_no = #{eatNo}		
+		SET
+		title = #{title}
+		,content = #{content}
+		WHERE eat_no = #{eatNo}
 	</update>
-	<!--  -->
-	
+	<!-- -->
+
 	<!-- 결재자 이름을 검색하면 그 대상의 정보를 호출하는 기능 -->
 	<select id="" resultType="HrmVO" parameterType="String">
 		SELECT emp_no
-			   ,d.name
-			   ,e.info
-		FROM employees 
+		,d.name
+		,e.info
+		FROM employees
 		WHERE name = #{empName}
 	</select>
-	<!--  -->
-	
+	<!-- -->
+
 	<!-- 전자결재를 생성하는 기능 -->
-		<!-- approvals테이블에 넣기 -->
+	<!-- approvals테이블에 넣기 -->
 	<insert id="createApprsEaTable" parameterType="ApprovalsVO">
-	  <selectKey keyProperty="eaNo"
-	   resultType="Integer"
-	   order="BEFORE">
-	   	SELECT NVL(MAX(approvals.ea_no),0) + 1
-	  	FROM approvals
-	  </selectKey>
+		<selectKey keyProperty="eaNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(approvals.ea_no),0) + 1
+			FROM approvals
+		</selectKey>
 		INSERT INTO approvals(
-							  approvals.ea_no
-							  ,title
-							  ,eat_no
-							  ,approvals.status
-							 <!-- approvals.emp_no, --> 
-							  ,approvals.reg_date
-							  ,content
-							  )
-         	  		 VALUES (
-         	   				 #{eaNo}
-         	   				 ,#{title}
-         	   				 ,#{eatNo}
-         	   				 ,default
-         	   				<!-- ,#{drafterEmpNo} --> 
-         	   				 ,sysdate
-         	   				 ,#{content}
-         	   			     )
+		approvals.ea_no
+		,title
+		,eat_no
+		,approvals.status
+		<!-- approvals.emp_no, -->
+		,approvals.reg_date
+		,content
+		)
+		VALUES (
+		#{eaNo}
+		,#{title}
+		,#{eatNo}
+		,default
+		<!-- ,#{drafterEmpNo} -->
+		,sysdate
+		,#{content}
+		)
 	</insert>
-	<!--  -->
-	
-		<!-- approvers테이블에 넣기 -->
+	<!-- -->
+
+	<!-- approvers테이블에 넣기 -->
 	<insert id="createApprsEarTable" parameterType="ApprovalsVO">
-	INSERT ALL
-        <foreach collection="approvers" item="approvers" separator=","> 
-        <if test="approvers.empNo != null and approvers.empNo != ''">
-		INTO approvers(
-								  ear_no
-								  ,ea_no
-								  ,emp_no
-					     	  	  ,sort
-							  )
-         	  		 VALUES 
-         	  		        (
-         	   				 	 (	SELECT NVL(MAX(approvers.ear_no),0) + 1	FROM approvers)
-         	   					 ,#{approvers.eaNo}
-         	   					 ,#{approvers.empNo}
-         	   					 ,#{approvers.sort}
-         	   			     )
-        </if>
-        </foreach>
-        select * from dual
+		INSERT ALL
+		<foreach collection="approvers" item="approvers"  separator=" ">
+			<if test=
+					 "
+					  approvers.empNo != null and 
+				      approvers.empNo != ''
+				     "
+			 >
+				INTO approvers (
+				ear_no
+				,ea_no
+				,emp_no
+				,sort
+				,proc_date
+				)
+				VALUES (
+				(SELECT NVL(MAX(ear_no), 0) + 1 FROM approvers)
+				,#{approvers.eaNo}
+				,#{approvers.empNo}
+				,#{approvers.sort}
+				,sysdate
+				)
+			</if>
+		</foreach>
+		SELECT * FROM dual
 	</insert>
-	<!--  -->
-	
+	<!-- <insert id="createApprsEarTable" parameterType="ApprovalsVO"> INSERT 
+		ALL <foreach collection="approvers" item="approvers" separator=" "> <if test="approvers.empNo 
+		!= null and approvers.empNo != ''"> INTO approvers ( ear_no, ea_no, emp_no, 
+		sort ) VALUES ( (SELECT NVL(MAX(ear_no), 0) + 1 FROM approvers), #{approvers.eaNo}, 
+		#{approvers.empNo}, #{approvers.sort} ) </if> </foreach> SELECT * FROM dual 
+		</insert> -->
+
 	<!-- 결재자 입력에 필요한 사원 정보를 출력하는 기능 -->
 	<select id="employeesInfo" resultType="HrmVO">
-		SELECT emp_no as empNo 
-			   ,name as empName
-			   ,info
+		SELECT emp_no as empNo
+		,name as empName
+		,info
 		FROM employees
-	</select>	
-	<!--  -->
+	</select>
+	<!-- -->
 </mapper>
 <!-- 3번째 -->

@@ -79,6 +79,7 @@ public class ApprovalsImpl implements ApprovalsService {
 //			list.add(appr);
 //			idx ++;
 		}
+		System.out.println(">>>>>>>>>>>>\n"+apprVO.getApprovers());
 	//	apprVO.setApprovers(list);		
 		int result = approvalsMapper.createApprsEarTable(apprVO);
 		return result;						

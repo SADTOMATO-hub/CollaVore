@@ -18,6 +18,7 @@
 								<!-- 세큐리티 cors를 방지하는 기능  -->
 						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/> 
 							<div class="form-group row">
+								<th:block th:object="${employeesInfo}">
 									<label for="approvalTitle"> <input type="text"
 										id="approvalTitle" name="title" required
 										placeholder="전자결재 제목을 입력해주세요">
@@ -83,6 +84,7 @@
 										<input type="hidden" name="approvers[2].sort" value="3">
 										<input type="hidden" name="approvers[3].sort" value="4">
 									</div>
+								</th:block>
 								<div class="card-body">
 									<h4 class="card-title">전자결재 기안 페이지</h4>
 									<hr>
@@ -248,7 +250,7 @@ $(document).ready(
 				var selectedApproversEmp = $("#selectApprovers option:checked").val();
 				var selectedApproversName = selectedApprover.split('/')[0];
 				var selectedApproversInfo = selectedApprover.split('/')[1];
-				var empNoListVal = $(`[name='approvers[${seq}].empNo']`).val(selectedApproversEmp);
+				var empNoListVal = $(`[name="approvers[${seq-1}].empNo"]`).val(selectedApproversEmp);
 				//var sortVal = $('[name=sort]').eq(seq-1).val(seq);
 				$('#apprerTable tbody tr').eq(0).children().eq(seq).find('span').html(selectedApproversName);
 				$('#apprerTable tbody tr').eq(1).children().eq(seq).find('span').html(selectedApproversInfo);					
