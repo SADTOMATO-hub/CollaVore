@@ -15,7 +15,7 @@
 					<form action="createTemp" method="post" class="form-horizontal"
 						name="insertForm">
 						<!-- 세큐리티 cors를 방지하는 기능  -->
-						<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/> 
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/> 
 						<div class="card-body">
 							<h4 class="card-title">템플릿 생성 페이지</h4>
 							<hr>
@@ -48,9 +48,6 @@
 		</div>
 	</div>
 </div>
-
-
-
 <script>
 	// 네이버 스마트 에디터 2.0 적용
 	let oEditors = [];

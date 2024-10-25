@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -41,7 +40,7 @@ public class ApprovalsController {
 	}
 
 	// 템플릿 상세 페이지
-	@GetMapping("/tempInfo")
+	@GetMapping("/readTempInfo")
 	public String tmepInfo(ApprovalstempVO apprVO, Model model) {
 		ApprovalstempVO tempInfo = approvalsService.apprInfo(apprVO);
 		model.addAttribute("tempInfo", tempInfo);
@@ -128,5 +127,25 @@ public class ApprovalsController {
 		// model.addAttribute("tempInfo", tempInfo.getContent());
 		return tempInfo;
 	}
-
+	
+	//전자결재 상세페이지
+	@GetMapping("/readApprInfo")
+	public String readapprinfo (Model model,ApprovalsVO apprVO) {
+		ApprovalsVO approvals = approvalsService.approvalsInfo(apprVO);
+		List<ApprovalsVO> approvers = approvalsService.approversInfo(apprVO);
+		model.addAttribute("approvals", approvals);
+		model.addAttribute("approvers", approvers);
+		return "approvals/readApproval";
+	}
+	
+	//전자결재 삭제
+	@GetMapping("/deleteAppr")
+	public String deleteAppr (ApprovalsVO apprVO) {
+		 approvalsService.deleteApprovals(apprVO);
+		 int result = 1;
+		if(result >= 0) {
+			return "redirect:/tempList";
+		}
+		return null;
+	}
 }
