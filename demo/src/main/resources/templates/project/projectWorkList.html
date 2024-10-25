@@ -13,12 +13,14 @@
             padding: 0; 
             cursor: pointer; 
         }
-        .insert-panel {
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin-left: 20px;
-            display: none; 
-        }
+		.insert-panel {
+		    border: 1px solid #ccc;
+		    padding: 10px;
+		    margin-left: 20px;
+		    overflow: hidden; /* 내용이 넘치지 않도록 설정 */
+		    transition: max-height 0.3s ease; /* 부드러운 전환 효과 */
+		}
+        
     </style>
     <div class="container-fluid" th:data-current-table="${table}" id="fluidDiv">
         <div class="row">
@@ -34,7 +36,7 @@
                 </ul>
             </div>
             <div class="col-md-6">
-                <div class="insert-panel" id="insertPanelProjwrks">
+                <div class="insert-panel" id="insertPanelProjwrks"style="display: none;">
                     <h4>Insert Project</h4>
                     <form id="insertFormProjwrks">
                         <div>
@@ -59,7 +61,7 @@
                         </div>
                     </form>
                 </div>
-                <div class="insert-panel" id="insertPanelProjdwrks">
+                <div class="insert-panel" id="insertPanelProjdwrks"style="display: none;">
                     <h4>Insert Project</h4>
                     <form id="insertFormProjdwrks">
                         <div>
@@ -76,7 +78,14 @@
                             <option value="l1">낮음</option>
                             <option value="l2">중간</option>
                             <option value="l3">높음</option>
-                        </select>              
+                        </select>    
+                        <label for="isStatus" class="form-label">진행상황</label>
+			            <select class="form-select" name="isStatus" id="updateisStatus" required>
+			                <option value="" disabled selected>선택하세요</option>
+			                <option value="j1">진행전</option>
+			                <option value="j2">진행중</option>
+			                <option value="j3">완 료</option>
+			            </select>           
                         <div>
                             <label class="form-label">업무 시작일</label>
                             <input type="date" id="startDate" name="startDate" class="form-control" required>
@@ -104,77 +113,127 @@
                         </div>
                     </form>
                 </div>
-            </div>
-        </div>
-    </div>
 
 
-<div class="col-md-6">
+
     <div class="insert-panel" id="wrkInfo" style="display: none;">
-        <h4>Insert Project</h4>
-        <form id="insertFormProjwrks">
-            <div>
-                <label for="nameProjWrks" class="form-label">업무 이름</label>
-                <input type="text" id="nameProjWrks" name="name" class="form-control" required>
-            </div>
-            <div>
-                <label class="form-label">업무 내용</label>
-                <input type="text" id="contentProjWrks" name="content" class="form-control" required>
-            </div>
-            <div>
-                <label class="form-label">업무 타입</label>
-                <input type="text" id="jobNoProjWrks" name="jobNo" class="form-control" required>
-            </div>
-            <div>
-                <label class="form-label">업무 담당자</label>
-                <input type="text" id="mgrNoProjWrks" name="mgrNo" class="form-control" required>
-            </div>
-            <div>
-                <button type="submit" class="btn btn-primary">생성</button>
-            </div>
-        </form>
-    </div>
+    <h4>업무 수정</h4>
+    <form id="updateFormWrks">
+        <div>
+            <label for="nameProjWrks" class="form-label">업무 이름</label>
+            <input type="text" id="nameProjWrksUpdate" name="name" class="form-control" required>
+        </div>
+        <div>
+            <label class="form-label">업무 내용</label>
+            <input type="text" id="contentProjWrksUpdate" name="content" class="form-control" required>
+        </div>
+        <div>
+            <label class="form-label">업무 타입</label>
+            <input type="text" id="jobNoProjWrksUpdate" name="jobNo" class="form-control" required>
+        </div>
+        <div>
+            <label class="form-label">업무 담당자</label>
+            <input type="text" id="mgrNoProjWrksUpdate" name="mgrNo" class="form-control" required>
+        </div>
+        	<input type="hidden" id="pwNo" name="pwNo" class="form-control">
+        <div>
+            <button type="submit" class="btn btn-primary">수정</button>
+        </div>
+    </form>
+</div>
     <div class="insert-panel" id="dwrkInfo" style="display: none;">
         <h4>Insert Project</h4>
-        <form id="insertFormProjdwrks">
+        <form id="updateFormProjdwrks">
             <div>
-                <label for="nameProjDwrks" class="form-label">업무 이름</label>
-                <input type="text" id="nameProjDwrks" name="name" class="form-control" required>
+                <label for="nameProjDwrks" class="form-label">상세업무 이름</label>
+                <input type="text" id="projdwrkname" name="name" class="form-control" required>
             </div>
             <div>
-                <label class="form-label">업무 내용</label>
-                <input type="text" id="contentProjDwrks" name="content" class="form-control" required>
+                <label class="form-label">상세업무 내용</label>
+                <input type="text" id="projdwrkcontent" name="content" class="form-control" required>
             </div>
             <label for="importance" class="form-label">중요도</label>
-            <select class="form-select" name="importance" id="importance" required>
+            <select class="form-select" name="importance" id="updateimportance" required>
                 <option value="" disabled selected>선택하세요</option>
                 <option value="l1">낮음</option>
                 <option value="l2">중간</option>
                 <option value="l3">높음</option>
             </select>
+            <label for="isStatus" class="form-label">진행상황</label>
+            <select class="form-select" name="isStatus" id="updateisStatus" required>
+                <option value="" disabled selected>선택하세요</option>
+                <option value="j1">진행전</option>
+                <option value="j2">진행중</option>
+                <option value="j3">완 료</option>
+            </select>            
             <div>
                 <label class="form-label">업무 시작일</label>
-                <input type="date" id="startDate" name="startDate" class="form-control" required>
+                <input type="date" id="updatestartDate" name="startDate" class="form-control" required>
             </div>
             <div>
                 <label class="form-label">업무 종료일</label>
-                <input type="date" id="endDate" name="endDate" class="form-control" required>
+                <input type="date" id="updateendDate" name="endDate" class="form-control" required>
             </div>
             <div>
                 <label class="form-label">프로젝트 깃 커밋ID</label>
-                <input type="text" id="commitId" name="commitId" class="form-control" required>
+                <input type="text" id="updatecommitId" name="commitId" class="form-control" required>
             </div>
             <div>
                 <label class="form-label">업무 담당자</label>
-                <input type="text" id="mgrNoProjDwrks" name="mgrNo" class="form-control" required>
+                <input type="text" id="updatemgrNoProjDwrks" name="mgrNo" class="form-control" required>
             </div>
+            	<input type="hidden" id="pdwNo" name="pdwNo" class="form-control">
             <div>
-                <button type="submit" class="btn btn-primary">생성</button>
+                <button type="submit" class="btn btn-primary">수정</button>
             </div>
         </form>
     </div>
-</div>
+    <div class="insert-panel" id="editProjectModal" style="display: none;">
+        <h4>프로젝트 수정</h4>
+        <form id="editProjectForm">
+            <div>
+                <label for="nameProjDwrks" class="form-label">프로젝트 이름</label>
+                <input type="text" id="editProjName" name="name" class="form-control" required>
+            </div>
+            <div>
+                <label class="form-label">프로젝트 내용</label>
+                <input type="text" id="editProjContent" name="content" class="form-control" required>
+            </div>
+            <div>
+                <label class="form-label">담당자</label>
+                <input type="text" id="editProjManager" name="pMgrNo" class="form-control" required>
+            </div>
+            <div>
+                <label class="form-label">프로젝트 git 주소</label>
+                <input type="text" id="editProjGit" name="projectGitUrl" class="form-control" required>
+            </div>
+            <div class="mb-3">
+				<label for="editProjStatus" class="form-label">진행상태</label> 
+					<select class="form-select" name="status" id="editProjStatus" required>
+						<option value="">선택하세요</option>
+						<option value="j1">진행전</option>
+						<option value="j2">진행중</option>
+						<option value="j3">완료</option>
+					</select>
+				</div>
+            <div>
+                <label class="form-label">시작일</label>
+                <input type="date" id="editProjStartDate" name="startDate" class="form-control" required>
+            </div>
+            <div>
+                <label class="form-label">마감일</label>
+                <input type="text" id="editProjEndDate" name="endDate" class="form-control" required>
+            </div>
+				<input type="hidden" id="projNo" name="projNo" class="form-control">
+            <div>
+                <button type="submit" class="btn btn-primary">수정</button>
+            </div>
+        </form>
+    </div>
 
+            </div>
+        </div>
+    </div>
 
 
     <!-- Include jQuery library -->
@@ -251,10 +310,8 @@
         });
 
         function myFunction(buttonElement, level) {
-            const projectName = $(buttonElement).parent().contents().filter(function() {
-                return this.nodeType === 3; 
-            }).text().trim();
-            
+            const projectName = $(buttonElement).parent().find('span').text().trim();
+
             const projNo = $(buttonElement).parent().attr('id').split('_')[1];
 
             let currentNode = $(buttonElement).parent();
@@ -277,10 +334,18 @@
                 $('#insertPanelProjwrks h4').text(projectName + ' 업무 등록');
                 $('#insertPanelProjwrks').show();
                 $('#insertPanelProjdwrks').hide();
+                $('#dwrkInfo').hide();
+                $('#wrkInfo').hide();
+                $('#editProjectModal').hide();
+                
             } else {
                 $('#insertPanelProjdwrks h4').text(projectName + ' 상세업무 등록');
+                $('#test').show();
                 $('#insertPanelProjwrks').hide();
-                $('#insertPanelProjdwrks').show();        
+                $('#insertPanelProjdwrks').show();
+                $('#dwrkInfo').hide();
+                $('#wrkInfo').hide();
+                $('#editProjectModal').hide();
             }
 
             $('#projNo').val(projNo.replace(/^[PW]/, ''));
@@ -291,38 +356,210 @@
             $('#selPwNo').val(pwNo);
 
         }
+        
+        
+    
         function myInfo(buttonElement, level) {
-        	const projectName = (this).contents().filter(function() {
-                return this.nodeType === 3; 
-            }).text().trim();
-        	
-        	console.log(projectName);
-        	/* console.log(level); */
-        	 if (level <= 1) {
-                 $('#wrkInfo h4').text(projectName + ' 업무 등록');
-                 $('#wrkInfo').show();
-                 $('#dwrkInfo').hide();
-             } else {
-                 $('#dwrkInfo h4').text(projectName + ' 상세업무 등록');
-                 $('#wrkInfo').hide();
-                 $('#dwrkInfo').show();        
-             }
-        	
+            const projectName = $(buttonElement).text(); 
+            const projNo = $(buttonElement).parent().attr('id').split('_')[1]; 
+            const pwNo = parseInt(projNo.replace(/^[PW]/, ''), 10); 
+            
+
+            if (level <= 1) {
+            	$.ajax({
+                    url: `/project/projectlistinfo/${pwNo}`, 
+                    type: 'GET',
+                    success: function(response) {
+                    	//console.log(response); 
+                    	$('#editProjectModal').show();
+                        $('#wrkInfo').hide();
+                        $('#dwrkInfo').hide();
+                        $('#insertPanelProjdwrks').hide();
+                        $('#insertPanelProjwrks').hide();
+                        
+                        $('#editProjName').val(response.name);
+                        $('#editProjContent').val(response.content);
+                        $('#editProjManager').val(response.pmgrNo);
+                        $('#editProjGit').val(response.projectGitUrl);
+                        $('#editProjStatus').val(response.status);
+                        $('#projNo').val(response.projNo);
+                        const formatDate = (dateString) => {
+                            const date = new Date(dateString);
+                            return date.toISOString().split('T')[0]; 
+                        }; 
+                        $('#editProjStartDate').val(formatDate(response.startDate));
+                        $('#editProjEndDate').val(formatDate(response.endDate));   
+                    }
+            	});
+            }else if(level <= 2){
+                $('#wrkInfo h4').text(projectName + ' 업무 수정');
+                $('#wrkInfo').show();
+                $('#editProjectModal').hide();
+                $('#dwrkInfo').hide();
+                $('#insertPanelProjdwrks').hide();
+                $('#insertPanelProjwrks').hide();
+                
+                $.ajax({
+                    url: `/project/projectwrklistinfo/${pwNo}`, 
+                    type: 'GET',
+                    dataType: 'json', 
+                    success: function(response) {
+                        $('#nameProjWrksUpdate').val(response.name);
+                        $('#contentProjWrksUpdate').val(response.content);
+                        $('#jobNoProjWrksUpdate').val(response.jobNo); 
+                        $('#mgrNoProjWrksUpdate').val(response.mgrNo);
+                    },
+                    error: function(xhr, status, error) {
+                        alert('프로젝트 정보를 가져오는 데 실패했습니다: ' + error);
+                    }
+                });
+            }else {
+                $('#dwrkInfo h4').text(projectName + ' 상세업무 수정');
+                $('#wrkInfo').hide();
+                $('#dwrkInfo').show();  
+                $('#insertPanelProjdwrks').hide();
+                $('#insertPanelProjwrks').hide();
+                $('#editProjectModal').hide();
+                
+                $.ajax({
+                    url: `/project/projectdwrkinfo/${pwNo}`, 
+                    type: 'GET',
+                    dataType: 'json', 
+                    success: function(response) {
+                        $('#projdwrkname').val(response.name);
+                        $('#projdwrkcontent').val(response.content);
+                        $('#updateimportance').val(response.importance); 
+                        const formatDate = (dateString) => {
+                            const date = new Date(dateString);
+                            return date.toISOString().split('T')[0]; 
+                        }; 
+                        $('#updatestartDate').val(formatDate(response.startDate));
+                        $('#updateendDate').val(formatDate(response.endDate));
+                        $('#updatecommitId').val(response.commitId);
+                        $('#updatemgrNoProjDwrks').val(response.mgrNo);
+                        $('#updateisStatus').val(response.isStatus);
+                        
+                    },
+                    error: function(xhr, status, error) {
+                        alert('프로젝트 정보를 가져오는 데 실패했습니다: ' + error);
+                    }
+                });
+            }
+            
+            // projNo를 hidden input에 설정
+            $('#projNo').val(projNo.replace(/^[PW]/, '')); 
+            $('#pwNo').val(pwNo); 
+            $('#pdwNo').val(pwNo); 
         }
+    	// 프로젝트 수정 처리
+        $('#editProjectForm').on('submit', function(e) {
+        	e.preventDefault();
+            $.ajax({
+                url: `/project/projectupdate`,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    projNo: $('#projNo').val(),
+                    name: $('#editProjName').val(),
+                    content: $('#editProjContent').val(),
+                    pmgrNo: $('#editProjManager').val(),
+                    projectGitUrl: $('#editProjGit').val(),
+                    status: $('#editProjStatus').val(),
+                    startDate: $('#editProjStartDate').val(),
+                    endDate: $('#editProjEndDate').val()
+                    
+
+                }),
+                success: function(response) {
+                    alert('프로젝트가 성공적으로 수정되었습니다!');
+
+                    $('#editProjectModal').hide(); // 수정 모달 닫기
+                },
+                error: function(xhr, status, error) {
+                    alert('프로젝트 수정에 실패했습니다: ' + error);
+                }
+            });
+        });
+    	
+    	
+     // 업무 수정 처리
+        $('#updateFormWrks').on('submit', function(e) {
+        	e.preventDefault();
+            $.ajax({
+                url: `/project/projectwrkupdate`,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    pwNo: $('#pwNo').val(),
+                    name: $('#nameProjWrksUpdate').val(),
+                    content: $('#contentProjWrksUpdate').val(),
+                    jobNo: $('#jobNoProjWrksUpdate').val(),
+                    mgrNo: $('#mgrNoProjWrksUpdate').val(),
+                    
+
+                }),
+                success: function(response) {
+                    alert('프로젝트가 성공적으로 수정되었습니다!');
+
+                    $('#updateFormProjdwrks').hide();
+                },
+                error: function(xhr, status, error) {
+                    alert('프로젝트 수정에 실패했습니다: ' + error);
+                }
+            });
+        });
+     // 상세업무 수정 처리
+        $('#updateFormProjdwrks').on('submit', function(e) {
+        	e.preventDefault();
+
+          
+            
+            $.ajax({
+                url: `/project/projectdwrkupdate`,
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    pdwNo: $('#pdwNo').val(),
+                    name: $('#projdwrkname').val(),
+                    content: $('#projdwrkcontent').val(),
+                    isStatus: $('#updateisStatus').val(),
+                    startDate: $('#updatestartDate').val(),
+                    compDate: $('#updateendDate').val(),
+                    commitId: $('#updatecommitId').val(),
+                    importance: $('#updateimportance').val(),
+                    mgrNo: $('#updatemgrNoProjDwrks').val(),
+                    
+
+                }),
+                success: function(response) {
+                    alert('상세업무가 성공적으로 수정되었습니다!');
+
+                    $('#dwrkInfo').hide(); // 수정 모달 닫기
+                },
+                error: function(xhr, status, error) {
+                    alert('프로젝트 수정에 실패했습니다: ' + error);
+                }
+            });
+        });     
     </script>
 
     <!-- 재귀 함수 정의 -->
     <th:block th:fragment="renderNode(projno, projname, parentNo, table, level)" th:data-current-table="${table}" id="'test'+${status.index}" th:data-index="${status.index}">
-        <li th:id="'node_' + ${projno}" style="display: none;" th:onclick="'myInfo(this, ' + ${level} + ')'">[[${projname}]]
-            <button class="btn btn-info btn-lg no-border-button"  th:onclick="'myFunction(this, ' + ${level} + ')'">
-                <i class="mdi mdi-plus-circle-outline" style="color:black;"></i>
-            </button>
-            <ul style="display: none;"> 
-                <th:block th:each="child, status : ${projects}" th:if="${child.parentNo == projno}">
-                    <span th:data-current-table="${table}"  th:data-index="${status.index}" id="'test'+${status.index}"></span>
-                    <th:block th:replace="~{::renderNode(projno=${child.no}, projname=${child.name}, parentNo=${projno}, table=${child.table}, level=${child.level})}"></th:block>
-                </th:block>
-            </ul>
-        </li>
+	    <li th:id="'node_' + ${projno}" style="display: none;">
+		    <span >[[${projname}]]</span>
+		    <button class="btn btn-info btn-lg no-border-button"  th:onclick="'event.stopPropagation(); myFunction(this, ' + ${level} + ')'" style="margin-left: 5px;">
+        		<i class="mdi mdi-plus-circle-outline" style="color:black; margin-right: 10px; " ></i>
+    		</button>
+    		
+		    <button class="btn btn-info btn-lg no-border-button"  th:onclick="'event.stopPropagation(); myInfo(this, ' + ${level} + ')'">
+        		<i class="fas fa-edit" style="color:black;"></i>
+    		</button>
+    	<ul style="display: none;"> 
+        <th:block th:each="child, status : ${projects}" th:if="${child.parentNo == projno}">
+            <span th:data-current-table="${table}" th:data-index="${status.index}" id="'test'+${status.index}"></span>
+            <th:block th:replace="~{::renderNode(projno=${child.no}, projname=${child.name}, parentNo=${projno}, table=${child.table}, level=${child.level})}"></th:block>
+        </th:block>
+	    </ul>
+		</li>
     </th:block>
 </div>

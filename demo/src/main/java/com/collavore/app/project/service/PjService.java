@@ -39,6 +39,10 @@ public interface PjService {
 	
 	public ProjectVO projectdwrkInfo(int pdwNo);
 	
+	public Map<String, Object> updatewrkProject(ProjectVO projectVO);
+	
+	public Map<String, Object> updatedwrkProject(ProjectVO projectVO);
+	
 //	public List<ProjectVO> getProjects(int page, int size);
 //
 //	public long getTotalProjects();

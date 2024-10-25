@@ -62,7 +62,6 @@ public class ProjectController {
 	@ResponseBody
 	public Map<String, Object> insertAjax(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
-		System.err.println(projectVO);
 		pjService.projectinsert(projectVO);
 
 		map.put("type", "postAjax");
@@ -253,4 +252,47 @@ public class ProjectController {
 		return pjService.projectdwrkInfo(pdwNo);
 	}	
 	
+	
+	// 프로젝트 단건 조회
+	@GetMapping("/project/projectlistinfo/{pwNo}")
+	@ResponseBody
+	public ProjectVO getProjectInfo2(@PathVariable int pwNo) {
+		return pjService.projectInfo(pwNo);
+	}
+	
+	// 프로젝트 업무 수정 요청 처리
+		@PostMapping("/project/projectwrkupdate")
+		@ResponseBody
+		public Map<String, Object> updatewrkProject(@RequestBody ProjectVO projectVO) {
+			Map<String, Object> response = new HashMap<>();
+			try {
+				pjService.updatewrkProject(projectVO);
+				response.put("message", "수정 완료");
+				response.put("status", "success");
+			} catch (Exception e) {
+				response.put("message", "수정 실패: " + e.getMessage());
+				response.put("status", "error");
+			}
+			return response;
+		}
+		
+		
+		// 프로젝트 상세업무 수정 요청 처리
+				@PostMapping("/project/projectdwrkupdate")
+				@ResponseBody
+				public Map<String, Object> updatedwrkProject(@RequestBody ProjectVO projectVO) {
+					Map<String, Object> response = new HashMap<>();
+					try {
+						System.err.println(projectVO);
+						pjService.updatedwrkProject(projectVO);
+						response.put("message", "수정 완료");
+						response.put("status", "success");
+					} catch (Exception e) {
+						e.printStackTrace();
+						response.put("message", "수정 실패: " + e.getMessage());
+						response.put("status", "error");
+					}
+					return response;
+				}		
+		
 }

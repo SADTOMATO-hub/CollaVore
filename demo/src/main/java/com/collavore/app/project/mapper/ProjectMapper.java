@@ -48,4 +48,9 @@ public interface ProjectMapper {
 	// 상세업무 조회
 	public ProjectVO selectdwrkInfo(int pdwNo);
 	
+	// 프로젝트 업무 수정
+	public Map<String, Object> updatewrkProject(ProjectVO projectVO);
+	// 프로젝트 상세업무 수정
+	public Map<String, Object> updatedwrkProject(ProjectVO projectVO);
+	
 }

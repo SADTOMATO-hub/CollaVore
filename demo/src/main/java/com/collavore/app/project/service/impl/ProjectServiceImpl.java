@@ -101,6 +101,16 @@ public class ProjectServiceImpl implements PjService{
 		return projectMapper.selectdwrkInfo(pdwNo); 
 	}
 
+	@Override
+	public Map<String, Object> updatewrkProject(ProjectVO projectVO) {
+		return projectMapper.updatewrkProject(projectVO);
+	}
+
+	@Override
+	public Map<String, Object> updatedwrkProject(ProjectVO projectVO) {
+		return projectMapper.updatedwrkProject(projectVO);
+	}
+
 //    public List<ProjectVO> getProjects(int page, int size) {
 //        // 페이지 번호와 크기에 맞춰 데이터 조회
 //        int offset = (page - 1) * size;
