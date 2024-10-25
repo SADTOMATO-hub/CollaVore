@@ -42,7 +42,8 @@
 		d.name AS deptName,
 		p.name AS
 		posiName,
-		j.name AS jobName
+		j.name AS jobName,
+		e.img
 		FROM employees e
 		LEFT JOIN departments d ON
 		e.dept_no
@@ -61,6 +62,7 @@
 		SET info = #{info},
 		name = #{empName},
 		tel = #{tel},
+		img = #{img},
 		password = #{password}
 		WHERE emp_no = #{empNo}
 	</update>
@@ -305,14 +307,14 @@
 		, tel
 		, email
 		, address
-		,
-		work_type
+		, work_type
 		, info
 		, join_date
 		, leave_date
 		, dept_no
 		, job_no
 		, posi_no
+		, img
 		FROM
 		employees
 		WHERE emp_no = #{empNo}
@@ -324,20 +326,18 @@
 		UPDATE employees
 		SET name = #{empName}
 		, tel = #{tel}
-		,
-		email = #{email}
+		, email = #{email}
 		, address = #{address}
 		, work_type = #{workType}
 		, info
 		= #{info}
 		, join_date = #{joinDate}
 		, leave_date = #{leaveDate}
-		, dept_no
-		= #{deptNo}
+		, dept_no = #{deptNo}
 		, job_no = #{jobNo}
 		, posi_no = #{posiNo}
-		WHERE emp_no =
-		#{empNo}
+		, img = #{img}
+		WHERE emp_no = #{empNo}
 	</update>
 
 	<!-- 사원 정보 조회 -->
