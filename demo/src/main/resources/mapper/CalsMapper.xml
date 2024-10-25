@@ -4,23 +4,24 @@
 
 	<!--============================== 일정관리 ==================================== -->
 	<select id="selectSchsAll" resultType="SchsVO">
-    SELECT
-        schs.sch_no
-        ,schs.title
-        ,schs.start_date
-        ,schs.end_date
-        ,schs.cal_no
-        ,cals.name   <!-- 캘린더 이름을 조인으로 조회 -->
-        ,cals.type   <!-- 캘린더 타입을 조인으로 조회 -->
-        ,schs.is_alarm
-    FROM
-        schs
-    JOIN
-        cals ON schs.cal_no = cals.cal_no  <!-- schs와 cals 테이블 조인 -->
-    WHERE
-        cals.is_delete = 'h2'  <!-- 삭제되지 않은 일정만 조회 -->
-</select>
-
+		SELECT
+		schs.sch_no
+		,schs.title
+		,schs.start_date
+		,schs.end_date
+		,schs.cal_no
+		,cals.name   <!-- 캘린더 이름을 조인으로 조회 -->
+		,cals.cal_type   <!-- 캘린더 타입을 조인으로 조회 -->
+		,schs.is_alarm
+		FROM
+		schs
+		JOIN
+		cals ON schs.cal_no = cals.cal_no  <!-- schs와 cals 
+			테이블 조인 -->
+		WHERE
+		cals.is_delete = 'h2'  <!-- 삭제되지 않은 일정만 조회 -->
+	</select>
+	
 	<!-- 단건 일정 조회 -->
 	<select id="selectSchsInfo" parameterType="SchsVO"
 		resultType="SchsVO">
@@ -35,68 +36,49 @@
 		FROM schs
 		<!-- WHERE schNo = #{schNo} AND isDelete = 'h2' 미삭제된 일정만 조회 -->
 	</select>
-	
-	
-	
+
+
+
 	<insert id="insertSchsInfo" parameterType="SchsVO">
     <selectKey keyProperty="schNo" resultType="Integer" order="BEFORE">
-        SELECT NVL(MAX(sch_no), 0)+1
+        SELECT NVL(MAX(sch_no), 0) + 1
         FROM schs
     </selectKey>
     INSERT INTO schs (
         sch_no,
         title,
-        start_Date,
+        start_date,
         end_date,
-        cal_no,  <!-- 캘린더 번호 저장 -->
-        type,    <!-- 캘린더 타입 저장 -->
+        cal_no,
         is_alarm
     )
-    VALUES (
+    SELECT
         #{schNo},
         #{title},
         #{startDate,jdbcType=TIMESTAMP},
         #{endDate,jdbcType=TIMESTAMP},
-        #{calNo},    <!-- 캘린더 번호 -->
-        #{type},     <!-- 캘린더 타입 (g1: 개인, g2: 공유) -->
+        #{calNo},
         #{isAlarm}
-    )
+    FROM dual
 </insert>
 
+	<!-- 캘린더 타입에 따른 cal_no 조회 -->
 
-<!-- 캘린더 타입에 따른 cal_no 조회 -->
-    <select id="selectCalType" resultType="Integer" parameterType="int">
-        SELECT cal_no
-        FROM cals
-        WHERE type = #{type} AND is_delete = 'h2'
-    </select>
 
-	<!-- <insert id="insertSchsInfo" parameterType="SchsVO">
 
-		<selectKey keyProperty="schNo" resultType="Integer"
-			order="BEFORE">
-			SELECT NVL(MAX(sch_no), 0)+1
-			FROM schs
-		</selectKey>
-		INSERT INTO schs (
-					sch_no
-					,title
-					,start_Date
-					,end_date
-					,cal_no
-					,is_alarm
-					
-					)
-		VALUES (
-		#{schNo}
-		,#{title}
-		,#{startDate,jdbcType=TIMESTAMP}
-		,#{endDate,jdbcType=TIMESTAMP}
-		,#{calNo}
-		,#{isAlarm}
-		
-		)
-	</insert> -->
+	<select id="selectCalType" resultType="Integer"
+		parameterType="int">
+		SELECT cal_no
+		FROM cals
+		WHERE type = #{type} AND is_delete
+		= 'h2'
+	</select>
+
+	<!-- <insert id="insertSchsInfo" parameterType="SchsVO"> <selectKey keyProperty="schNo" 
+		resultType="Integer" order="BEFORE"> SELECT NVL(MAX(sch_no), 0)+1 FROM schs 
+		</selectKey> INSERT INTO schs ( sch_no ,title ,start_Date ,end_date ,cal_no 
+		,is_alarm ) VALUES ( #{schNo} ,#{title} ,#{startDate,jdbcType=TIMESTAMP} 
+		,#{endDate,jdbcType=TIMESTAMP} ,#{calNo} ,#{isAlarm} ) </insert> -->
 
 
 	<delete id="deleteSchsInfo" parameterType="int">
@@ -124,21 +106,21 @@
 	<!--==============================개인 캘린더==================================== -->
 
 
-	<select id="selectTeamCal" resultType="CalsVO">
-		SELECT *
-		FROM cals
-		WHERE is_delete = 'h2'
-		AND type = 'g2'  <!-- 공유 캘린더만 조회 -->
+	<select id="selectTeamCal" resultType="SchsVO">
+		SELECT cs.cal_no,
+		    c.name || ' ' || CASE 
+		        WHEN c.cal_type = 'g1' THEN '(개인)'
+		        WHEN c.cal_type = 'g2' THEN '(공유)'
+		    ELSE '프로젝트' END AS name
+		FROM calshares cs
+		    INNER JOIN cals c ON c.cal_no = cs.cal_no
+		WHERE cs.emp_no = #{empNo}
+			AND c.cal_type = 'g1'
+		ORDER BY CASE WHEN c.cal_type = 'g1'  THEN 1 ELSE 9999 END, c.name
 	</select>
 
 
-
-
-
-
-
-
-	<insert id="insertCalsInfo" parameterType="CalsVO">
+	<insert id="insertCalsInfo" parameterType="SchsVO">
 		<!-- INSERT 전 calNo를 계산하기 위한 selectKey -->
 		<selectKey keyProperty="calNo" resultType="Integer"
 			order="BEFORE">
@@ -149,7 +131,7 @@
 		INSERT INTO cals (
 		cal_no
 		, name
-		, type
+		, cal_type
 		, reg_date
 		, is_delete
 		, delete_date
@@ -158,7 +140,7 @@
 		VALUES (
 		#{calNo}
 		, #{name}
-		, #{type}
+		, #{calType}
 		, SYSDATE
 		, #{isDelete}
 		, NULL
@@ -168,7 +150,7 @@
 
 
 	<!-- 캘린더 정보를 calNo로 가져오는 쿼리 -->
-	<update id="updateCalsInfo" parameterType="CalsVO">
+	<update id="updateCalsInfo" parameterType="SchsVO">
 		UPDATE cals
 		SET
 		name =
@@ -209,10 +191,11 @@
 
 
 
-	<!-- 캘린더 완전 삭제  -->
+	<!-- 캘린더 완전 삭제 -->
 	<delete id="permanentlyDeleteCal" parameterType="int">
 		DELETE FROM cals
-		WHERE cal_no = #{calNo} AND is_delete = 'h1'  <!-- 휴지통에 있는 캘린더만 삭제 -->
+		WHERE cal_no = #{calNo} AND is_delete = 'h1'  <!-- 휴지통에 있는 
+			캘린더만 삭제 -->
 	</delete>
 	<!--==============================END 개인 캘린더 ==================================== -->
 

@@ -14,23 +14,17 @@
 
 
 	<!-- 일정 추가 모달 -->
-	<div id="scheduleModal" class="modal">
+	<div id="addScheduleModal" class="modal">
 		<div class="modal-content">
 			<h2>일정 생성</h2>
 			<form id="scheduleForm">
 				<!-- 캘린더 선택 -->
-				<label for="calendarType">캘린더 선택</label> <select id="calendarType">
-					<option value="g1">개인캘린더</option>
-					<option value="g2">공유캘린더</option>
+				<!-- HTML 코드 -->
+				<select id="calendarSelectBox">
+					<!-- 캘린더 옵션들이 동적으로 추가될 예정 -->
 				</select>
-
-				<!-- 공유캘린더 하위 옵션이 표시될 곳 -->
-				<div id="sharedCalendarOptions" style="display: none;">
-					<label for="sharedCalendar">공유 캘린더 선택:</label> <select
-						id="sharedCalendar">
-						<!-- 동적으로 옵션이 추가될 자리 -->
-					</select>
-				</div>
+				
+				 
 
 				<label for="title">일정 제목</label> <input type="text" id="title"
 					placeholder="내용 입력" required> <label for="startDate">시작</label>
@@ -43,62 +37,75 @@
 				<label for="endDate">종료</label> <input type="date" id="endDate"
 					required> <input type="time" id="endTime" required>
 
-				<!-- 알림 여부 -->
-				<label for="alarm">알림</label> <input type="checkbox" id="alarm">
+			
+
+					<!-- 알림 여부 -->
+							<label for="isAlarm">알림 설정</label>
+							<input type="checkbox" id="isAlarm">
+							
+							<!-- 알림 설정 필드 (기본적으로 숨김 처리) -->
+							<div id="alarmFields" style="display: none;">
+							    <label for="alarmFrequency">알림 빈도</label>
+							    <select id="alarmFrequency">
+							        <option value="daily">매일</option>
+							        <option value="weekly">매주</option>
+							        <option value="monthly">매달</option>
+							    </select>
+							
+							    <!-- 매일 알림 -->
+							    <div id="dailyRepeat" style="display: none;">
+							        <label for="dailyInterval"></label>
+							        <input type="number" id="dailyInterval" min="1" max="24" value="1">시 마다
+							    </div>
+							<!-- 매주 알림 -->
+								<div id="weeklyRepeat" style="display: none;">
+								    <label for="weeklyDays">알림 요일 선택</label>
+								    <div id="weeklyDays">
+								        <input type="checkbox" id="monday" name="weeklyDay" value="mon">
+								        <label for="monday">월요일</label>
+								
+								        <input type="checkbox" id="tuesday" name="weeklyDay" value="tue">
+								        <label for="tuesday">화요일</label>
+								
+								        <input type="checkbox" id="wednesday" name="weeklyDay" value="wed">
+								        <label for="wednesday">수요일</label>
+								
+								        <input type="checkbox" id="thursday" name="weeklyDay" value="thu">
+								        <label for="thursday">목요일</label>
+								
+								        <input type="checkbox" id="friday" name="weeklyDay" value="fri">
+								        <label for="friday">금요일</label>
+								
+								        <input type="checkbox" id="saturday" name="weeklyDay" value="sat">
+								        <label for="saturday">토요일</label>
+								
+								        <input type="checkbox" id="sunday" name="weeklyDay" value="sun">
+								        <label for="sunday">일요일</label>
+								    </div>
+								
+								    <label for="weeklyHour"></label>
+								    <input type="number" id="weeklyHour" min="1" max="24" value="1">시 마다
+								</div>
+							
+							    <!-- 매월 알림 -->
+							    <div id="monthlyRepeat" style="display: none;">
+								    <label for="monthlyDay"></label>
+								    <input type="number" id="monthlyDay" min="1" max="31" value="1">일
+								
+								    <label for="monthlyHour"></label>
+								    <input type="number" id="monthlyHour" min="1" max="24" value="1">시 마다
+								</div>
+							
+							    
+							</div>
+							
+							
 
 
-
-				<!-- 반복 여부 -->
-				<label for="isRepeat">반복</label> <input type="checkbox"
-					id="isRepeat">
-
-				<!-- 반복 설정 필드 (기본적으로 숨김 처리) -->
-				<div id="repeatFields" style="display: none;">
-					<label for="repeatFrequency">반복 빈도</label> <select
-						id="repeatFrequency">
-						<option value="daily">매일</option>
-						<option value="weekly">매주</option>
-						<option value="monthly">매월</option>
-					</select>
-
-					<div id="dailyRepeat" style="display: none;">
-						<label for="dailyInterval">일 마다</label> <input type="number"
-							id="dailyInterval" min="1" value="1">
-					</div>
-
-					<div id="weeklyRepeat" style="display: none;">
-						<label for="weeklyInterval">주 마다</label> <input type="number"
-							id="weeklyInterval" min="1" value="1"> <select
-							id="weeklyDays">
-							<option value="mon">월요일</option>
-							<option value="tue">화요일</option>
-							<option value="wed">수요일</option>
-							<option value="thu">목요일</option>
-							<option value="fri">금요일</option>
-							<option value="sat">토요일</option>
-							<option value="sun">일요일</option>
-						</select>
-					</div>
-
-					<div id="monthlyRepeat" style="display: none;">
-						<label for="monthlyInterval">개월 마다</label> <input type="number"
-							id="monthlyInterval" min="1" value="1"> <label
-							for="monthlyDay">날짜</label> <input type="date" id="monthlyDay">
-					</div>
-
-					<!-- 반복 범위 -->
-					<label for="repeatScope">반복 범위</label> <input type="radio"
-						id="infiniteRepeat" name="repeatScope" value="infinite">
-					계속 반복 <input type="radio" id="limitedRepeat" name="repeatScope"
-						value="limited"> <label for="repeatTimes">횟수</label> <input
-						type="number" id="repeatTimes" min="1"> <input
-						type="radio" id="endDateRepeat" name="repeatScope" value="endDate">
-					<label for="repeatEndDate">반복 종료일</label> <input type="date"
-						id="repeatEndDate">
-				</div>
+				
 
 				<button type="submit">저장</button>
-				<button type="button" id="cancelBtn">취소</button>
+				<button type="button" id="addCancelBtn">취소</button>
 			</form>
 		</div>
 	</div>
@@ -114,19 +121,20 @@
 		<div class="modal-content">
 			<h2>일정 조회</h2>
 			<form id="viewScheduleForm">
-				<label for="viewCalendar">캘린더</label> <input type="text"
-					id="viewCalendar" readonly> <label for="viewTitle">일정
-					제목</label> <input type="text" id="viewTitle" readonly> <label
-					for="viewStartDate">시작</label> <input type="date"
-					id="viewStartDate" readonly> <input type="time"
-					id="viewStartTime" readonly> <label for="viewEndDate">종료</label>
-				<input type="date" id="viewEndDate" readonly> <input
-					type="time" id="viewEndTime" readonly>
+				<label for="viewCalendar">캘린더</label> 
+				<input type="text" id="viewCalendar" readonly> <label for="viewTitle">일정제목</label> 
+				<input type="text" id="viewTitle" readonly> 
+				<label for="viewStartDate">시작</label> 
+				<input type="date" id="viewStartDate" readonly> 
+				<input type="time" id="viewStartTime" readonly> 
+				<label for="viewEndDate">종료</label>
+				<input type="date" id="viewEndDate" readonly> 
+				<input type="time" id="viewEndTime" readonly>
 
 				<div class="modal-buttons">
-					<button type="button" id="editBtn">수정</button>
-					<button type="button" id="deleteBtn">삭제</button>
-					<button type="button" class="close">취소</button>
+					<button type="button" id="viewScheduleEditBtn">수정</button>
+					<button type="button" id="viewScheduleDeleteBtn">삭제</button>
+					<button type="button" class="viewScheduleClose">취소</button>
 				</div>
 			</form>
 		</div>
@@ -155,6 +163,7 @@
 					id="editAlarm">
 
 				<button type="submit">저장</button>
+				<button type="button" class="editScheduleClose">취소</button>
 			</form>
 		</div>
 	</div>

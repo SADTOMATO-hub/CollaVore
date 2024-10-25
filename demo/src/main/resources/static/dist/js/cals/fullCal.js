@@ -24,24 +24,24 @@ document.addEventListener('DOMContentLoaded', function() {
 	});
 
 	// 일정 생성 모달창 취소 버튼 클릭 시 모달 닫기
-	document.getElementById('cancelBtn').addEventListener('click', function() {
+	document.getElementById('addCancelBtn').addEventListener('click', function() {
 		var modal = document.getElementById('scheduleModal'); // 일정생성모달 
 		modal.style.display = 'none'; // 모달 닫기
 	});
 
 	// 전역에서 모달 외부 클릭 시 닫기 처리
 	window.onclick = function(event) {
-		var scheduleModal = document.getElementById('scheduleModal'); // 일정생성모달 
-		var viewModal = document.getElementById('viewScheduleModal'); // 일정조회모달 
-		var editModal = document.getElementById('editScheduleModal'); // 일정수정모달 
+		var addScheduleModal = document.getElementById('addScheduleModal'); // 일정생성모달 
+		var viewScheduleModal = document.getElementById('viewScheduleModal'); // 일정조회모달 
+		var editScheduleModal = document.getElementById('editScheduleModal'); // 일정수정모달 
 
 		// 클릭된 대상이 각각의 모달일 경우에만 닫기
-		if (event.target == scheduleModal) {
-			scheduleModal.style.display = 'none';
-		} else if (event.target == viewModal) {
-			viewModal.style.display = 'none';
-		} else if (event.target == editModal) {
-			editModal.style.display = 'none';
+		if (event.target == addScheduleModal) {
+			addScheduleModal.style.display = 'none';
+		} else if (event.target == viewScheduleModal) {
+			viewScheduleModal.style.display = 'none';
+		} else if (event.target == editScheduleModal) {
+			editScheduleModal.style.display = 'none';
 		}
 	};
 
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				//============ 단건조회 ============
 				eventClick: function(info) {
 					// 조회 모달 창 열기
-					var viewModal = document.getElementById('viewScheduleModal');
+					var viewScheduleModal = document.getElementById('viewScheduleModal');
 					document.getElementById('viewCalendar').value = info.event.extendedProps.calendarType || '없음';
 					document.getElementById('viewTitle').value = info.event.title;
 					document.getElementById('viewStartDate').value = info.event.startStr.split('T')[0];
@@ -101,21 +101,21 @@ document.addEventListener('DOMContentLoaded', function() {
 					document.getElementById('viewEndDate').value = info.event.endStr ? info.event.endStr.split('T')[0] : '';
 					document.getElementById('viewEndTime').value = info.event.endStr ? info.event.endStr.split('T')[1] : '';
 
-					viewModal.style.display = 'block'; // 조회 모달 보이기
+					viewScheduleModal.style.display = 'block'; // 조회 모달 보이기
 
 					// 취소 버튼 클릭 시 모달 닫기
-					document.getElementById('viewScheduleModal').querySelector('.close').addEventListener('click', function() {
-						viewModal.style.display = 'none'; // 모달 닫기
+					document.getElementById('viewScheduleModal').querySelector('.viewScheduleClose').addEventListener('click', function() {
+						viewScheduleModal.style.display = 'none'; // 모달 닫기
 					});
 
 					//==================================== 수정 ====================================
 					// 수정 버튼 클릭 시
-					var editBtn = document.getElementById('editBtn');
-					editBtn.onclick = function() {
+					var viewScheduleEditBtn = document.getElementById('viewScheduleEditBtn');
+					viewScheduleEditBtn.onclick = function() {
 						// 단건조회 모달 닫기
-						viewModal.style.display = 'none';
-						// 수정 모달 열기
-						var editModal = document.getElementById('editScheduleModal');
+						viewScheduleModal.style.display = 'none';
+						// 수정 모달 열기editScheduleModal
+						var editScheduleModal = document.getElementById('editScheduleModal');
 						document.getElementById('editCalendarType').value = info.event.extendedProps.calendarType || '내캘린더';
 						document.getElementById('editTitle').value = info.event.title;
 						document.getElementById('editStartDate').value = info.event.startStr.split('T')[0];
@@ -123,28 +123,41 @@ document.addEventListener('DOMContentLoaded', function() {
 						document.getElementById('editEndDate').value = info.event.endStr ? info.event.endStr.split('T')[0] : '';
 						document.getElementById('editEndTime').value = info.event.endStr ? info.event.endStr.split('T')[1] : '';
 
-						editModal.style.display = 'block'; // 수정 모달 보이기
+						editScheduleModal.style.display = 'block'; // 수정 모달 보이기
 
 						document.getElementById('editScheduleForm').onsubmit = function(e) {
 							e.preventDefault();
 
+							const schNo = info.event.id;
+							const title = document.getElementById('editTitle').value;
+							const startDate = document.getElementById('editStartDate').value;
+							const endDate = document.getElementById('editEndDate').value;
+							const calNo = 0;  // 임시로 0 설정
+							const isAlarm = document.getElementById('editAlarm').checked ? "Y" : "N";
 
-							const calNo = document.getElementById('selectedCalNo').value;
-							const name = document.getElementById('editCalendarName').value;
-
-							// 서버로 수정 요청 보내기
-							fetch('/cal/calUpdate', {
+							// POST 요청으로 일정 수정하는 부분
+							fetch('/sch/schUpdate', {
 								method: 'POST',
 								headers: { 'Content-Type': 'application/json' },
-								body: JSON.stringify({ calNo: calNo, name: name, color: color })
+								body: JSON.stringify({ schNo, title, startDate, endDate, calNo, isAlarm })
 							})
 								.then(response => response.json())
 								.then(data => {
 									if (data.result) {
-										alert('캘린더 수정이 성공적으로 완료되었습니다.');
-										location.reload();  // 새로고침하여 변경 사항 반영
+										// 캘린더의 일정을 업데이트
+										// 변경된 내용을 즉시 반영하기 위해 info.event 객체를 업데이트
+										info.event.setProp('title', title);
+										info.event.setStart(startDate);
+										info.event.setEnd(endDate);
+
+										// 수정 완료 후 모달 닫기 
+										editScheduleModal.style.display = 'none';
+
+										// 성공 메시지 출력 
+										alert(data.message);
 									} else {
-										alert('캘린더 수정에 실패했습니다.');
+										// 실패 메시지 출력 
+										alert(data.message);
 									}
 								})
 								.catch(error => console.error('Error:', error));
@@ -154,26 +167,30 @@ document.addEventListener('DOMContentLoaded', function() {
 					//====================================END 수정 ====================================
 
 					// 삭제 버튼 클릭 시 이벤트
-					var deleteBtn = document.getElementById('deleteBtn');
-					deleteBtn.onclick = function() {
-						if (confirm('정말로 이 일정을 삭제하시겠습니까?')) {
-							fetch('/sch/schDelete', {  // 삭제 API 호출
-								method: 'POST',
-								headers: { 'Content-Type': 'application/json' },
-								body: JSON.stringify({ schNo: info.event.id })
-							})
-								.then(response => response.json())
-								.then(data => {
-									if (data.success) {
-										info.event.remove();  // FullCalendar에서 삭제
-										viewModal.style.display = 'none'; // 모달 닫기
-									} else {
-										alert('일정 삭제에 실패했습니다.');
-									}
+					var viewScheduleDeleteBtn = document.getElementById('viewScheduleDeleteBtn');
+					if (viewScheduleDeleteBtn) {
+						viewScheduleDeleteBtn.onclick = function() {
+							if (confirm('정말로 이 일정을 삭제하시겠습니까?')) {
+								fetch('/sch/schDelete', {  // 삭제 API 호출
+									method: 'POST',
+									headers: { 'Content-Type': 'application/json' },
+									body: JSON.stringify({ schNo: info.event.id })
 								})
-								.catch(error => console.error('Error:', error));
-						}
-					};
+									.then(response => response.json())
+									.then(data => {
+										if (data.success) {
+											info.event.remove();  // FullCalendar에서 삭제
+											viewScheduleModal.style.display = 'none'; // 모달 닫기
+										} else {
+											alert('일정 삭제에 실패했습니다.');
+										}
+									})
+									.catch(error => console.error('Error:', error));
+							}
+						};
+					} else {
+						console.error('삭제 버튼을 찾을 수 없습니다.');
+					}
 				},
 				//============END 단건조회 ============
 
@@ -181,48 +198,35 @@ document.addEventListener('DOMContentLoaded', function() {
 				//캘린더 안에서 일정생성 API 안에서 일정생성 일어나는것들 모두 여기서 처리 
 				select: function(arg) {
 					// 일정 추가 모달 창 열기
-					var modal = document.getElementById('scheduleModal');
-					modal.style.display = 'block';
+					var addScheduleModal = document.getElementById('addScheduleModal');
+					addScheduleModal.style.display = 'block';
 
 
-					// 공유캘린더 리스트 일정생성 모달창으로 가져오기//
-					// 캘린더 타입 선택에 따라 추가 필드를 동적으로 표시
-					document.getElementById('calendarType').addEventListener('change', function() { //g1 g2 g3 선택  
-						var sharedCalendarOptions = document.getElementById('sharedCalendarOptions');
-						var sharedCalendar = document.getElementById('sharedCalendar');
+					// 단건조회 모달 닫기
+					var addCancelBtn = document.getElementById('addCancelBtn');
+					addCancelBtn.style.display = 'none';
 
-						if (this.value === 'g2') {
-							// 공유캘린더를 선택했을 때만 공유캘린더 리스트 표시
-							sharedCalendarOptions.style.display = 'block';
 
-							// 공유캘린더 리스트를 동적으로 가져와서 업데이트
-							fetch('/cal/calList')
-								.then(response => response.json())
-								.then(data => {
-									console.log('Received data:', data); // 데이터를 확인하기 위한 로그 출력
 
-									sharedCalendar.innerHTML = ''; // 기존 리스트 초기화
-									// 옵션을 동적으로 추가
-									data.forEach(function(calendar) {
-										var option = document.createElement('option');
-										option.value = calendar.calNo;
-										option.text = calendar.name;
-										sharedCalendar.appendChild(option);
-										// 가져온 데이터가 없을 경우 대비
-										if (data.length === 0) {
-											var noOption = document.createElement('option');
-											noOption.value = '';
-											noOption.text = '공유 캘린더가 없습니다';
-											sharedCalendar.appendChild(noOption);
-										}
+					//캘린더 선택에서  공유캘린더 리스트 일정생성 모달창으로 가져오기//
+					// 공유캘린더 리스트를 동적으로 가져와서 업데이트
+					fetch('/cal/calList')
+						.then(response => response.json())
+						.then(data => {
+							console.log('Received data:', data); // 데이터를 확인하기 위한 로그 출력
 
-									});
-								})
-								.catch(error => console.error('Error:', error));
-						} else {
-							sharedCalendarOptions.style.display = 'none'; // g2가 아닌 경우 숨김
-						}
-					});
+							calendarSelectBox.innerHTML = ''; // 기존 리스트 초기화
+							// 옵션을 동적으로 추가
+							data.forEach(function(calendar) {
+								var option = document.createElement('option');
+								option.value = calendar.calNo;
+								option.text = calendar.name;
+								calendarSelectBox.appendChild(option);
+							});
+						})
+						.catch(error => console.error('Error:', error));
+
+
 
 
 					// 현재 시간을 로컬 시간으로 가져오기
@@ -239,49 +243,128 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-					// 반복 체크박스 클릭 시 필드 표시
-					document.getElementById('isRepeat').addEventListener('change', function() {
-						var repeatFields = document.getElementById('repeatFields');
+
+					// 알림 설정 여부 (f1: 사용, f2: 미사용)
+					var isAlarmEnabled = document.getElementById('isAlarm').checked ? 'f1' : 'f2';
+
+					// 알림 체크박스 선택 시 알림 필드 보이기
+					document.getElementById('isAlarm').addEventListener('change', function() {
+						var alarmFields = document.getElementById('alarmFields');
+						var alarmFrequency = document.getElementById('alarmFrequency').value;
+
 						if (this.checked) {
-							repeatFields.style.display = 'block';
+							alarmFields.style.display = 'block'; // 알림 필드 전체 표시
+							showAlarmFields(alarmFrequency); // 현재 선택된 알림 빈도에 맞는 필드 표시
 						} else {
-							repeatFields.style.display = 'none';
+							alarmFields.style.display = 'none'; // 알림 필드 전체 숨김
+							hideAllAlarmFields(); // 알림 빈도 필드도 숨김
 						}
 					});
 
-					// 반복 빈도 선택에 따라 추가 필드 표시
-					document.getElementById('repeatFrequency').addEventListener('change', function() {
-						var dailyRepeat = document.getElementById('dailyRepeat');
-						var weeklyRepeat = document.getElementById('weeklyRepeat');
-						var monthlyRepeat = document.getElementById('monthlyRepeat');
+					// 알림 체크박스 선택 시 알림 필드 보이기
+					document.getElementById('isAlarm').addEventListener('change', function() {
+						var alarmFields = document.getElementById('alarmFields');
+						var alarmFrequency = document.getElementById('alarmFrequency').value;
 
-
-						// 모든 반복 필드를 숨김
-						dailyRepeat.style.display = 'none';
-						weeklyRepeat.style.display = 'none';
-						monthlyRepeat.style.display = 'none';
-
-
-						// 선택된 반복 빈도에 따라 필드를 보여줌
-						if (this.value === 'daily') {
-							dailyRepeat.style.display = 'block';
-						} else if (this.value === 'weekly') {
-							weeklyRepeat.style.display = 'block';
-						} else if (this.value === 'monthly') {
-							monthlyRepeat.style.display = 'block';
+						if (this.checked) {
+							alarmFields.style.display = 'block'; // 알림 필드 전체 표시
+							showAlarmFields(alarmFrequency); // 현재 선택된 알림 빈도에 맞는 필드 표시
+						} else {
+							alarmFields.style.display = 'none'; // 알림 필드 전체 숨김
+							hideAllAlarmFields(); // 알림 빈도 필드도 숨김
 						}
 					});
 
+					// 알림 빈도 선택에 따라 필드 표시
+					document.getElementById('alarmFrequency').addEventListener('change', function() {
+						var frequency = this.value;
+						showAlarmFields(frequency); // 빈도에 따라 필드 표시
+					});
+
+					function showAlarmFields(frequency) {
+						hideAllAlarmFields(); // 먼저 모든 알림 필드를 숨김
+
+						// 선택된 빈도에 맞는 필드만 표시
+						if (frequency === 'daily') {
+							document.getElementById('dailyRepeat').style.display = 'block';
+						} else if (frequency === 'weekly') {
+							document.getElementById('weeklyRepeat').style.display = 'block';
+						} else if (frequency === 'monthly') {
+							document.getElementById('monthlyRepeat').style.display = 'block';
+						}
+					}
+
+					function hideAllAlarmFields() {
+						document.getElementById('dailyRepeat').style.display = 'none';
+						document.getElementById('weeklyRepeat').style.display = 'none';
+						document.getElementById('monthlyRepeat').style.display = 'none';
+					}
 
 
 
-					modal.style.display = 'block'; // 모달 보이기
+					// 특정 입력 필드에서 24를 초과하면 24로 제한하는 함수
+					function enforceMaxValue(inputField) {
+						inputField.addEventListener('input', function() {
+							var value = parseInt(this.value, 10);
+							if (value > 24) {
+								this.value = 24;  // 24를 초과하면 24로 다시 설정
+							} else if (value < 1) {
+								this.value = 1;  // 1 미만이면 1로 설정
+							}
+						});
+					}
+
+					// weeklyHour와 monthlyHour 필드에 대해 24를 초과하지 않도록 제한
+					var dailyIntervalInput = document.getElementById('dailyInterval');
+					var weeklyHourInput = document.getElementById('weeklyHour');
+					var monthlyHourInput = document.getElementById('monthlyHour');
+
+					enforceMaxValue(dailyIntervalInput);
+					enforceMaxValue(weeklyHourInput);
+					enforceMaxValue(monthlyHourInput);
+					// END 특정 입력 필드에서 24를 초과하면 24로 제한하는 함수	
+
+
+					// 알림 빈도 처리
+					var isAlarm = document.getElementById('isAlarm').checked;
+					var alarmFrequency = document.getElementById('alarmFrequency').value;
+					var alarmData = null;
+
+					if (isAlarm) {
+						alarmData = {
+							frequency: alarmFrequency,
+							interval: document.getElementById(alarmFrequency + 'Interval')?.value || null, // 일/주/달 마다 설정
+							selectedDays: getSelectedDays(), // 매주일 경우 선택된 요일들
+							repeatEndDate: document.getElementById('repeatEndDate')?.value || null // 종료일이 있을 경우
+						};
+					}
+
+					// 선택된 요일들 반환 (매주 알림 설정 시)
+					function getSelectedDays() {
+						var selectedDays = [];
+						document.querySelectorAll('input[name="weeklyDay"]:checked').forEach(function(checkbox) {
+							selectedDays.push(checkbox.value);
+						});
+						return selectedDays;
+					}
+
+					// 종일 체크 여부
+					var isAllDay = document.getElementById('allDay').checked;
+					if (isAllDay) {
+						endTime = '23:59:59'; // 자정까지
+					}
+
+
+
+
+
 
 
 					//							일정양식
 					document.getElementById('scheduleForm').onsubmit = function(e) {
 						e.preventDefault();
 
+						var calNo = document.getElementById('calendarSelectBox').value;
 						var title = document.getElementById('title').value;
 						var startDate = document.getElementById('startDate').value;
 						var startTime = document.getElementById('startTime').value;
@@ -292,41 +375,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						var startDateTime = new Date(startDate + 'T' + startTime).toISOString(); // ISO 형식으로 변환
 						var endDateTime = new Date(endDate + 'T' + endTime).toISOString(); // ISO 형식으로 변환
 
-						// 종일 체크 여부
-						var isAllDay = document.getElementById('allDay').checked;
-						// 종일일 경우 자정으로 종료 시간 설정
-						if (isAllDay) {
-							endTime = '23:59:59'; // 자정까지
-						}
 
-						// 캘린더 타입 선택 (g1: 개인캘린더, g2: 공유캘린더, g3: 프로젝트캘린더)
-						var calendarType = document.getElementById('calendarType').value;
-						var calNo;
-
-						// 캘린더 타입에 따라 calNo를 설정
-						if (calendarType === 'g2') {
-							calNo = document.getElementById('sharedCalendar').value;  // 공유캘린더에서 선택된 값을 가져옴
-							console.log('선택한 공유 캘린더 넘버 :', calNo);  // 선택된 calNo 확인
-						} else if (calendarType === 'g1') {
-							calNo = 1; // 개인 캘린더는 calNo를 1로 고정
-							console.log('개인 캘린더 넘버  :', calNo);  // 선택된 calNo 확인
-						}
-
-						// 알림 설정 여부 (f1: 사용, f2: 미사용)
-						var isAlarm = document.getElementById('alarm').checked ? 'f1' : 'f2';
-
-						// 반복 빈도 처리
-						var isRepeat = document.getElementById('isRepeat').checked;
-						var repeatFrequency = document.getElementById('repeatFrequency').value;
-						var repeatData = null;
-						if (isRepeat) {
-							repeatData = {
-								frequency: repeatFrequency,
-								interval: document.getElementById(repeatFrequency + 'Interval').value,
-								repeatTimes: document.getElementById('repeatTimes').value,
-								repeatEndDate: document.getElementById('repeatEndDate').value
-							};
-						}
 
 
 						// schsData 변수 초기화 및 데이터 설정
@@ -334,7 +383,6 @@ document.addEventListener('DOMContentLoaded', function() {
 							title: title,
 							startDate: startDateTime,
 							endDate: endDateTime,
-							calendarType: calendarType,  // 선택된 캘린더 타입
 							calNo: calNo,  // 선택된 캘린더 번호
 							isAllDay: isAllDay,
 							isAlarm: isAlarm,  // 알림 여부 (f1 or f2)
@@ -353,21 +401,16 @@ document.addEventListener('DOMContentLoaded', function() {
 								.then(data => {
 									console.log(data); // 데이터를 확인하기 위한 로그 출력
 									if (data.success) {
-
-
-
-										/*calendar.addEvent({
-											id: data.id,
-											title: title,
-											start: new Date(startDate + 'T' + startTime), // 여기에서 Date 객체로 변환
-											end: new Date(endDate + 'T' + endTime), // 여기에서 Date 객체로 변환
-											calNo: calNo,  // 선택된 캘린더 ID 전송
-											type: calendarType,  // 캘린더 타입 (g1: 개인, g2: 공유)
-											allDay: arg.allDay,
-											});*/
-
-
-
+										alert('일정 등록에 성공했습니다.');
+										addScheduleModal.style.display = 'none'; // 모달 닫기
+										// FullCalendar에 새 일정 추가
+										calendar.addEvent({
+											id: data.schNo,  // 서버에서 반환된 일정 번호
+											title: schsData.title,
+											start: schsData.startDate,  // FullCalendar에서 사용할 시작 시간
+											end: schsData.endDate,      // FullCalendar에서 사용할 종료 시간
+											allDay: schsData.isAllDay   // 하루 종일 여부
+										});
 									} else {
 										console.log(data); // 데이터를 확인하기 위한 로그 출력
 										alert('일정 등록에 실패했습니다.');
@@ -510,12 +553,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	//============ END 사이드바 리스트===========
 	//============ 사이드바 내 캘린더 생성 ===========
 	// 공유 캘린더 모달 열기/닫기
-	document.getElementById('addSharedCalendarBtn').addEventListener('click', function() {
+	document.getElementById('addSharedCalendarBtn').onclick = function() {
 		document.getElementById('sharedCalendarModal').style.display = 'block';
-	});
-	document.getElementById('cancelSharedCalendar').addEventListener('click', function() {
+	};
+	document.getElementById('cancelSharedCalendar').onclick = function() {
 		document.getElementById('sharedCalendarModal').style.display = 'none';
-	});
+	};
 
 
 
@@ -600,7 +643,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	//============END 사이드바 공유 캘린더 생성 ===========
 	//============ 사이드바 휴지통 보내기  ===========
 	// 삭제 버튼 클릭 시 이벤트 
-	document.getElementById('deleteBtn').addEventListener('click', function() {
+	document.getElementById('deleteBtn').onclick = function()  {
 		const calNo = parseInt(document.getElementById('selectedCalNo').value); // 문자열을 숫자로 변환
 
 		if (confirm('정말로 이 캘린더를 삭제하시겠습니까?')) {
@@ -621,7 +664,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				})
 				.catch(error => console.error('Error:', error));
 		}
-	});
+	};
 	//============ 사이드바 휴지통 보내기   ===========
 
 	//============ 사이드바 휴지통에서 복원 ==============
@@ -699,7 +742,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				if (data.success) {
 					alert('캘린더가 복원되었습니다.');
 					document.getElementById('trashCalendarModal').style.display = 'none';
-
+					location.reload();  //페이지 새로고침
 				} else {
 					alert('복원에 실패했습니다.');
 				}
