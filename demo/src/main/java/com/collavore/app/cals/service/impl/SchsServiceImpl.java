@@ -20,8 +20,8 @@ public class SchsServiceImpl implements SchsService {
 
 	// 조회
 	@Override
-	public List<SchsVO> SchsList() {
-		return schsMapper.selectSchsAll();
+	public List<SchsVO> SchsList(int empNo) {
+		return schsMapper.selectSchsAll(empNo);
 	}
 
 	// 단건조회
@@ -33,10 +33,13 @@ public class SchsServiceImpl implements SchsService {
 	// 등록
 	@Override
 	public int insertSchs(SchsVO schsVO) {
-	    // 일정 생성 시 캘린더 타입에 따른 처리
 	    int result = schsMapper.insertSchsInfo(schsVO);
+	    System.out.println("Type: " + schsVO.getType());
+
 	    return result == 1 ? schsVO.getSchNo() : -1;
+
 	}
+	
 	 @Override
 	    public int getCalType(String type) {
 	        return schsMapper.selectCalType(type);
@@ -80,26 +83,26 @@ public class SchsServiceImpl implements SchsService {
 
 	// 공유캘린더 조회 (is_delete가 'h2'인 항목만)
 	@Override
-	public List<CalsVO> teamCal() {
-		return schsMapper.selectTeamCal();
+	public List<SchsVO> teamCal(int empNo) {
+		return schsMapper.selectTeamCal(empNo);
 	}
 
 	// 프로젝트 캘린더
 
 	// 캘린더 등록
 	@Override
-	public int insertCals(CalsVO calsVO) {
-		int result = schsMapper.insertCalsInfo(calsVO);
-		return result == 1 ? calsVO.getCalNo() : -1;
+	public int insertCals(SchsVO schsVO) {
+		int result = schsMapper.insertCalsInfo(schsVO);
+		return result == 1 ? schsVO.getCalNo() : -1;
 
 	}
 
 	// 캘린더 수정
 	@Override
-	public Map<String, Object> updateCals(CalsVO calsVO) {
+	public Map<String, Object> updateCals(SchsVO schsVO) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
-			int updatedRows = schsMapper.updateCalsInfo(calsVO); // 매퍼 호출
+			int updatedRows = schsMapper.updateCalsInfo(schsVO); // 매퍼 호출
 
 			if (updatedRows > 0) {
 				resultMap.put("result", true);
@@ -114,7 +117,7 @@ public class SchsServiceImpl implements SchsService {
 
 	// 공유캘린더 조회 (is_delete가 'h2'인 항목만)
 	@Override
-	public List<CalsVO> trashList() {
+	public List<SchsVO> trashList() {
 		return schsMapper.selectToTrash();
 	}
 
@@ -138,5 +141,19 @@ public class SchsServiceImpl implements SchsService {
 	}
 
 	// =====================END 캘린더 사이드바=====================
+	// =====================알림관리========================
+	// 등록
+		@Override
+		public int alaInsert(SchsVO schsVO) {
+		    int result = schsMapper.insertSchsInfo(schsVO);
+		    System.out.println("Type: " + schsVO.getType());
+
+		    return result == 1 ? schsVO.getSchNo() : -1;
+
+		}
+
+		
+	
+	
 
 }

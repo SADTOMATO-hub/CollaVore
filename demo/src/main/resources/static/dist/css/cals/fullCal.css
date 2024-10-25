@@ -279,7 +279,6 @@ button.close:hover {
 .edit-icon i:hover {
     color: white;
 }
-
 /* 아이콘 색상과 크기 */
 .mdi-calendar-blank {
     font-size: 1.2rem;
@@ -307,7 +306,6 @@ button.close:hover {
 .calendar-item-wrapper:hover .edit-icon {
     display: inline-block; /* 마우스 올리면 아이콘 표시 */
 }
-
 /* 마우스를 올렸을 때 아이콘 색상 변경 */
 .edit-icon i:hover {
     color: black; /* 마우스 올렸을 때 색상 변경 */
@@ -318,3 +316,83 @@ button.close:hover {
     display: flex;
     align-items: center;
 }
+
+/* 알림 필드 전체를 감싸는 컨테이너 */
+#alarmFields {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f8f9fa; /* 약간의 배경색 추가 */
+    border-radius: 5px; /* 모서리 둥글게 */
+    display: none; /* 기본적으로 숨김 처리 */
+}
+
+/* 개별 필드 간격 조정 */
+#alarmFields label {
+    display: inline-block;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+#alarmFields input[type="number"],
+#alarmFields select {
+    width: 100px;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+/* 요일 선택 필드 정렬 */
+#weeklyDays {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+#weeklyDays label {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+#weeklyDays input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+/* 알림 빈도와 시간 간격 필드 배치 */
+.dailyRepeat, .weeklyRepeat, .monthlyRepeat {
+    margin-top: 10px;
+}
+
+/* 알림 설정 체크박스 정렬 */
+#isAlarm {
+    margin-top: 15px;
+}
+
+
+
+
+
+/* 요일 선택 필드를 가로로 배열하고 체크박스와 레이블을 붙이기 */
+#weeklyDays {
+    display: flex;
+    flex-wrap: wrap; /* 여러 줄로 감싸기 */
+    gap: 20px; /* 각 체크박스와 레이블 간 간격 설정 */
+    margin-top: 10px;
+    justify-content: space-between; /* 각 요일 그룹 간의 간격을 고르게 배치 */
+}
+
+#weeklyDays div {
+    display: flex;
+    align-items: center; /* 체크박스와 텍스트가 세로로 가운데 정렬 */
+}
+
+#weeklyDays label {
+    margin-left: 5px; /* 체크박스와 레이블 간의 간격 */
+}
+
+#weeklyDays input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+
+
+
+

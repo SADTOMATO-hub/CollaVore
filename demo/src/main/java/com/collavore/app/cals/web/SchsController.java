@@ -14,9 +14,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.collavore.app.cals.service.CalsVO;
 import com.collavore.app.cals.service.SchsService;
 import com.collavore.app.cals.service.SchsVO;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller // @Controller 대신 @RestController 사용
 public class SchsController {
@@ -43,9 +44,11 @@ public class SchsController {
 	// 조회 json 뿌려주기
 	@PostMapping("/sch/schList")
 	@ResponseBody
-	public List<SchsVO> SchsList() {
-		return schsService.SchsList();
+	public List<SchsVO> getSchsList(HttpSession session) {
+		Integer empNo = (Integer) session.getAttribute("userEmpNo");
+		return schsService.SchsList(empNo);
 	}
+	
 
 	// 등록
 	@PostMapping("/sch/schInsert")
@@ -61,6 +64,12 @@ public class SchsController {
 
 	        // DB에 저장
 	        int id = schsService.insertSchs(schsVO);
+	        if(id > 0) {
+	        	//정상등록
+		        schsService.alaInsert(schsVO);
+	        }else {
+	        	//비정상등
+	        }
 	        System.out.println("Inserted schedule with ID: " + id); // 성공 로그
 	        result.put("success", true);
 	        result.put("id", id);
@@ -75,26 +84,26 @@ public class SchsController {
 	
 	
 	// 캘린더 타입에 따른 cal_no 조회 API
-    @GetMapping("/getCalNoByType")
-    @ResponseBody
-    public Map<String, Object> getCalType(@RequestParam("type") String type) {
-        Map<String, Object> result = new HashMap<>();
-        try {
-            // 서비스에서 해당 캘린더 타입에 따른 cal_no 조회
-            Integer calNo = schsService.getCalType(type);
-            if (calNo != null) {
-                result.put("success", true);
-                result.put("calNo", calNo);
-            } else {
-                result.put("success", false);
-                result.put("message", "해당 캘린더 타입에 맞는 cal_no를 찾을 수 없습니다.");
-            }
-        } catch (Exception e) {
-            result.put("success", false);
-            result.put("message", "캘린더 번호를 가져오는 중 오류가 발생했습니다.");
-        }
-        return result;
-    }
+//    @GetMapping("/getCalNoByType")
+//    @ResponseBody
+//    public Map<String, Object> getCalType(@RequestParam("type") String type) {
+//        Map<String, Object> result = new HashMap<>();
+//        try {
+//            // 서비스에서 해당 캘린더 타입에 따른 cal_no 조회
+//            Integer calNo = schsService.getCalType(type);
+//            if (calNo != null) {
+//                result.put("success", true);
+//                result.put("calNo", calNo);
+//            } else {
+//                result.put("success", false);
+//                result.put("message", "해당 캘린더 타입에 맞는 cal_no를 찾을 수 없습니다.");
+//            }
+//        } catch (Exception e) {
+//            result.put("success", false);
+//            result.put("message", "캘린더 번호를 가져오는 중 오류가 발생했습니다.");
+//        }
+//        return result;
+//    }
 
 	// 수정
 	@PostMapping("/sch/schUpdate")
@@ -124,19 +133,23 @@ public class SchsController {
 	// 전체조회
 	@GetMapping("/cal/calList")
 	@ResponseBody
-	public List<CalsVO> getTeamCalendars() {
-		return schsService.teamCal();
+	public List<SchsVO> getTeamCalendars(HttpSession session) {
+	    // 세션에서 userId 값을 가져옴
+	    Integer empNo = (Integer) session.getAttribute("userEmpNo");
+
+	    // userId를 기준으로 팀 캘린더 목록을 가져옴 (예: schsService에서 userId 사용)
+	    return schsService.teamCal(empNo);
 	}
 
 	// 등록
 	@PostMapping("/cal/calInsert")
 	@ResponseBody
-	public Map<String, Object> insertCals(@RequestBody CalsVO calsVO) {
+	public Map<String, Object> insertCals(@RequestBody SchsVO schsVO) {
 		Map<String, Object> result = new HashMap<>();
 		try {
-			schsService.insertCals(calsVO); // Service를 통해 캘린더 등록
+			schsService.insertCals(schsVO); // Service를 통해 캘린더 등록
 			result.put("success", true);
-			result.put("calsVO", calsVO); // 등록된 캘린더 번호 반환
+			result.put("calsVO", schsVO); // 등록된 캘린더 번호 반환
 		} catch (Exception e) {
 			result.put("success", false);
 			result.put("message", "캘린더 등록에 실패했습니다.");
@@ -147,8 +160,8 @@ public class SchsController {
 	// 캘린더 수정
 	@PostMapping("/cal/calUpdate")
 	@ResponseBody
-	public Map<String, Object> updateCal(@RequestBody CalsVO calsVO) {
-		Map<String, Object> resultMap = schsService.updateCals(calsVO);
+	public Map<String, Object> updateCal(@RequestBody SchsVO schsVO) {
+		Map<String, Object> resultMap = schsService.updateCals(schsVO);
 
 		if (resultMap.get("result").equals(true)) {
 			resultMap.put("message", "캘린더가 성공적으로 수정되었습니다.");
@@ -197,7 +210,7 @@ public class SchsController {
 	// 휴지통에 있는 캘린더 목록 조회
 	@GetMapping("/cal/trashList")
 	@ResponseBody
-	public List<CalsVO> trashList() {
+	public List<SchsVO> trashList() {
 		return schsService.trashList(); // 휴지통에 있는 캘린더 목록 조회
 	}
 
