@@ -248,7 +248,7 @@ $(document).ready(
 				var selectedApproversEmp = $("#selectApprovers option:checked").val();
 				var selectedApproversName = selectedApprover.split('/')[0];
 				var selectedApproversInfo = selectedApprover.split('/')[1];
-				var empNoListVal = $(`[name='approvers[${seq}].empNo']`).val(selectedApproversEmp);
+				var empNoListVal = $(`[name="approvers[${seq-1}].empNo"]`).val(selectedApproversEmp);
 				//var sortVal = $('[name=sort]').eq(seq-1).val(seq);
 				$('#apprerTable tbody tr').eq(0).children().eq(seq).find('span').html(selectedApproversName);
 				$('#apprerTable tbody tr').eq(1).children().eq(seq).find('span').html(selectedApproversInfo);					

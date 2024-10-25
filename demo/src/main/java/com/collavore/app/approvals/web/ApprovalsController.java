@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -34,7 +33,6 @@ public class ApprovalsController {
 
 	// 템플릿 리스트 페이지
 	@GetMapping("/tempList")
-	@Transactional
 	public String approvalTemplateList(Model model) {
 		List<ApprovalstempVO> templateInfo = approvalsService.apprTempList();
 		model.addAttribute("tempInfo", templateInfo);
@@ -42,8 +40,7 @@ public class ApprovalsController {
 	}
 
 	// 템플릿 상세 페이지
-	@GetMapping("/tempInfo")
-	@Transactional
+	@GetMapping("/readTempInfo")
 	public String tmepInfo(ApprovalstempVO apprVO, Model model) {
 		ApprovalstempVO tempInfo = approvalsService.apprInfo(apprVO);
 		model.addAttribute("tempInfo", tempInfo);
@@ -52,14 +49,12 @@ public class ApprovalsController {
 
 	// 템플릿 생성 페이지 폼
 	@GetMapping("/createTempForm")
-	@Transactional
 	public String createTemplatePage() {
 		return "approvals/createTemplateFrom";
 	}
 
 	// 템플릿 생성 데이터를 받는 곳
 	@PostMapping("/createTemp")
-	@Transactional
 	public String createTemplate(ApprovalstempVO apprTempVO) {
 		int eatNo = approvalsService.createApprsTemp(apprTempVO);
 		String url = "redirect:/approvals/tempInfo?eatNo=";
@@ -68,7 +63,6 @@ public class ApprovalsController {
 
 	// 템플릿 수정 페이지
 	@GetMapping("/updateTempForm")
-	@Transactional
 	public String updateTemplateForm(ApprovalstempVO apprTempVO, Model model) {
 		ApprovalstempVO apprInfo = approvalsService.apprInfo(apprTempVO);
 		model.addAttribute("apprInfo", apprInfo);
@@ -77,7 +71,6 @@ public class ApprovalsController {
 
 	// 템플릿 수정 데이터를 받는 곳
 	@PostMapping("/updateTemp")
-	@Transactional
 	public String updateTemplate(ApprovalstempVO apprTempVO) {
 		int result = approvalsService.updateTemplate(apprTempVO);
 		if (result > 0) {
@@ -91,7 +84,6 @@ public class ApprovalsController {
 
 	// 템플릿 삭제 기능
 	@GetMapping("/deleteTemp")
-	@Transactional
 	public String deleteTemplate(ApprovalstempVO apprVO) {
 		int eatNo = approvalsService.deleteTemplate(apprVO);
 		String urlFailed = "redirect:/approvals/tempInfo?eatNo=";
@@ -104,7 +96,6 @@ public class ApprovalsController {
 
 	// 전자결재 생성 폼
 	@GetMapping("/createApprForm")
-	@Transactional
 	public String createApprovals(Model model) {
 		List<ApprovalstempVO> tempInfo = approvalsService.apprTempList();
 		List<HrmVO> employeesInfo = approvalsService.employeesInfo();
@@ -114,8 +105,6 @@ public class ApprovalsController {
 	}
 	// 전자결재 생성 시, 데이터를 받는 곳
 	@PostMapping("/createAppr")
-	@ResponseBody
-	@Transactional
 	public String createAppr(ApprovalsVO apprVO) {
 		System.out.println(apprVO);
 		int EaNo = approvalsService.insertApprsEaTable(apprVO); 
@@ -132,12 +121,31 @@ public class ApprovalsController {
 	// 전자결재 템플릿 내용만 호출하는 기능
 	@GetMapping("/temp")
 	@ResponseBody
-	@Transactional
 //	public String info (ApprovalstempVO apprVO, Model model) {
 	public ApprovalstempVO info(ApprovalstempVO apprVO) {
 		ApprovalstempVO tempInfo = approvalsService.apprInfo(apprVO);
 		// model.addAttribute("tempInfo", tempInfo.getContent());
 		return tempInfo;
 	}
-
+	
+	//전자결재 상세페이지
+	@GetMapping("/readApprInfo")
+	public String readapprinfo (Model model,ApprovalsVO apprVO) {
+		ApprovalsVO approvals = approvalsService.approvalsInfo(apprVO);
+		List<ApprovalsVO> approvers = approvalsService.approversInfo(apprVO);
+		model.addAttribute("approvals", approvals);
+		model.addAttribute("approvers", approvers);
+		return "approvals/readApproval";
+	}
+	
+	//전자결재 삭제
+	@GetMapping("/deleteAppr")
+	public String deleteAppr (ApprovalsVO apprVO) {
+		 approvalsService.deleteApprovals(apprVO);
+		 int result = 1;
+		if(result >= 0) {
+			return "redirect:/tempList";
+		}
+		return null;
+	}
 }
