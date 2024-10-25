@@ -34,7 +34,10 @@ public interface BodsService {
 	// 댓글 수정
 	public Map<String, Object> updateBodsComts(BodsComtsVO bodsComtsVO);
 	
-	public BodsComtsVO cmtInfo(int cmtNo);
+	// 댓글 상세조회
+	public BodsComtsVO bodsComtsInfo(BodsComtsVO bodsComtsVO);
+
+	
 	
 	// 게시판 생성
 	

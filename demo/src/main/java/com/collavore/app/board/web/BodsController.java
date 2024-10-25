@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.collavore.app.board.service.BodsComtsVO;
 import com.collavore.app.board.service.BodsService;
 import com.collavore.app.board.service.BodsVO;
+import com.collavore.app.board.service.impl.BodsServiceImpl;
 import com.collavore.app.common.service.PageDTO;
 
 @Controller
@@ -139,26 +140,21 @@ public class BodsController {
 	}
 
 	// 댓글 상세조회 : URI - boardInfo / PARAMETER - BoardVO(QueryString)
-	@GetMapping("/board/comtsInfo")
-	public BodsComtsVO emtInfo(int cmtNo) {
-		BodsComtsVO cmtInfo = bodsService.cmtInfo(cmtNo);
-		return cmtInfo;
+	@GetMapping("/board/bodscomtsInfo")
+	public String bodsComtsInfo(@RequestParam BodsComtsVO bodsComtsVO) {
+		bodsService.bodsComtsInfo(bodsComtsVO);
+		return "board/bodsComtsInfo";
 	}
 
-	/*// 댓글 수정
-	@GetMapping("/board/bodsComtsUpdate")
+	// 댓글 수정
+	@PostMapping("/board/bodsComtsUpdate")
 	@ResponseBody
-	public String boardUpdateForm(int cmtNo) {
-		BodsComtsVO bodsComtsVO = bodsService.cmtInfo(cmtNo);
-		return board/bodsComtsUpdate;
-	}*/
-
-	// 댓글 수정 - 처리 : URI - boardUpdate / PARAMETER - BoardVO(JSON)
-	// RETURN - 수정결과 데이터(Map)
-	// => 등록(내부에서 수행하는 쿼리문 - UPDATE문)
-	@PostMapping("/board/bodsUpdate1")
-	@ResponseBody
-	public Map<String, Object> bodsComtsUpdateProcess(@RequestBody BodsComtsVO bodsComtsVO) {
-		return bodsService.updateBodsComts(bodsComtsVO);
+	public Map<String, Object> boardUpdateForm(@RequestBody BodsComtsVO bodsComtsVO) {
+		Map<String, Object> result = bodsService.updateBodsComts(bodsComtsVO);
+		return result;
 	}
+	
+	
+	
+
 }

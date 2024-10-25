@@ -107,9 +107,9 @@ public class BodsServiceImpl implements BodsService {
 			isSuccessed = true;
 		}
 
-		String updateDate = getcomtUpdateDate();
+		//String updateDate = getcomtUpdateDate();
 
-		map.put("date", updateDate);
+		//map.put("date", updateDate);
 		map.put("result", isSuccessed);
 		map.put("target", bodsComtsVO);
 		
@@ -117,19 +117,30 @@ public class BodsServiceImpl implements BodsService {
 		return map;
 	}
 	
-	private String getcomtUpdateDate() {
+
+
+	
+	
+	
+	
+	/*public String getcomtUpdateDate() {
 		LocalDate today = LocalDate.now();
 		DateTimeFormatter dtFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd");
 		String updateDt = today.format(dtFormat);
 		return updateDt;
 
 		// return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
-	}
+	}*/
 
 	@Override // 댓글 상세조회 
-	public BodsComtsVO cmtInfo(int cmtNo) {
-		return bodsMapper.selectBodsComtsInfo(cmtNo);
+	public BodsComtsVO bodsComtsInfo(BodsComtsVO bodsComtsVO) {
+		return bodsMapper.selectBodsComtsInfo(bodsComtsVO);
 	}
+	
+	/*@Override // 상세조회
+	public BodsVO bodsInfo(BodsVO bodsVO) {
+		return bodsMapper.selectBodsInfo(bodsVO);
+	}*/
 
 
 
