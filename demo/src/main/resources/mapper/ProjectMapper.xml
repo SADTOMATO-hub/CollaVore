@@ -265,7 +265,7 @@ SELECT LEVEL, tree.*
 		SELECT pw_no,
 		name,
         content,
-        jobNo,
+        job_no,
         mgr_no,
         reg_date,
         proj_no,
@@ -294,4 +294,37 @@ SELECT LEVEL, tree.*
 		FROM projdwrks
 		WHERE pdw_no = #{pdwNo}
 	</select>
+	
+	<!-- 프로젝트 업무 수정 -->
+	<update id="updatewrkProject">
+		UPDATE projwrks
+
+		SET
+		name = #{name}
+		,content = #{content}
+		,job_no = #{jobNo}
+		,mgr_no = #{mgrNo}
+		,reg_date = sysdate
+		
+		WHERE pw_no
+		= #{pwNo}
+	</update>
+	<!-- 프로젝트 상세 업무 수정 -->
+	<update id="updatedwrkProject">
+		UPDATE projdwrks
+
+		SET
+		name = #{name}
+		,content = #{content}
+		,is_status = #{isStatus}
+		,start_date = #{startDate}
+		,comp_date = #{endDate}
+		,commit_id = #{commitId}
+		,importance = #{importance}
+		,mgr_no = #{mgrNo}
+		,reg_date = sysdate
+		
+		WHERE pdw_no
+		= #{pdwNo}
+	</update>	
 </mapper>
