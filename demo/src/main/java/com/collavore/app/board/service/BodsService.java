@@ -31,6 +31,11 @@ public interface BodsService {
 	// 댓글 삭제
 	public int deleteBodsComts(int bodsComtsVO);
 	
+	// 댓글 수정
+	public Map<String, Object> updateBodsComts(BodsComtsVO bodsComtsVO);
+	
+	public BodsComtsVO cmtInfo(int cmtNo);
+	
 	// 게시판 생성
 	
 	

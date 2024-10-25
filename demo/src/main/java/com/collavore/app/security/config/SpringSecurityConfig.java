@@ -41,7 +41,7 @@ public class SpringSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/assets/**", "/dist/**", "/smarteditor/**", "/").permitAll()
+                .requestMatchers("/assets/**", "/dist/**", "/smarteditor/**", "/api/**", "/").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -54,7 +54,9 @@ public class SpringSecurityConfig {
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout=true")
                 .permitAll()
-            );
+            )
+            .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin())) // iframe 허용하는 명령어
+            ;
 
         return http.build();
     }
@@ -71,7 +73,7 @@ public class SpringSecurityConfig {
                 HttpSession session = request.getSession();
                 session.setAttribute("userEmpNo", userVO.getEmpNo());
 
-                response.sendRedirect("/myPage");
+                response.sendRedirect("/dashboard");
             }
         };
     }

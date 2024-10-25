@@ -1,5 +1,6 @@
 package com.collavore.app.approvals.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,15 +61,26 @@ public class ApprovalsImpl implements ApprovalsService {
 		//전자결재 테이블
 	@Override
 	@Transactional
-	public int insertApprsEaTable(ApprovalsVO approvalsVO) {
-		int result = approvalsMapper.createApprsEaTable(approvalsVO);
-		return result > 0 ? approvalsVO.getEaNo() : -1 ;
+	public int insertApprsEaTable(ApprovalsVO apprVO) {
+		int EaNo = approvalsMapper.createApprsEaTable(apprVO);
+		return EaNo > 0 ? apprVO.getEaNo() : -1 ;
 	}
-		//전자결재자 테이블
+		//결재자 테이블
 	@Override
 	@Transactional
-	public int insertApprsEarTable(ApprovalsVO approvalsVO) {
-		int result = approvalsMapper.createApprsEarTable(approvalsVO);
+	public int insertApprsEarTable(ApprovalsVO apprVO) {
+//		List<ApprovalsVO> list = new ArrayList <>();
+//		int idx = 0 ;
+		for(ApprovalsVO appr : apprVO.getApprovers()) {
+//			ApprovalsVO appr = new ApprovalsVO();
+			  appr.setEaNo(apprVO.getEaNo());
+//			appr.setEmpNo(empNo);
+//			appr.setSort(apprVO.getSortList().get(idx));
+//			list.add(appr);
+//			idx ++;
+		}
+	//	apprVO.setApprovers(list);		
+		int result = approvalsMapper.createApprsEarTable(apprVO);
 		return result;						
 	}
 	// 진행 중인 전자결재 목록 조회

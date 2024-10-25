@@ -1,26 +1,61 @@
-<th:block xmlns:th="https://www.thymeleaf.org/"
-	th:fragment="sidebar">
-
+<th:block xmlns:th="https://www.thymeleaf.org/" th:fragment="sidebar">
 	<ul id="sidebarnav" class="pt-4">
+		<!-- ------------------------------------ 진행 중인 전자결재 ------------------------------------- -->
 		<li class="sidebar-item"><a
 			class="sidebar-link has-arrow waves-effect waves-dark"
 			href="javascript:void(0)" aria-expanded="false"> <i
-				class="mdi mdi-receipt"></i>
-				<span class="hide-menu"> 템플릿 목록 </span></a>
+				class="mdi mdi-receipt"></i> <span class="hide-menu"> 진행 중인
+					전자결재 </span></a>
 			<ul aria-expanded="false" class="collapse first-level">
 				<li class="sidebar-item"><a href="form-basic.html"
 					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
-						class="hide-menu"> 게시판하위메뉴1 </span></a></li>
-
+						class="hide-menu"> 대기 </span></a></li>
+				<li class="sidebar-item"><a href="" class="sidebar-link"> <i
+						class="mdi mdi-note-outline"></i> <span class="hide-menu">
+							진행 </span></a></li>
+				<li class="sidebar-item"><a href="" class="sidebar-link"> <i
+						class="mdi mdi-note-outline"></i> <span class="hide-menu">
+							완료 </span></a></li>
+			</ul></li>
+		<!-- 
 				<li class="sidebar-item"><a href="form-wizard.html"
 					class="sidebar-link"> <i class="mdi mdi-note-plus"></i> <span
 						class="hide-menu"> 게시판하위메뉴2 </span></a></li>
-
-			</ul></li>
+				->
+			<!-- ------------------------------문서함------------------------------------- -->
 		<li class="sidebar-item"><a
-			class="sidebar-link waves-effect waves-dark sidebar-link"
-			href="pages-buttons.html" aria-expanded="false"> <i
-				class="mdi mdi-relative-scale"></i> <span class="hide-menu">
-					게시판단일메뉴</span></a></li>
+			class="sidebar-link has-arrow waves-effect waves-dark"
+			href="javascript:void(0)" aria-expanded="false"> <i
+				class="mdi mdi-receipt"></i> <span class="hide-menu"> 문서함 </span></a>
+			<ul aria-expanded="false" class="collapse first-level">
+				<li class="sidebar-item"><a href="form-basic.html"
+					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
+						class="hide-menu"> 전체 </span></a></li>
+				<li class="sidebar-item"><a href="" class="sidebar-link"> <i
+						class="mdi mdi-note-outline"></i> <span class="hide-menu">
+							기안 </span></a></li>
+				<li class="sidebar-item"><a href="" class="sidebar-link"> <i
+						class="mdi mdi-note-outline"></i> <span class="hide-menu">
+							진행 </span></a></li>
+				<li class="sidebar-item"><a href="" class="sidebar-link"> <i
+						class="mdi mdi-note-outline"></i> <span class="hide-menu">
+							반려 </span></a></li>
+			</ul></li>
+		<!-- ------------------------------템플릿 관리----------------------------------------- -->
+		<li class="sidebar-item"><a
+			class="sidebar-link has-arrow waves-effect waves-dark"
+			href="javascript:void(0)" aria-expanded="false"> <i
+				class="mdi mdi-receipt"></i> <span class="hide-menu"> 템플릿 관리
+			</span></a>
+			<ul aria-expanded="false" class="collapse first-level">
+				<li class="sidebar-item"><a
+					th:onclick="|location.href='@{/approvals/tempList}'|"
+					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
+						class="hide-menu"> 등록된 템플릿 </span></a></li>
+				<li class="sidebar-item"><a
+					th:onclick="|location.href='@{/approvals/createTempForm}'|"
+					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
+						class="hide-menu"> 새 템플릿 생성 </span></a></li>
+			</ul></li>
 	</ul>
 </th:block>

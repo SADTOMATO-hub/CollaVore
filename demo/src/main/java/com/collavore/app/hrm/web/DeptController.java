@@ -1,6 +1,8 @@
 package com.collavore.app.hrm.web;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,16 +19,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.collavore.app.hrm.service.DeptService;
 import com.collavore.app.hrm.service.HrmVO;
+import com.collavore.app.hrm.service.MemberService;
+import com.collavore.app.hrm.service.PosiService;
 
 @Controller
 public class DeptController {
 
     private final DeptService deptService;
+    private final MemberService memberService;
+    private final PosiService posiService;
     private static final Logger logger = LoggerFactory.getLogger(DeptController.class);
 
     @Autowired
-    DeptController(DeptService deptService) {
+    public DeptController(DeptService deptService, MemberService memberService, PosiService posiService) {
         this.deptService = deptService;
+        this.memberService = memberService;
+        this.posiService = posiService;
     }
 
     @ModelAttribute
@@ -92,5 +100,44 @@ public class DeptController {
     public List<HrmVO> getExistingDepts() {
         logger.info("Fetching existing departments");
         return deptService.getExistingDepts();
+    }
+    
+    
+    
+    
+ // 조직도 페이지 이동
+    @GetMapping("/deptMember")
+    public String organizationChart(Model model) {
+        List<HrmVO> deptList = deptService.getExistingDepts();  // 부서 목록 조회
+        List<HrmVO> memberList = memberService.getAllMembers();  // 사원 목록 조회
+
+        // 각 부서에 속한 사원 및 직위 정보 추가
+        Map<Integer, List<HrmVO>> memberGroupedByDept = memberList.stream()
+                .collect(Collectors.groupingBy(HrmVO::getDeptNo));  // 사원을 부서별로 그룹화
+
+        model.addAttribute("deptList", deptList);
+        model.addAttribute("memberGroupedByDept", memberGroupedByDept);
+
+        return "member/deptMember";  // 조직도 템플릿 반환
+    }
+
+    // 조직도 데이터를 계층 구조로 반환
+    @GetMapping("/api/deptMember")
+    @ResponseBody
+    public Map<String, Object> getOrganizationChartData() {
+        List<HrmVO> deptList = deptService.getExistingDepts();  // 부서 목록
+        List<HrmVO> memberList = memberService.getAllMembers();  // 사원 목록
+        List<HrmVO> posiList = posiService.getExistingPositions(); // 직위 목록
+
+        // 각 부서에 속한 사원 및 직위 정보
+        Map<Integer, List<HrmVO>> memberGroupedByDept = memberList.stream()
+                .collect(Collectors.groupingBy(HrmVO::getDeptNo));
+
+        // 결과 데이터를 JSON 형태로 변환하여 반환
+        return Map.of(
+            "departments", deptList,
+            "membersByDept", memberGroupedByDept,
+            "positions", posiList
+        );
     }
 }

@@ -44,4 +44,6 @@ public class HrmVO {
    @DateTimeFormat(pattern = "yyyy-MM-dd")
    private Date posiDate;        // 직위 등록일
    
+   private String page;			 // 페이지
+   
 }

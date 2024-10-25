@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.collavore.app.common.service.PageDTO;
 import com.collavore.app.hrm.service.DeptService;
 import com.collavore.app.hrm.service.HrmVO;
 import com.collavore.app.hrm.service.JobService;
@@ -194,78 +195,122 @@ public class MemberController {
 	// 관리자 영역
 	// ────────────────────────────────────────────────────────────────────────────────────────────────────
 	// 사원 전체 조회 (관리자)
+	/*
+	 * @GetMapping("/memberList") public String selectMemberAll(HrmVO hrmVO, Model
+	 * model) { String page = hrmVO.getPage() == null ? "1" : hrmVO.getPage();
+	 * 
+	 * int totalCnt = memberService.totalListCnt(); PageDTO pageing = new
+	 * PageDTO(page, 15, totalCnt); model.addAttribute("pageing", pageing);
+	 * 
+	 * List<HrmVO> memberList = memberService.selectMemberAll(page);
+	 * model.addAttribute("members", memberList);
+	 * 
+	 * return "member/memberList"; // 뷰 파일 반환 }
+	 */
 	@GetMapping("/memberList")
-	public String selectMemberAll(Model model) {
-		model.addAttribute("members", memberService.selectMemberAll());
+	public String selectMemberAll(HrmVO hrmVO, Model model,
+			@RequestParam(value = "deptFilter", required = false) String deptFilter,
+			@RequestParam(value = "jobFilter", required = false) String jobFilter,
+			@RequestParam(value = "posiFilter", required = false) String posiFilter,
+			@RequestParam(value = "workTypeFilter", required = false) String workTypeFilter) {
+		// 필터 값이 null일 경우 빈 문자열로 초기화
+		deptFilter = deptFilter == null ? "" : deptFilter;
+		jobFilter = jobFilter == null ? "" : jobFilter;
+		posiFilter = posiFilter == null ? "" : posiFilter;
+		workTypeFilter = workTypeFilter == null ? "" : workTypeFilter;
+
+		// 페이지 정보 설정
+		String page = hrmVO.getPage() == null ? "1" : hrmVO.getPage();
+
+		// 필터 조건을 기반으로 총 사원 수 조회
+		int totalCnt = memberService.totalListCnt(deptFilter, jobFilter, posiFilter, workTypeFilter);
+
+		// 페이지네이션 객체 생성 (한 페이지에 15개 항목 표시)
+		PageDTO pageing = new PageDTO(page, 15, totalCnt);
+		model.addAttribute("pageing", pageing);
+
+		// 필터 조건 및 페이지를 사용하여 사원 목록 조회
+		List<HrmVO> memberList = memberService.selectMemberAll(page, deptFilter, jobFilter, posiFilter, workTypeFilter);
+		model.addAttribute("members", memberList);
+
+		// 필터 값도 모델에 추가 (필터 유지)
+		model.addAttribute("deptFilter", deptFilter);
+		model.addAttribute("jobFilter", jobFilter);
+		model.addAttribute("posiFilter", posiFilter);
+		model.addAttribute("workTypeFilter", workTypeFilter);
+
+		// 필터링을 위한 부서, 직무, 직위 목록 전달
+		model.addAttribute("departments", memberService.getDepartmentsFromHrmVO());
+		model.addAttribute("jobs", memberService.getJobsFromHrmVO());
+		model.addAttribute("positions", memberService.getPositionsFromHrmVO());
+		model.addAttribute("workType", memberService.getworkTypeFromHrmVO());
+
 		return "member/memberList"; // 뷰 파일 반환
 	}
 
 	// 사원 등록 폼 이동 (관리자)
 	@GetMapping("/memberInsert")
 	public String memberInsertForm(Model model) {
-	    // 빈 hrmVO 객체를 초기화하여 전달
-	    model.addAttribute("hrmVO", new HrmVO());
+		// 빈 hrmVO 객체를 초기화하여 전달
+		model.addAttribute("hrmVO", new HrmVO());
 
-	    // 사번 자동 생성
-	    Integer empNo = memberService.generateEmpNo();
-	    model.addAttribute("empNo", empNo);
+		// 사번 자동 생성
+		Integer empNo = memberService.generateEmpNo();
+		model.addAttribute("empNo", empNo);
 
-	    // 부서 목록을 가져와서 모델에 추가
-	    List<HrmVO> departments = deptService.getExistingDepts();
-	    model.addAttribute("departments", departments);
+		// 부서 목록을 가져와서 모델에 추가
+		List<HrmVO> departments = deptService.getExistingDepts();
+		model.addAttribute("departments", departments);
 
-	    // 직위 목록을 가져와서 모델에 추가
-	    List<HrmVO> positions = posiService.getExistingPositions();
-	    model.addAttribute("positions", positions);
+		// 직위 목록을 가져와서 모델에 추가
+		List<HrmVO> positions = posiService.getExistingPositions();
+		model.addAttribute("positions", positions);
 
-	    // 직무 목록을 가져와서 모델에 추가
-	    List<HrmVO> jobs = jobService.getExistinJobs();
-	    model.addAttribute("jobs", jobs);
+		// 직무 목록을 가져와서 모델에 추가
+		List<HrmVO> jobs = jobService.getExistinJobs();
+		model.addAttribute("jobs", jobs);
 
-	    return "member/memberInsert"; // 명확하게 "member/memberInsert" 경로로 반환
+		return "member/memberInsert"; // 명확하게 "member/memberInsert" 경로로 반환
 	}
 
 	// 사원 등록 처리 (관리자)
 	@PostMapping("/memberInsert")
 	public String memberInsert(@ModelAttribute("hrmVO") HrmVO hrmVO, Model model) {
-	    boolean hasErrors = false;
+		boolean hasErrors = false;
 
-	    // 연락처 중복 검사
-	    if (memberService.isTelDuplicate(hrmVO.getTel())) {
-	        model.addAttribute("telDuplicateError", "해당 연락처는 이미 등록되어 있습니다.");
-	        hasErrors = true;
-	    }
+		// 연락처 중복 검사
+		if (memberService.isTelDuplicate(hrmVO.getTel())) {
+			model.addAttribute("telDuplicateError", "해당 연락처는 이미 등록되어 있습니다.");
+			hasErrors = true;
+		}
 
-	    // 이메일 중복 검사
-	    if (memberService.isEmailDuplicate(hrmVO.getEmail())) {
-	        model.addAttribute("emailDuplicateError", "해당 이메일은 이미 등록되어 있습니다.");
-	        hasErrors = true;
-	    }
+		// 이메일 중복 검사
+		if (memberService.isEmailDuplicate(hrmVO.getEmail())) {
+			model.addAttribute("emailDuplicateError", "해당 이메일은 이미 등록되어 있습니다.");
+			hasErrors = true;
+		}
 
-	    // 오류가 있으면 입력 페이지로 다시 돌아가고, 입력된 데이터를 유지
-	    if (hasErrors) {
-	        model.addAttribute("hrmVO", hrmVO);  // 입력된 값 유지
-	        return "member/memberInsert";  // 입력 페이지로 유지
-	    }
+		// 오류가 있으면 입력 페이지로 다시 돌아가고, 입력된 데이터를 유지
+		if (hasErrors) {
+			model.addAttribute("hrmVO", hrmVO); // 입력된 값 유지
+			return "member/memberInsert"; // 입력 페이지로 유지
+		}
 
-	    // 사원 등록 처리
-	    try {
-	        int result = memberService.insertMember(hrmVO);
-	        if (result > 0) {
-	            model.addAttribute("message", "사원이 성공적으로 등록되었습니다.");
-	            return "redirect:/memberList";  // 성공 시 리스트 페이지로 이동
-	        } else {
-	            model.addAttribute("errorMessage", "사원 등록에 실패했습니다.");
-	            return "member/memberInsert";  // 실패 시 입력 페이지로 유지
-	        }
-	    } catch (Exception e) {
-	        model.addAttribute("errorMessage", "처리 중 오류가 발생했습니다.");
-	        return "member/memberInsert";  // 예외 발생 시 입력 페이지로 유지
-	    }
+		// 사원 등록 처리
+		try {
+			int result = memberService.insertMember(hrmVO);
+			if (result > 0) {
+				model.addAttribute("message", "사원이 성공적으로 등록되었습니다.");
+				return "redirect:/memberList"; // 성공 시 리스트 페이지로 이동
+			} else {
+				model.addAttribute("errorMessage", "사원 등록에 실패했습니다.");
+				return "member/memberInsert"; // 실패 시 입력 페이지로 유지
+			}
+		} catch (Exception e) {
+			model.addAttribute("errorMessage", "처리 중 오류가 발생했습니다.");
+			return "member/memberInsert"; // 예외 발생 시 입력 페이지로 유지
+		}
 	}
-
-	
-	
 
 	@GetMapping("/memberUpdate")
 	public String updateMemberForm(@RequestParam("empNo") Integer empNo, Model model) {
@@ -283,7 +328,6 @@ public class MemberController {
 
 		return "member/memberUpdate"; // memberUpdate 뷰 파일로 이동
 	}
-
 
 	@PostMapping("/memberUpdate")
 	public String updateMember(HrmVO hrmVO, Model model, RedirectAttributes redirectAttributes) {

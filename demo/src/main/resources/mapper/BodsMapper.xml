@@ -37,7 +37,7 @@
 		WHERE post_no = #{postNo}
 	</select>
 
-	<!-- 등록 -->
+	<!-- 게시글 등록 -->
 	<insert id="insertBodsInfo" parameterType="BodsVO">
 		<selectKey keyProperty="postNo" resultType="Integer"
 			order="BEFORE">
@@ -66,7 +66,7 @@
 	</insert>
 
 
-	<!-- 수정 -->
+	<!-- 게시글 수정 -->
 	<update id="updateBodsInfo" parameterType="BodsVO">
 		UPDATE bods
 		SET
@@ -118,17 +118,31 @@
            where emp_no = writer) writerName
 		, content
 		, reg_date
-
+		, post_no
 		FROM bodscomts
 		where post_no = #{postNo}
 		ORDER BY cmt_no DESC
 	</select>
+	
+	<!-- 댓글 수정 -->
+	<update id="updateBodsComtsInfo" parameterType="BodsComtsVO">
+		UPDATE bodscomts
+		SET   content = #{content}
+		WHERE cmt_no = #{cmtNo}
+	</update>
 	
 	<!-- 댓글 삭제 -->
 	<delete id="delectBodsComtsInfo" parameterType="BodsComtsVO">
 		DELETE FROM bodscomts  
 		WHERE cmt_no = #{cmtNo}
 	</delete> 
+	
+	
+	<select id="selectBodsComtsInfo" resultType="BodsComtsVO"> 
+		SELECT *
+		FROM bodscomts
+		where cmt_no = #{cmtNo}
+	</select>
 	
 
 </mapper>

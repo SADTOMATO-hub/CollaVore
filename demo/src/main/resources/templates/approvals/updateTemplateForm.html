@@ -12,8 +12,10 @@
         <div class="row">
             <div class="col-md-15">
                 <div class="card">
-                    <form action="/approvals/updateTemp" class="form-horizontal" method="post"
+                    <form action="updateTemp" class="form-horizontal" method="post"
                      name="updateForm" th:object="${apprInfo}">
+                     	<!-- 세큐리티 cors를 방지하는 기능  -->
+						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/> 
                      <input type="hidden" th:field="*{eatNo}">
                         <div class="card-body">
                             <h4 class="card-title">템플릿 수정 페이지</h4>
