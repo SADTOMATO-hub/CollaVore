@@ -160,10 +160,10 @@ button:active {
 								사진</label>
 							<div class="col-sm-9">
 								<div class="image-preview mb-3">
-									<img id="imgPreview" 
-									th:src="${member.img != null ? '/imgs/' + member.img : '/assets/images/users/default.png'}"
-										alt="이미지 미리보기"
-										style="display: block; max-width: 200px; max-height: 200px;" />
+									<img id="imgPreview"
+     th:src="${member != null and member.img != null ? '/assets/images/users/' + member.img : '/assets/images/users/default.png'}"
+     alt="이미지 미리보기"
+     style="display: block; max-width: 200px; max-height: 200px;" />
 								</div>
 								<!-- 파일 업로드 input -->
 								<input type="file" class="form-control" id="files" name="files"

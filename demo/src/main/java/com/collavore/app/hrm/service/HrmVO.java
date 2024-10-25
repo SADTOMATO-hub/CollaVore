@@ -32,6 +32,7 @@ public class HrmVO {
    @DateTimeFormat(pattern = "yyyy-MM-dd")
    private Date deptDate;        // 부서 등록일
    private Integer empCnt;       // 사원수
+   private Integer level;
    
    private Integer jobNo;        // 직무번호
    private String jobName;       // 직무명
