@@ -1,10 +1,62 @@
-<!DOCTYPE html>
-<html>
+<html xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	layout:fragment="Content">
 <head>
-<meta charset="EUC-KR">
-<title>Insert title here</title>
+<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js"
+	charset="utf-8"></script>
 </head>
-<body>
-
-</body>
-</html>
+<div class="page-wrapper">
+	<div class="container-fluid">
+		<div class="row">
+			<h4 class="card-title">[[${approvals.drafterName}]]의 전자결재</h4>
+			<div class="col-md-6">
+				<div class="col-12">
+					<div class="card">
+						<div class="card-body">
+							<div>
+								<div class="card-body">
+									<span>[[${approvals.title}]]</span>
+								</div>
+							</div>
+							<div class="table-responsive">
+								<table class="table table-striped table-bordered">
+									<thead>
+										<tr>
+											<th:block th:each="appr : ${approvers}">
+												<td><span>[[${appr.approverName}]]</span></td>
+											</th:block>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<th:block th:each="appr : ${approvers}">
+												<td><span>[[${appr.jobTitle}]]</span></td>
+											</th:block>
+										</tr>
+									</tbody>
+									<tfoot>
+										<tr>
+											<th:block th:each="appr : ${approvers}">
+												<th:block th:switch="${appr.approverStatus}">
+													<td><span th:case="${b1}" th:text="'대기'"></span> <span
+														th:case="${b2}" th:text="'반려'"></span> <span
+														th:case="${b3}" th:text="'승인'"></span> <span th:case="*"
+														th:text="'-'"></span>
+														</td>
+												</th:block>
+											</th:block>
+										</tr>
+									</tfoot>
+								</table>
+							</div>
+							<div class="card-body">
+								<span th:utext="${approvals.content}"></span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

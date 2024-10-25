@@ -228,7 +228,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
 					// 현재 시간을 로컬 시간으로 가져오기
 					var now = new Date();
 					var hours = now.getHours().toString().padStart(2, '0'); // 2자리로 맞추기
@@ -354,12 +353,6 @@ document.addEventListener('DOMContentLoaded', function() {
 						endTime = '23:59:59'; // 자정까지
 					}
 
-
-
-
-
-
-
 					//							일정양식
 					document.getElementById('scheduleForm').onsubmit = function(e) {
 						e.preventDefault();
@@ -374,9 +367,6 @@ document.addEventListener('DOMContentLoaded', function() {
 						// 시작일과 종료일에 시간을 추가하여 하나의 datetime으로 변환
 						var startDateTime = new Date(startDate + 'T' + startTime).toISOString(); // ISO 형식으로 변환
 						var endDateTime = new Date(endDate + 'T' + endTime).toISOString(); // ISO 형식으로 변환
-
-
-
 
 						// schsData 변수 초기화 및 데이터 설정
 						var schsData = {
@@ -510,12 +500,33 @@ document.addEventListener('DOMContentLoaded', function() {
 						});
 					});
 
-
-
-
 					document.getElementById('editCalendarForm').onsubmit = function(e) {
 						e.preventDefault();
 
+
+						const calNo = document.getElementById('selectedCalNo').value;
+						const name = document.getElementById('editCalendarName').value;
+						const color = document.querySelector('input[name="color"]:checked').value;
+
+						// 서버로 수정 요청 보내기
+						fetch('/cal/calUpdate', {
+							method: 'POST',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({ calNo: calNo, name: name, color: color })
+						})
+							.then(response => response.json())
+							.then(data => {
+								if (data.result) {
+									alert('캘린더 수정이 성공적으로 완료되었습니다.');
+									location.reload();  // 새로고침하여 변경 사항 반영
+								} else {
+									alert('캘린더 수정에 실패했습니다.');
+								}
+							})
+							.catch(error => console.error('Error:', error));
+					};
+
+					//============END 사이드바 내 캘린더 수정 ==============
 
 						const calNo = document.getElementById('selectedCalNo').value;
 						const name = document.getElementById('editCalendarName').value;

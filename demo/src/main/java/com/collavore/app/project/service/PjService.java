@@ -28,13 +28,16 @@ public interface PjService {
 	// 프로젝트 트리구조 리스트
 	public List<ProjectVO> projecttreeList();
 	
-	// 프로젝트 업무 생성
-	public int projectwrkinsert(ProjectVO projectVO);
-	// 프로젝트 상세 업무 생성
+	public int  projectwrkinsert(ProjectVO projectVO);
+	
+	public int selectPwNo(int pdwNo);
+	
 	public int projectdwrkinsert(ProjectVO projectVO);
 	
-	// pwNo조회하기
-	public int selectPwNo(int pdwNo);
+	
+	public ProjectVO projectwrkInfo(int pwNo);
+	
+	public ProjectVO projectdwrkInfo(int pdwNo);
 	
 //	public List<ProjectVO> getProjects(int page, int size);
 //

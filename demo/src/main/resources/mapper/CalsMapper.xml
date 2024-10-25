@@ -21,7 +21,6 @@
 		WHERE
 		cals.is_delete = 'h2'  <!-- 삭제되지 않은 일정만 조회 -->
 	</select>
-	
 	<!-- 단건 일정 조회 -->
 	<select id="selectSchsInfo" parameterType="SchsVO"
 		resultType="SchsVO">

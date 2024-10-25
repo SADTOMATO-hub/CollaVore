@@ -160,13 +160,14 @@ button:active {
 								사진</label>
 							<div class="col-sm-9">
 								<div class="image-preview mb-3">
-									<img id="imgPreview" src="/assets/images/users/default.png"
+									<img id="imgPreview" 
+									th:src="${member.img != null ? '/imgs/' + member.img : '/assets/images/users/default.png'}"
 										alt="이미지 미리보기"
 										style="display: block; max-width: 200px; max-height: 200px;" />
 								</div>
-								<input type="file" class="form-control" id="profileImage"
-									name="profileImage" accept="image/*"
-									onchange="previewImage(event)" /> <small
+								<!-- 파일 업로드 input -->
+								<input type="file" class="form-control" id="files" name="files"
+									accept="image/*" onchange="previewImage(event)" /> <small
 									class="form-text text-muted">* 프로필 사진 권장 크기는
 									330x330px(10MB 이하)입니다.</small>
 							</div>
@@ -280,8 +281,7 @@ button:active {
 							<label for="deptName"
 								class="col-sm-3 text-end control-label col-form-label">소속조직</label>
 							<div class="col-md-9">
-								<select class="select2 form-select shadow-none" name="deptNo"
-									id="deptNo">
+								<select class="form-select" name="deptNo" id="deptNo">
 									<option value="" selected>소속조직 선택</option>
 									<option th:each="dept : ${departments}"
 										th:value="${dept.deptNo}" th:text="${dept.deptName}"></option>
@@ -351,200 +351,185 @@ button:active {
 
 
 
-	<script>
-	document.addEventListener("DOMContentLoaded", function () {
-	    const requiredFields = ['empName', 'password', 'tel', 'email', 'workType', 'joinDate', 'deptNo', 'posiNo', 'jobNo'];
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const requiredFields = ['empName', 'password', 'tel', 'email', 'workType', 'joinDate', 'deptNo', 'posiNo', 'jobNo'];
 
-	    // 연락처와 이메일 중복 상태를 저장하는 변수
-	    let isTelValid = false;
-	    let isEmailValid = false;
+    // 연락처와 이메일 중복 상태를 저장하는 변수
+    let isTelValid = false;
+    let isEmailValid = false;
 
-	    // 페이지 로드 시 모든 필수 필드를 검증
-	    validateRequiredFields();
+    // 페이지 로드 시 모든 필수 필드를 검증
+    validateRequiredFields();
 
-	    // 각 필드의 입력값이 변경될 때마다 상태를 실시간으로 업데이트
-	    requiredFields.forEach(function (field) {
-	        const input = document.getElementById(field);
-	        input.addEventListener('input', function () {
-	            validateRequiredFields();  // 값이 변경될 때마다 검증 함수 호출
-	        });
-	    });
+    // 각 필드의 입력값이 변경될 때마다 상태를 실시간으로 업데이트
+    requiredFields.forEach(function (field) {
+        const input = document.getElementById(field);
+        if (input) {
+            input.addEventListener('input', function () {
+                validateRequiredFields();  // 값이 변경될 때마다 검증 함수 호출
+            });
+        }
+    });
 
-	    // 연락처 입력 필드 실시간 중복 확인
-	    document.getElementById('tel').addEventListener('input', function () {
-	        checkDuplicateTel();  // 연락처 중복 확인 함수 호출
-	    });
+    // 연락처 입력 필드 실시간 중복 확인
+    document.getElementById('tel').addEventListener('input', function () {
+        checkDuplicateTel();  // 연락처 중복 확인 함수 호출
+    });
 
-	    // 이메일 입력 필드 실시간 중복 확인
-	    document.getElementById('email').addEventListener('input', function () {
-	        checkDuplicateEmail();  // 이메일 중복 확인 함수 호출
-	    });
+    // 이메일 입력 필드 실시간 중복 확인
+    document.getElementById('email').addEventListener('input', function () {
+        checkDuplicateEmail();  // 이메일 중복 확인 함수 호출
+    });
 
-	    // 필수 입력값 검증 함수
-	    function validateRequiredFields() {
-	        let isValid = true;
-	        requiredFields.forEach(function (field) {
-	            const input = document.getElementById(field);
-	            const errorIcon = document.getElementById(field + 'ErrorIcon');
+    // 필수 입력값 검증 함수
+    function validateRequiredFields() {
+        let isValid = true;
+        requiredFields.forEach(function (field) {
+            const input = document.getElementById(field);
+            const errorIcon = document.getElementById(field + 'ErrorIcon');
 
-	            // 입력 필드가 비어 있는지 확인
-	            if (!input.value || input.value.trim() === "") {
-	                input.classList.add('error');
-	                errorIcon.style.display = 'inline';  // 빨간색 에러 아이콘 표시
-	                errorIcon.style.color = 'red';  // 빨간색 아이콘
-	                errorIcon.innerHTML = '&#9888;'; // 에러 아이콘 (빨간색 경고)
-	                isValid = false;
-	            } else {
-	                input.classList.remove('error');
-	                // 연락처와 이메일 필드에서는 중복 확인 결과에 따라 아이콘을 표시
-	                if (field !== 'tel' && field !== 'email') {
-	                    errorIcon.style.display = 'inline';  // 아이콘 표시
-	                    errorIcon.style.color = 'green';  // 녹색 성공 아이콘
-	                    errorIcon.innerHTML = '&#10004;';  // 성공 아이콘 (녹색 체크)
-	                }
-	            }
-	        });
+            if (input && (!input.value || input.value.trim() === "")) {
+                input.classList.add('error');
+                errorIcon.style.display = 'inline';  // 빨간색 에러 아이콘 표시
+                errorIcon.style.color = 'red';  // 빨간색 아이콘
+                errorIcon.innerHTML = '&#9888;'; // 에러 아이콘 (빨간색 경고)
+                isValid = false;
+            } else if (input) {
+                input.classList.remove('error');
+                errorIcon.style.display = 'inline';  // 녹색 성공 아이콘 표시
+                errorIcon.style.color = 'green';  // 녹색 아이콘
+                errorIcon.innerHTML = '&#10004;';  // 성공 아이콘
+            }
+        });
 
-	        // 연락처와 이메일의 중복 상태에 따라 각각 아이콘 상태를 유지
-	        updateIconStatus('tel', isTelValid);
-	        updateIconStatus('email', isEmailValid);
+        updateIconStatus('tel', isTelValid);
+        updateIconStatus('email', isEmailValid);
 
-	        return isValid;
-	    }
+        return isValid;
+    }
 
-	    // 연락처 중복 확인 함수 (실시간)
-	    function checkDuplicateTel() {
-	        return new Promise((resolve) => {
-	            const tel = document.getElementById('tel').value;
-	            const telErrorIcon = document.getElementById('telErrorIcon');
-	            const telDuplicateError = document.getElementById('telDuplicateError');
-	            
-	            // 아이콘과 오류 메시지를 초기 상태로 설정
-	            telErrorIcon.style.display = 'none'; 
-	            telDuplicateError.style.display = 'none';
+    // 연락처 중복 확인 함수 (실시간)
+    function checkDuplicateTel() {
+        return new Promise((resolve) => {
+            const tel = document.getElementById('tel').value;
+            const telErrorIcon = document.getElementById('telErrorIcon');
+            const telDuplicateError = document.getElementById('telDuplicateError');
+            
+            telErrorIcon.style.display = 'none'; 
+            telDuplicateError.style.display = 'none';
 
-	            fetch(`/checkDuplicateTel?tel=${tel}`)
-	                .then(response => response.json())
-	                .then(data => {
-	                    if (data.isTelDuplicate === true) {
-	                        // 중복된 경우 빨간색 경고 아이콘과 메시지 표시
-	                        telDuplicateError.style.display = 'block';  // 중복 오류 메시지
-	                        telErrorIcon.style.color = 'red';  // 빨간 경고 아이콘
-	                        telErrorIcon.innerHTML = '&#9888;'; // 경고 아이콘
-	                        telErrorIcon.style.display = 'inline'; // 경고 아이콘 표시
-	                        isTelValid = false;  // 연락처 중복 상태 저장
-	                        resolve(false);  // 중복된 값이 있으면 false 반환
-	                    } else {
-	                        // 중복이 없을 경우 성공 아이콘 표시
-	                        telDuplicateError.style.display = 'none';   // 오류 메시지 숨김
-	                        telErrorIcon.style.color = 'green';  // 녹색 성공 아이콘
-	                        telErrorIcon.innerHTML = '&#10004;';  // 성공 아이콘
-	                        telErrorIcon.style.display = 'inline'; // 성공 아이콘 표시
-	                        isTelValid = true;  // 연락처 유효 상태 저장
-	                        resolve(true);   // 중복된 값이 없으면 true 반환
-	                    }
-	                })
-	                .catch(error => {
-	                    console.error('연락처 중복 확인 오류:', error);
-	                    isTelValid = false;  // 오류 발생 시 false 상태로 유지
-	                    resolve(false);  // 오류 발생 시 false 반환
-	                });
-	        });
-	    }
+            fetch(`/checkDuplicateTel?tel=${tel}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.isTelDuplicate === true) {
+                        telDuplicateError.style.display = 'block';  // 중복 오류 메시지
+                        telErrorIcon.style.color = 'red';  // 빨간 경고 아이콘
+                        telErrorIcon.innerHTML = '&#9888;'; // 경고 아이콘
+                        telErrorIcon.style.display = 'inline'; // 경고 아이콘 표시
+                        isTelValid = false;
+                        resolve(false);
+                    } else {
+                        telDuplicateError.style.display = 'none';   // 오류 메시지 숨김
+                        telErrorIcon.style.color = 'green';  // 녹색 성공 아이콘
+                        telErrorIcon.innerHTML = '&#10004;';  // 성공 아이콘
+                        telErrorIcon.style.display = 'inline'; // 성공 아이콘 표시
+                        isTelValid = true;
+                        resolve(true);
+                    }
+                })
+                .catch(error => {
+                    console.error('연락처 중복 확인 오류:', error);
+                    isTelValid = false;
+                    resolve(false);
+                });
+        });
+    }
 
-	    // 이메일 중복 확인 함수 (실시간)
-	    function checkDuplicateEmail() {
-	        return new Promise((resolve) => {
-	            const email = document.getElementById('email').value;
-	            const emailErrorIcon = document.getElementById('emailErrorIcon');
-	            const emailDuplicateError = document.getElementById('emailDuplicateError');
-	            
-	            // 아이콘과 오류 메시지를 초기 상태로 설정
-	            emailErrorIcon.style.display = 'none'; 
-	            emailDuplicateError.style.display = 'none';
+    // 이메일 중복 확인 함수 (실시간)
+    function checkDuplicateEmail() {
+        return new Promise((resolve) => {
+            const email = document.getElementById('email').value;
+            const emailErrorIcon = document.getElementById('emailErrorIcon');
+            const emailDuplicateError = document.getElementById('emailDuplicateError');
+            
+            emailErrorIcon.style.display = 'none'; 
+            emailDuplicateError.style.display = 'none';
 
-	            fetch(`/checkDuplicateEmail?email=${email}`)
-	                .then(response => response.json())
-	                .then(data => {
-	                    if (data.isEmailDuplicate === true) {
-	                        // 중복된 경우 빨간색 경고 아이콘과 메시지 표시
-	                        emailDuplicateError.style.display = 'block';  // 중복 오류 메시지
-	                        emailErrorIcon.style.color = 'red';  // 빨간 경고 아이콘
-	                        emailErrorIcon.innerHTML = '&#9888;'; // 경고 아이콘
-	                        emailErrorIcon.style.display = 'inline'; // 경고 아이콘 표시
-	                        isEmailValid = false;  // 이메일 중복 상태 저장
-	                        resolve(false);  // 중복된 값이 있으면 false 반환
-	                    } else {
-	                        // 중복이 없을 경우 성공 아이콘 표시
-	                        emailDuplicateError.style.display = 'none';   // 오류 메시지 숨김
-	                        emailErrorIcon.style.color = 'green';  // 녹색 성공 아이콘
-	                        emailErrorIcon.innerHTML = '&#10004;';  // 성공 아이콘
-	                        emailErrorIcon.style.display = 'inline'; // 성공 아이콘 표시
-	                        isEmailValid = true;  // 이메일 유효 상태 저장
-	                        resolve(true);   // 중복된 값이 없으면 true 반환
-	                    }
-	                })
-	                .catch(error => {
-	                    console.error('이메일 중복 확인 오류:', error);
-	                    isEmailValid = false;  // 오류 발생 시 false 상태로 유지
-	                    resolve(false);  // 오류 발생 시 false 반환
-	                });
-	        });
-	    }
+            fetch(`/checkDuplicateEmail?email=${email}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.isEmailDuplicate === true) {
+                        emailDuplicateError.style.display = 'block';  // 중복 오류 메시지
+                        emailErrorIcon.style.color = 'red';  // 빨간 경고 아이콘
+                        emailErrorIcon.innerHTML = '&#9888;'; // 경고 아이콘
+                        emailErrorIcon.style.display = 'inline'; // 경고 아이콘 표시
+                        isEmailValid = false;
+                        resolve(false);
+                    } else {
+                        emailDuplicateError.style.display = 'none';   // 오류 메시지 숨김
+                        emailErrorIcon.style.color = 'green';  // 녹색 성공 아이콘
+                        emailErrorIcon.innerHTML = '&#10004;';  // 성공 아이콘
+                        emailErrorIcon.style.display = 'inline'; // 성공 아이콘 표시
+                        isEmailValid = true;
+                        resolve(true);
+                    }
+                })
+                .catch(error => {
+                    console.error('이메일 중복 확인 오류:', error);
+                    isEmailValid = false;
+                    resolve(false);
+                });
+        });
+    }
 
-	    // 연락처와 이메일 필드의 상태에 따라 아이콘 업데이트
-	    function updateIconStatus(field, isValid) {
-	        const errorIcon = document.getElementById(field + 'ErrorIcon');
-	        if (!isValid) {
-	            errorIcon.style.color = 'red';  // 빨간 경고 아이콘
-	            errorIcon.innerHTML = '&#9888;'; // 경고 아이콘
-	            errorIcon.style.display = 'inline'; // 경고 아이콘 표시
-	        } else {
-	            errorIcon.style.color = 'green';  // 녹색 성공 아이콘
-	            errorIcon.innerHTML = '&#10004;';  // 성공 아이콘
-	            errorIcon.style.display = 'inline'; // 성공 아이콘 표시
-	        }
-	    }
+    // 연락처와 이메일 필드의 상태에 따라 아이콘 업데이트
+    function updateIconStatus(field, isValid) {
+        const errorIcon = document.getElementById(field + 'ErrorIcon');
+        if (!isValid) {
+            errorIcon.style.color = 'red';  // 빨간 경고 아이콘
+            errorIcon.innerHTML = '&#9888;'; // 경고 아이콘
+            errorIcon.style.display = 'inline'; // 경고 아이콘 표시
+        } else {
+            errorIcon.style.color = 'green';  // 녹색 성공 아이콘
+            errorIcon.innerHTML = '&#10004;';  // 성공 아이콘
+            errorIcon.style.display = 'inline'; // 성공 아이콘 표시
+        }
+    }
 
-	    // 폼 제출 시 전체 검증 및 중복 확인
-	    document.querySelector('#memberForm').addEventListener('submit', function (event) {
-	        event.preventDefault(); // 폼 제출을 일단 막음
+    // 폼 제출 시 전체 검증 및 중복 확인
+    document.querySelector('#memberForm').addEventListener('submit', function (event) {
+        event.preventDefault(); // 폼 제출을 일단 막음
 
-	        let isValid = validateRequiredFields();  // 필수 입력 필드 검증
+        let isValid = validateRequiredFields();  // 필수 입력 필드 검증
 
-	        // 필수 항목이 모두 입력되지 않은 경우 제출 방지
-	        if (!isValid) {
-	            alert("필수 항목을 확인해주세요.");  // 알림
-	            return;  // 중복 확인하지 않고 폼 제출을 중단
-	        }
-	        
-	        // 연락처 및 이메일 중복 확인을 비동기로 처리
-	        Promise.all([checkDuplicateTel(), checkDuplicateEmail()]).then(results => {
-	            const [telIsValid, emailIsValid] = results;
+        if (!isValid) {
+            alert("필수 항목을 확인해주세요.");
+            return;
+        }
+        
+        // 연락처 및 이메일 중복 확인을 비동기로 처리
+        Promise.all([checkDuplicateTel(), checkDuplicateEmail()]).then(results => {
+            const [telIsValid, emailIsValid] = results;
 
-	            // 중복된 값이 있을 경우 제출 방지
-	            if (!telIsValid || !emailIsValid) {
-	                alert("중복된 연락처나 이메일이 있습니다.");  // 알림
-	            } else {
-	                // 중복 검사가 모두 통과되면 폼을 다시 제출
-	                document.querySelector('#memberForm').submit();
-	            }
-	        });
-	    });
-	});
-
-	
-	    // 이미지 미리보기 기능
-	    function previewImage(event) {
-	        var reader = new FileReader();
-	        reader.onload = function() { 
-	            var output = document.getElementById('imgPreview');
-	            output.src = reader.result;
-	            output.style.display = 'block';
-	        };
-	        reader.readAsDataURL(event.target.files[0]);
-	    }
+            if (!telIsValid || !emailIsValid) {
+                alert("중복된 연락처나 이메일이 있습니다.");  // 중복 오류 메시지 표시
+            } else {
+                document.querySelector('#memberForm').submit();  // 폼 제출 재시도
+            }
+        });
+    });
+});
 
 
+// 이미지 미리보기 기능
+    function previewImage(event) {
+        var reader = new FileReader();
+        reader.onload = function(){
+            var output = document.getElementById('imgPreview');
+            output.src = reader.result; // 선택한 파일을 미리보기 이미지에 반영
+        };
+        reader.readAsDataURL(event.target.files[0]); // 선택한 파일을 읽음
+    }
 
 	</script>

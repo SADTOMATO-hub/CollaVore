@@ -54,12 +54,5 @@ public class SchsVO {
 	private Date alaRegDate; //등록일
 	private Date viewDate; //알림확인일
 	//private Integer saNo; //알림번호
-	//private Integer empNo; //사원번호
-	
-	
-	
-	
-	
-	
-	
+	//private Integer empNo; //사원번호		
 }

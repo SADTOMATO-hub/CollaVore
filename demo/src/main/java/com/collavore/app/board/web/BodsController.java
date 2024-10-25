@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.collavore.app.board.service.BodsComtsVO;
 import com.collavore.app.board.service.BodsService;
 import com.collavore.app.board.service.BodsVO;
+import com.collavore.app.board.service.impl.BodsServiceImpl;
 import com.collavore.app.common.service.PageDTO;
 
 @Controller
@@ -121,7 +122,7 @@ public class BodsController {
 		System.out.println(bodsComtsVO);
 		return bodsComtsVO;
 	}
-	
+
 	// 댓글 삭제
 	@PostMapping("/board/bodsComtsDelete")
 	@ResponseBody
@@ -129,20 +130,31 @@ public class BodsController {
 		int result = bodsService.deleteBodsComts(cmtNo);
 		return result > 0 ? true : false;
 	}
-	
-	//댓글 조회
+
+	// 댓글 조회
 	@GetMapping("/board/comtsList")
 	@ResponseBody
-	public List<BodsComtsVO> comtsList(int postNo){
+	public List<BodsComtsVO> comtsList(int postNo) {
 		List<BodsComtsVO> list = bodsService.bodsComtsList(postNo);
 		return list;
 	}
-	
-	//댓글 수정
-	@GetMapping("/board/bodsComtsUpdate")
-	public String boardUpdateForm(BodsComtsVO bodsComtsVO, Model model) {
-		//BodsVO findVO = bodsService.updateBodsComts(bodsComtsVO);
-		//model.addAttribute("bods", findVO);
-		return "board/bodsUpdate";
+
+	// 댓글 상세조회 : URI - boardInfo / PARAMETER - BoardVO(QueryString)
+	@GetMapping("/board/bodscomtsInfo")
+	public String bodsComtsInfo(@RequestParam BodsComtsVO bodsComtsVO) {
+		bodsService.bodsComtsInfo(bodsComtsVO);
+		return "board/bodsComtsInfo";
 	}
+
+	// 댓글 수정
+	@PostMapping("/board/bodsComtsUpdate")
+	@ResponseBody
+	public Map<String, Object> boardUpdateForm(@RequestBody BodsComtsVO bodsComtsVO) {
+		Map<String, Object> result = bodsService.updateBodsComts(bodsComtsVO);
+		return result;
+	}
+	
+	
+	
+
 }
