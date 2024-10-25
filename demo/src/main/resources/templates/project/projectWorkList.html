@@ -292,22 +292,34 @@
 
         }
         function myInfo(buttonElement, level) {
-        	const projectName = (this).contents().filter(function() {
+            const projectName = $(buttonElement).parent().contents().filter(function() {
                 return this.nodeType === 3; 
             }).text().trim();
-        	
-        	console.log(projectName);
-        	/* console.log(level); */
-        	 if (level <= 1) {
-                 $('#wrkInfo h4').text(projectName + ' 업무 등록');
-                 $('#wrkInfo').show();
-                 $('#dwrkInfo').hide();
-             } else {
-                 $('#dwrkInfo h4').text(projectName + ' 상세업무 등록');
-                 $('#wrkInfo').hide();
-                 $('#dwrkInfo').show();        
-             }
-        	
+            
+            const projNo = $(buttonElement).parent().attr('id').split('_')[1];
+            
+         // 최상위 부모 찾기
+            while (currentNode.length) {
+                const currentPwNo = currentNode.attr('id').split('_')[1];
+                
+                // pwNo 값이 존재하면 저장
+                if (currentPwNo) {
+                    pwNo = currentPwNo; // 최상위 부모의 pwNo로 업데이트
+                }
+
+                // 부모 노드로 이동
+                currentNode = currentNode.parent().closest('li'); // 부모 <li>를 찾기
+            }
+            
+            if (level <= 1) {
+                $('#wrkInfo h4').text(projectName + ' 업무 등록');
+                $('#wrkInfo').show();
+                $('#dwrkInfo').hide();
+            } else {
+                $('#dwrkInfo h4').text(projectName + ' 상세업무 등록');
+                $('#wrkInfo').hide();
+                $('#dwrkInfo').show();        
+            }
         }
     </script>
 
