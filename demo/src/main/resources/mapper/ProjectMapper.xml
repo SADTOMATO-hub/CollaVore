@@ -259,4 +259,39 @@ SELECT LEVEL, tree.*
 		WHERE pdw_no = #{pdwNo}
 	</select>
 	
+	
+	<!-- 업무 단건조회 -->
+	<select id="selectwrkInfo" resultType="ProjectVO">
+		SELECT pw_no,
+		name,
+        content,
+        jobNo,
+        mgr_no,
+        reg_date,
+        proj_no,
+        sort
+		FROM projwrks
+		WHERE pw_no = #{pwNo}
+	</select>
+	
+	
+	<!-- 상세업무 단건조회 -->
+	<select id="selectdwrkInfo" resultType="ProjectVO">
+		SELECT pdw_no,
+		parent_pdw_no,
+        name,
+        content,
+        reg_date,
+        is_status,
+        start_date,
+        req_date,
+        comp_date,
+        pw_no,
+        sort,
+        commit_id,
+        importance,
+        mgr_no
+		FROM projdwrks
+		WHERE pdw_no = #{pdwNo}
+	</select>
 </mapper>

@@ -96,6 +96,7 @@ public class BodsServiceImpl implements BodsService {
 		return bodsMapper.delectBodsComtsInfo(bodsComtsVO);
 	}
 
+	
 	@Override // 댓글 수정
 	public Map<String, Object> updateBodsComts(BodsComtsVO bodsComtsVO) {
 		Map<String, Object> map = new HashMap<>();
@@ -124,6 +125,13 @@ public class BodsServiceImpl implements BodsService {
 
 		// return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
 	}
+
+	@Override // 댓글 상세조회 
+	public BodsComtsVO cmtInfo(int cmtNo) {
+		return bodsMapper.selectBodsComtsInfo(cmtNo);
+	}
+
+
 
 	
 }

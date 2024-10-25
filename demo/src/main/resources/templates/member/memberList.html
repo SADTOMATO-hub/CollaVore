@@ -121,120 +121,119 @@
 	background-color: #f9f9f9; /* 마우스 오버 시 행 배경색 변경 */
 }
 
-.pagination-and-insert-wrapper {
-    display: flex;
-    justify-content: space-between; /* 페이지네이션과 등록 버튼을 좌우로 배치 */
-    align-items: center; /* 세로 중앙 정렬 */
-    width: 100%; /* 전체 너비 사용 */
-    padding: 10px;
+.form-select{
+border: none;
 }
 
 
+.pagination-and-insert-wrapper {
+	display: flex;
+	justify-content: space-between; /* 페이지네이션과 등록 버튼을 좌우로 배치 */
+	align-items: center; /* 세로 중앙 정렬 */
+	width: 100%; /* 전체 너비 사용 */
+	padding: 10px;
+}
+
 .pagination-outer {
-    text-align: center; /* 페이지네이션을 중앙 정렬 */
-    flex-grow: 1;
+	text-align: center; /* 페이지네이션을 중앙 정렬 */
+	flex-grow: 1;
 }
 
 .pagination {
-    font-family: 'Ubuntu', sans-serif;
-    display: inline-flex;
-    position: relative;
-    	margin-top: 0;
+	font-family: 'Ubuntu', sans-serif;
+	display: inline-flex;
+	position: relative;
+	margin-top: 0;
 	margin-bottom: 0;
 }
 
 /* prev 또는 next 클래스를 가지지 않는 경우에만 배경 적용 */
 .pagination li a.page-link:not(.prev):not(.next) {
-    color: #333;
-    background-color: #e7e7e7; /* 배경 적용 */
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 39px;
-    height: 40px;
-    width: 40px;
-    padding: 0;
-    margin: 0 5px;
-    border: none;
-    border-radius: 10px;
-    position: relative;
-    z-index: 1;
-    transition: all 0.3s ease 0s;
+	color: #333;
+	background-color: #e7e7e7; /* 배경 적용 */
+	font-size: 20px;
+	font-weight: 500;
+	line-height: 39px;
+	height: 40px;
+	width: 40px;
+	padding: 0;
+	margin: 0 5px;
+	border: none;
+	border-radius: 10px;
+	position: relative;
+	z-index: 1;
+	transition: all 0.3s ease 0s;
 }
 
 /* prev 또는 next 클래스를 가진 경우에만 적용할 스타일 (필요 시 추가) */
-.pagination li a.page-link.prev,
-.pagination li a.page-link.next {
-    background-color: transparent; /* 배경 투명 */
-    color: #333;
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 39px;
-    height: 40px;
-    width: 40px;
-    padding: 0;
-    margin: 0 5px;
-    border: none;
-    position: relative;
-    z-index: 1;
-    transition: all 0.3s ease 0s;
+.pagination li a.page-link.prev, .pagination li a.page-link.next {
+	background-color: transparent; /* 배경 투명 */
+	color: #333;
+	font-size: 20px;
+	font-weight: 500;
+	line-height: 39px;
+	height: 40px;
+	width: 40px;
+	padding: 0;
+	margin: 0 5px;
+	border: none;
+	position: relative;
+	z-index: 1;
+	transition: all 0.3s ease 0s;
 }
 
 /* prev 또는 next를 가지지 않는 .page-link에만 적용 */
-.pagination li a.page-link:not(.prev):not(.next):hover,
-.pagination li a.page-link:not(.prev):not(.next):focus,
-.pagination li.active a.page-link:not(.prev):not(.next):hover,
-.pagination li.active a.page-link:not(.prev):not(.next) {
-    color: #fff;
-    background: transparent;
+.pagination li a.page-link:not(.prev):not(.next):hover, .pagination li a.page-link:not(.prev):not(.next):focus,
+	.pagination li.active a.page-link:not(.prev):not(.next):hover,
+	.pagination li.active a.page-link:not(.prev):not(.next) {
+	color: #fff;
+	background: transparent;
 }
 
-.pagination li a.page-link:not(.prev):not(.next):before,
-.pagination li a.page-link:not(.prev):not(.next):after {
-    content: '';
-    background: linear-gradient(to right, #706fd3 50%, transparent 50%);
-    height: 100%;
-    width: 100%;
-    border-radius: 50%;
-    opacity: 0;
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: -1;
-    transition: all 0.4s ease 0s;
+.pagination li a.page-link:not(.prev):not(.next):before, .pagination li a.page-link:not(.prev):not(.next):after
+	{
+	content: '';
+	background: linear-gradient(to right, #706fd3 50%, transparent 50%);
+	height: 100%;
+	width: 100%;
+	border-radius: 50%;
+	opacity: 0;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: -1;
+	transition: all 0.4s ease 0s;
 }
 
 .pagination li a.page-link:not(.prev):not(.next):after {
-    background: linear-gradient(to right, #474787 50%, transparent 50%);
-    transform: rotateY(180deg);
-    top: auto;
-    bottom: 0;
+	background: linear-gradient(to right, #474787 50%, transparent 50%);
+	transform: rotateY(180deg);
+	top: auto;
+	bottom: 0;
 }
 
 .pagination li a.page-link:not(.prev):not(.next):hover:before,
-.pagination li a.page-link:not(.prev):not(.next):focus:before,
-.pagination li.active a.page-link:not(.prev):not(.next):before,
-.pagination li a.page-link:not(.prev):not(.next):hover:after,
-.pagination li a.page-link:not(.prev):not(.next):focus:after,
-.pagination li.active a.page-link:not(.prev):not(.next):after {
-    height: 85%;
-    opacity: 1;
+	.pagination li a.page-link:not(.prev):not(.next):focus:before,
+	.pagination li.active a.page-link:not(.prev):not(.next):before,
+	.pagination li a.page-link:not(.prev):not(.next):hover:after,
+	.pagination li a.page-link:not(.prev):not(.next):focus:after,
+	.pagination li.active a.page-link:not(.prev):not(.next):after {
+	height: 85%;
+	opacity: 1;
 }
-
 
 @media only screen and (max-width: 480px) {
-    .pagination {
-        font-size: 0;
-        border: none;
-        display: inline-block;
-    }
-
-    .pagination li {
-        display: inline-block;
-        vertical-align: top;
-        margin: 0 0 10px;
-    }
+	.pagination {
+		font-size: 0;
+		border: none;
+		display: inline-block;
+	}
+	.pagination li {
+		display: inline-block;
+		vertical-align: top;
+		margin: 0 0 10px;
+	}
 }
-
 
 button {
 	padding: 5px 10px;
@@ -248,8 +247,8 @@ button {
 }
 
 .insert-btn-container {
-    text-align: right; /* 등록 버튼을 오른쪽 정렬 */
-    padding-right: 10px;
+	text-align: right; /* 등록 버튼을 오른쪽 정렬 */
+	padding-right: 10px;
 }
 
 /* 마우스 호버 시 효과 */
@@ -261,8 +260,9 @@ button:hover {
 button:active {
 	background-color: #4839a9;
 }
-.none{
-	display:none;
+
+.none {
+	display: none;
 }
 </style>
 
@@ -278,7 +278,6 @@ button:active {
 				</div>
 			</div>
 
-
 			<div class="card_memberList">
 				<div class="search-container">
 					<input type="text" id="searchBox" placeholder="검색어를 입력하세요">
@@ -289,46 +288,45 @@ button:active {
 							<th scope="col">이름</th>
 							<th scope="col">연락처</th>
 							<th scope="col">이메일</th>
-							<th scope="col"><select
-								class="select2 form-select shadow-none" name="deptNo"
-								id="deptNo">
+							<th scope="col"><select class="form-select" name="deptName"
+								id="deptName">
 									<option value="" selected>조직</option>
-									<option th:each="dept : ${departments}"
-										th:value="${dept.deptNo}" th:text="${dept.deptName}"></option>
+									<option th:each="dept : ${departments}" th:value="${dept}"
+										th:text="${dept}"></option>
 							</select></th>
-							<th scope="col"><select class="form-select" name="jobNo"
-								id="jobNo">
+							<th scope="col"><select class="form-select" name="jobName"
+								id="jobName">
 									<option value="" selected>직무</option>
-									<option th:each="job : ${jobs}" th:value="${job.jobNo}"
-										th:text="${job.jobName}"></option>
+									<option th:each="job : ${jobs}" th:value="${job}"
+										th:text="${job}"></option>
 							</select></th>
-							<th scope="col"><select class="form-select" name="posiNo"
-								id="posiNo">
+							<th scope="col"><select class="form-select" name="posiName"
+								id="posiName">
 									<option value="" selected>직위</option>
-									<option th:each="posi : ${positions}" th:value="${posi.posiNo}"
-										th:text="${posi.posiName}"></option>
+									<option th:each="posi : ${positions}" th:value="${posi}"
+										th:text="${posi}"></option>
 							</select></th>
 							<th scope="col"><select class="form-select" name="workType"
 								id="workType">
 									<option value="" selected>상태</option>
-									<option th:each="info : ${members}" th:value="${info.workType}"
-										th:text="${info.workType}"></option>
+									<option th:each="work : ${workType}" th:value="${work}"
+										th:text="${work}"></option>
 							</select></th>
 							<th scope="col">보기</th>
 						</tr>
 					</thead>
 					<tbody>
 						<th:block th:each="info : ${members}">
-							<tr data-dept="[[${info.deptNo}]]" data-job="[[${info.jobNo}]]"
-								data-posi="[[${info.posiNo}]]"
-								data-worktype="[[${info.workType}]]">
-								<td>[[${info.empName}]]</td>
-								<td>[[${info.tel}]]</td>
-								<td>[[${info.email}]]</td>
-								<td>[[${info.deptName}]]</td>
-								<td>[[${info.jobName}]]</td>
-								<td>[[${info.posiName}]]</td>
-								<td>[[${info.workType}]]</td>
+							<tr th:data-dept="${info.deptName}" th:data-job="${info.jobName}"
+								th:data-posi="${info.posiName}"
+								th:data-worktype="${info.workType}">
+								<td th:text="${info.empName}"></td>
+								<td th:text="${info.tel}"></td>
+								<td th:text="${info.email}"></td>
+								<td th:text="${info.deptName}"></td>
+								<td th:text="${info.jobName}"></td>
+								<td th:text="${info.posiName}"></td>
+								<td th:text="${info.workType}"></td>
 								<td>
 									<button type="button"
 										th:onclick="|location.href='@{/memberUpdate(empNo=${info.empNo})}'|">보기</button>
@@ -338,26 +336,29 @@ button:active {
 					</tbody>
 				</table>
 
-
 				<div class="pagination-and-insert-wrapper">
 					<div class="pagination-outer">
 						<nav aria-label="Page navigation example">
 							<ul class="pagination">
-								<li class="page-item"
-									th:classappend="${!pageing.prev} ? 'none'"><a
-									class="page-link prev"
+								<li class="page-item" th:classappend="${!pageing.prev} ? 'none'">
+									<a class="page-link prev"
 									th:href="@{/memberList(page=${pageing.startPage - 1})}"
-									tabindex="-1" aria-disabled="${!pageing.prev}"> <i class="mdi mdi-arrow-left-bold"></i> </a></li>
+									tabindex="-1" aria-disabled="${!pageing.prev}"> <i
+										class="mdi mdi-arrow-left-bold"></i>
+								</a>
+								</li>
 								<li class="page-item"
 									th:each="i : ${#numbers.sequence(pageing.startPage, pageing.endPage)}"
 									th:classappend="${i == pageing.page} ? 'active'"><a
 									class="page-link" th:href="@{/memberList(page=${i})}"
 									th:classappend="${i == pageing.page} ? 'active' : ''">[[${i}]]</a>
 								</li>
-								<li class="page-item"
-									th:classappend="${!pageing.next} ? 'none'" ><a
-									class="page-link next"
-									th:href="@{/memberList(page=${pageing.endPage + 1})}"> <i class="mdi mdi-arrow-right-bold"></i> </a></li>
+								<li class="page-item" th:classappend="${!pageing.next} ? 'none'">
+									<a class="page-link next"
+									th:href="@{/memberList(page=${pageing.endPage + 1})}"> <i
+										class="mdi mdi-arrow-right-bold"></i>
+								</a>
+								</li>
 							</ul>
 						</nav>
 					</div>
@@ -368,59 +369,86 @@ button:active {
 					</div>
 				</div>
 			</div>
-
 		</div>
 	</div>
 </div>
 
+
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const deptSelect = document.getElementById('deptNo');
-        const jobSelect = document.getElementById('jobNo');
-        const posiSelect = document.getElementById('posiNo');
-        const workTypeSelect = document.getElementById('workType');
+	document.addEventListener('DOMContentLoaded', function() {
+		// 필터링할 select 요소들을 가져옴
+		const deptFilter = document.getElementById('deptName');
+		const jobFilter = document.getElementById('jobName');
+		const posiFilter = document.getElementById('posiName');
+		const workTypeFilter = document.getElementById('workType');
+		const rows = document.querySelectorAll('.memberList_table tbody tr'); // 테이블 행
 
-        const filterRows = () => {
-            const selectedDept = deptSelect.value;
-            const selectedJob = jobSelect.value;
-            const selectedPosi = posiSelect.value;
-            const selectedWorkType = workTypeSelect.value;
+		// 각 select 요소의 change 이벤트 리스너
+		deptFilter.addEventListener('change', filterTable);
+		jobFilter.addEventListener('change', filterTable);
+		posiFilter.addEventListener('change', filterTable);
+		workTypeFilter.addEventListener('change', filterTable);
 
-            const rows = document.querySelectorAll('tbody tr');
+		function filterTable() {
+			const selectedDept = deptFilter.value.trim(); // 선택된 부서 값
+			const selectedJob = jobFilter.value.trim(); // 선택된 직무 값
+			const selectedPosi = posiFilter.value.trim(); // 선택된 직위 값
+			const selectedWorkType = workTypeFilter.value.trim(); // 선택된 근무 유형 값
 
-            rows.forEach(row => {
-                const dept = row.getAttribute('data-dept');
-                const job = row.getAttribute('data-job');
-                const posi = row.getAttribute('data-posi');
-                const workType = row.getAttribute('data-worktype');
+			rows.forEach(function(row) {
+				const deptValue = row.getAttribute('data-dept');
+				const jobValue = row.getAttribute('data-job');
+				const posiValue = row.getAttribute('data-posi');
+				const workTypeValue = row.getAttribute('data-worktype');
 
-                let isVisible = true;
+				let shouldShow = true; // 행을 표시할지 여부
 
-                if (selectedDept && dept !== selectedDept) {
-                    isVisible = false;
-                }
-                if (selectedJob && job !== selectedJob) {
-                    isVisible = false;
-                }
-                if (selectedPosi && posi !== selectedPosi) {
-                    isVisible = false;
-                }
-                if (selectedWorkType && workType !== selectedWorkType) {
-                    isVisible = false;
-                }
+				// 부서 필터 적용
+				if (selectedDept && selectedDept !== deptValue) {
+					shouldShow = false;
+				}
 
-                if (isVisible) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
-        };
+				// 직무 필터 적용
+				if (selectedJob && selectedJob !== jobValue) {
+					shouldShow = false;
+				}
 
-        deptSelect.addEventListener('change', filterRows);
-        jobSelect.addEventListener('change', filterRows);
-        posiSelect.addEventListener('change', filterRows);
-        workTypeSelect.addEventListener('change', filterRows);
-    });
+				// 직위 필터 적용
+				if (selectedPosi && selectedPosi !== posiValue) {
+					shouldShow = false;
+				}
+
+				// 근무 유형 필터 적용
+				if (selectedWorkType && selectedWorkType !== workTypeValue) {
+					shouldShow = false;
+				}
+
+				// shouldShow가 true면 보이도록, false면 숨김
+				row.style.display = shouldShow ? '' : 'none';
+
+			});
+		}
+
+	});
+	
+	document.addEventListener('DOMContentLoaded', function() {
+	    const searchBox = document.getElementById('searchBox');
+	    const rows = document.querySelectorAll('.memberList_table tbody tr'); // 테이블 행들
+
+	    // 검색 입력 이벤트 리스너 추가
+	    searchBox.addEventListener('input', function() {
+	        const searchText = searchBox.value.toLowerCase().trim(); // 검색어를 소문자로 변환하고 공백 제거
+	        rows.forEach(function(row) {
+	            // 행에 있는 텍스트를 모두 가져옴
+	            const rowText = row.textContent.toLowerCase();
+
+	            // 검색어가 행의 텍스트에 포함되어 있는지 확인하고 행을 표시하거나 숨김
+	            if (rowText.includes(searchText)) {
+	                row.style.display = '';
+	            } else {
+	                row.style.display = 'none';
+	            }
+	        });
+	    });
+	});
 </script>
-

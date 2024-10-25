@@ -43,4 +43,9 @@ public interface ProjectMapper {
 	// pwNo 조회하기
 	public int searchPwNo(int pdwNo);
 	
+	// 업무 단건 조회
+	public ProjectVO selectwrkInfo(int pwNo);
+	// 상세업무 조회
+	public ProjectVO selectdwrkInfo(int pdwNo);
+	
 }
