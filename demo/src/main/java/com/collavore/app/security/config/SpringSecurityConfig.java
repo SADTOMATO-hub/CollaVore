@@ -72,6 +72,7 @@ public class SpringSecurityConfig {
 
                 HttpSession session = request.getSession();
                 session.setAttribute("userEmpNo", userVO.getEmpNo());
+                session.setAttribute("userImg", userVO.getImg());
 
                 response.sendRedirect("/dashboard");
             }

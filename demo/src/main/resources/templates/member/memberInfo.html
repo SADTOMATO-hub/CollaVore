@@ -254,12 +254,12 @@ td {
 }
 
 .modal-profile-photo img {
-	width: 100px;
-	height: 100px;
+	width: 200px;
+	height: 200px;
 	border-radius: 50%; /* 이미지 둥글게 */
 	object-fit: cover; /* 이미지가 잘려도 비율 유지 */
 	display: block; /* 이미지를 블록 요소로 설정하여 정확한 정렬 */
-	margin: 0 auto; /* 이미지가 중앙에 오도록 마진 자동 */
+	margin: 20px auto; /* 이미지가 중앙에 오도록 마진 자동 */
 	background-color: #f0f0f0;
 }
 
@@ -290,10 +290,10 @@ td {
 	box-sizing: border-box;
 	font-size: 14px;
 }
-.modal-span{
+
+.modal-span {
 	width: calc(100% - 160px); /* 인풋, 텍스트 영역 가로 사이즈 조정 */
 	padding: 8px;
-
 }
 /* 텍스트 영역 높이 */
 .modal-textarea {
@@ -319,14 +319,13 @@ td {
 }
 
 /* 연락처 유효성 검사 메시지 */
-    #telError, #telSuccess, #passwordError, #passwordSuccess  {
-        display: block; /* 메시지를 블록 요소로 표시하여 입력 필드 아래로 배치 */
-        margin-top: 2px;
-        margin-bottom: 5px; /* 입력 필드와의 간격 설정 */
-        text-align: center;
-    }
+#telError, #telSuccess, #passwordError, #passwordSuccess {
+	display: block; /* 메시지를 블록 요소로 표시하여 입력 필드 아래로 배치 */
+	margin-top: 2px;
+	margin-bottom: 5px; /* 입력 필드와의 간격 설정 */
+	text-align: center;
+}
 
-    
 /* 모달 영역 끝 */
 </style>
 	<div class="body-page-wrapper">
@@ -346,8 +345,8 @@ td {
 				<!-- 프로필 이미지와 사용자 정보 -->
 				<div class="profile-section">
 					<div class="profile-photo">
-						<img
-							th:src="${member.img != null and member.img != '' ? '/assets/images/users/' + member.img : '/assets/images/users/default.png'}"
+						<img id="imgPreview"
+							th:src="${member.img != null ? '/imgs/' + member.img : '/assets/images/users/default.png'}"
 							alt="사용자 이미지">
 					</div>
 					<div class="profile-details">
@@ -416,15 +415,18 @@ td {
 						<input type="hidden" name="empNo" th:value="${member.empNo}">
 
 						<div style="position: relative;">
+							<!-- 현재 프로필 이미지 또는 기본 이미지 표시 -->
 							<div class="modal-profile-photo">
 								<img id="profilePreview"
-									th:src="${member.img != null ? '/assets/images/users/' + member.img : '/assets/images/users/default.png'}"
-									alt="프로필 이미지" width="100" height="100">
+										th:src="${member.img != null ? '/imgs/' + member.img : '/assets/images/users/default.png'}"
+										alt="이미지 미리보기" width="200" height="200" style="display: block;">
 							</div>
+
+							<!-- 이미지 파일 선택 필드 -->
 							<div class="modal-profile-photo">
 								<input type="file" id="profileImage" name="profileImage"
 									accept="image/*" onchange="previewImage(event)"
-									style="padding-left: 100px">
+									style="padding-left: 100px;">
 							</div>
 						</div>
 						<!-- 소개글 수정 -->
@@ -442,18 +444,24 @@ td {
 						</div>
 
 						<div class="modal-form-group">
-							<label for="tel" class="modal-label">연락처 :</label> 
-							<input type="text" id="tel" name="tel" class="modal-input" th:field="*{tel}"> 
+							<label for="tel" class="modal-label">연락처 :</label> <input
+								type="text" id="tel" name="tel" class="modal-input"
+								th:field="*{tel}">
 						</div>
-							<small id="telError" style="color: red; display: none;">유효하지 않은 연락처 형식입니다. (010-XXXX-XXXX)</small> 
-							<small id="telSuccess" style="color: green; display: none;">정상적인 연락처입니다.</small>
+						<small id="telError" style="color: red; display: none;">유효하지
+							않은 연락처 형식입니다. (010-XXXX-XXXX)</small> <small id="telSuccess"
+							style="color: green; display: none;">정상적인 연락처입니다.</small>
 
 						<div class="modal-form-group">
-							<label for="password" class="modal-label">비밀번호 :</label> 
-							<input type="password" id="password" name="password" class="modal-input" th:field="*{password}" placeholder="비밀번호 (수정시에만 입력하세요)"> 
+							<label for="password" class="modal-label">비밀번호 :</label> <input
+								type="password" id="password" name="password"
+								class="modal-input" th:field="*{password}"
+								placeholder="비밀번호 (수정시에만 입력하세요)">
 						</div>
-							<small id="passwordError" style="color: red; display: none;">비밀번호는 최소 8자 이상이어야 하며, 대문자, 소문자, 숫자, 특수 문자를 포함해야 합니다.</small> 
-							<small id="passwordSuccess" style="color: green; display: none;">정상적인 비밀번호입니다.</small>
+						<small id="passwordError" style="color: red; display: none;">비밀번호는
+							최소 8자 이상이어야 하며, 대문자, 소문자, 숫자, 특수 문자를 포함해야 합니다.</small> <small
+							id="passwordSuccess" style="color: green; display: none;">정상적인
+							비밀번호입니다.</small>
 
 						<!-- 이메일 및 부서/직위정보는 읽기 전용 -->
 						<div class="modal-form-group">
@@ -572,6 +580,17 @@ td {
 				telSuccess.style.display = 'none';
 			}
 		};
+		
+		   // 이미지 미리보기 함수
+	    function previewImage(event) {
+	        var reader = new FileReader();  // 파일을 읽기 위한 FileReader 객체 생성
+	        reader.onload = function() {
+	            var output = document.getElementById('profilePreview');  // 미리보기 이미지 요소
+	            output.src = reader.result;  // 파일의 내용을 미리보기 이미지로 설정
+	        };
+	        reader.readAsDataURL(event.target.files[0]);  // 선택한 파일을 읽어서 미리보기로 보여줌
+	    }
+		
 	</script>
 
 </div>
