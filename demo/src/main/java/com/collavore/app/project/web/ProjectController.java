@@ -6,6 +6,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -270,6 +272,7 @@ public class ProjectController {
 				response.put("message", "수정 완료");
 				response.put("status", "success");
 			} catch (Exception e) {
+				e.printStackTrace();
 				response.put("message", "수정 실패: " + e.getMessage());
 				response.put("status", "error");
 			}
@@ -295,4 +298,32 @@ public class ProjectController {
 					return response;
 				}		
 		
+					
+				@GetMapping("/project/projecdwrkcomtstinfo/{pdwNo}")
+				@ResponseBody
+				public List<ProjectVO> projectDWrkComtInfo(@PathVariable int pdwNo) {
+				    return pjService.projectDWrkComtInfo(pdwNo);
+				}
+				
+
+				// 프로젝트 생성 모달
+				@PostMapping("project/projectdwrkcomtinsert")
+				@ResponseBody
+				public Map<String, Object> dwrkcomtinsertAjax(@RequestBody ProjectVO projectVO) {
+					Map<String, Object> map = new HashMap<>();
+					System.err.println(projectVO);
+					pjService.projectdwrkcomtinsert(projectVO);
+
+					// regDate를 포맷팅하여 응답에 추가
+				    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				    String formattedRegDate = projectVO.getRegDate() != null ? sdf.format(projectVO.getRegDate()) : null;
+					
+					map.put("type", "postAjax");
+					map.put("data", projectVO);
+					map.put("content", projectVO.getContent()); // message
+					map.put("regDate", formattedRegDate); // 현재 시간 등
+					return map;
+				}	
+				
+				
 }

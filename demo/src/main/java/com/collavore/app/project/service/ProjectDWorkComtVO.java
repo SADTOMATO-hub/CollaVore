@@ -9,9 +9,10 @@ public class ProjectDWorkComtVO {
 
 	// 프로젝트 상세 업무 코멘트관리
 	private Integer pdwcNo;
-	private Integer wrtierNo;
+	private Integer writerNo;
 	private Integer pdwNo;
 	private String content;
 	private Date regDate;
 
+	private Integer projNo;
 }
