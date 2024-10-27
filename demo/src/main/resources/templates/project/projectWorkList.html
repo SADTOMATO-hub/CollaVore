@@ -80,11 +80,11 @@
                             <option value="l3">높음</option>
                         </select>    
                         <label for="isStatus" class="form-label">진행상황</label>
-			            <select class="form-select" name="isStatus" id="updateisStatus" required>
+			            <select class="form-select" name="isStatus" id="insertisStatus" required>
 			                <option value="" disabled selected>선택하세요</option>
-			                <option value="j1">진행전</option>
-			                <option value="j2">진행중</option>
-			                <option value="j3">완 료</option>
+			                <option value="k1">진행전</option>
+			                <option value="k2">진행중</option>
+			                <option value="k3">완 료</option>
 			            </select>           
                         <div>
                             <label class="form-label">업무 시작일</label>
@@ -162,9 +162,9 @@
             <label for="isStatus" class="form-label">진행상황</label>
             <select class="form-select" name="isStatus" id="updateisStatus" required>
                 <option value="" disabled selected>선택하세요</option>
-                <option value="j1">진행전</option>
-                <option value="j2">진행중</option>
-                <option value="j3">완 료</option>
+                <option value="k1">진행전</option>
+                <option value="k2">진행중</option>
+                <option value="k3">완 료</option>
             </select>            
             <div>
                 <label class="form-label">업무 시작일</label>
@@ -209,7 +209,7 @@
             </div>
             <div class="mb-3">
 				<label for="editProjStatus" class="form-label">진행상태</label> 
-					<select class="form-select" name="status" id="editProjStatus" required>
+					<select class="form-select" name="isStatus" id="editProjStatus" required>
 						<option value="">선택하세요</option>
 						<option value="j1">진행전</option>
 						<option value="j2">진행중</option>
@@ -222,7 +222,7 @@
             </div>
             <div>
                 <label class="form-label">마감일</label>
-                <input type="text" id="editProjEndDate" name="endDate" class="form-control" required>
+                <input type="date" id="editProjEndDate" name="endDate" class="form-control" required>
             </div>
 				<input type="hidden" id="projNo" name="projNo" class="form-control">
             <div>
@@ -230,7 +230,54 @@
             </div>
         </form>
     </div>
-
+ 			<div class="card" id = "chat" style="display: none;">
+                <div class="card-body">
+                  <h4 class="card-title">Chat Option</h4>
+                  <div class="chat-box scrollable" style="height: 475px">
+                    <!--chat Row -->
+                    <ul class="chat-list" id="chat-list">
+                      <!--chat Row -->
+                      
+                      <li class="chat-item" >
+                        <div class="chat-img">
+                          <img src="/assets/images/users/default.png" alt="user" />
+                        </div>
+                        <div class="chat-content">
+                          <h6 class="font-medium"></h6>
+                          <div class="box bg-light-info">
+                            
+                          </div>
+                        </div>
+                        <div class="chat-time"></div>
+                      </li>
+                     
+                      <li class="odd chat-item" >
+                        <div class="chat-content">
+                          <div class="box bg-light-inverse">
+                           
+                          </div>
+                          <br />
+                        </div>
+                        <div class="chat-time"></div>
+                      </li>
+					
+                    </ul>
+                  </div>
+                </div>
+                <div class="card-body border-top">
+                  <div class="row">
+                    <div class="col-9">
+                      <div class="input-field mt-0 mb-0">
+                        <textarea id="textarea1" placeholder="이곳에 입력하세요" class="form-control border-0"></textarea>
+                      </div>
+                    </div>
+                    <div class="col-3">
+                     <a class="btn-circle btn-lg btn-cyan float-end text-white" id="send-chat-btn">
+					    <i class="mdi mdi-send fs-3">
+                      </i>
+                     </a>
+                    </div>
+</div></div></div>
             </div>
         </div>
     </div>
@@ -242,6 +289,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 
     <script>
+    // 세션 아이디 변수
+    const sessionUserEmpNo = '[[${session.userEmpNo}]]';
+    
+    // sysdate날짜 
+    function getCurrentDate() {
+        const date = new Date();
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+        const day = String(date.getDate()).padStart(2, '0');
+
+        return `${year}-${month}-${day}`;
+    }
+    
         $(document).ready(function() {
             $('#jstree').jstree(); 
 
@@ -329,7 +389,7 @@
                 // 부모 노드로 이동
                 currentNode = currentNode.parent().closest('li'); // 부모 <li>를 찾기
             }
-            console.log(level);
+            
             if (level <= 1) {
                 $('#insertPanelProjwrks h4').text(projectName + ' 업무 등록');
                 $('#insertPanelProjwrks').show();
@@ -337,6 +397,7 @@
                 $('#dwrkInfo').hide();
                 $('#wrkInfo').hide();
                 $('#editProjectModal').hide();
+                $('#chat').hide();
                 
             } else {
                 $('#insertPanelProjdwrks h4').text(projectName + ' 상세업무 등록');
@@ -346,6 +407,7 @@
                 $('#dwrkInfo').hide();
                 $('#wrkInfo').hide();
                 $('#editProjectModal').hide();
+                $('#chat').hide();
             }
 
             $('#projNo').val(projNo.replace(/^[PW]/, ''));
@@ -376,6 +438,8 @@
                         $('#dwrkInfo').hide();
                         $('#insertPanelProjdwrks').hide();
                         $('#insertPanelProjwrks').hide();
+                        $('#chat').hide();
+                        
                         
                         $('#editProjName').val(response.name);
                         $('#editProjContent').val(response.content);
@@ -398,6 +462,7 @@
                 $('#dwrkInfo').hide();
                 $('#insertPanelProjdwrks').hide();
                 $('#insertPanelProjwrks').hide();
+                $('#chat').hide();
                 
                 $.ajax({
                     url: `/project/projectwrklistinfo/${pwNo}`, 
@@ -420,6 +485,7 @@
                 $('#insertPanelProjdwrks').hide();
                 $('#insertPanelProjwrks').hide();
                 $('#editProjectModal').hide();
+                $('#chat').hide();
                 
                 $.ajax({
                     url: `/project/projectdwrkinfo/${pwNo}`, 
@@ -540,13 +606,147 @@
                     alert('프로젝트 수정에 실패했습니다: ' + error);
                 }
             });
-        });     
+        });   
+     	// 상세업무 코멘트 리스트
+        function toggleChat(buttonElement, level) {
+            const projectName = $(buttonElement).text(); 
+            const projNo = $(buttonElement).parent().attr('id').split('_')[1]; 
+            const pdwNo = parseInt(projNo.replace(/^[PW]/, ''), 10);         	
+            const chat = document.getElementById('chat');
+            
+            if (level >= 3) {
+                $('#chat').show();
+                $('#editProjectModal').hide();
+                $('#wrkInfo').hide();
+                $('#dwrkInfo').hide();
+                $('#insertPanelProjdwrks').hide();
+                $('#insertPanelProjwrks').hide();
+                
+                $('#chat h4').text(projectName + ' 상세업무 코멘트');
+                
+                $.ajax({
+                    url: '/project/projecdwrkcomtstinfo/' + pdwNo, 
+                    method: 'GET',
+                    success: function(data) {
+                        // 데이터가 배열인지 확인
+                        const chatList = $('#chat .chat-list'); // chat-list 요소를 선택
+                        
+                        chatList.empty(); // 기존 내용을 비움
+                        let badgeDisplayed = false;
+                     // data가 배열인지 확인
+                        if (Array.isArray(data)) {
+                            data.forEach(info => {
+                            	const isCurrentUser = parseInt(sessionUserEmpNo, 10) === parseInt(info.writerNo, 10);
+                            	
+                            	// 현재 사용자가 아닌 경우 배지를 출력하지 않음
+                                if (isCurrentUser && badgeDisplayed) {
+                                    return; // 배지가 이미 출력된 경우, 채팅 항목만 출력
+                                }
+
+                                // 배지가 처음 출력될 경우
+                                if (isCurrentUser) {
+                                    badgeDisplayed = true;
+                                }
+                            	
+                            	function formatDate(dateString) {
+                            	    const date = new Date(dateString);
+                            	    const year = date.getFullYear();
+                            	    const month = String(date.getMonth() + 1).padStart(2, '0');
+                            	    const day = String(date.getDate()).padStart(2, '0');
+                            	    return `${year}-${month}-${day}`;
+                            	}
+                            	
+                            	const importanceBadge = `
+                                    <span class="badge rounded-pill ${info.importance === 'l1' ? 'bg-secondary' : info.importance === 'l2' ? 'bg-info' : info.importance === 'l3' ? 'bg-success' : ''}">
+                                        ${info.importance === 'l1' ? '낮 음' : info.importance === 'l2' ? '중 간' : info.importance === 'l3' ? '높 음' : ''}
+                                    </span>
+                                `;
+                            	
+                            	const chatItem = isCurrentUser
+                                ? `
+                                		${!badgeDisplayed ? importanceBadge : ''} <!-- 배지가 처음 출력될 때만 추가 -->
+                                    <li class="odd chat-item">
+                                        <div class="chat-content">
+                                            <div class="box bg-light-inverse">${info.content}</div>
+                                            <br />
+                                        </div>
+                                        
+                                        <div class="chat-time">${formatDate(info.regDate)}</div>
+                                        <input type="hidden" name="pdwNo" id="pdwNo" class="pdwNo"  value="${info.pdwNo}">
+                                    </li>`
+                                : `
+                                    <li class="chat-item">
+                                        <div class="chat-img">
+                                            <img src="/assets/images/users/default.png" alt="user" />
+                                        </div>
+                                        <div class="chat-content">
+                                            <h6 class="font-medium">${info.name}</h6>
+                                            <div class="box bg-light-info">${info.content}</div>
+                                        </div>
+                                        <div class="chat-time">${formatDate(info.regDate)}</div>
+                                        <input type="hidden" name="pdwNo" id="pdwNo" class="pdwNo"  value="${info.pdwNo}">
+                                    </li>`;
+                                chatList.append(chatItem); // 생성한 HTML 요소를 chat-list에 추가
+                            });
+                        } 
+                    },
+                    error: function(error) {
+                        console.error("오류발생!:", error);
+                    }
+                });
+            }    
+        }
+     	
+        // 상세업무 코멘트 등록
+        $(document).ready(function() {
+            $('#send-chat-btn').on('click', function() {
+                const message = $('#textarea1').val().trim(); // textarea의 내용을 가져옴
+                const pdwNo = $('#chat .pdwNo').last().val();
+                const writerNo = sessionUserEmpNo;
+
+                
+                /* const projNo = $(buttonElement).parent().attr('id').split('_')[1]; 
+                const pdwNo = parseInt(projNo.replace(/^[PW]/, ''), 10); */
+                
+                if (message) {
+                    $.ajax({
+                        type: 'POST',
+                        url: '/project/projectdwrkcomtinsert', // 메시지를 처리할 서버 URL
+                        data: JSON.stringify({ content: message, pdwNo: pdwNo, writerNo: writerNo }),
+                        contentType: 'application/json',
+                        success: function(response) {
+                            console.log('Content:', response.content); // content 확인
+                            console.log('RegDate:', response.regDate); // regDate 확인
+                            // 응답 처리 (예: 서버에서 반환된 채팅 내용을 추가)
+                            const chatItem = `
+                                <li class="odd chat-item">
+                                    <div class="chat-content">
+                                        <div class="box bg-light-inverse">${response.content}</div>
+                                        <br />
+                                    </div>
+                                    <div class="chat-time">${getCurrentDate()}</div>
+                                </li>`;
+                            
+                            $('#chat-list').append(chatItem); // chat-list에 새 메시지 추가
+                            $('#textarea1').val(''); // textarea 초기화
+                            alert('코멘트가 등록되었습니다 ');
+                        },
+                        error: function(xhr, status, error) {
+                            alert('코멘트 전송에 실패했습니다: ' + error);
+                        }
+                    });
+                } else {
+                    alert('코멘트를 입력하세요!');
+                }
+            });
+        });
+
     </script>
 
     <!-- 재귀 함수 정의 -->
     <th:block th:fragment="renderNode(projno, projname, parentNo, table, level)" th:data-current-table="${table}" id="'test'+${status.index}" th:data-index="${status.index}">
 	    <li th:id="'node_' + ${projno}" style="display: none;">
-		    <span >[[${projname}]]</span>
+		    <span th:onclick="'toggleChat(this, ' + ${level} + ')'">[[${projname}]]</span>
 		    <button class="btn btn-info btn-lg no-border-button"  th:onclick="'event.stopPropagation(); myFunction(this, ' + ${level} + ')'" style="margin-left: 5px;">
         		<i class="mdi mdi-plus-circle-outline" style="color:black; margin-right: 10px; " ></i>
     		</button>

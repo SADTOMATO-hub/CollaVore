@@ -43,6 +43,17 @@ public interface PjService {
 	
 	public Map<String, Object> updatedwrkProject(ProjectVO projectVO);
 	
+	// 프로젝트 상세업무 코멘트 전체 리스트
+	public List<ProjectDWorkComtVO> projectDWrkComtList();
+	
+	// 프로젝트 상세업무 코멘트 단건조회 
+//	public List<ProjectVO> projectDWrkComtInfo(int pdwNo);
+	public List<ProjectVO> projectDWrkComtInfo(int pdwNo);
+	
+	// 프로젝트 상세업무 코멘트 생성
+	public int projectdwrkcomtinsert(ProjectVO projectVO);
+	
+	
 //	public List<ProjectVO> getProjects(int page, int size);
 //
 //	public long getTotalProjects();
