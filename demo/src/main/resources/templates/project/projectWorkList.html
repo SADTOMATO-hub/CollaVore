@@ -397,6 +397,7 @@
                 $('#dwrkInfo').hide();
                 $('#wrkInfo').hide();
                 $('#editProjectModal').hide();
+                $('#chat').hide();
                 
             } else {
                 $('#insertPanelProjdwrks h4').text(projectName + ' 상세업무 등록');
@@ -406,6 +407,7 @@
                 $('#dwrkInfo').hide();
                 $('#wrkInfo').hide();
                 $('#editProjectModal').hide();
+                $('#chat').hide();
             }
 
             $('#projNo').val(projNo.replace(/^[PW]/, ''));
@@ -436,6 +438,8 @@
                         $('#dwrkInfo').hide();
                         $('#insertPanelProjdwrks').hide();
                         $('#insertPanelProjwrks').hide();
+                        $('#chat').hide();
+                        
                         
                         $('#editProjName').val(response.name);
                         $('#editProjContent').val(response.content);
@@ -458,6 +462,7 @@
                 $('#dwrkInfo').hide();
                 $('#insertPanelProjdwrks').hide();
                 $('#insertPanelProjwrks').hide();
+                $('#chat').hide();
                 
                 $.ajax({
                     url: `/project/projectwrklistinfo/${pwNo}`, 
@@ -480,6 +485,7 @@
                 $('#insertPanelProjdwrks').hide();
                 $('#insertPanelProjwrks').hide();
                 $('#editProjectModal').hide();
+                $('#chat').hide();
                 
                 $.ajax({
                     url: `/project/projectdwrkinfo/${pwNo}`, 
@@ -626,11 +632,21 @@
                         const chatList = $('#chat .chat-list'); // chat-list 요소를 선택
                         
                         chatList.empty(); // 기존 내용을 비움
-
+                        let badgeDisplayed = false;
                      // data가 배열인지 확인
                         if (Array.isArray(data)) {
                             data.forEach(info => {
                             	const isCurrentUser = parseInt(sessionUserEmpNo, 10) === parseInt(info.writerNo, 10);
+                            	
+                            	// 현재 사용자가 아닌 경우 배지를 출력하지 않음
+                                if (isCurrentUser && badgeDisplayed) {
+                                    return; // 배지가 이미 출력된 경우, 채팅 항목만 출력
+                                }
+
+                                // 배지가 처음 출력될 경우
+                                if (isCurrentUser) {
+                                    badgeDisplayed = true;
+                                }
                             	
                             	function formatDate(dateString) {
                             	    const date = new Date(dateString);
@@ -640,8 +656,15 @@
                             	    return `${year}-${month}-${day}`;
                             	}
                             	
+                            	const importanceBadge = `
+                                    <span class="badge rounded-pill ${info.importance === 'l1' ? 'bg-secondary' : info.importance === 'l2' ? 'bg-info' : info.importance === 'l3' ? 'bg-success' : ''}">
+                                        ${info.importance === 'l1' ? '낮 음' : info.importance === 'l2' ? '중 간' : info.importance === 'l3' ? '높 음' : ''}
+                                    </span>
+                                `;
+                            	
                             	const chatItem = isCurrentUser
                                 ? `
+                                		${!badgeDisplayed ? importanceBadge : ''} <!-- 배지가 처음 출력될 때만 추가 -->
                                     <li class="odd chat-item">
                                         <div class="chat-content">
                                             <div class="box bg-light-inverse">${info.content}</div>
@@ -681,9 +704,7 @@
                 const pdwNo = $('#chat .pdwNo').last().val();
                 const writerNo = sessionUserEmpNo;
 
-                console.log(message);
-                console.log(pdwNo);
-                console.log(writerNo);
+                
                 /* const projNo = $(buttonElement).parent().attr('id').split('_')[1]; 
                 const pdwNo = parseInt(projNo.replace(/^[PW]/, ''), 10); */
                 
