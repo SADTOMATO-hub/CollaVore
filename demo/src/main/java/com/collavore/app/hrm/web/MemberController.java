@@ -1,10 +1,18 @@
 package com.collavore.app.hrm.web;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -13,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.collavore.app.common.service.PageDTO;
@@ -24,6 +33,8 @@ import com.collavore.app.hrm.service.PosiService;
 
 import jakarta.servlet.http.HttpSession;
 
+
+
 @Controller
 public class MemberController {
 
@@ -31,7 +42,9 @@ public class MemberController {
 	private final DeptService deptService;
 	private final JobService jobService;
 	private final PosiService posiService;
-
+	@Value("${file.upload.path}") // 메모리에 올라가 있는 변수값을 가져오기 때문에 표현이 다름
+    private String uploadPath;
+	
 	@Autowired
 	public MemberController(MemberService memberService, DeptService deptService, JobService jobService,
 			PosiService posiService) {
@@ -160,84 +173,152 @@ public class MemberController {
 
 	// 사원 수정 처리
 	@PostMapping("/memberEdit")
-	public String updateMemberInfo(@ModelAttribute HrmVO hrmVO, HttpSession session) {
-		Integer empNo = (Integer) session.getAttribute("userEmpNo");
-		System.out.println("입력된 비밀번호: " + hrmVO.getPassword());
-		if (empNo == null) {
-			return "redirect:/login";
-		}
+	public String updateMemberInfo(@ModelAttribute HrmVO hrmVO, 
+	                               @RequestParam(value = "profileImage", required = false) MultipartFile profileImage, 
+	                               HttpSession session, 
+	                               Model model) {
+	    Integer empNo = (Integer) session.getAttribute("userEmpNo");
+	    
+	    // 세션 검증
+	    if (empNo == null) {
+	        return "redirect:/login";
+	    }
 
-		HrmVO originalMember = memberService.memberInfo(hrmVO);
+	    // 기존 사원 정보 조회
+	    HrmVO originalMember = memberService.memberInfo(hrmVO);
 
-		// null이나 빈 값이 넘어오면 원래 데이터를 유지
-		if (hrmVO.getInfo() == null || hrmVO.getInfo().isEmpty()) {
-			hrmVO.setInfo(originalMember.getInfo());
-		}
+	    // null이나 빈 값이 넘어오면 원래 데이터를 유지
+	    if (hrmVO.getInfo() == null || hrmVO.getInfo().isEmpty()) {
+	        hrmVO.setInfo(originalMember.getInfo());
+	    }
 
-		if (hrmVO.getEmpName() == null || hrmVO.getEmpName().isEmpty()) {
-			hrmVO.setEmpName(originalMember.getEmpName());
-		}
+	    if (hrmVO.getEmpName() == null || hrmVO.getEmpName().isEmpty()) {
+	        hrmVO.setEmpName(originalMember.getEmpName());
+	    }
 
-		if (hrmVO.getTel() == null || hrmVO.getTel().isEmpty()) {
-			hrmVO.setTel(originalMember.getTel());
-		}
+	    if (hrmVO.getTel() == null || hrmVO.getTel().isEmpty()) {
+	        hrmVO.setTel(originalMember.getTel());
+	    }
 
-		if (hrmVO.getPassword() == null || hrmVO.getPassword().isEmpty()) {
-			hrmVO.setPassword(originalMember.getPassword());
-		}
+	    if (hrmVO.getPassword() == null || hrmVO.getPassword().isEmpty()) {
+	        hrmVO.setPassword(originalMember.getPassword());
+	    }
 
-		// 이후에 업데이트 처리
-		memberService.memberUpdate(hrmVO);
+	    // 프로필 이미지 처리 (파일이 선택된 경우에만)
+	    if (profileImage != null && !profileImage.isEmpty()) {
+	        try {
+	            // 기존 파일 경로 설정
+	            String originalFilename = profileImage.getOriginalFilename();
+	            String fileExtension = getFileExtension(originalFilename);
+	            String newFileName = UUID.randomUUID().toString() + fileExtension;
+	            String savePath = uploadPath + File.separator + newFileName;
+	            
+	            // 파일 저장
+	            Files.copy(profileImage.getInputStream(), Paths.get(savePath), StandardCopyOption.REPLACE_EXISTING);
+	            
+	            // 이미지 파일명을 HrmVO 객체에 설정
+	            hrmVO.setImg(newFileName);
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            model.addAttribute("fileUploadError", "파일 업로드 중 오류가 발생했습니다.");
+	            return "member/memberEdit";
+	        }
+	    } else {
+	        // 파일을 선택하지 않은 경우 기존 이미지 유지
+	        hrmVO.setImg(originalMember.getImg());
+	    }
 
-		return "redirect:/memberInfo";
+	    // 사원 정보 업데이트 처리
+	    memberService.memberUpdate(hrmVO);
+
+	    return "redirect:/memberInfo";
 	}
+
 
 	// 관리자 영역
 	// ────────────────────────────────────────────────────────────────────────────────────────────────────
 	// 사원 전체 조회 (관리자)
+	/*
+	 * @GetMapping("/memberList") public String selectMemberAll(HrmVO hrmVO, Model
+	 * model) { String page = hrmVO.getPage() == null ? "1" : hrmVO.getPage();
+	 * 
+	 * int totalCnt = memberService.totalListCnt(); PageDTO pageing = new
+	 * PageDTO(page, 15, totalCnt); model.addAttribute("pageing", pageing);
+	 * 
+	 * List<HrmVO> memberList = memberService.selectMemberAll(page);
+	 * model.addAttribute("members", memberList);
+	 * 
+	 * return "member/memberList"; // 뷰 파일 반환 }
+	 */
 	@GetMapping("/memberList")
-	public String selectMemberAll(HrmVO hrmVO, Model model) {
+	public String selectMemberAll(HrmVO hrmVO, Model model,
+			@RequestParam(value = "deptFilter", required = false) String deptFilter,
+			@RequestParam(value = "jobFilter", required = false) String jobFilter,
+			@RequestParam(value = "posiFilter", required = false) String posiFilter,
+			@RequestParam(value = "workTypeFilter", required = false) String workTypeFilter) {
+		// 필터 값이 null일 경우 빈 문자열로 초기화
+		deptFilter = deptFilter == null ? "" : deptFilter;
+		jobFilter = jobFilter == null ? "" : jobFilter;
+		posiFilter = posiFilter == null ? "" : posiFilter;
+		workTypeFilter = workTypeFilter == null ? "" : workTypeFilter;
+
+		// 페이지 정보 설정
 		String page = hrmVO.getPage() == null ? "1" : hrmVO.getPage();
-		
-		int totalCnt = memberService.totalListCnt();
+
+		// 필터 조건을 기반으로 총 사원 수 조회
+		int totalCnt = memberService.totalListCnt(deptFilter, jobFilter, posiFilter, workTypeFilter);
+
+		// 페이지네이션 객체 생성 (한 페이지에 15개 항목 표시)
 		PageDTO pageing = new PageDTO(page, 15, totalCnt);
 		model.addAttribute("pageing", pageing);
-		
-		List<HrmVO> memberList = memberService.selectMemberAll(page);
+
+		// 필터 조건 및 페이지를 사용하여 사원 목록 조회
+		List<HrmVO> memberList = memberService.selectMemberAll(page, deptFilter, jobFilter, posiFilter, workTypeFilter);
 		model.addAttribute("members", memberList);
-		
+
+		// 필터 값도 모델에 추가 (필터 유지)
+		model.addAttribute("deptFilter", deptFilter);
+		model.addAttribute("jobFilter", jobFilter);
+		model.addAttribute("posiFilter", posiFilter);
+		model.addAttribute("workTypeFilter", workTypeFilter);
+
+		// 필터링을 위한 부서, 직무, 직위 목록 전달
+		model.addAttribute("departments", memberService.getDepartmentsFromHrmVO());
+		model.addAttribute("jobs", memberService.getJobsFromHrmVO());
+		model.addAttribute("positions", memberService.getPositionsFromHrmVO());
+		model.addAttribute("workType", memberService.getworkTypeFromHrmVO());
+
 		return "member/memberList"; // 뷰 파일 반환
 	}
-
 
 	// 사원 등록 폼 이동 (관리자)
 	@GetMapping("/memberInsert")
 	public String memberInsertForm(Model model) {
-	    // 빈 hrmVO 객체를 초기화하여 전달
-	    model.addAttribute("hrmVO", new HrmVO());
+		// 빈 hrmVO 객체를 초기화하여 전달
+		model.addAttribute("hrmVO", new HrmVO());
+		
+		// 사번 자동 생성
+		Integer empNo = memberService.generateEmpNo();
+		model.addAttribute("empNo", empNo);
 
-	    // 사번 자동 생성
-	    Integer empNo = memberService.generateEmpNo();
-	    model.addAttribute("empNo", empNo);
+		// 부서 목록을 가져와서 모델에 추가
+		List<HrmVO> departments = deptService.getExistingDepts();
+		model.addAttribute("departments", departments);
 
-	    // 부서 목록을 가져와서 모델에 추가
-	    List<HrmVO> departments = deptService.getExistingDepts();
-	    model.addAttribute("departments", departments);
+		// 직위 목록을 가져와서 모델에 추가
+		List<HrmVO> positions = posiService.getExistingPositions();
+		model.addAttribute("positions", positions);
 
-	    // 직위 목록을 가져와서 모델에 추가
-	    List<HrmVO> positions = posiService.getExistingPositions();
-	    model.addAttribute("positions", positions);
+		// 직무 목록을 가져와서 모델에 추가
+		List<HrmVO> jobs = jobService.getExistinJobs();
+		model.addAttribute("jobs", jobs);
 
-	    // 직무 목록을 가져와서 모델에 추가
-	    List<HrmVO> jobs = jobService.getExistinJobs();
-	    model.addAttribute("jobs", jobs);
-
-	    return "member/memberInsert"; // 명확하게 "member/memberInsert" 경로로 반환
+		return "member/memberInsert"; // 명확하게 "member/memberInsert" 경로로 반환
 	}
 
 	// 사원 등록 처리 (관리자)
 	@PostMapping("/memberInsert")
-	public String memberInsert(@ModelAttribute("hrmVO") HrmVO hrmVO, Model model) {
+	public String memberInsert(@ModelAttribute("hrmVO") HrmVO hrmVO, Model model, @RequestParam("files") MultipartFile profileImage) {
 	    boolean hasErrors = false;
 
 	    // 연락처 중복 검사
@@ -254,8 +335,29 @@ public class MemberController {
 
 	    // 오류가 있으면 입력 페이지로 다시 돌아가고, 입력된 데이터를 유지
 	    if (hasErrors) {
-	        model.addAttribute("hrmVO", hrmVO);  // 입력된 값 유지
-	        return "member/memberInsert";  // 입력 페이지로 유지
+	        model.addAttribute("hrmVO", hrmVO);
+	        return "member/memberInsert";
+	    }
+
+	    if (profileImage != null && !profileImage.isEmpty()) {
+	        try {
+	            String originalFilename = profileImage.getOriginalFilename();
+	            String fileExtension = getFileExtension(originalFilename);
+	            String newFileName = UUID.randomUUID().toString() + fileExtension;
+	            String saveName = uploadPath + File.separator + newFileName;
+	            Path savePath = Paths.get(saveName);
+
+	            // 파일 저장
+	            Files.copy(profileImage.getInputStream(), savePath, StandardCopyOption.REPLACE_EXISTING);
+
+	            // hrmVO 객체에 파일 경로 저장 (img 필드)
+	            hrmVO.setImg(newFileName);  // 파일명을 img 필드에 저장
+	            
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            model.addAttribute("fileUploadError", "파일 업로드 중 오류가 발생했습니다.");
+	            return "member/memberInsert";
+	        }
 	    }
 
 	    // 사원 등록 처리
@@ -263,20 +365,30 @@ public class MemberController {
 	        int result = memberService.insertMember(hrmVO);
 	        if (result > 0) {
 	            model.addAttribute("message", "사원이 성공적으로 등록되었습니다.");
-	            return "redirect:/memberList";  // 성공 시 리스트 페이지로 이동
+	            return "redirect:/memberList";
 	        } else {
 	            model.addAttribute("errorMessage", "사원 등록에 실패했습니다.");
-	            return "member/memberInsert";  // 실패 시 입력 페이지로 유지
+	            return "member/memberInsert";
 	        }
 	    } catch (Exception e) {
+	        e.printStackTrace();
 	        model.addAttribute("errorMessage", "처리 중 오류가 발생했습니다.");
-	        return "member/memberInsert";  // 예외 발생 시 입력 페이지로 유지
+	        return "member/memberInsert";
 	    }
 	}
 
-	
-	
 
+	/**
+	 * 파일 확장자를 추출하는 메서드
+	 */
+	private String getFileExtension(String fileName) {
+	    if (fileName != null && fileName.contains(".")) {
+	        return fileName.substring(fileName.lastIndexOf("."));
+	    }
+	    return "";
+	}
+
+	
 	@GetMapping("/memberUpdate")
 	public String updateMemberForm(@RequestParam("empNo") Integer empNo, Model model) {
 		// 사원 정보 조회
@@ -294,27 +406,49 @@ public class MemberController {
 		return "member/memberUpdate"; // memberUpdate 뷰 파일로 이동
 	}
 
-
 	@PostMapping("/memberUpdate")
-	public String updateMember(HrmVO hrmVO, Model model, RedirectAttributes redirectAttributes) {
-		int result = memberService.updateMemberByAdmin(hrmVO); // 사원 정보 수정 처리
+	public String updateMember(@ModelAttribute HrmVO hrmVO,
+	                           @RequestParam(value = "files", required = false) MultipartFile profileImage,
+	                           Model model,
+	                           RedirectAttributes redirectAttributes) {
+	    try {
+	        // 파일이 선택되었을 때만 업로드 처리
+	        if (profileImage != null && !profileImage.isEmpty()) {
+	            String originalFilename = profileImage.getOriginalFilename();
+	            String fileExtension = getFileExtension(originalFilename);
+	            String newFileName = UUID.randomUUID().toString() + fileExtension;
+	            String saveName = uploadPath + File.separator + newFileName;
+	            Path savePath = Paths.get(saveName);
 
-		if (result > 0) {
-			// 수정된 사원 정보를 다시 조회하여 모델에 담기
-			HrmVO updatedMember = memberService.getMemberById(hrmVO.getEmpNo());
-			model.addAttribute("member", updatedMember); // 수정된 데이터를 모델에 추가
+	            // 파일 저장
+	            Files.copy(profileImage.getInputStream(), savePath, StandardCopyOption.REPLACE_EXISTING);
 
-			// 성공 메시지 추가
-			model.addAttribute("message", "사원이 성공적으로 수정되었습니다.");
+	            // hrmVO 객체에 img 필드 설정
+	            hrmVO.setImg(newFileName);  // 새 파일 경로 저장
+	        } else {
+	            // 파일이 없으면 기존 이미지를 유지
+	            HrmVO existingMember = memberService.getMemberById(hrmVO.getEmpNo());
+	            hrmVO.setImg(existingMember.getImg());  // 기존 이미지 경로 유지
+	        }
 
-			// 수정이 완료된 후 같은 화면으로 이동하게 설정
-			return "redirect:/memberUpdate?empNo=" + hrmVO.getEmpNo(); // 업데이트된 내용을 다시 표시
-		} else {
-			// 수정 실패 메시지 설정
-			redirectAttributes.addFlashAttribute("message", "사원 수정에 실패했습니다.");
-			return "redirect:/memberList"; // 실패 시 리스트 페이지로 리다이렉트
-		}
+	        // 사원 정보 수정 처리
+	        int result = memberService.updateMemberByAdmin(hrmVO);
+
+	        if (result > 0) {
+	            redirectAttributes.addFlashAttribute("message", "사원이 성공적으로 수정되었습니다.");
+	            return "redirect:/memberUpdate?empNo=" + hrmVO.getEmpNo();
+	        } else {
+	            redirectAttributes.addFlashAttribute("message", "사원 수정에 실패했습니다.");
+	            return "redirect:/memberList";
+	        }
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	        model.addAttribute("fileUploadError", "파일 업로드 중 오류가 발생했습니다.");
+	        return "member/memberUpdate";
+	    }
 	}
+
+
 
 	@GetMapping("/checkDuplicateTel")
 	public ResponseEntity<Map<String, Boolean>> checkDuplicateTel(@RequestParam("tel") String tel) {

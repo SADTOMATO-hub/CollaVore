@@ -115,7 +115,7 @@
 	SELECT cmt_no
 		,(select name
             from employees
-           where emp_no = writer) writerName
+           where emp_no = writer) writer
 		, content
 		, reg_date
 		, post_no
@@ -127,8 +127,8 @@
 	<!-- 댓글 수정 -->
 	<update id="updateBodsComtsInfo" parameterType="BodsComtsVO">
 		UPDATE bodscomts
-		SET , content = #{content}
-		WHERE post_no = #{postNo}
+		SET   content = #{content}
+		WHERE cmt_no = #{cmtNo}
 	</update>
 	
 	<!-- 댓글 삭제 -->
@@ -136,6 +136,14 @@
 		DELETE FROM bodscomts  
 		WHERE cmt_no = #{cmtNo}
 	</delete> 
+	
+	<!-- 댓글 상세조회 -->
+	<select id="selectBodsComtsInfo" resultType="BodsComtsVO"> 
+		SELECT *
+		FROM bodscomts
+		where cmt_no = #{cmtNo}
+	</select>
+	
 	
 
 </mapper>

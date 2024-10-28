@@ -29,4 +29,7 @@ public class FlutterApprVO {
 	private Date procDate; // 전자결재자 결재처리날짜
 	private Integer sort; // 전자결재자 정렬순서
 	
+	// 전자결재문서 PDF
+	private String pdfInfo;
+	
 }

@@ -6,7 +6,8 @@
             e.emp_no,
             e.email,
             e.password,
-            e.name
+            e.name,
+            e.img
         FROM 
             employees e
         LEFT JOIN 

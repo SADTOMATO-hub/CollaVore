@@ -33,41 +33,88 @@ public class SchsServiceImpl implements SchsService {
 	// 등록
 	@Override
 	public int insertSchs(SchsVO schsVO) {
-	    int result = schsMapper.insertSchsInfo(schsVO);
-	    System.out.println("Type: " + schsVO.getCalType());
+		int result = schsMapper.insertSchsInfo(schsVO);
+		System.out.println("Type: " + schsVO.getCalType());
 
-	    return result == 1 ? schsVO.getSchNo() : -1;
+		return result == 1 ? schsVO.getSchNo() : -1;
 
 	}
-	
-	 @Override
-	    public int getCalType(String type) {
-	        return schsMapper.selectCalType(type);
-	    }
-	
-	
-	
 
-	// 수정
+	// 등록
+	@Override
+	public int insertAlarm(SchsVO schsVO) {
+		System.out.println("insertAlarm isAlarm value: " + schsVO.getIsAlarm()); // 여기서 확인
+		return schsMapper.alarmInsert(schsVO);
+	}
+
+	@Override
+	public int getCalType(String type) {
+		return schsMapper.selectCalType(type);
+	}
+
+	// 기존 일정 수정 메서드
 	@Override
 	public Map<String, Object> updateSchs(SchsVO schsVO) {
 		Map<String, Object> resultMap = new HashMap<>();
 		try {
+			// 1. 일정 정보 업데이트
 			int updatedRows = schsMapper.updateSchsInfo(schsVO);
-
 			if (updatedRows > 0) {
 				resultMap.put("result", true);
 				resultMap.put("message", "일정이 성공적으로 수정되었습니다.");
-			} else {
 
+				// 2. 알림 정보 수정
+				int alarmResult = updateAlarm(schsVO);
+				if (alarmResult > 0) {
+					resultMap.put("alarmUpdate", "알림 정보가 성공적으로 수정되었습니다.");
+				} else {
+					resultMap.put("alarmUpdate", "알림 정보 수정에 실패하였습니다.");
+				}
+			} else {
 				resultMap.put("result", false);
 				resultMap.put("message", "수정할 일정이 없습니다.");
 			}
 		} catch (Exception e) {
 			resultMap.put("result", false);
 			resultMap.put("message", "수정 중 오류가 발생했습니다.");
+			resultMap.put("error", e.getMessage());
 		}
 		return resultMap;
+	}
+
+	@Override
+	public int updateAlarm(SchsVO schsVO) {
+		int affectedRows = 0;
+
+		if ("f1".equals(schsVO.getIsAlarm())) {
+			// 알림 정보가 모두 유효한 경우에만 삽입
+			if (schsVO.getAlarmType() != null || schsVO.getAlarmYoil() != null || schsVO.getAlarmDay() != null
+					|| schsVO.getAlarmTime() != null) {
+
+				// 기존 알림 정보 삭제
+				schsMapper.deleteAlarmInfo(schsVO.getSchNo());
+
+				// 새로운 알림 정보 삽입
+				affectedRows = schsMapper.insertAlarmInfo(schsVO);
+			}
+		} else if ("f2".equals(schsVO.getIsAlarm())) {
+			// 알림 설정이 꺼져 있는 경우 알림 정보 삭제
+			affectedRows = schsMapper.deleteAlarmInfo(schsVO.getSchNo());
+		}
+
+		return affectedRows;
+	}
+
+	// 알림 정보 추가
+	@Override
+	public int insertAlarmInfo(SchsVO schsVO) {
+		return schsMapper.insertAlarmInfo(schsVO);
+	}
+
+	// 알림 정보 삭제
+	@Override
+	public int deleteAlarmInfo(int schNo) {
+		return schsMapper.deleteAlarmInfo(schNo);
 	}
 
 	// 삭제
@@ -137,20 +184,10 @@ public class SchsServiceImpl implements SchsService {
 	// 캘린더 완전 삭제
 	@Override
 	public int permanentlyDel(int calNo) {
-		return schsMapper.permanentlyDeleteCal(calNo); 
+		return schsMapper.permanentlyDeleteCal(calNo);
 	}
 
 	// =====================END 캘린더 사이드바=====================
 	// =====================알림관리========================
-	// 등록
-	 @Override
-	    public int insertAlarm(SchsVO schsVO) {
-		 System.out.println("insertAlarm isAlarm value: " + schsVO.getIsAlarm()); // 여기서 확인
-	        return schsMapper.alarmInsert(schsVO);
-	    }
-
-		
-	
-	
 
 }

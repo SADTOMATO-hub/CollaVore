@@ -89,108 +89,110 @@
 		proj_no = #{projNo}
 	</delete>
 
-	
-	
+
+
 	<!-- 파일 폴더 전체조회 -->
 	<select id="selectfolderAll" resultType="ProjectFoldersVO">
-		SELECT PF_NO, 
-				NAME, 
-				PW_NO, 
-				REG_DATE, 
-				PARENT_PF_NO
+		SELECT PF_NO,
+		NAME,
+		PW_NO,
+		REG_DATE,
+		PARENT_PF_NO
 		FROM DBUSER.PROJFOLDERS
-		START WITH PARENT_PF_NO = 0  
+		START WITH PARENT_PF_NO = 0
 		CONNECT BY PRIOR PF_NO = PARENT_PF_NO
 	</select>
-	
+
 	<!-- 파일 전체조회 -->
 	<select id="selectfileAll" resultType="ProjectFilesVO">
 		SELECT proj_file_no
-				, pf_no
-				, name
-				, content
-				, file_size
-				, file_path
-				, reg_date
-				, extension
-		FROM projfiles 
+		, pf_no
+		, name
+		, content
+		, file_size
+		, file_path
+		, reg_date
+		, extension
+		FROM projfiles
 		WHERE pf_no = #{pfNo}
 	</select>
-	
-	<!-- 파일 등록 -->
-<insert id="fileinsert" parameterType="ProjectFilesVO">
-    <selectKey keyProperty="projFileNo" resultType="Integer" order="BEFORE">
-        SELECT NVL(MAX(proj_file_no), 0) + 1 FROM projfiles
-    </selectKey>
-    INSERT INTO projfiles (
-        proj_file_no,
-        pf_no,
-        name,
-        content,
-        file_size,
-        file_path,
-        reg_date,
-        extension
-    ) VALUES (
-        #{projFileNo},
-        #{pfNo},
-        #{name},
-        #{content}, 
-        #{fileSize},
-        #{filePath},
-        SYSDATE,
-        #{extension}
-    )
-</insert>
 
-<!-- 단건조회 -->
+	<!-- 파일 등록 -->
+	<insert id="fileinsert" parameterType="ProjectFilesVO">
+		<selectKey keyProperty="projFileNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(proj_file_no), 0) + 1 FROM projfiles
+		</selectKey>
+		INSERT INTO projfiles (
+		proj_file_no,
+		pf_no,
+		name,
+		content,
+		file_size,
+		file_path,
+		reg_date,
+		extension
+		) VALUES (
+		#{projFileNo},
+		#{pfNo},
+		#{name},
+		#{content},
+		#{fileSize},
+		#{filePath},
+		SYSDATE,
+		#{extension}
+		)
+	</insert>
+
+	<!-- 단건조회 -->
 	<select id="filedetail" resultType="ProjectFilesVO">
 		SELECT proj_file_no,
 		pf_no,
-        name,
-        content,
-        file_size,
-        file_path,
-        reg_date,
-        extension
+		name,
+		content,
+		file_size,
+		file_path,
+		reg_date,
+		extension
 		FROM projfiles
 		WHERE proj_file_no = #{projFileNo}
 	</select>
-	
+
 	<!-- 전체조회 -->
 	<select id="projecttree" resultType="ProjectVO">
-SELECT LEVEL, tree.*
-    FROM (
-        SELECT 'P' || proj_no as no
-            , null as parent_no
-            , name
-             , 'proj' AS "table"
-        FROM proj
-        UNION
-        SELECT 'W' || pw_no
-            ,  'P' || proj_no
-            , name
-            , 'projwrks' AS "table"
+		SELECT LEVEL, tree.*
+		FROM (
+		SELECT 'P' || proj_no as no
+		, null as parent_no
+		, name
+		, 'proj' AS "table"
+		FROM proj
+		UNION
+		SELECT 'W' || pw_no
+		, 'P' || proj_no
+		, name
+		, 'projwrks' AS "table"
 
-        FROM 
-            projwrks
-        UNION
-        SELECT 
-            TO_CHAR(pdw_no)
-            , CASE WHEN parent_pdw_no IS NULL THEN 'W' || pw_no ELSE TO_CHAR(parent_pdw_no) END
-            , name
-             , 'projdwrks' AS "table"
+		FROM
+		projwrks
+		UNION
+		SELECT
+		TO_CHAR(pdw_no)
+		, CASE WHEN parent_pdw_no IS NULL THEN 'W' || pw_no ELSE
+		TO_CHAR(parent_pdw_no) END
+		, name
+		, 'projdwrks' AS "table"
 
-        FROM 
-            projdwrks 
-    ) tree
-    START WITH 
-        parent_no IS NULL
-    CONNECT BY 
-        PRIOR no = parent_no
-    ORDER SIBLINGS BY 
-        no
-	</select>	
+		FROM
+		projdwrks
+		) tree
+		START WITH
+		parent_no IS NULL
+		CONNECT BY
+		PRIOR no = parent_no
+		ORDER SIBLINGS BY
+		no
+	</select>
 
 	<insert id="ProjectwrkInsert" parameterType="ProjectVO">
 		<selectKey keyProperty="pwNo" resultType="Integer"
@@ -252,11 +254,140 @@ SELECT LEVEL, tree.*
 		<!-- ,#{sort} -->
 		)
 	</insert>
-	
+
 	<select id="searchPwNo" resultType="int">
 		SELECT pw_no
 		FROM projdwrks
 		WHERE pdw_no = #{pdwNo}
 	</select>
-	
+
+
+	<!-- 업무 단건조회 -->
+	<select id="selectwrkInfo" resultType="ProjectVO">
+		SELECT pw_no,
+		name,
+		content,
+		job_no,
+		mgr_no,
+		reg_date,
+		proj_no,
+		sort
+		FROM projwrks
+		WHERE pw_no = #{pwNo}
+	</select>
+
+
+	<!-- 상세업무 단건조회 -->
+	<select id="selectdwrkInfo" resultType="ProjectVO">
+		SELECT pdw_no,
+		parent_pdw_no,
+		name,
+		content,
+		reg_date,
+		is_status,
+		start_date,
+		req_date,
+		comp_date,
+		pw_no,
+		sort,
+		commit_id,
+		importance,
+		mgr_no
+		FROM projdwrks
+		WHERE pdw_no = #{pdwNo}
+	</select>
+
+	<!-- 프로젝트 업무 수정 -->
+	<update id="updatewrkProject">
+		UPDATE projwrks
+
+		SET
+		name = #{name}
+		,content = #{content}
+		,job_no = #{jobNo}
+		,mgr_no = #{mgrNo}
+		,reg_date = sysdate
+
+		WHERE pw_no
+		= #{pwNo}
+	</update>
+	<!-- 프로젝트 상세 업무 수정 -->
+	<update id="updatedwrkProject" parameterType="ProjectVO">
+		UPDATE projdwrks
+
+		SET
+		name = #{name}
+		,content = #{content}
+		,is_status = #{isStatus}
+		,start_date = #{startDate}
+		,comp_date = #{compDate}
+		,commit_id =
+		#{commitId}
+		,importance = #{importance}
+		,mgr_no = #{mgrNo}
+		,reg_date =
+		sysdate
+
+		WHERE pdw_no
+		= #{pdwNo}
+	</update>
+
+	<!-- 코멘트 전체조회 -->
+	<select id="projectDWrkComtListAll"
+		resultType="ProjectDWorkComtVO">
+		SELECT pdwc_no
+		,content
+		,reg_date
+		,writer_no
+		,pdw_no
+
+		FROM projdwrkcomts
+		ORDER BY pdwc_no
+	</select>
+	<!-- 코멘트 단건조회 -->
+	<select id="searchPdwNo" resultType="ProjectVO">
+
+		SELECT
+				p.pdwc_no,
+				p.content,
+				p.reg_date,
+				p.writer_no,
+				p.pdw_no,
+				e.name,
+				d.importance,
+				d.is_status
+		FROM
+				projdwrkcomts p
+		JOIN
+				employees e ON p.writer_no = e.emp_no
+		JOIN
+				projdwrks d ON p.pdw_no = d.pdw_no
+		WHERE
+				p.pdw_no = #{pdwNo}
+		ORDER BY
+				p.pdwc_no
+	</select>
+
+	<!-- 코멘트 생성 -->
+	<insert id="ProjectdwrkcomtInsert" parameterType="ProjectVO">
+		<selectKey keyProperty="pdwcNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(pdwc_no), 0)+1
+			FROM projdwrkcomts
+		</selectKey>
+		INSERT INTO projdwrkcomts(
+		pdwc_no
+		,content
+		,reg_date
+		,writer_no
+		,pdw_no
+		)
+		VALUES(
+		#{pdwcNo}
+		,#{content}
+		,sysdate
+		,#{writerNo}
+		,#{pdwNo}
+		)
+	</insert>
 </mapper>

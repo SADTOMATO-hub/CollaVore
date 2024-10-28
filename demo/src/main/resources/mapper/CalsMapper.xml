@@ -4,104 +4,113 @@
 
 	<!--============================== 일정관리 ==================================== -->
 	<select id="selectSchsAll" resultType="SchsVO">
-    SELECT
-        schs.sch_no,
-        schs.title,
-        schs.start_date,
-        schs.end_date,
-        schs.cal_no,
-        cals.name,       <!-- 캘린더 이름 조회 -->
-        cals.cal_type,   <!-- 캘린더 타입 조회 -->
-        schs.is_alarm,
-        cals.color       <!-- 색상 정보 조회 -->
-    FROM
-        schs
-    JOIN
-        cals ON schs.cal_no = cals.cal_no  <!-- schs와 cals 테이블 조인 -->
-    WHERE
-        cals.is_delete = 'h2'  <!-- 삭제되지 않은 일정만 조회 -->
-    ORDER BY
-        schs.sch_no      <!-- 콘솔에서 보기 편하려고 임시로 설정 -->
-</select>
+		SELECT
+		schs.sch_no,
+		schs.title,
+		schs.start_date,
+		schs.end_date,
+		schs.cal_no,
+		cals.name,       <!-- 캘린더 이름 조회 -->
+		cals.cal_type,   <!-- 캘린더 타입 조회 -->
+		schs.is_alarm,
+		cals.color       <!-- 색상 정보 조회 -->
+		FROM
+		schs
+		JOIN
+		cals ON schs.cal_no = cals.cal_no  <!-- schs와 cals 테이블 조인 -->
+		WHERE
+		cals.is_delete = 'h2'  <!-- 삭제되지 않은 일정만 조회 -->
+		ORDER BY
+		schs.sch_no      <!-- 콘솔에서 보기 편하려고 임시로 설정 -->
+	</select>
 
-	
+
 	<!-- 단건 일정 조회 -->
-	<select id="selectSchsInfo" parameterType="SchsVO" resultType="SchsVO">
-    SELECT 
-        s.sch_no,
-        s.title,
-        s.start_date,
-        s.end_date,
-        s.is_alarm,
-        s.cal_no,
-        c.name,
-        c.cal_type,
-        c.color,
-        a.alarm_type,
-        a.alarm_yoil,
-        a.alarm_day,
-        a.alarm_time 
-    FROM 
-        schs s
-    LEFT JOIN 
-        cals c ON s.cal_no = c.cal_no
-    LEFT JOIN 
-        schalarms a ON s.sch_no = a.sch_no
-    WHERE 
-        s.sch_no = #{schNo}
-</select>
+	<select id="selectSchsInfo" parameterType="SchsVO"
+		resultType="SchsVO">
+		SELECT
+		s.sch_no,
+		s.title,
+		s.start_date,
+		s.end_date,
+		s.is_alarm,
+		s.cal_no,
+		c.name,
+		c.cal_type,
+		c.color,
+		MAX(a.alarm_type) AS alarm_type,
+		MAX(a.alarm_yoil) AS alarm_yoil,
+		MAX(a.alarm_day) AS alarm_day,
+		MAX(a.alarm_time) AS alarm_time
+		FROM
+		schs s
+		LEFT JOIN
+		cals c ON s.cal_no =
+		c.cal_no
+		LEFT JOIN
+		schalarms a ON s.sch_no = a.sch_no
+		WHERE
+		s.sch_no =
+		#{schNo}
+		GROUP BY
+		s.sch_no, s.title, s.start_date, s.end_date,
+		s.is_alarm, s.cal_no, c.name,
+		c.cal_type, c.color
+	</select>
 
 
-<!--  일정등록  -->
+	<!-- 일정등록 -->
 	<insert id="insertSchsInfo" parameterType="SchsVO">
-    <selectKey keyProperty="schNo" resultType="Integer" order="BEFORE">
-        SELECT NVL(MAX(sch_no), 0) + 1
-        FROM schs
-    </selectKey>
-    INSERT INTO schs (
-        sch_no,
-        title,
-        start_date,
-        end_date,
-        cal_no,
-        is_alarm
-    )
-    SELECT
-        #{schNo},
-        #{title},
-        #{startDate,jdbcType=TIMESTAMP},
-        #{endDate,jdbcType=TIMESTAMP},
-        #{calNo},
-        #{isAlarm}
-    FROM dual
-</insert>
-<!--  알림여부 f1일시 등록  -->
-<insert id="alarmInsert" parameterType="SchsVO">
-    <!-- sa_no에 시퀀스 값을 미리 설정 -->
-    <selectKey keyProperty="saNo" resultType="Integer" order="BEFORE">
-         SELECT NVL(MAX(sa_no), 0) + 1 
-         FROM schalarms
-    </selectKey>
+		<selectKey keyProperty="schNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(sch_no), 0) + 1
+			FROM schs
+		</selectKey>
+		INSERT INTO schs (
+		sch_no,
+		title,
+		start_date,
+		end_date,
+		cal_no,
+		is_alarm
+		)
+		SELECT
+		#{schNo},
+		#{title},
+		#{startDate,jdbcType=TIMESTAMP},
+		#{endDate,jdbcType=TIMESTAMP},
+		#{calNo},
+		#{isAlarm}
+		FROM dual
+	</insert>
+	<!-- 알림여부 f1일시 등록 -->
+	<insert id="alarmInsert" parameterType="SchsVO">
+		<!-- sa_no에 시퀀스 값을 미리 설정 -->
+		<selectKey keyProperty="saNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(sa_no), 0) + 1
+			FROM schalarms
+		</selectKey>
 
-    INSERT INTO schalarms (
-						        sa_no,
-						        sch_no,
-						        alarm_type,
-						        alarm_yoil,
-						        alarm_day,
-						        alarm_time,
-						        reg_date
-						    )
-    VALUES 					(
-						        #{saNo},
-						        #{schNo},
-						        #{alarmType},
-						        #{alarmYoil},
-						        #{alarmDay},
-						        #{alarmTime},
-						        SYSDATE
-   							 )
-</insert>
+		INSERT INTO schalarms (
+		sa_no,
+		sch_no,
+		alarm_type,
+		alarm_yoil,
+		alarm_day,
+		alarm_time,
+		reg_date
+		)
+		VALUES (
+		#{saNo},
+		#{schNo},
+		#{alarmType},
+		#{alarmYoil},
+		#{alarmDay},
+		#{alarmTime},
+		SYSDATE
+		)
+	</insert>
 
 	<!-- 캘린더 타입에 따른 cal_no 조회 -->
 
@@ -130,17 +139,70 @@
 
 	<update id="updateSchsInfo" parameterType="SchsVO">
 		UPDATE schs
-		SET title =
-		#{title},
+		SET title = #{title},
 		start_date = #{startDate},
 		end_date = #{endDate},
-		cal_no =
-		#{calNo},
+		cal_no = #{calNo},   <!-- cal_no가 올바르게 설정되었는지 확인 -->
 		is_alarm = #{isAlarm}
-
 		WHERE sch_no = #{schNo}
-
 	</update>
+
+	<update id="updateAlarmInfo" parameterType="SchsVO">
+		UPDATE schalarms
+		SET
+		alarm_type = #{alarmType},
+		alarm_yoil = #{alarmYoil},
+		alarm_day = #{alarmDay},
+		alarm_time = #{alarmTime}
+		WHERE sch_no = #{schNo}
+	</update>
+	
+	
+<!-- 새 알림 정보 삽입 -->
+<insert id="insertAlarmInfo" parameterType="SchsVO">
+    <!-- sa_no에 새로운 값을 설정 -->
+    <selectKey keyProperty="saNo" resultType="int" order="BEFORE">
+        SELECT NVL(MAX(sa_no), 0) + 1 FROM schalarms
+    </selectKey>
+
+    INSERT INTO schalarms (
+        sa_no,
+        sch_no,
+        alarm_type,
+        alarm_yoil,
+        alarm_day,
+        alarm_time
+    )
+    VALUES (
+        #{saNo},
+        #{schNo},
+        #{alarmType},
+        #{alarmYoil},
+        #{alarmDay},
+        #{alarmTime}
+    )
+</insert>
+
+	<!-- 알림 정보 삭제 -->
+	<delete id="deleteAlarmInfo" parameterType="int">
+		DELETE FROM schalarms WHERE sch_no = #{schNo}
+	</delete>
+
+	<!-- 특정 sch_no의 알림 존재 여부 확인 -->
+	<select id="checkAlarm" parameterType="int" resultType="int">
+		SELECT COUNT(*) FROM schalarms WHERE sch_no = #{schNo}
+	</select>
+
+
+
+
+
+
+
+
+
+
+
 
 	<!--==============================END 일정관리 ==================================== -->
 
@@ -149,15 +211,18 @@
 
 	<select id="selectTeamCal" resultType="SchsVO">
 		SELECT cs.cal_no,
-		    c.name || ' ' || CASE 
-		        WHEN c.cal_type = 'g1' THEN '(개인)'
-		        WHEN c.cal_type = 'g2' THEN '(공유)'
-		    ELSE '프로젝트' END AS name
-		FROM calshares cs
-		    INNER JOIN cals c ON c.cal_no = cs.cal_no
-		WHERE cs.emp_no = #{empNo}
-			<!-- AND c.cal_type = 'g1' -->
-		ORDER BY CASE WHEN c.cal_type = 'g1'  THEN 1 ELSE 9999 END, c.name
+		c.name || ' ' || CASE
+		WHEN c.cal_type = 'g1' THEN
+		'(개인)'
+		WHEN c.cal_type = 'g2' THEN '(공유)'
+		ELSE '프로젝트' END AS name
+		FROM
+		calshares cs
+		INNER JOIN cals c ON c.cal_no = cs.cal_no
+		WHERE cs.emp_no =
+		#{empNo}
+		<!-- AND c.cal_type = 'g1' -->
+		ORDER BY CASE WHEN c.cal_type = 'g1' THEN 1 ELSE 9999 END, c.name
 	</select>
 
 
@@ -175,7 +240,8 @@
 		, cal_type
 		, reg_date
 		, is_delete
-		, delete_date
+		,
+		delete_date
 		, color
 		)
 		VALUES (
@@ -183,7 +249,8 @@
 		, #{name}
 		, #{calType}
 		, SYSDATE
-		, #{isDelete}
+		,
+		#{isDelete}
 		, NULL
 		, #{color}
 		)

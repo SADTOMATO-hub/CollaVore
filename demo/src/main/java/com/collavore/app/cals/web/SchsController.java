@@ -125,30 +125,30 @@ public class SchsController {
 	
 	
 
-
-	// 수정
+	//수정 
 	@PostMapping("/sch/schUpdate")
 	@ResponseBody
 	public Map<String, Object> updateSchedule(@RequestBody SchsVO schsVO) {
-		Map<String, Object> resultMap = schsService.updateSchs(schsVO);
+	    Map<String, Object> resultMap = new HashMap<>();
+	    try {
+	        // 일정 및 알림 정보를 업데이트하고, 결과 메시지 포함된 맵을 반환받음
+	        resultMap = schsService.updateSchs(schsVO);
 
-		return resultMap;
+	        // 성공 여부에 따른 메시지 및 처리 결과 반환
+	        if (Boolean.TRUE.equals(resultMap.get("result"))) {
+	            resultMap.put("success", true);
+	            resultMap.put("message", "일정 및 알림 정보가 성공적으로 수정되었습니다.");
+	        } else {
+	            resultMap.put("success", false);
+	            resultMap.put("message", resultMap.getOrDefault("message", "일정 및 알림 정보 수정에 실패했습니다."));
+	        }
+	    } catch (Exception e) {
+	        resultMap.put("success", false);
+	        resultMap.put("message", "수정 처리 중 오류가 발생했습니다.");
+	        resultMap.put("error", e.getMessage());
+	    }
+	    return resultMap;
 	}
-
-	// 삭제
-	@PostMapping("/sch/schDelete")
-	@ResponseBody
-	public Map<String, Object> deleteSchs(@RequestBody Map<String, Integer> request) {
-		Map<String, Object> result = new HashMap<>();
-		try {
-			schsService.deleteSchs(request.get("schNo"));
-			result.put("success", true);
-		} catch (Exception e) {
-			result.put("success", false);
-		}
-		return result;
-	}
-
 //==============================END 일정관리 ===============================
 
 	// 전체조회

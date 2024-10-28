@@ -3,6 +3,7 @@ package com.collavore.app.project.mapper;
 import java.util.List;
 import java.util.Map;
 
+import com.collavore.app.project.service.ProjectDWorkComtVO;
 import com.collavore.app.project.service.ProjectFilesVO;
 import com.collavore.app.project.service.ProjectFoldersVO;
 import com.collavore.app.project.service.ProjectVO;
@@ -42,5 +43,23 @@ public interface ProjectMapper {
 	
 	// pwNo 조회하기
 	public int searchPwNo(int pdwNo);
+	
+	// 업무 단건 조회
+	public ProjectVO selectwrkInfo(int pwNo);
+	// 상세업무 조회
+	public ProjectVO selectdwrkInfo(int pdwNo);
+	
+	// 프로젝트 업무 수정
+	public Map<String, Object> updatewrkProject(ProjectVO projectVO);
+	// 프로젝트 상세업무 수정
+	public Map<String, Object> updatedwrkProject(ProjectVO projectVO);
+	
+	public List<ProjectDWorkComtVO> projectDWrkComtListAll();
+	
+	// 프로젝트 상세업무 코멘트 단건조회
+	public List<ProjectVO> searchPdwNo(int pdwNo);
+	
+	// 프로젝트 상세업무 코멘트 생성
+	public int ProjectdwrkcomtInsert(ProjectVO projectVO);
 	
 }

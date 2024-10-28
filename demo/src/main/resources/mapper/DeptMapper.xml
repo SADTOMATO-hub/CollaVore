@@ -2,39 +2,68 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.collavore.app.hrm.mapper.DeptMapper">
 
-    <!-- 부서 등록 -->
-    <insert id="insertDept" parameterType="com.collavore.app.hrm.service.HrmVO">
-        <selectKey keyProperty="deptNo" resultType="Integer" order="BEFORE">
-            SELECT NVL(MAX(dept_no), 0) + 1
-            FROM DEPARTMENTS
-        </selectKey>
-        INSERT INTO DEPARTMENTS (dept_no, parent_dept_no, name, mgr_no, reg_date)
-        VALUES (#{deptNo}, #{parentDeptNo}, #{deptName}, #{mgrNo}, sysdate)
-    </insert>
+	<!-- 부서 등록 -->
+	<insert id="insertDept"
+		parameterType="com.collavore.app.hrm.service.HrmVO">
+		<selectKey keyProperty="deptNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(dept_no), 0) + 1
+			FROM DEPARTMENTS
+		</selectKey>
+		INSERT INTO DEPARTMENTS (dept_no, parent_dept_no, name, mgr_no,
+		reg_date)
+		VALUES (#{deptNo}, #{parentDeptNo}, #{deptName}, #{mgrNo},
+		sysdate)
+	</insert>
 
-    <!-- 부서 수정 -->
-    <update id="updateDept" parameterType="com.collavore.app.hrm.service.HrmVO">
-        UPDATE DEPARTMENTS
-        SET name = #{deptName},
-            parent_dept_no = #{parentDeptNo},
-            mgr_no = #{mgrNo}
-        WHERE dept_no = #{deptNo}
-    </update>
+	<!-- 부서 수정 -->
+	<update id="updateDept"
+		parameterType="com.collavore.app.hrm.service.HrmVO">
+		UPDATE DEPARTMENTS
+		SET name = #{deptName},
+		parent_dept_no
+		= #{parentDeptNo},
+		mgr_no = #{mgrNo}
+		WHERE dept_no = #{deptNo}
+	</update>
 
-    <!-- 부서 삭제 -->
-    <delete id="deleteDept" parameterType="Integer">
-        DELETE FROM DEPARTMENTS 
-        WHERE dept_no = #{deptNo}
-    </delete>
+	<!-- 부서 삭제 -->
+	<delete id="deleteDept" parameterType="Integer">
+		DELETE FROM DEPARTMENTS
+		WHERE dept_no = #{deptNo}
+	</delete>
 
-    <!-- 부서 조회 -->
-    <select id="selectDeptList" resultType="com.collavore.app.hrm.service.HrmVO">
-        SELECT d.dept_no AS deptNo,
-               d.name AS deptName,
-               d.parent_dept_no AS parentDeptNo,
-               (SELECT COUNT(e.emp_no) FROM EMPLOYEES e WHERE e.dept_no = d.dept_no) AS empCnt
-        FROM DEPARTMENTS d
-        ORDER BY d.dept_no
-    </select>
+	<!-- 부서 조회 <select id="selectDeptList" resultType="com.collavore.app.hrm.service.HrmVO"> 
+		SELECT d.dept_no AS deptNo, d.name AS deptName, d.parent_dept_no AS parentDeptNo, 
+		(SELECT COUNT(e.emp_no) FROM EMPLOYEES e WHERE e.dept_no = d.dept_no) AS 
+		empCnt FROM DEPARTMENTS d ORDER BY d.dept_no </select> -->
+	<select id="selectDeptList"
+		resultType="com.collavore.app.hrm.service.HrmVO">
+		SELECT
+		level,
+		d.dept_no AS deptNo,
+		d.name AS deptName,
+		d.parent_dept_no AS parentDeptNo,
+		(SELECT COUNT(e.emp_no)
+		FROM EMPLOYEES e
+		WHERE e.dept_no = d.dept_no) AS empCnt
+		FROM
+		DEPARTMENTS d
+		START WITH
+		d.parent_dept_no = 0
+		CONNECT BY
+		PRIOR d.dept_no = d.parent_dept_no
+		ORDER BY
+		d.dept_no
+	</select>
+
+	<resultMap id="DeptResultMap"
+		type="com.collavore.app.hrm.service.HrmVO">
+		<result property="deptNo" column="deptNo" />
+		<result property="deptName" column="deptName" />
+		<result property="parentDeptNo" column="parentDeptNo" />
+		<result property="empCnt" column="empCnt" />
+		<result property="level" column="LEVEL" /> <!-- LEVEL 필드를 매핑 -->
+	</resultMap>
 
 </mapper>

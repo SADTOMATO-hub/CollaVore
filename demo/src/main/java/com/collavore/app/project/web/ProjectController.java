@@ -6,6 +6,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,7 +64,6 @@ public class ProjectController {
 	@ResponseBody
 	public Map<String, Object> insertAjax(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
-		System.err.println(projectVO);
 		pjService.projectinsert(projectVO);
 
 		map.put("type", "postAjax");
@@ -233,10 +234,96 @@ public class ProjectController {
 		return map;
 	}
 
-	// 프로젝트 단건 조회
-	@GetMapping("/project/projectwrkinfo/{projNo}")
+	// 업무 단건 조회
+	@GetMapping("/project/projectwrkinfo/{pdwNo}")
 	@ResponseBody
-	public ProjectVO getProjectwrkInfo(@PathVariable int projNo) {
-		return pjService.projectInfo(projNo);
+	public int getProjectwrkInfo(@PathVariable int pdwNo) {
+		return pjService.selectPwNo(pdwNo);
 	}
+	
+	// 업무 단건조회리스트
+	@GetMapping("/project/projectwrklistinfo/{pwNo}")
+	@ResponseBody
+	public ProjectVO getProjectwrklistInfo(@PathVariable int pwNo) {
+		return pjService.projectwrkInfo(pwNo);
+	}	
+	// 상세업무 단건조회리스트
+	@GetMapping("/project/projectdwrkinfo/{pdwNo}")
+	@ResponseBody
+	public ProjectVO getProjectdwrkInfo(@PathVariable int pdwNo) {
+		return pjService.projectdwrkInfo(pdwNo);
+	}	
+	
+	
+	// 프로젝트 단건 조회
+	@GetMapping("/project/projectlistinfo/{pwNo}")
+	@ResponseBody
+	public ProjectVO getProjectInfo2(@PathVariable int pwNo) {
+		return pjService.projectInfo(pwNo);
+	}
+	
+	// 프로젝트 업무 수정 요청 처리
+		@PostMapping("/project/projectwrkupdate")
+		@ResponseBody
+		public Map<String, Object> updatewrkProject(@RequestBody ProjectVO projectVO) {
+			Map<String, Object> response = new HashMap<>();
+			try {
+				pjService.updatewrkProject(projectVO);
+				response.put("message", "수정 완료");
+				response.put("status", "success");
+			} catch (Exception e) {
+				e.printStackTrace();
+				response.put("message", "수정 실패: " + e.getMessage());
+				response.put("status", "error");
+			}
+			return response;
+		}
+		
+		
+		// 프로젝트 상세업무 수정 요청 처리
+				@PostMapping("/project/projectdwrkupdate")
+				@ResponseBody
+				public Map<String, Object> updatedwrkProject(@RequestBody ProjectVO projectVO) {
+					Map<String, Object> response = new HashMap<>();
+					try {
+						System.err.println(projectVO);
+						pjService.updatedwrkProject(projectVO);
+						response.put("message", "수정 완료");
+						response.put("status", "success");
+					} catch (Exception e) {
+						e.printStackTrace();
+						response.put("message", "수정 실패: " + e.getMessage());
+						response.put("status", "error");
+					}
+					return response;
+				}		
+		
+					
+				@GetMapping("/project/projecdwrkcomtstinfo/{pdwNo}")
+				@ResponseBody
+				public List<ProjectVO> projectDWrkComtInfo(@PathVariable int pdwNo) {
+				    return pjService.projectDWrkComtInfo(pdwNo);
+				}
+				
+
+				// 프로젝트 생성 모달
+				@PostMapping("project/projectdwrkcomtinsert")
+				@ResponseBody
+				public Map<String, Object> dwrkcomtinsertAjax(@RequestBody ProjectVO projectVO) {
+					Map<String, Object> map = new HashMap<>();
+					System.err.println(projectVO);
+					pjService.projectdwrkcomtinsert(projectVO);
+
+					// regDate를 포맷팅하여 응답에 추가
+				    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				    String formattedRegDate = projectVO.getRegDate() != null ? sdf.format(projectVO.getRegDate()) : null;
+					
+					map.put("type", "postAjax");
+					map.put("data", projectVO);
+					map.put("content", projectVO.getContent()); // message
+					map.put("regDate", formattedRegDate); // 현재 시간 등
+					return map;
+				}	
+				
+				
 }

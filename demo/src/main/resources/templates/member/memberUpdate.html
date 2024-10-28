@@ -127,21 +127,21 @@ button:active {
 							<label for="profileImage"
 								class="col-sm-3 text-end control-label col-form-label">프로필
 								사진</label>
-
 							<div class="col-sm-9">
 								<div class="image-preview mb-3">
 									<img id="imgPreview"
-										th:src="@{/assets/images/users/default.png}" alt="이미지 미리보기"
+										th:src="${member.img != null ? '/imgs/' + member.img : '/assets/images/users/default.png'}"
+										alt="이미지 미리보기"
 										style="display: block; max-width: 200px; max-height: 200px;" />
 								</div>
-								<input type="file" class="form-control" id="profileImage"
-									name="profileImage" accept="image/*"
-									onchange="previewImage(event)" /> <small
+								<input type="file" class="form-control" id="files" name="files"
+									accept="image/*" onchange="previewImage(event)" /> <small
 									class="form-text text-muted">* 프로필 사진 권장 크기는
 									330x330px(10MB 이하)입니다.</small>
 							</div>
-
 						</div>
+
+
 
 						<div class="form-group row">
 							<label for="empName"
@@ -311,16 +311,17 @@ button:active {
 function goToListPage() {
     window.location.href = '/memberList'; // 리스트 페이지로 이동하는 URL
 }
-// 이미지 미리보기 스크립트
-	function previewImage(event) {
-		var reader = new FileReader();
-		reader.onload = function() {
-			var output = document.getElementById('imgPreview');
-			output.src = reader.result;
-			output.style.display = 'block';
-		};
-		reader.readAsDataURL(event.target.files[0]);
-	}
+//이미지 미리보기 기능
+function previewImage(event) {
+    var reader = new FileReader();
+    reader.onload = function() {
+        var output = document.getElementById('imgPreview');
+        output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+}
+
+
 	
 	// 이메일 필드 자동 완성 기능
 	const emailInput = document.getElementById('email');

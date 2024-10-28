@@ -16,18 +16,22 @@ public interface ApprovalsMapper {
 	//템플릿 수정
 	public int updateTemp (ApprovalstempVO apprsVO);
 	//템플릿 삭제
-	public int deleteTemp (ApprovalstempVO eatNo);
+	public int deleteTemp (ApprovalstempVO apprsVO);
 	//전자결재 생성
 		//전자결재 테이블에 데이터 넣기
-	public int createApprsEaTable (ApprovalsVO approvalsVo);
+		public int createApprsEaTable (ApprovalsVO approvalsVo);
 		//결재자 테이블에 데이터 넣기
-	public int createApprsEarTable (ApprovalsVO approvalsVo);
+		public int createApprsEarTable (ApprovalsVO approvalsVo);
 	//진행 중인 전자결재 목록 조회
 	//전체 전자결재 목록 조회
 	//전자결재 상세 조회
+	public ApprovalsVO readApproval (ApprovalsVO approvalsVo);
+	//결재자 상세
+	public List<ApprovalsVO> readApprovers (ApprovalsVO approvalsVo);
 	//전자결재 수정
 	//전자결재 삭제
-	//결재자 이름을 검색하면 그 대상의 정보를 호출하는 기능
-	public List<HrmVO> employeesInfo ();
+	public void deleteApproval (ApprovalsVO approvalsVo);
+	//인사 테이블 조회
+	public List<HrmVO> employees ();
 }
 //2번

@@ -279,7 +279,6 @@ button.close:hover {
 .edit-icon i:hover {
     color: white;
 }
-
 /* 아이콘 색상과 크기 */
 .mdi-calendar-blank {
     font-size: 1.2rem;
@@ -307,7 +306,6 @@ button.close:hover {
 .calendar-item-wrapper:hover .edit-icon {
     display: inline-block; /* 마우스 올리면 아이콘 표시 */
 }
-
 /* 마우스를 올렸을 때 아이콘 색상 변경 */
 .edit-icon i:hover {
     color: black; /* 마우스 올렸을 때 색상 변경 */
@@ -318,15 +316,6 @@ button.close:hover {
     display: flex;
     align-items: center;
 }
-
-
-
-
-
-
-
-
-
 
 /* 알림 필드 전체를 감싸는 컨테이너 */
 #alarmFields {

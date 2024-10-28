@@ -41,7 +41,7 @@ public class SpringSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/assets/**", "/dist/**", "/smarteditor/**", "/").permitAll()
+                .requestMatchers("/assets/**", "/dist/**", "/smarteditor/**", "/api/**", "/").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
@@ -72,6 +72,7 @@ public class SpringSecurityConfig {
 
                 HttpSession session = request.getSession();
                 session.setAttribute("userEmpNo", userVO.getEmpNo());
+                session.setAttribute("userImg", userVO.getImg());
 
                 response.sendRedirect("/dashboard");
             }

@@ -37,7 +37,7 @@
 			<button type="button"
 				th:onclick='|location.href="@{/board/bodsList(boardNo=${bods.boardNo})}"|'>목록</button>
 			<button type="button"
-				th:onclick='|location.href="@{/board/bodsDelete(postNo=${bods.postNo}, boardNo=${bods.boardNo})}"|'>삭제</button>
+				th:onclick='|location.href="@{/board/bodsDelete(postNo=${bods.postNo},boardNo=${bods.boardNo})}"|'>삭제</button>
 		</form>
 
 		<!-- 댓글창 -->
@@ -48,12 +48,13 @@
 					th:value="${param.postNo}">
 				<!-- 댓글 작성 부분 -->
 				<h3>댓글 작성</h3>
-				<input type="text" name="writer" placeholder="작성자"> <input
-					type="text" name="content" placeholder="내용">
+				<input type="text" name="writer" placeholder="작성자"> 
+				<input type="text" name="content" placeholder="내용">
 				<button type="button" id="btninsert">댓글작성</button>
+				
 			</form>
 		</div>
-
+		
 		<table id="commentsTable">
 			<thead>
 				<tr>
@@ -68,8 +69,13 @@
 			</tbody>
 		</table>
 
-		<script>
-			//ajax로 댓글 불러오기
+
+		<script th:inline="javascript">
+			// 작성자 가져오기
+            //let writer = /*<![CDATA[*/ [[${#authentication.name}]]  /*]]>*/
+			
+            
+            //ajax로 댓글 불러오기
 			let postNo = $('#postNo').val();
 			
 			getCommentList();
@@ -83,13 +89,13 @@
 						let commentsBody = $('#commentsBody'); // 테이블 본문 요소를 선택
 						commentsBody.empty(); // 기존의 댓글 목록을 지움 (선택 사항)
 						rs.forEach(function(comt) { // 결과로 받은 댓글 목록을 순회
-							let row = '<tr>' + // HTML 테이블 행 생성
-							'<td>' + comt.cmtNo + '</td>' + // 댓글 번호
-							'<td>' + comt.writer + '</td>' + // 작성자
-							'<td>' + comt.content + '</td>' + // 댓글 내용
+							let row = `<tr  id="cmtNo${comt.cmtNo}">` + // HTML 테이블 행 생성
+							`<td>` + comt.cmtNo + '</td>' + // 댓글 번호
+							`<td id="replyno${comt.writer}">` + comt.writer + '</td>' + // 작성자
+							`<td id="updateContent${comt.cmtNo}">` + comt.content + '</td>' + // 댓글 내용
 							'<td>' + comt.regDate + '</td>' + // 등록 날짜
-							'<td><button type="button" onclick=\'deletebodsComts("'+comt.cmtNo+'")\'>삭제</button></td>'+ // 삭제버튼
-							'<td><button type="button" onclick=\'updateBodsComts("'+comt.cmtNo+'")\'>수정</button></td>'+ // 수정버튼
+							`<td><button type="button" onclick='deletebodsComts("${comt.cmtNo}")'>댓글삭제</button></td>`+ // 삭제버튼
+							`<td><button type="button" onclick='updateBodsComtsform(${comt.cmtNo},"${comt.writer}","${comt.content}")'>댓글수정</button></td>`+  // 수정버튼 
 							'</tr>';
 	
 							commentsBody.append(row);
@@ -98,11 +104,114 @@
 					}
 				});
 			}
+			//댓글 수정 폼
+			//$("#comtsUpdate").on('click', updateBodsComts);
+			function updateBodsComtsform(cmtNo, writer, content){
+				
+				
+				
+				var updatebodsComtsView = "";
+				
+				if($('#cmtNo').val() != null) {
+					alert("이미 수정 중인 댓글이 있습니다.");
+					return;
+				}
 			
+				updatebodsComtsView += '<tr><td colspan="6"><div class="reply" style="white-space:pre" id="cmtNo'+cmtNo+'">';
+				updatebodsComtsView += '<p>&nbsp;&nbsp;' + writer + ' / ' + '</p>';
+				updatebodsComtsView += '<p> <label>&nbsp;&nbsp;댓글 수정</label> <br>';
+				updatebodsComtsView += '<input type="hidden" id="cmtNo" name="cmtNo" value="'+cmtNo+'">';
+				updatebodsComtsView += '<textarea style="white-space:pre" id="updateContent'+cmtNo+'" class="mini2" rows="5" cols="80" name="updateContent'+cmtNo+'"';
+				updatebodsComtsView += 'maxlength="300" placeholder="'+content+'" autofocus>'+content+'</textarea></p>'; 
+				updatebodsComtsView += '<div class="row">';
+				updatebodsComtsView += '<div class="col-12">';
+				updatebodsComtsView += '<button type="button" onclick="updateBodsComts('+cmtNo+')" class="mini">댓글 수정</button>';
+				
+				updatebodsComtsView += '</div></div> </div></td></tr>';
+				
+
+				$('#cmtNo'+cmtNo).replaceWith(updatebodsComtsView);
+			
+			
+			};
+			
+			
+			
+			
+			
+			// 댓글 수정
+			//$("#comtsUpdate").on('click', updateBodsComts);
+			function updateBodsComts(cmtNo){
+				
+				
+		
+		
+			    var updateContent = $('#updateContent'+cmtNo).val();
+			    
+			    if(updateContent =='') {
+				       alert("수정 할 내용을 입력하세요");
+				       return;
+				    } 
+				    
+				    $.ajax({
+				       type:'post',
+				       url: '/board/bodsComtsUpdate',
+				       data: JSON.stringify(
+				             {
+				            	 "content":updateContent,
+				            	 "cmtNo":cmtNo,
+				                "postNo":postNo,
+				             }
+				       ),
+				       contentType:'application/json',
+				       success:function(data){
+				          if(data.result ===true) {
+				             alert('댓글이 수정되었습니다!');
+				             
+				             getCommentList();
+				          } else {
+				             alert('댓글 수정에 실패했습니다.');
+				          }
+				       },
+				       error:function() {
+				          alert('통신실패');
+				       }
+				    });   
+				    
+				 };
+				
+
+				
+				/*let contentUpdate = $('form [name="content"]');
+				if (contentUpdate.val() == '') {
+					alert('내용이 입력되지 않았습니다.');
+					contentUpdate.focus();
+					return;
+				}*/
+				// 수정 아작스
+				/*$.ajax({
+					type : 'post',
+					url : '/board/bodsComtsUpdate',
+					data : {'content' : contentUpdate.val() },
+					success : function(data) {						
+							//getCommentList();
+							content.val("");
+							alert('댓글이 수정되었습니다.');
+					},
+					error : function(request, status, error) {
+						alert("댓글 수정 중 오류가 발생했습니다.");
+					}
+
+				});
+
+			}*/
+
+			
+			// 댓글 삭제 
 			$("#comtsdelete").on('click', deletebodsComts);
-			// 삭제 아작스
 			function deletebodsComts(cmtNo) {
 				if (confirm("정말 삭제하시겠습니까?") == true) {
+					// 삭제 아작스
 					$.ajax({
 						type : 'post',
 						url : '/board/bodsComtsDelete',
@@ -124,6 +233,8 @@
 				}
 			}
 
+			
+			// 댓글 등록
 			$("#btninsert").on('click', boardInsertHandler);
 			function boardInsertHandler() {
 

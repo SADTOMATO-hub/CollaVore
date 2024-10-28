@@ -1,0 +1,117 @@
+<div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	layout:fragment="Content">
+
+	<style>
+.org-chart {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	align-items: center;
+	margin-top: 50px;
+}
+
+.org-level {
+	display: flex;
+	justify-content: center;
+	margin-top: 30px;
+	position: relative;
+}
+
+.org-box {
+	border: 2px solid #ccc;
+	background-color: #fff;
+	text-align: center;
+	padding: 15px;
+	border-radius: 10px;
+	width: 150px;
+	margin: 0 20px;
+	box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.org-box img {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	margin-bottom: 10px;
+}
+
+.org-box .name {
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.org-box .position {
+	font-size: 12px;
+	color: #666;
+}
+
+/* 부모-자식 연결선 */
+.connector {
+	position: absolute;
+	width: 2px;
+	background-color: #ccc;
+	top: 100%;
+}
+
+.org-level:first-child .connector {
+	display: none;
+}
+
+.org-level>.org-box:before, .org-level>.org-box:after {
+	content: '';
+	position: absolute;
+	width: 0;
+	height: 20px;
+	border-left: 2px solid #ccc;
+	left: 50%;
+	top: -20px;
+}
+
+.org-level>.org-box:after {
+	content: '';
+	height: 0;
+	width: 100%;
+	border-top: 2px solid #ccc;
+	top: -20px;
+	left: 0;
+}
+
+.org-level:first-child>.org-box:before, .org-level:first-child>.org-box:after
+	{
+	display: none;
+}
+</style>
+
+
+	<div class="org-chart">
+		<!-- 최상위 조직 -->
+		<div class="org-level">
+			<div class="org-box">
+				<img th:src="@{${deptList[0].mgrImg}}" alt="본부장 사진">
+				<div class="name" th:text="${deptList[0].mgrName}">본부장 이름</div>
+				<div class="position" th:text="${deptList[0].mgrPosition}">본부장
+					직위</div>
+			</div>
+		</div>
+
+		<!-- 두 번째 레벨 (팀) -->
+		<div class="org-level">
+			<div th:each="dept : ${deptList}" class="org-box">
+				<div class="name" th:text="${dept.deptName}">팀명</div>
+				<div class="position" th:text="${dept.mgrName}">팀장</div>
+			</div>
+		</div>
+
+		<!-- 세 번째 레벨 (팀원) -->
+		<div class="org-level">
+			<div th:each="employee : ${memberGroupedByDept}" class="org-box">
+				<img th:src="@{${employee.img}}" alt="사원 사진" />
+				<div class="name" th:text="${employee.empName}">사원이름</div>
+				<div class="position" th:text="${employee.posiName}">직위</div>
+			</div>
+		</div>
+	</div>
+
+</div>

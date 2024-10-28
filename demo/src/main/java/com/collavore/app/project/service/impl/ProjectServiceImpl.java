@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.collavore.app.project.mapper.ProjectMapper;
 import com.collavore.app.project.service.PjService;
+import com.collavore.app.project.service.ProjectDWorkComtVO;
 import com.collavore.app.project.service.ProjectFilesVO;
 import com.collavore.app.project.service.ProjectFoldersVO;
 import com.collavore.app.project.service.ProjectVO;
@@ -90,6 +91,47 @@ public class ProjectServiceImpl implements PjService{
 		int result = projectMapper.searchPwNo(pdwNo);
 		return result;
 	}
+
+	@Override
+	public ProjectVO projectwrkInfo(int pwNo) {
+		return projectMapper.selectwrkInfo(pwNo); 
+	}
+
+	@Override
+	public ProjectVO projectdwrkInfo(int pdwNo) {
+		return projectMapper.selectdwrkInfo(pdwNo); 
+	}
+
+	@Override
+	public Map<String, Object> updatewrkProject(ProjectVO projectVO) {
+		return projectMapper.updatewrkProject(projectVO);
+	}
+
+	@Override
+	public Map<String, Object> updatedwrkProject(ProjectVO projectVO) {
+		return projectMapper.updatedwrkProject(projectVO);
+	}
+
+	@Override
+	public List<ProjectDWorkComtVO> projectDWrkComtList() {
+		return projectMapper.projectDWrkComtListAll();
+	}
+
+	@Override
+	public List<ProjectVO> projectDWrkComtInfo(int pdwNo) {
+	    return projectMapper.searchPdwNo(pdwNo); 
+	}
+
+	@Override
+	public int projectdwrkcomtinsert(ProjectVO projectVO) {
+		int result = projectMapper.ProjectdwrkcomtInsert(projectVO);
+		return result;
+	}
+
+	/*
+	 * @Override public List<ProjectVO> projectDWrkComtInfo(int pdwNo) { return
+	 * projectMapper.searchPdwNo(pdwNo); }
+	 */
 
 //    public List<ProjectVO> getProjects(int page, int size) {
 //        // 페이지 번호와 크기에 맞춰 데이터 조회

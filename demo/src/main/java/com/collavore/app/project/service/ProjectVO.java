@@ -48,7 +48,10 @@ public class ProjectVO {
 	private String selParentPdwNo;
 	private Integer level ;
 	
-	
+	// 프로젝트 상세 업무 코멘트관리
+		private Integer pdwcNo;
+		private Integer writerNo;
+
 	
 	
 	private String table;
