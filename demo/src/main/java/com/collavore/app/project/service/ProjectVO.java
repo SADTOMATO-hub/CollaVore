@@ -55,8 +55,10 @@ public class ProjectVO {
 	// 부서정보
 	private Integer deptNo;
 	
-	// 사원번호
+	// 사원정보
 	private Integer empNo;
+	private String empName;
+	
 	
 	private String jobName;
 	private String table;

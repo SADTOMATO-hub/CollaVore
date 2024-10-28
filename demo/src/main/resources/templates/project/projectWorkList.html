@@ -25,15 +25,15 @@
     <div class="container-fluid" th:data-current-table="${table}" id="fluidDiv">
         <div class="row">
             <div id="jstree" class="col-md-6">
-                <ul>
-                    <li id="node_collavore">Collavore
+                <!-- <ul>
+                    <li id="node_collavore">Collavore -->
                         <ul>
                     <th:block th:each="project : ${projects}" th:if="${project.parentNo == null}">
                         <th:block th:replace="~{::renderNode(projno=${project.no}, projname=${project.name}, parentNo=${project.parentNo}, table=${project.table}, level=${project.level})}"></th:block>
                     </th:block>                            <!-- 자식 노드가 여기에 추가될 수 있습니다. -->
                         </ul>
-                    </li>
-                </ul>
+                    <!-- </li>
+                </ul> -->
             </div>
             <div class="col-md-6">
                 <div class="insert-panel" id="insertPanelProjwrks"style="display: none;">
@@ -440,6 +440,9 @@
                 // 부모 노드로 이동
                 currentNode = currentNode.parent().closest('li'); // 부모 <li>를 찾기
             }
+            console.log(projNo);
+            console.log(pwNo);
+            
             
             if (level <= 1) {
                 $('#insertPanelProjwrks h4').text(projectName + ' 업무 등록');
@@ -701,22 +704,27 @@
                         const chatList = $('#chat .chat-list'); // chat-list 요소를 선택
                         
                         chatList.empty(); // 기존 내용을 비움
-                        /* let badgeDisplayed = false; */
+                        let badgeDisplayed = false; 
                      // data가 배열인지 확인
                         if (Array.isArray(data)) {
                             data.forEach(info => {
                             	const isCurrentUser = parseInt(sessionUserEmpNo, 10) === parseInt(info.writerNo, 10);
                             	
-                            	/* // 현재 사용자가 아닌 경우 배지를 출력하지 않음
-                                if (isCurrentUser && badgeDisplayed) {
-                                    return; // 배지가 이미 출력된 경우, 채팅 항목만 출력
+                                // 상태 배지를 출력할지 여부 결정
+                                let statusBadge = '';
+                                if (!badgeDisplayed) {
+                                    if (info.isStatus == 'k1') {
+                                        statusBadge = `<span class="badge rounded-pill bg-secondary">진행전</span>`;
+                                        badgeDisplayed = true;
+                                    } else if (info.isStatus == 'k2') {
+                                        statusBadge = `<span class="badge rounded-pill bg-info">진행중</span>`;
+                                        badgeDisplayed = true;
+                                    } else if (info.isStatus == 'k3') {
+                                        statusBadge = `<span class="badge rounded-pill bg-success">완료</span>`;
+                                        badgeDisplayed = true;
+                                    }
                                 }
-
-                                // 배지가 처음 출력될 경우
-                                if (isCurrentUser) {
-                                    badgeDisplayed = true;
-                                }
-                            	 */
+                            	
                             	function formatDate(dateString) {
                             	    const date = new Date(dateString);
                             	    const year = date.getFullYear();
@@ -729,7 +737,7 @@
                             	
                             	const chatItem = isCurrentUser
                                 ? `
-                                		
+                                	${statusBadge}
                                     <li class="odd chat-item">
                                         <div class="chat-content">
                                             <div class="box bg-light-inverse">${info.content}</div>

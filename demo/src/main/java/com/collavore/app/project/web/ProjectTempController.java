@@ -16,29 +16,33 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.collavore.app.project.service.PjService;
 import com.collavore.app.project.service.PjTempService;
 import com.collavore.app.project.service.ProjectDWorkTempVO;
 import com.collavore.app.project.service.ProjectTempVO;
+import com.collavore.app.project.service.ProjectVO;
 import com.collavore.app.project.service.ProjectWorkTempVO;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/project")
+@RequiredArgsConstructor
 public class ProjectTempController {
-    private PjTempService pjtempService;
+	private final PjService pjService;
+    private final PjTempService pjtempService;
 
     @ModelAttribute
     public void addAttributes(Model model) {
         model.addAttribute("sidemenu", "project_sidebar");
     }
 
-    @Autowired
-    public ProjectTempController(PjTempService pjtempService) {
-        this.pjtempService = pjtempService;
-    }
+   
     // 프로젝트 템플릿 리스트
     @GetMapping("/projecttemplist")
     public String projecttempList(Model model) {
         List<ProjectTempVO> list = pjtempService.projecttempList();
+
         model.addAttribute("projects", list);
         return "project/projectTempList";
     }   
@@ -92,6 +96,9 @@ public class ProjectTempController {
 	    public String projectwrktempList(Model model) {
 	        List<ProjectWorkTempVO> list = pjtempService.projectWrktempList();
 	        List<ProjectTempVO> prolist = pjtempService.projecttempList();
+	        List<ProjectVO> jobs = pjService.jobsList(); 
+	        
+	        model.addAttribute("jobs", jobs);
 	        model.addAttribute("projects", list);
 	        model.addAttribute("prolist", prolist);
 	        return "project/projectWorkTempList";
