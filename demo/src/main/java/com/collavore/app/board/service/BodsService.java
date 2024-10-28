@@ -3,6 +3,8 @@ package com.collavore.app.board.service;
 import java.util.List;
 import java.util.Map;
 
+import com.collavore.app.hrm.service.HrmVO;
+
 public interface BodsService {
 	// 게시글 전체 건수 확인하기(페이징을 위함)
 	public int totalListCnt(BodsVO bodsVO);
@@ -36,6 +38,9 @@ public interface BodsService {
 	
 	// 댓글 상세조회
 	public BodsComtsVO bodsComtsInfo(BodsComtsVO bodsComtsVO);
+	
+	// 게시판 상세 설정 (게시판 생성)
+	public List<BodsCfigVO> bodsCfig(BodsCfigVO bodsCfigVO);
 
 	
 	
