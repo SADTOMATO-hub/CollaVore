@@ -38,9 +38,27 @@ public class DeptServiceImpl implements DeptService {
     public int deleteDept(Integer deptNo) {
         return deptMapper.deleteDept(deptNo);
     }
+    @Override
+    public boolean hasEmployeesInDept(Integer deptNo) {
+        return deptMapper.countEmployeesInDept(deptNo) > 0;
+    }
+
+ // 부서별 사원 목록 조회
+    @Override
+    public List<HrmVO> getEmployeesByDept(Integer deptNo) {
+        return deptMapper.selectEmployeesByDept(deptNo);
+    }
+
+    // 부서장 업데이트
+    @Override
+    @Transactional
+    public int updateManager(Integer deptNo, Integer empNo) {
+        return deptMapper.updateManager(deptNo, empNo);
+    }
 
     @Override
     public List<HrmVO> getExistingDepts() {
         return deptMapper.selectDeptList();
     }
 }
+    

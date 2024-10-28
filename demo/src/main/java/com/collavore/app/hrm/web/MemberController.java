@@ -237,19 +237,6 @@ public class MemberController {
 
 	// 관리자 영역
 	// ────────────────────────────────────────────────────────────────────────────────────────────────────
-	// 사원 전체 조회 (관리자)
-	/*
-	 * @GetMapping("/memberList") public String selectMemberAll(HrmVO hrmVO, Model
-	 * model) { String page = hrmVO.getPage() == null ? "1" : hrmVO.getPage();
-	 * 
-	 * int totalCnt = memberService.totalListCnt(); PageDTO pageing = new
-	 * PageDTO(page, 15, totalCnt); model.addAttribute("pageing", pageing);
-	 * 
-	 * List<HrmVO> memberList = memberService.selectMemberAll(page);
-	 * model.addAttribute("members", memberList);
-	 * 
-	 * return "member/memberList"; // 뷰 파일 반환 }
-	 */
 	@GetMapping("/memberList")
 	public String selectMemberAll(HrmVO hrmVO, Model model,
 			@RequestParam(value = "deptFilter", required = false) String deptFilter,
