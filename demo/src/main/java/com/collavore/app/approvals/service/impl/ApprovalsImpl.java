@@ -1,7 +1,7 @@
 package com.collavore.app.approvals.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,23 +11,25 @@ import com.collavore.app.approvals.mapper.ApprovalsMapper;
 import com.collavore.app.approvals.service.ApprovalsService;
 import com.collavore.app.approvals.service.ApprovalsVO;
 import com.collavore.app.approvals.service.ApprovalstempVO;
-import com.collavore.app.hrm.service.HrmVO;
 
+import lombok.extern.log4j.Log4j2;
+@Log4j2
 @Service
 public class ApprovalsImpl implements ApprovalsService {
 	// mapper와 연결
 	private ApprovalsMapper approvalsMapper;
 
-	// 생성자
+		// 생성자
 	@Autowired
 	public ApprovalsImpl(ApprovalsMapper approvalsMapper) {
 		this.approvalsMapper = approvalsMapper;
 	}
 
-	// 메소드
+		// 메소드
 	// 템플릿 목록 조회, 템플릿의 모든 정보를 불러오는 기능
 	@Override
 	public List<ApprovalstempVO> apprTempList() {
+		log.debug("test");
 		return approvalsMapper.tempList();
 	}
 
@@ -47,12 +49,6 @@ public class ApprovalsImpl implements ApprovalsService {
 	// 템플릿 수정
 	@Override
 	public int updateTemplate(ApprovalstempVO apprsVO) {
-		// Map<String, Object> map = new HashMap<>();
-		// int result = approvalsMapper.updateTemp(apprsVO);
-		// if (result == 1) {
-		// map.put("tempUpdate", apprsVO);
-		// }
-		// return map;
 		return approvalsMapper.updateTemp(apprsVO);
 	}
 
@@ -64,31 +60,23 @@ public class ApprovalsImpl implements ApprovalsService {
 	}
 
 	// 전자결재 생성
-	// 전자결재 테이블
+		// 전자결재 
 	@Override
 	@Transactional
-	public int insertApprsEaTable(ApprovalsVO apprVO) {
-		int EaNo = approvalsMapper.createApprsEaTable(apprVO);
+	public int insertApprsEa(ApprovalsVO apprVO) {
+		int EaNo = approvalsMapper.createApprsEa(apprVO);
 		return EaNo > 0 ? apprVO.getEaNo() : -1;
 	}
 
-	// 결재자 테이블
+		// 결재자
 	@Override
 	@Transactional
-	public int insertApprsEarTable(ApprovalsVO apprVO) {
-//		List<ApprovalsVO> list = new ArrayList <>();
-//		int idx = 0 ;
+	public int insertApprsEar(ApprovalsVO apprVO) {
+		//결재번호를 부른다. 다건
 		for (ApprovalsVO appr : apprVO.getApprovers()) {
-//			ApprovalsVO appr = new ApprovalsVO();
 			appr.setEaNo(apprVO.getEaNo());
-//			appr.setEmpNo(empNo);
-//			appr.setSort(apprVO.getSortList().get(idx));
-//			list.add(appr);
-//			idx ++;
 		}
-		System.out.println(">>>>>>>>>>>>\n" + apprVO.getApprovers());
-		// apprVO.setApprovers(list);
-		int result = approvalsMapper.createApprsEarTable(apprVO);
+		int result = approvalsMapper.createApprsEar(apprVO);
 		return result;
 	}
 
@@ -102,7 +90,7 @@ public class ApprovalsImpl implements ApprovalsService {
 
 	// 결재자 상세 조회
 	@Override
-	public List<ApprovalsVO> approversInfo(ApprovalsVO approvalsVo) {
+	public List<Map<String,Object>> approversInfo(ApprovalsVO approvalsVo) {
 		return approvalsMapper.readApprovers(approvalsVo);
 	}
 	// 전자결재 수정
@@ -113,7 +101,7 @@ public class ApprovalsImpl implements ApprovalsService {
 	}
 	// 인사테이블
 	@Override
-	public List<HrmVO> employeesInfo() {
+	public List<Map<String,Object>> employeesInfo() {
 		return approvalsMapper.employees();
 	}
 }

@@ -9,7 +9,7 @@
 <div class="page-wrapper">
 	<div class="container-fluid">
 		<div class="row">
-			<h4 class="card-title">[[${approvals.drafterName}]]의 전자결재</h4>
+			<h4 class="card-title">기안자 : [[${approvals.drafterName}]]</h4>
 			<div class="col-md-6">
 				<div class="col-12">
 					<div class="card">
@@ -39,10 +39,10 @@
 										<tr>
 											<th:block th:each="appr : ${approvers}">
 												<th:block th:switch="${appr.approverStatus}">
-													<td><span th:case="${b1}" th:text="'대기'"></span> <span
-														th:case="${b2}" th:text="'반려'"></span> <span
-														th:case="${b3}" th:text="'승인'"></span> <span th:case="*"
-														th:text="'-'"></span>
+													<td><span th:case="b1" th:text="'대기'"></span>
+														<span th:case="b2" th:text="'반려'"></span>
+														<span th:case="b3" th:text="'승인'"></span> 
+														<span th:case="*" th:text="'-'"></span>
 														</td>
 												</th:block>
 											</th:block>
