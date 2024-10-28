@@ -264,5 +264,57 @@
 		FROM approvals
 		WHERE ea_no =  #{eaNo}
 	</select>
+	
+	<select id="selectApproversList" resultType="FlutterApprVO">
+		SELECT ar.ear_no
+		    , ar.status as apprStatus
+		    , ar.proc_date
+		    , e.emp_no as apprEmpNo
+		    , e.name as apprEmpName 
+		    , (SELECT name FROM positions WHERE posi_no = e.posi_no) AS apprPosiName
+		    , ar.sort
+		FROM approvers ar
+		    INNER JOIN employees e ON ar.emp_no = e.emp_no
+		WHERE ar.ea_no = #{eaNo}
+		ORDER BY sort
+	</select>
+	
+	<update id="updateApprStatus" statementType="CALLABLE">
+	    { CALL appr_status_update(#{earNo, mode=IN}, #{apprStatus, mode=IN}) }
+	</update>
+	
+	<select id="selectMyEmpInfo" resultType="FlutterVO">
+		SELECT e.emp_no
+		    , e.email
+		    , e.name
+		    , e.tel
+		    , e.info
+		    , e.join_date
+		    , (SELECT name FROM departments WHERE dept_no = e.dept_no) AS deptName
+		    , (SELECT name FROM jobs WHERE job_no = e.job_no) AS jobName
+		    , (SELECT name FROM positions WHERE posi_no = e.posi_no) AS posiName
+		FROM employees e
+		WHERE e.emp_no = #{empNo}
+	</select>
+	
+	<update id="updateMyEmpInfo" parameterType="FlutterVO">
+		UPDATE employees
+		 <set>
+			<if test="tel != null">
+				tel = #{tel},
+			</if>
+			<if test="info != null">
+				info = #{info},
+			</if>
+			<if test="password != null">
+				password = #{password}
+			</if>
+			<if test="profileImg != null">
+				img = #{profileImg}
+			</if>
+		 </set>
+		WHERE emp_no = #{empNo}
+	</update>
+	
 </mapper>
 <!-- 3번째 -->
