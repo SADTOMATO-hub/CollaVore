@@ -4,17 +4,18 @@
 	namespace="com.collavore.app.project.mapper.ProjectMapper">
 	<!-- 전체조회 -->
 	<select id="selectProjectAll" resultType="ProjectVO">
-		SELECT proj_no
-		        ,name
-				,content
-				,start_date
-				,end_date
-				,is_template
-				,status
-				,proj_temp_no
-				,project_git_url
-				,p_mgr_no
-		FROM proj
+		SELECT p.proj_no
+		        ,p.name
+				,p.content
+				,p.start_date
+				,p.end_date
+				,p.is_template
+				,p.status
+				,p.proj_temp_no
+				,p.project_git_url
+				,p.p_mgr_no
+                ,e.name as empName
+		FROM proj p JOIN employees e ON p.p_mgr_no = e.emp_no
 		ORDER BY proj_no
 	</select>
 	<!-- 단건조회 -->
@@ -223,6 +224,7 @@
 		<!-- ,#{sort} -->
 		)
 	</insert>
+	<!-- 상세업무 생성 -->
 	<insert id="ProjectdwrkInsert" parameterType="ProjectVO">
 		<selectKey keyProperty="pdwNo" resultType="Integer"
 			order="BEFORE">
@@ -239,7 +241,7 @@
 		,start_date
 		,req_date
 		,comp_date
-		,pw_no
+		,mgr_no
 		<!-- ,sort -->
 		)
 		VALUES(
@@ -252,7 +254,7 @@
 		,#{startDate}
 		,#{reqDate}
 		,#{compDate}
-		,#{pwNo}
+		,#{mgrNo}
 		<!-- ,#{sort} -->
 		)
 	</insert>
@@ -324,12 +326,10 @@
 		,is_status = #{isStatus}
 		,start_date = #{startDate}
 		,comp_date = #{compDate}
-		,commit_id =
-		#{commitId}
+		,commit_id = #{commitId}
 		,importance = #{importance}
 		,mgr_no = #{mgrNo}
-		,reg_date =
-		sysdate
+		,reg_date = sysdate
 
 		WHERE pdw_no
 		= #{pdwNo}

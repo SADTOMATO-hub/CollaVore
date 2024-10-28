@@ -59,13 +59,15 @@
 	
 	<!-- 프로젝트 업무 템플릿 리스트 전체조회 -->
 	<select id="selectWrkTempProjectAll" resultType="ProjectWorkTempVO">
-		SELECT pwt_no
-				,name
-				,content
-				,proj_temp_no
-				,job_no
-				,reg_date
-		FROM projwrktemps
+		SELECT p.pwt_no
+				,p.name
+				,p.content
+				,p.proj_temp_no
+				,p.job_no
+				,p.reg_date
+                ,j.name as jobName
+		FROM projwrktemps p JOIN jobs j ON p.job_no = j.job_no
+        
 		ORDER BY pwt_no
 	</select>	
 	<!-- 프로젝트 업무 템플릿 생성 -->

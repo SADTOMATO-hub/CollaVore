@@ -19,4 +19,6 @@ public class ProjectDWorkTempVO {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date regDate;
 	
+	
+	
 }
