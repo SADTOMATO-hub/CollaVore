@@ -48,9 +48,8 @@ public class ProjectTempController {
     public Map<String, Object> insertAjax(ProjectTempVO projectTempVO) {
         Map<String, Object> response = new HashMap<>();
         
-        int generatedId = pjtempService.projecttempinsert(projectTempVO);
-        projectTempVO.setProjTempNo(generatedId); 
-
+        pjtempService.projecttempinsert(projectTempVO);
+     
         response.put("projTempNo", projectTempVO.getProjTempNo());
         response.put("name", projectTempVO.getName());
         response.put("content", projectTempVO.getContent());
@@ -104,17 +103,14 @@ public class ProjectTempController {
 	        Map<String, Object> response = new HashMap<>();
 	        
 	        int generatedId = pjtempService.projectwrktempinsert(projectworktempVO);
-	        projectworktempVO.setPwtNo(generatedId);
-	        
-	        
-	        int projTempNo = projectworktempVO.getProjTempNo();
+	
 	        //System.err.println("pk값: " + generatedId);
 	        //System.err.println("템플릿번호: " + projTempNo);
 	        
 	        response.put("pwtNo", projectworktempVO.getPwtNo());
 	        response.put("name", projectworktempVO.getName());
 	        response.put("content", projectworktempVO.getContent());
-	        response.put("projTempNo", projTempNo);
+	        response.put("projTempNo", generatedId);
 	        response.put("jobType", projectworktempVO.getJobNo());
 	        
 	        //System.err.println(response);

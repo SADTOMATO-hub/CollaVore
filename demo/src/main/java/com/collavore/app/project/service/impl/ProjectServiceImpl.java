@@ -128,6 +128,30 @@ public class ProjectServiceImpl implements PjService{
 		return result;
 	}
 
+	@Override
+	public List<ProjectVO> departmentsList() {
+		return projectMapper.selectdepartments();
+	}
+
+
+
+	@Override
+	public List<ProjectVO> projectMgrListInfo(int jobNo) {
+		 return projectMapper.selectprojmgrInfo(jobNo); 
+	}
+
+	@Override
+	public List<ProjectVO> jobsList() {
+		 return projectMapper.selectjobs(); 
+	}
+
+	@Override
+	public List<ProjectVO> empList() {
+		return projectMapper.selectempAll();
+	}
+
+
+
 	/*
 	 * @Override public List<ProjectVO> projectDWrkComtInfo(int pdwNo) { return
 	 * projectMapper.searchPdwNo(pdwNo); }

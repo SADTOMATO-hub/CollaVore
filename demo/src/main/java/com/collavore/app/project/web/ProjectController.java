@@ -6,7 +6,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -24,10 +23,11 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.collavore.app.common.service.FileUtill;
 import com.collavore.app.project.service.PjService;
 import com.collavore.app.project.service.PjTempService;
 import com.collavore.app.project.service.ProjectFilesVO;
@@ -53,9 +53,12 @@ public class ProjectController {
 	public String projectList(Model model) {
 		List<ProjectVO> list = pjService.projectList();
 		List<ProjectTempVO> templist = pjtempService.projecttempList();
-
+		List<ProjectVO> emplist = pjService.empList();
+		
+		
 		model.addAttribute("projects", list);
 		model.addAttribute("templist", templist);
+		model.addAttribute("emp", emplist);
 		return "project/projectList";
 	}
 
@@ -120,8 +123,9 @@ public class ProjectController {
 
 	// 파일 업로드 처리 메소드
 	@PostMapping("/project/uploadfile")
-	public String uploadFile(@RequestParam("file") MultipartFile file, @ModelAttribute ProjectFilesVO ProjectFilesVO,
-			Model model) {
+	public String uploadFile(@RequestPart("file") MultipartFile file, 
+			                 @ModelAttribute ProjectFilesVO ProjectFilesVO,
+			                 Model model) {
 		if (file.isEmpty()) {
 			model.addAttribute("message", "파일이 비어 있습니다.");
 			return "redirect:/project/projectfilelist"; // 파일이 비어 있으면 목록으로 리다이렉트
@@ -138,7 +142,7 @@ public class ProjectController {
 			ProjectFilesVO.setFilePath(uploadDir);
 			ProjectFilesVO.setFileSize(file.getSize());
 			ProjectFilesVO.setName(file.getOriginalFilename());
-			ProjectFilesVO.setExtension(getFileExtension(file.getOriginalFilename()));
+			ProjectFilesVO.setExtension(FileUtill.getFileExtension(file.getOriginalFilename()));
 
 			pjService.saveFile(file.getOriginalFilename(), ProjectFilesVO);
 
@@ -150,13 +154,7 @@ public class ProjectController {
 		return "redirect:/project/projectfilelist"; // 처리 후 목록으로 리다이렉트
 	}
 
-	// 파일 확장자 추출 메소드
-	private String getFileExtension(String originalFilename) {
-		int lastIndex = originalFilename.lastIndexOf('.');
-		return (lastIndex == -1) ? "" : originalFilename.substring(lastIndex + 1);
-	}
-
-	//
+	// 파일 다운로드
 	@GetMapping("/project/downloadfile/{projFileNo}")
 	public ResponseEntity<FileSystemResource> downloadFile(@PathVariable Long projFileNo) {
 		// 파일 정보를 가져오는 서비스 메소드
@@ -190,9 +188,21 @@ public class ProjectController {
 	@GetMapping("project/projectworklist")
 	public String projectworkList(Model model) {
 		List<ProjectVO> list = pjService.projecttreeList();
+		
+		List<ProjectVO> departments = pjService.departmentsList();
+		 List<ProjectVO> jobs = pjService.jobsList(); 
+//		List<ProjectVO> projmgr = pjService.projMgrInfo();
+//		List<ProjectVO> wrkmgr = pjService.wrkMgrIngo();
+		/* List<ProjectVO> dwrkmgr = pjService.dwrkMgrInfo(); */
+		
 //		System.err.println(list);
 
 		model.addAttribute("projects", list);
+		model.addAttribute("jobs", jobs);
+		model.addAttribute("dept", departments);
+//		model.addAttribute("projmgriist", projmgr);
+//		model.addAttribute("wrkmgriist", wrkmgr);
+//		model.addAttribute("dwrkmgrlist", dwrkmgr);
 		return "project/projectWorkList";
 	}
 
@@ -234,12 +244,14 @@ public class ProjectController {
 		return map;
 	}
 
-	// 업무 단건 조회
-	@GetMapping("/project/projectwrkinfo/{pdwNo}")
-	@ResponseBody
-	public int getProjectwrkInfo(@PathVariable int pdwNo) {
-		return pjService.selectPwNo(pdwNo);
-	}
+	/*
+	 * // 업무 단건 조회
+	 * 
+	 * @GetMapping("/project/projectwrkinfo/{pdwNo}")
+	 * 
+	 * @ResponseBody public int getProjectwrkInfo(@PathVariable int pdwNo) { return
+	 * pjService.selectPwNo(pdwNo); }
+	 */
 	
 	// 업무 단건조회리스트
 	@GetMapping("/project/projectwrklistinfo/{pwNo}")
@@ -298,7 +310,7 @@ public class ProjectController {
 					return response;
 				}		
 		
-					
+				// 상세업무 코멘트 단건 리스트
 				@GetMapping("/project/projecdwrkcomtstinfo/{pdwNo}")
 				@ResponseBody
 				public List<ProjectVO> projectDWrkComtInfo(@PathVariable int pdwNo) {
@@ -306,7 +318,7 @@ public class ProjectController {
 				}
 				
 
-				// 프로젝트 생성 모달
+				// 상세업무 코멘트 생성
 				@PostMapping("project/projectdwrkcomtinsert")
 				@ResponseBody
 				public Map<String, Object> dwrkcomtinsertAjax(@RequestBody ProjectVO projectVO) {
@@ -323,7 +335,14 @@ public class ProjectController {
 					map.put("content", projectVO.getContent()); // message
 					map.put("regDate", formattedRegDate); // 현재 시간 등
 					return map;
-				}	
+				}
 				
+				// 프로젝트 업무별 매니저 리스트
+				@GetMapping("project/projectmgrlist/{jobNo}")
+				@ResponseBody
+				public List<ProjectVO> projectmgrInfo(@PathVariable int jobNo) {
+					System.err.println(jobNo);
+				    return pjService.projectMgrListInfo(jobNo);
+				}
 				
 }
