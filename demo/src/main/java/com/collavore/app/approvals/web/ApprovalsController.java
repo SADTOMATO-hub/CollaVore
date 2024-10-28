@@ -1,6 +1,7 @@
 package com.collavore.app.approvals.web;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.collavore.app.approvals.service.ApprovalsService;
 import com.collavore.app.approvals.service.ApprovalsVO;
 import com.collavore.app.approvals.service.ApprovalstempVO;
-import com.collavore.app.hrm.service.HrmVO;
 
 @Controller
 @RequestMapping("/approvals")
@@ -57,7 +57,7 @@ public class ApprovalsController {
 	@PostMapping("/createTemp")
 	public String createTemplate(ApprovalstempVO apprTempVO) {
 		int eatNo = approvalsService.createApprsTemp(apprTempVO);
-		String url = "redirect:/approvals/tempInfo?eatNo=";
+		String url = "redirect:/approvals/readTempInfo?eatNo=";
 		return url + eatNo;
 	}
 
@@ -73,12 +73,12 @@ public class ApprovalsController {
 	@PostMapping("/updateTemp")
 	public String updateTemplate(ApprovalstempVO apprTempVO) {
 		int result = approvalsService.updateTemplate(apprTempVO);
+		int eatNo = apprTempVO.getEatNo();
 		if (result > 0) {
-			int eatNo = apprTempVO.getEatNo();
-			String url = "redirect:/approvals/tempInfo?eatNo=";
+			String url = "redirect:/approvals/readTempInfo?eatNo=";
 			return url + eatNo;
 		} else {
-			return null;
+			return "updateTemplateForm?eatNo="+eatNo;
 		}
 	}
 
@@ -86,8 +86,8 @@ public class ApprovalsController {
 	@GetMapping("/deleteTemp")
 	public String deleteTemplate(ApprovalstempVO apprVO) {
 		int eatNo = approvalsService.deleteTemplate(apprVO);
-		String urlFailed = "redirect:/approvals/tempInfo?eatNo=";
 		String urlSucss = "redirect:/approvals/tempList";
+		String urlFailed = "redirect:/approvals/tempInfo?eatNo=";
 		if (eatNo >= 1) {
 			return urlSucss;
 		}
@@ -98,7 +98,7 @@ public class ApprovalsController {
 	@GetMapping("/createApprForm")
 	public String createApprovals(Model model) {
 		List<ApprovalstempVO> tempInfo = approvalsService.apprTempList();
-		List<HrmVO> employeesInfo = approvalsService.employeesInfo();
+		List<Map<String,Object>> employeesInfo = approvalsService.employeesInfo();
 		model.addAttribute("tempInfo", tempInfo);
 		model.addAttribute("employeesInfo", employeesInfo);
 		return "approvals/createApprovalForm";
@@ -107,10 +107,10 @@ public class ApprovalsController {
 	@PostMapping("/createAppr")
 	public String createAppr(ApprovalsVO apprVO) {
 		System.out.println(apprVO);
-		int EaNo = approvalsService.insertApprsEaTable(apprVO); 
-		if (EaNo >= 0) {
-			apprVO.setEaNo(EaNo); //새로 만들어진 전자결재에 전자결재 번호를 매겨 줌
-			int resultOfEar = approvalsService.insertApprsEarTable(apprVO); // 전자결재 //원래 없던 ea가 들어감
+		approvalsService.insertApprsEa(apprVO); 
+		if (apprVO.getEaNo() >= 0) {
+			//apprVO.setEaNo(EaNo); //새로 만들어진 전자결재에 전자결재 번호를 매겨 줌
+			int resultOfEar = approvalsService.insertApprsEar(apprVO); // 전자결재 //원래 없던 ea가 들어감
 			if (resultOfEar >= 0) {
 				return "redirect:/approvals/tempList";
 			}
@@ -121,10 +121,8 @@ public class ApprovalsController {
 	// 전자결재 템플릿 내용만 호출하는 기능
 	@GetMapping("/temp")
 	@ResponseBody
-//	public String info (ApprovalstempVO apprVO, Model model) {
 	public ApprovalstempVO info(ApprovalstempVO apprVO) {
 		ApprovalstempVO tempInfo = approvalsService.apprInfo(apprVO);
-		// model.addAttribute("tempInfo", tempInfo.getContent());
 		return tempInfo;
 	}
 	
@@ -132,7 +130,7 @@ public class ApprovalsController {
 	@GetMapping("/readApprInfo")
 	public String readapprinfo (Model model,ApprovalsVO apprVO) {
 		ApprovalsVO approvals = approvalsService.approvalsInfo(apprVO);
-		List<ApprovalsVO> approvers = approvalsService.approversInfo(apprVO);
+		List<Map<String,Object>> approvers = approvalsService.approversInfo(apprVO);
 		model.addAttribute("approvals", approvals);
 		model.addAttribute("approvers", approvers);
 		return "approvals/readApproval";
@@ -142,9 +140,8 @@ public class ApprovalsController {
 	@GetMapping("/deleteAppr")
 	public String deleteAppr (ApprovalsVO apprVO) {
 		 approvalsService.deleteApprovals(apprVO);
-		 int result = 1;
-		if(result >= 0) {
-			return "redirect:/tempList";
+		if(apprVO.getResultCode() >= 0) {
+			return "redirect:/approvals/tempList";
 		}
 		return null;
 	}
