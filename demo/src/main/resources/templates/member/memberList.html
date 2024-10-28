@@ -121,10 +121,9 @@
 	background-color: #f9f9f9; /* 마우스 오버 시 행 배경색 변경 */
 }
 
-.form-select{
-border: none;
+.form-select {
+	border: none;
 }
-
 
 .pagination-and-insert-wrapper {
 	display: flex;
@@ -323,7 +322,10 @@ button:active {
 								<td th:text="${info.empName}"></td>
 								<td th:text="${info.tel}"></td>
 								<td th:text="${info.email}"></td>
-								<td th:text="${info.deptName}"></td>
+								<td>
+									<span th:text="${info.deptName}"></span> 
+									<span th:if="${info.isMgr == 'Y'}" style="color: gold;">★</span>
+								</td>
 								<td th:text="${info.jobName}"></td>
 								<td th:text="${info.posiName}"></td>
 								<td th:text="${info.workType}"></td>
@@ -430,25 +432,25 @@ button:active {
 		}
 
 	});
-	
+
 	document.addEventListener('DOMContentLoaded', function() {
-	    const searchBox = document.getElementById('searchBox');
-	    const rows = document.querySelectorAll('.memberList_table tbody tr'); // 테이블 행들
+		const searchBox = document.getElementById('searchBox');
+		const rows = document.querySelectorAll('.memberList_table tbody tr'); // 테이블 행들
 
-	    // 검색 입력 이벤트 리스너 추가
-	    searchBox.addEventListener('input', function() {
-	        const searchText = searchBox.value.toLowerCase().trim(); // 검색어를 소문자로 변환하고 공백 제거
-	        rows.forEach(function(row) {
-	            // 행에 있는 텍스트를 모두 가져옴
-	            const rowText = row.textContent.toLowerCase();
+		// 검색 입력 이벤트 리스너 추가
+		searchBox.addEventListener('input', function() {
+			const searchText = searchBox.value.toLowerCase().trim(); // 검색어를 소문자로 변환하고 공백 제거
+			rows.forEach(function(row) {
+				// 행에 있는 텍스트를 모두 가져옴
+				const rowText = row.textContent.toLowerCase();
 
-	            // 검색어가 행의 텍스트에 포함되어 있는지 확인하고 행을 표시하거나 숨김
-	            if (rowText.includes(searchText)) {
-	                row.style.display = '';
-	            } else {
-	                row.style.display = 'none';
-	            }
-	        });
-	    });
+				// 검색어가 행의 텍스트에 포함되어 있는지 확인하고 행을 표시하거나 숨김
+				if (rowText.includes(searchText)) {
+					row.style.display = '';
+				} else {
+					row.style.display = 'none';
+				}
+			});
+		});
 	});
 </script>
