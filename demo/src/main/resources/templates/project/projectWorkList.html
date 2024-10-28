@@ -49,11 +49,19 @@
                         </div>   
                         <div>
                             <label class="form-label">업무 타입</label>
-                            <input type="text" id="jobNoProjWrks" name="jobNo" class="form-control" required>
+                            <select class="form-select" name="jobNo" id="jobNoProjWrks" required>
+							<option value="0">선택하세요</option>
+							<option th:each="info : ${jobs}"
+								th:value="${info.jobNo}">[[${info.name}]]</option>
+						</select>
                         </div>   
                         <div>
-                            <label class="form-label">업무 담당자</label>
-                            <input type="text" id="mgrNoProjWrks" name="mgrNo" class="form-control" required>
+                           <label class="form-label" id="wrklabel" style="display: none;">업무 담당자</label>
+							<select class="form-select" name="mgrNo" id="mgrNoProjWrks" style="display: none;" required>
+								<option value="0">선택하세요</option>
+								<option th:each="info : ${projmgriist}"
+									th:value="${info.empNo}">[[${info.name}]]</option>
+							</select>
                         </div>
                         <input type="hidden" id="projNo" name="projNo">
                         <div>
@@ -99,8 +107,21 @@
                             <input type="text" id="commitId" name="commitId" class="form-control" required>
                         </div>                 
                         <div>
-                            <label class="form-label">업무 담당자</label>
-                            <input type="text" id="mgrNoProjDwrks" name="mgrNo" class="form-control" required>
+                            <label class="form-label">업무 타입</label>
+                            <select class="form-select" name="jobNo" id="jobNoProjWrks" required>
+							<option value="0">선택하세요</option>
+							<option th:each="info : ${jobs}"
+								th:value="${info.jobNo}">[[${info.name}]]</option>
+						</select>
+                        </div>   
+                        <div>
+                            <label class="form-label" id="wrklabel2" style="display: none;">업무 담당자</label>
+							<select class="form-select" name="mgrNo" id="mgrNoProjdWrks" style="display: none;" required>
+								<option value="0">선택하세요</option>
+								<option th:each="info : ${projmgriist}"
+									th:value="${info.empNo}">[[${info.name}]]</option>
+							</select>
+                            
                         </div>
                         <div>
                             <input type="hidden" id="selPwNo" name="selPwNo">
@@ -127,13 +148,23 @@
             <label class="form-label">업무 내용</label>
             <input type="text" id="contentProjWrksUpdate" name="content" class="form-control" required>
         </div>
+            <div>
+                <label class="form-label">업무 타입</label>
+                <select class="form-select" name="jobNo" id="jobNoWrks" required>
+					<option value="0">선택하세요</option>
+					<option th:each="info : ${jobs}"
+						th:value="${info.jobNo}">[[${info.name}]]</option>
+				</select>
+             </div>   
+            <div>
+               <label class="form-label" >업무 담당자</label>
+				<select class="form-select" name="mgrNo" id="mgrNoProjWrksUpdate2"required>
+					<option value="0">선택하세요</option>
+					<option th:each="info : ${projmgriist}"
+						th:value="${info.empNo}">[[${info.name}]]</option>
+				</select>
+           </div>
         <div>
-            <label class="form-label">업무 타입</label>
-            <input type="text" id="jobNoProjWrksUpdate" name="jobNo" class="form-control" required>
-        </div>
-        <div>
-            <label class="form-label">업무 담당자</label>
-            <input type="text" id="mgrNoProjWrksUpdate" name="mgrNo" class="form-control" required>
         </div>
         	<input type="hidden" id="pwNo" name="pwNo" class="form-control">
         <div>
@@ -179,9 +210,15 @@
                 <input type="text" id="updatecommitId" name="commitId" class="form-control" required>
             </div>
             <div>
-                <label class="form-label">업무 담당자</label>
-                <input type="text" id="updatemgrNoProjDwrks" name="mgrNo" class="form-control" required>
             </div>
+               <div>
+                 <label class="form-label" id="wrklabel2">업무 담당자</label>
+					<select class="form-select" name="mgrNo" id="updatemgrNoProjDwrks" required>
+						<option value="0">선택하세요</option>
+						<option th:each="info : ${projmgriist}"
+							th:value="${info.empNo}">[[${info.name}]]</option>
+					</select>
+                </div>            
             	<input type="hidden" id="pdwNo" name="pdwNo" class="form-control">
             <div>
                 <button type="submit" class="btn btn-primary">수정</button>
@@ -200,9 +237,23 @@
                 <input type="text" id="editProjContent" name="content" class="form-control" required>
             </div>
             <div>
-                <label class="form-label">담당자</label>
-                <input type="text" id="editProjManager" name="pMgrNo" class="form-control" required>
-            </div>
+               
+                  <label class="form-label">업무 타입</label>
+                  <select class="form-select" name="jobNo" id="editjobNoProjWrks" required>
+					<option value="0">선택하세요</option>
+					<option th:each="info : ${jobs}"
+						th:value="${info.jobNo}">[[${info.name}]]</option>
+				</select>
+               </div>   
+               <div>
+                 <label class="form-label" id="wrklabel">업무 담당자</label>
+					<select class="form-select" name="pMgrNo" id="editProjManager" required>
+						<option value="0">선택하세요</option>
+						<option th:each="info : ${projmgriist}"
+							th:value="${info.empNo}">[[${info.name}]] </option>
+					</select>
+					
+                </div>                
             <div>
                 <label class="form-label">프로젝트 git 주소</label>
                 <input type="text" id="editProjGit" name="projectGitUrl" class="form-control" required>
@@ -426,13 +477,16 @@
             const projNo = $(buttonElement).parent().attr('id').split('_')[1]; 
             const pwNo = parseInt(projNo.replace(/^[PW]/, ''), 10); 
             
-
+            
             if (level <= 1) {
             	$.ajax({
                     url: `/project/projectlistinfo/${pwNo}`, 
                     type: 'GET',
                     success: function(response) {
-                    	//console.log(response); 
+                    	// 옵션값 함수 호출
+                    	handleJobNoChange(response.jobNo);
+                       
+                      	
                     	$('#editProjectModal').show();
                         $('#wrkInfo').hide();
                         $('#dwrkInfo').hide();
@@ -443,10 +497,14 @@
                         
                         $('#editProjName').val(response.name);
                         $('#editProjContent').val(response.content);
-                        $('#editProjManager').val(response.pmgrNo);
+                        setTimeout(() => {
+                            $('#editProjManager').val(response.pmgrNo); // 선택된 값을 설정
+                        }, 50);
                         $('#editProjGit').val(response.projectGitUrl);
                         $('#editProjStatus').val(response.status);
                         $('#projNo').val(response.projNo);
+                        $('#editjobNoProjWrks').val(response.jobNo);
+                        
                         const formatDate = (dateString) => {
                             const date = new Date(dateString);
                             return date.toISOString().split('T')[0]; 
@@ -469,10 +527,15 @@
                     type: 'GET',
                     dataType: 'json', 
                     success: function(response) {
+                    	// 옵션값 함수 호출
+                    	handleJobNoChange(response.jobNo);
+                    	
                         $('#nameProjWrksUpdate').val(response.name);
                         $('#contentProjWrksUpdate').val(response.content);
-                        $('#jobNoProjWrksUpdate').val(response.jobNo); 
-                        $('#mgrNoProjWrksUpdate').val(response.mgrNo);
+                        $('#jobNoWrks').val(response.jobNo);
+                        setTimeout(() => {
+                            $('#mgrNoProjWrksUpdate2').val(response.mgrNo); // 선택된 값을 설정
+                        }, 50);
                     },
                     error: function(xhr, status, error) {
                         alert('프로젝트 정보를 가져오는 데 실패했습니다: ' + error);
@@ -492,6 +555,9 @@
                     type: 'GET',
                     dataType: 'json', 
                     success: function(response) {
+                    	
+                    	handleJobNoChange(response.jobNo);
+                    	
                         $('#projdwrkname').val(response.name);
                         $('#projdwrkcontent').val(response.content);
                         $('#updateimportance').val(response.importance); 
@@ -502,7 +568,9 @@
                         $('#updatestartDate').val(formatDate(response.startDate));
                         $('#updateendDate').val(formatDate(response.endDate));
                         $('#updatecommitId').val(response.commitId);
-                        $('#updatemgrNoProjDwrks').val(response.mgrNo);
+                        setTimeout(() => {
+                            $('#updatemgrNoProjDwrks').val(response.mgrNo); // 선택된 값을 설정
+                        }, 50);
                         $('#updateisStatus').val(response.isStatus);
                         
                     },
@@ -519,6 +587,7 @@
         }
     	// 프로젝트 수정 처리
         $('#editProjectForm').on('submit', function(e) {
+        	console.log($('#editProjManager').val());
         	e.preventDefault();
             $.ajax({
                 url: `/project/projectupdate`,
@@ -559,7 +628,7 @@
                     pwNo: $('#pwNo').val(),
                     name: $('#nameProjWrksUpdate').val(),
                     content: $('#contentProjWrksUpdate').val(),
-                    jobNo: $('#jobNoProjWrksUpdate').val(),
+                    jobNo: $('#jobNoWrks').val(),
                     mgrNo: $('#mgrNoProjWrksUpdate').val(),
                     
 
@@ -632,13 +701,13 @@
                         const chatList = $('#chat .chat-list'); // chat-list 요소를 선택
                         
                         chatList.empty(); // 기존 내용을 비움
-                        let badgeDisplayed = false;
+                        /* let badgeDisplayed = false; */
                      // data가 배열인지 확인
                         if (Array.isArray(data)) {
                             data.forEach(info => {
                             	const isCurrentUser = parseInt(sessionUserEmpNo, 10) === parseInt(info.writerNo, 10);
                             	
-                            	// 현재 사용자가 아닌 경우 배지를 출력하지 않음
+                            	/* // 현재 사용자가 아닌 경우 배지를 출력하지 않음
                                 if (isCurrentUser && badgeDisplayed) {
                                     return; // 배지가 이미 출력된 경우, 채팅 항목만 출력
                                 }
@@ -647,7 +716,7 @@
                                 if (isCurrentUser) {
                                     badgeDisplayed = true;
                                 }
-                            	
+                            	 */
                             	function formatDate(dateString) {
                             	    const date = new Date(dateString);
                             	    const year = date.getFullYear();
@@ -656,15 +725,11 @@
                             	    return `${year}-${month}-${day}`;
                             	}
                             	
-                            	const importanceBadge = `
-                                    <span class="badge rounded-pill ${info.importance === 'l1' ? 'bg-secondary' : info.importance === 'l2' ? 'bg-info' : info.importance === 'l3' ? 'bg-success' : ''}">
-                                        ${info.importance === 'l1' ? '낮 음' : info.importance === 'l2' ? '중 간' : info.importance === 'l3' ? '높 음' : ''}
-                                    </span>
-                                `;
+                            	
                             	
                             	const chatItem = isCurrentUser
                                 ? `
-                                		${!badgeDisplayed ? importanceBadge : ''} <!-- 배지가 처음 출력될 때만 추가 -->
+                                		
                                     <li class="odd chat-item">
                                         <div class="chat-content">
                                             <div class="box bg-light-inverse">${info.content}</div>
@@ -715,8 +780,8 @@
                         data: JSON.stringify({ content: message, pdwNo: pdwNo, writerNo: writerNo }),
                         contentType: 'application/json',
                         success: function(response) {
-                            console.log('Content:', response.content); // content 확인
-                            console.log('RegDate:', response.regDate); // regDate 확인
+                           /*  console.log('Content:', response.content); // content 확인
+                            console.log('RegDate:', response.regDate); // regDate 확인 */
                             // 응답 처리 (예: 서버에서 반환된 채팅 내용을 추가)
                             const chatItem = `
                                 <li class="odd chat-item">
@@ -729,7 +794,6 @@
                             
                             $('#chat-list').append(chatItem); // chat-list에 새 메시지 추가
                             $('#textarea1').val(''); // textarea 초기화
-                            alert('코멘트가 등록되었습니다 ');
                         },
                         error: function(xhr, status, error) {
                             alert('코멘트 전송에 실패했습니다: ' + error);
@@ -740,7 +804,86 @@
                 }
             });
         });
-
+        // 담당자 조회
+        $(document).ready(function() {
+            $('select[name="jobNo"]').change(function() {
+                var jobNo = $(this).val();
+                
+                if (jobNo !== '0') {
+                	$('#mgrNoProjWrks').show();
+                	$('#updatemgrNoProjDwrks').show();
+                	$('#mgrNoProjdWrks').show();
+                	
+                	$('#wrklabel').show();
+                	$('#wrklabel2').show();
+                	
+                    $.ajax({
+                        url: '/project/projectmgrlist/' + jobNo,
+                        type: 'GET',
+                        data: { jobNo: jobNo },
+                        success: function(response) {
+                            // 기존 옵션 삭제
+                            $('#mgrNoProjWrks').empty().append('<option value="0">선택하세요</option>');
+                            $('#mgrNoProjdWrks').empty().append('<option value="0">선택하세요</option>');
+                            $('#mgrNoProjWrksUpdate').empty().append('<option value="0">선택하세요</option>');
+                            
+                            
+                            // 새로운 옵션 추가
+                            $.each(response, function(index, info) {
+                                $('#mgrNoProjWrks').append('<option value="' + info.empNo + '">' + info.name + '</option>');
+                                $('#mgrNoProjdWrks').append('<option value="' + info.empNo + '">' + info.name + '</option>');
+                                $('#mgrNoProjWrksUpdate').append('<option value="' + info.empNo + '">' + info.name + '</option>');
+                                
+                            });
+                        },
+                        error: function() {
+                            alert('담당자 정보를 가져오는 데 실패했습니다.');
+                        }
+                    });
+                } else {
+                    // 기본 옵션으로 되돌리기
+                    $('#mgrNoProjWrks').empty().append('<option value="0">선택하세요</option>');
+                }
+            });
+        });
+        
+     // 수정 시 담당자 조회
+        function handleJobNoChange(jobNo) {
+            
+            if (jobNo !== '0') {
+                $('#mgrNoProjWrks').show();
+                $('#wrklabel').show();
+                
+                $.ajax({
+                    url: '/project/projectmgrlist/' + jobNo,
+                    type: 'GET',
+                    data: { jobNo: jobNo },
+                    success: function(response) {
+                        // 기존 옵션 삭제
+                        $('#mgrNoProjWrks').empty().append('<option value="0">선택하세요</option>');
+                        $('#editProjManager').empty().append('<option value="0">선택하세요</option>');
+                        $('#mgrNoProjWrksUpdate2').empty().append('<option value="0">선택하세요</option>');
+                        $('#updatemgrNoProjDwrks').empty().append('<option value="0">선택하세요</option>');
+                        // 새로운 옵션 추가
+                        $.each(response, function(index, info) {
+                            $('#mgrNoProjWrks').append('<option value="' + info.empNo + '">' + info.name + '</option>');
+                            $('#editProjManager').append('<option value="' + info.empNo + '">' + info.name + '</option>');
+                            $('#mgrNoProjWrksUpdate2').append('<option value="' + info.empNo + '">' + info.name + '</option>');
+                            $('#updatemgrNoProjDwrks').append('<option value="' + info.empNo + '">' + info.name + '</option>');
+                        });
+                    },
+                    error: function() {
+                        alert('담당자 정보를 가져오는 데 실패했습니다.');
+                    }
+                });
+            } else {
+                // 기본 옵션으로 되돌리기
+                $('#mgrNoProjWrks').empty().append('<option value="0">선택하세요</option>');
+                $('#mgrNoProjWrks').hide(); // 선택 박스 숨기기
+                $('#wrklabel').hide(); // 레이블 숨기기
+            }
+        }
+        
     </script>
 
     <!-- 재귀 함수 정의 -->

@@ -108,6 +108,14 @@ textarea {
 							type="text" class="form-control" name="pMgrNo" id="projManager"
 							required>
 					</div>
+            		<div>
+		               <label class="form-label" >업무 담당자</label>
+						<select class="form-select" name="pMgrNo" id="projManager"required>
+							<option value="0">선택하세요</option>
+							<option th:each="info : ${emp}"
+								th:value="${info.empNo}">[[${info.name}]]</option>
+						</select>
+		           </div>					
 					<div class="mb-3">
 						<label for="projManager" class="form-label">프로젝트Git주소</label> <input
 							type="text" class="form-control" name="projectGitUrl"
@@ -124,8 +132,7 @@ textarea {
 						<label for="projTempNo" class="form-label">템플릿</label> <select
 							class="form-select" name="projTempNo" id="projTempNo">
 							<option value="0">선택하세요</option>
-							<option th:each="temp : ${templist}"
-								th:value="${temp.projTempNo}">[[${temp.name}]]</option>
+							<option th:each="temp : ${templist}" th:value="${temp.projTempNo}">[[${temp.name}]]</option>
 						</select>
 					</div>
 					<div class="mb-3">
@@ -176,11 +183,15 @@ textarea {
 						<textarea class="form-control" name="content" id="editProjContent"
 							rows="5" required></textarea>
 					</div>
-					<div class="mb-3">
-						<label for="editProjManager" class="form-label">담당자</label> <input
-							type="text" class="form-control" name="pMgrNo"
-							id="editProjManager" required>
-					</div>
+
+					<div>
+		               <label class="form-label" >업무 담당자</label>
+						<select class="form-select" name="pMgrNo" id="editProjManager"required>
+							<option value="0">선택하세요</option>
+							<option th:each="info : ${emp}"
+								th:value="${info.empNo}">[[${info.name}]]</option>
+						</select>
+		           </div>					
 					<div class="mb-3">
 						<label for="editProjGit" class="form-label">프로젝트 Git 주소</label> <input
 							type="text" class="form-control" name="projectGitUrl"
