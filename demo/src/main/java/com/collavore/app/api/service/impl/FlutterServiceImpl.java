@@ -48,6 +48,13 @@ public class FlutterServiceImpl implements FlutterService {
 	// 비밀번호찾기 - 비밀번호변경
 	@Override
 	public int pwdModify(FlutterVO flutterVO) {
+		String insPwd = flutterVO.getResetPwd(); // 입력한 비밀번호 가져오기
+		if(insPwd != null) {
+			String encryptedPassword = passwordEncoder.encode(insPwd); // 입력한 비밀번호 암호화
+			flutterVO.setResetPwd(encryptedPassword); // 암호화된 비밀번호 다시 VO에 넣기
+		} else {
+			flutterVO.setResetPwd(null);
+		}
 		return flutterMapper.updatePassword(flutterVO);
 	}
 

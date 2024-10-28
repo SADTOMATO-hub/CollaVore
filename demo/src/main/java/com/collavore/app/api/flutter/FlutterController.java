@@ -44,21 +44,14 @@ public class FlutterController {
 	private final FlutterService flutterService;
 	private final UserDetailsService userDetailsService;
 	@Value("${file.upload.path}") // 메모리에 올라가 있는 변수값을 가져오기 때문에 표현이 다름
-    private String uploadPath;
+	private String uploadPath;
 
 	// 로그인
-//	@PostMapping("/login")
-//	public FlutterVO loginProcess(@RequestBody FlutterVO flutterVO) {
-//		FlutterVO result = flutterService.loginChk(flutterVO);
-//		return result != null ? result : new FlutterVO();
-//	}
-
 	@PostMapping("/login")
 	public FlutterVO login(@RequestBody FlutterVO flutterVO, HttpSession session) {
-		System.out.println(flutterVO.getEmail());
 		UserVO user = userDetailsService.findByEmail(flutterVO.getEmail());
-
 		if (user == null || !userDetailsService.authenticate(flutterVO.getPassword(), user.getPassword())) {
+			System.err.println("asdfasdfasdfasdf");
 			// 로그인 실패 시, 빈 객체 반환
 			return new FlutterVO();
 		} else {
@@ -185,6 +178,8 @@ public class FlutterController {
 	@GetMapping("/userInfo")
 	public FlutterVO selectMyEmpInfo(@RequestParam int empNo) {
 		FlutterVO result = flutterService.myEmpInfo(empNo);
+		String img = result.getProfileImg();
+		result.setProfileImg("/imgs/"+img);
 		return result;
 	}
 
@@ -196,21 +191,19 @@ public class FlutterController {
 		flutterVO.setTel(tel);
 		flutterVO.setInfo(info);
 		flutterVO.setPassword(password);
-		System.out.println(img);
-
 		// 프로필 이미지 처리 (파일이 선택된 경우에만)
 		if (img != null && !img.isEmpty()) {
 			try {
 				// 기존 파일 경로 설정
 				String originalFilename = img.getOriginalFilename();
 				System.out.println(originalFilename);
-				
+
 				String fileExtension = getFileExtension(originalFilename);
 				System.out.println(fileExtension);
-				
+
 				String newFileName = UUID.randomUUID().toString() + fileExtension;
 				System.out.println(newFileName);
-				
+
 				String savePath = uploadPath + File.separator + newFileName;
 				System.out.println(savePath);
 

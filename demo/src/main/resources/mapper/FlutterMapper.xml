@@ -290,6 +290,7 @@
 		    , e.tel
 		    , e.info
 		    , e.join_date
+		    , e.img AS profileImg
 		    , (SELECT name FROM departments WHERE dept_no = e.dept_no) AS deptName
 		    , (SELECT name FROM jobs WHERE job_no = e.job_no) AS jobName
 		    , (SELECT name FROM positions WHERE posi_no = e.posi_no) AS posiName
@@ -307,7 +308,7 @@
 				info = #{info},
 			</if>
 			<if test="password != null">
-				password = #{password}
+				password = #{password},
 			</if>
 			<if test="profileImg != null">
 				img = #{profileImg}
