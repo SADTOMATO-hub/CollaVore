@@ -28,7 +28,7 @@ public class SchsVO {
 	
 	//테이블 cals 
 	private String name; // 캘린더 이름
-	private String type ; // 캘린더 타입 (개인캘린더 , 공유캘린더 , 프로젝트)
+	private String calType ; // 캘린더 타입 (개인캘린더 , 공유캘린더 , 프로젝트)
 	private Date calRegDate; // 캘린더등록일
 	private String isDelete; //캘린더삭제여부 (h2 미삭제 , h1 삭제 휴지통이동)
 	private Date deleteDate; //캘린더삭제일 (sysdate)

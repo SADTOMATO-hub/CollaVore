@@ -51,6 +51,6 @@ public interface SchsMapper {
 	
 	
 	// 등록
-	public int alarmhisInsert(SchsVO schsVO);
+	public int alarmInsert(SchsVO schsVO);
 
 }

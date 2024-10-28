@@ -4,41 +4,55 @@
 
 	<!--============================== 일정관리 ==================================== -->
 	<select id="selectSchsAll" resultType="SchsVO">
-		SELECT
-		schs.sch_no
-		,schs.title
-		,schs.start_date
-		,schs.end_date
-		,schs.cal_no
-		,cals.name   <!-- 캘린더 이름을 조인으로 조회 -->
-		,cals.cal_type   <!-- 캘린더 타입을 조인으로 조회 -->
-		,schs.is_alarm
-		FROM
-		schs
-		JOIN
-		cals ON schs.cal_no = cals.cal_no  <!-- schs와 cals 
-			테이블 조인 -->
-		WHERE
-		cals.is_delete = 'h2'  <!-- 삭제되지 않은 일정만 조회 -->
-	</select>
+    SELECT
+        schs.sch_no,
+        schs.title,
+        schs.start_date,
+        schs.end_date,
+        schs.cal_no,
+        cals.name,       <!-- 캘린더 이름 조회 -->
+        cals.cal_type,   <!-- 캘린더 타입 조회 -->
+        schs.is_alarm,
+        cals.color       <!-- 색상 정보 조회 -->
+    FROM
+        schs
+    JOIN
+        cals ON schs.cal_no = cals.cal_no  <!-- schs와 cals 테이블 조인 -->
+    WHERE
+        cals.is_delete = 'h2'  <!-- 삭제되지 않은 일정만 조회 -->
+    ORDER BY
+        schs.sch_no      <!-- 콘솔에서 보기 편하려고 임시로 설정 -->
+</select>
+
 	
 	<!-- 단건 일정 조회 -->
-	<select id="selectSchsInfo" parameterType="SchsVO"
-		resultType="SchsVO">
-		SELECT
-		sch_no
-		, title
-		,
-		start_date
-		, end_date
-		, cal_no
-		, is_alarm
-		FROM schs
-		<!-- WHERE schNo = #{schNo} AND isDelete = 'h2' 미삭제된 일정만 조회 -->
-	</select>
+	<select id="selectSchsInfo" parameterType="SchsVO" resultType="SchsVO">
+    SELECT 
+        s.sch_no,
+        s.title,
+        s.start_date,
+        s.end_date,
+        s.is_alarm,
+        s.cal_no,
+        c.name,
+        c.cal_type,
+        c.color,
+        a.alarm_type,
+        a.alarm_yoil,
+        a.alarm_day,
+        a.alarm_time 
+    FROM 
+        schs s
+    LEFT JOIN 
+        cals c ON s.cal_no = c.cal_no
+    LEFT JOIN 
+        schalarms a ON s.sch_no = a.sch_no
+    WHERE 
+        s.sch_no = #{schNo}
+</select>
 
 
-
+<!--  일정등록  -->
 	<insert id="insertSchsInfo" parameterType="SchsVO">
     <selectKey keyProperty="schNo" resultType="Integer" order="BEFORE">
         SELECT NVL(MAX(sch_no), 0) + 1
@@ -60,6 +74,33 @@
         #{calNo},
         #{isAlarm}
     FROM dual
+</insert>
+<!--  알림여부 f1일시 등록  -->
+<insert id="alarmInsert" parameterType="SchsVO">
+    <!-- sa_no에 시퀀스 값을 미리 설정 -->
+    <selectKey keyProperty="saNo" resultType="Integer" order="BEFORE">
+         SELECT NVL(MAX(sa_no), 0) + 1 
+         FROM schalarms
+    </selectKey>
+
+    INSERT INTO schalarms (
+						        sa_no,
+						        sch_no,
+						        alarm_type,
+						        alarm_yoil,
+						        alarm_day,
+						        alarm_time,
+						        reg_date
+						    )
+    VALUES 					(
+						        #{saNo},
+						        #{schNo},
+						        #{alarmType},
+						        #{alarmYoil},
+						        #{alarmDay},
+						        #{alarmTime},
+						        SYSDATE
+   							 )
 </insert>
 
 	<!-- 캘린더 타입에 따른 cal_no 조회 -->
@@ -115,7 +156,7 @@
 		FROM calshares cs
 		    INNER JOIN cals c ON c.cal_no = cs.cal_no
 		WHERE cs.emp_no = #{empNo}
-			AND c.cal_type = 'g1'
+			<!-- AND c.cal_type = 'g1' -->
 		ORDER BY CASE WHEN c.cal_type = 'g1'  THEN 1 ELSE 9999 END, c.name
 	</select>
 

@@ -116,29 +116,68 @@
 
 
 
-	<!-- 일정 조회 모달 -->
-	<div id="viewScheduleModal" class="modal">
-		<div class="modal-content">
-			<h2>일정 조회</h2>
-			<form id="viewScheduleForm">
-				<label for="viewCalendar">캘린더</label> 
-				<input type="text" id="viewCalendar" readonly> <label for="viewTitle">일정제목</label> 
-				<input type="text" id="viewTitle" readonly> 
-				<label for="viewStartDate">시작</label> 
-				<input type="date" id="viewStartDate" readonly> 
-				<input type="time" id="viewStartTime" readonly> 
-				<label for="viewEndDate">종료</label>
-				<input type="date" id="viewEndDate" readonly> 
-				<input type="time" id="viewEndTime" readonly>
+<!-- 일정 조회 모달 -->
+<div id="viewScheduleModal" class="modal">
+    <div class="modal-content">
+        <h2>일정 조회</h2>
+        <form id="viewScheduleForm">
+            <!-- 캘린더 -->
+            <label for="viewCalendar">캘린더</label>
+            <input type="text" id="viewCalendar" readonly>
 
-				<div class="modal-buttons">
-					<button type="button" id="viewScheduleEditBtn">수정</button>
-					<button type="button" id="viewScheduleDeleteBtn">삭제</button>
-					<button type="button" class="viewScheduleClose">취소</button>
-				</div>
-			</form>
-		</div>
-	</div>
+            <!-- 일정 제목 -->
+            <label for="viewTitle">일정 제목</label>
+            <input type="text" id="viewTitle" readonly>
+
+            <!-- 시작 날짜와 시간 -->
+            <label for="viewStartDate">시작</label>
+            <input type="date" id="viewStartDate" readonly>
+            <input type="time" id="viewStartTime" readonly>
+
+            <!-- 종료 날짜와 시간 -->
+            <label for="viewEndDate">종료</label>
+            <input type="date" id="viewEndDate" readonly>
+            <input type="time" id="viewEndTime" readonly>
+
+            <!-- 알림 설정 -->
+            <div id="viewAlarmSettings" style="display: none;">
+                <label for="viewAlarmType">알림 빈도</label>
+                <input type="text" id="viewAlarmType" readonly>
+
+                <!-- d1 (매일) 알림 설정 -->
+                <div id="viewDailySettings" style="display: none;">
+                    <label for="viewDailyRepeat">매일</label>
+                    <input type="text" id="viewDailyRepeat" readonly> 시 마다
+                </div>
+
+                <!-- d2 (매주) 알림 설정 -->
+                <div id="viewWeeklySettings" style="display: none;">
+                    <label for="viewWeeklyDays">요일</label>
+                    <input type="text" id="viewWeeklyDays" readonly>
+                    <label for="viewWeeklyRepeat">시간</label>
+                    <input type="text" id="viewWeeklyRepeat" readonly> 시 마다
+                </div>
+
+                <!-- d3 (매달) 알림 설정 -->
+                <div id="viewMonthlySettings" style="display: none;">
+                    <label for="viewMonthlyDay">매달</label>
+                    <input type="text" id="viewMonthlyDay" readonly> 일
+                    <label for="viewMonthlyHour">시간</label>
+                    <input type="text" id="viewMonthlyHour" readonly> 시 마다
+                </div>
+            </div>
+
+            <!-- 모달 버튼들 -->
+            <div class="modal-buttons">
+                <button type="button" id="viewScheduleEditBtn">수정</button>
+                <button type="button" id="viewScheduleDeleteBtn">삭제</button>
+                <button type="button" class="viewScheduleClose">취소</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 
 
 	<!-- 일정 수정 모달 -->

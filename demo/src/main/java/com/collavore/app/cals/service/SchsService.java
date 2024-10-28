@@ -46,6 +46,10 @@ public interface SchsService {
 	
 	//알림관리 ================================
 	// 등록
-	public int alaInsert(SchsVO schsVO);
+	public int insertAlarm(SchsVO schsVO);
+	
+	
+	
 
+	
 }

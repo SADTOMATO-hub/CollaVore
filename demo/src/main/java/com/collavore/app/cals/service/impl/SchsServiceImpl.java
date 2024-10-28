@@ -34,7 +34,7 @@ public class SchsServiceImpl implements SchsService {
 	@Override
 	public int insertSchs(SchsVO schsVO) {
 	    int result = schsMapper.insertSchsInfo(schsVO);
-	    System.out.println("Type: " + schsVO.getType());
+	    System.out.println("Type: " + schsVO.getCalType());
 
 	    return result == 1 ? schsVO.getSchNo() : -1;
 
@@ -143,14 +143,11 @@ public class SchsServiceImpl implements SchsService {
 	// =====================END 캘린더 사이드바=====================
 	// =====================알림관리========================
 	// 등록
-		@Override
-		public int alaInsert(SchsVO schsVO) {
-		    int result = schsMapper.insertSchsInfo(schsVO);
-		    System.out.println("Type: " + schsVO.getType());
-
-		    return result == 1 ? schsVO.getSchNo() : -1;
-
-		}
+	 @Override
+	    public int insertAlarm(SchsVO schsVO) {
+		 System.out.println("insertAlarm isAlarm value: " + schsVO.getIsAlarm()); // 여기서 확인
+	        return schsMapper.alarmInsert(schsVO);
+	    }
 
 		
 	
