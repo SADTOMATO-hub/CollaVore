@@ -153,8 +153,19 @@ public class BodsController {
 		Map<String, Object> result = bodsService.updateBodsComts(bodsComtsVO);
 		return result;
 	}
-	
-	
-	
 
+	// 게시판 설정
+	@GetMapping("/board/bodsCfig") // 인터넷창에 치는 주소
+	public String bodsCfig(BodsVO bodsVO, Model model) {
+		String page = bodsVO.getPage() == null ? "1" : bodsVO.getPage();
+
+		List<BodsVO> list = bodsService.bodsList(bodsVO);
+		model.addAttribute("bodsList", list);
+
+		int totalCnt = bodsService.totalListCnt(bodsVO);
+		PageDTO pageing = new PageDTO(page, totalCnt);
+		model.addAttribute("pageing", pageing);
+
+		return "board/bodsCfig"; // 불러오는 html 경로
+	}
 }

@@ -10,12 +10,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.collavore.app.board.mapper.BodsMapper;
+import com.collavore.app.board.service.BodsCfigVO;
 import com.collavore.app.board.service.BodsComtsVO;
 import com.collavore.app.board.service.BodsService;
 import com.collavore.app.board.service.BodsVO;
+import com.collavore.app.hrm.service.HrmVO;
 
 @Service
 public class BodsServiceImpl implements BodsService {
+	
+	@Autowired
 	private BodsMapper bodsMapper;
 
 	@Autowired
@@ -29,7 +33,7 @@ public class BodsServiceImpl implements BodsService {
 		return bodsMapper.totalBoardCnt(bodsVO);
 	}
 
-	@Override //전체조회
+	@Override //전체조회(게시글전체조회)
 	public List<BodsVO> bodsList(BodsVO bodsVO) {
 		return bodsMapper.selectBoardAll(bodsVO);
 	}
@@ -136,6 +140,14 @@ public class BodsServiceImpl implements BodsService {
 	public BodsComtsVO bodsComtsInfo(BodsComtsVO bodsComtsVO) {
 		return bodsMapper.selectBodsComtsInfo(bodsComtsVO);
 	}
+
+	@Override // 게시판 전체조회 
+	public List<BodsCfigVO> bodsCfig(BodsCfigVO bodsCfigVO) {
+		return bodsMapper.selectgbodsCfig(bodsCfigVO);
+	}
+
+
+		
 	
 	/*@Override // 상세조회
 	public BodsVO bodsInfo(BodsVO bodsVO) {
