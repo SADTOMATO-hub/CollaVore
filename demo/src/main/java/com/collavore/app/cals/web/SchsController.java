@@ -1,10 +1,12 @@
 package com.collavore.app.cals.web;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,6 +51,34 @@ public class SchsController {
 		return schsService.SchsList(empNo);
 	}
 	
+	// 단건 조회 API
+	@GetMapping("/sch/schInfo")
+	public ResponseEntity<Map<String, Object>> getEventById(@RequestParam Integer schNo) {
+	    Map<String, Object> result = new HashMap<>();
+	    try {
+	        // SchsVO 객체에 schNo 설정
+	        SchsVO schsVO = new SchsVO();
+	        schsVO.setSchNo(schNo);
+	        
+	        // 단건 조회
+	        SchsVO event = schsService.SchsInfo(schsVO);
+	        
+	        if (event != null) {
+	            result.put("success", true);
+	            result.put("data", event);
+	        } else {
+	            result.put("success", false);
+	            result.put("message", "일정을 찾을 수 없습니다.");
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        result.put("success", false);
+	        result.put("message", "일정 조회 중 오류가 발생했습니다.");
+	    }
+	    return ResponseEntity.ok(result);
+	}
+
+	
 
 	// 등록
 	@PostMapping("/sch/schInsert")
@@ -60,22 +90,33 @@ public class SchsController {
 	        System.out.println("Received Title: " + schsVO.getTitle());
 	        System.out.println("Received Start Date: " + schsVO.getStartDate());
 	        System.out.println("Received End Date: " + schsVO.getEndDate());
-	        System.out.println("Received calNo: " + schsVO.getCalNo()); // calNo 확인
+	        System.out.println("Received calNo: " + schsVO.getCalNo());
 
-	        // DB에 저장
+	        // DB에 일정 저장
 	        int id = schsService.insertSchs(schsVO);
-	        if(id > 0) {
-	        	//정상등록
-		        schsService.alaInsert(schsVO);
-	        }else {
-	        	//비정상등
+	        
+	        if (id > 0) {
+	            // 일정 등록 성공 시 sch_no 값을 설정
+	            schsVO.setSchNo(id);
+
+	            // 알림 여부 체크 후 알림 데이터 삽입
+	            if ("f1".equals(schsVO.getIsAlarm())) { // 알림 사용 여부가 f1인 경우
+	                schsVO.setAlarmRegDate(new Date()); // 현재 날짜로 등록
+	                
+	                // 알림 데이터 DB에 삽입
+	                schsService.insertAlarm(schsVO);
+	            }
+
+	            System.out.println("Inserted schedule with ID: " + id); // 성공 로그
+	            result.put("success", true);
+	            result.put("id", id);
+	        } else {
+	            System.out.println("일정 등록에 실패했습니다.");
+	            result.put("success", false);
 	        }
-	        System.out.println("Inserted schedule with ID: " + id); // 성공 로그
-	        result.put("success", true);
-	        result.put("id", id);
 	    } catch (Exception e) {
-	        System.out.println("Error inserting schedule: " + e.getMessage()); // 예외 발생 시 로그 출력
-	        e.printStackTrace(); // 예외 전체 스택 추적 로그
+	        System.out.println("Error inserting schedule: " + e.getMessage());
+	        e.printStackTrace();
 	        result.put("success", false);
 	    }
 	    return result;
@@ -83,51 +124,31 @@ public class SchsController {
 	
 	
 	
-	// 캘린더 타입에 따른 cal_no 조회 API
-//    @GetMapping("/getCalNoByType")
-//    @ResponseBody
-//    public Map<String, Object> getCalType(@RequestParam("type") String type) {
-//        Map<String, Object> result = new HashMap<>();
-//        try {
-//            // 서비스에서 해당 캘린더 타입에 따른 cal_no 조회
-//            Integer calNo = schsService.getCalType(type);
-//            if (calNo != null) {
-//                result.put("success", true);
-//                result.put("calNo", calNo);
-//            } else {
-//                result.put("success", false);
-//                result.put("message", "해당 캘린더 타입에 맞는 cal_no를 찾을 수 없습니다.");
-//            }
-//        } catch (Exception e) {
-//            result.put("success", false);
-//            result.put("message", "캘린더 번호를 가져오는 중 오류가 발생했습니다.");
-//        }
-//        return result;
-//    }
 
-	// 수정
+	//수정 
 	@PostMapping("/sch/schUpdate")
 	@ResponseBody
 	public Map<String, Object> updateSchedule(@RequestBody SchsVO schsVO) {
-		Map<String, Object> resultMap = schsService.updateSchs(schsVO);
+	    Map<String, Object> resultMap = new HashMap<>();
+	    try {
+	        // 일정 및 알림 정보를 업데이트하고, 결과 메시지 포함된 맵을 반환받음
+	        resultMap = schsService.updateSchs(schsVO);
 
-		return resultMap;
+	        // 성공 여부에 따른 메시지 및 처리 결과 반환
+	        if (Boolean.TRUE.equals(resultMap.get("result"))) {
+	            resultMap.put("success", true);
+	            resultMap.put("message", "일정 및 알림 정보가 성공적으로 수정되었습니다.");
+	        } else {
+	            resultMap.put("success", false);
+	            resultMap.put("message", resultMap.getOrDefault("message", "일정 및 알림 정보 수정에 실패했습니다."));
+	        }
+	    } catch (Exception e) {
+	        resultMap.put("success", false);
+	        resultMap.put("message", "수정 처리 중 오류가 발생했습니다.");
+	        resultMap.put("error", e.getMessage());
+	    }
+	    return resultMap;
 	}
-
-	// 삭제
-	@PostMapping("/sch/schDelete")
-	@ResponseBody
-	public Map<String, Object> deleteSchs(@RequestBody Map<String, Integer> request) {
-		Map<String, Object> result = new HashMap<>();
-		try {
-			schsService.deleteSchs(request.get("schNo"));
-			result.put("success", true);
-		} catch (Exception e) {
-			result.put("success", false);
-		}
-		return result;
-	}
-
 //==============================END 일정관리 ===============================
 
 	// 전체조회

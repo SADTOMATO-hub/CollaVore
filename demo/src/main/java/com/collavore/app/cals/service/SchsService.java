@@ -13,11 +13,24 @@ public interface SchsService {
 	// 등록
 	public int insertSchs(SchsVO schsVO);
 
+	// 알림관리 ================================
+	// 등록
+	public int insertAlarm(SchsVO schsVO);
+
 	// 캘린더 타입에 따른 cal_no 조회
 	public int getCalType(String type);
 
 	// 수정
 	public Map<String, Object> updateSchs(SchsVO schsVO);
+	// 알림관리 ================================
+	// 수정 알림설정
+	public int updateAlarm(SchsVO schNo);
+	 // 알림 정보 추가
+    public int insertAlarmInfo(SchsVO schsVO);
+
+    // 알림 정보 삭제
+    public int deleteAlarmInfo(int schNo);
+    //end 알림관리 ================================	
 
 	// 삭제
 	public int deleteSchs(int schsNO);
@@ -43,9 +56,5 @@ public interface SchsService {
 	public int calRestore(int schsVO); // 캘린더 복원
 
 	public int permanentlyDel(int schsVO); // 캘린더 완전 삭제
-	
-	//알림관리 ================================
-	// 등록
-	public int alaInsert(SchsVO schsVO);
 
 }
