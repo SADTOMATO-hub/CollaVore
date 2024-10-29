@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.collavore.app.mapper.HomeMapper">
+	<select id="selectBoardList" resultType="HomeVO">
+		SELECT board_no
+			, name
+		FROM bodscfig
+		ORDER BY board_no
+	</select>
+	
+	<select id="selectNoticeList" resultType="HomeVO">
+		SELECT * FROM (
+		    SELECT 
+		        b.post_no,
+		        b.title,
+		        b.content,
+		        (SELECT name FROM employees WHERE emp_no = b.writer) AS empName,
+		        (SELECT img FROM employees WHERE emp_no = b.writer) AS profileImg,
+		        b.reg_date
+		    FROM 
+		        bods b
+		    WHERE 
+		        b.board_no = 1
+		    ORDER BY 
+		        b.reg_date DESC
+		) 
+		<![CDATA[
+			WHERE ROWNUM <= 5
+		]]>
+	</select>
+	
+	<select id="selectAppList" parameterType="int" resultType="HomeVO">
+		SELECT * FROM (
+		    SELECT 
+		        ea_no,
+		        title AS appTitle,
+		        status AS appStatus,
+		        reg_date AS appDate
+		    FROM 
+		        approvals
+		    WHERE 
+		        emp_no = #{empNo}
+		    ORDER BY 
+		        reg_date ASC
+		) 
+		<![CDATA[
+			WHERE ROWNUM <= 5
+		]]>
+	</select>
+
+</mapper>

@@ -2,6 +2,36 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
+<style>
+    .status-btn {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        margin-right: 10px;
+        border-radius: 8px; /* 버튼을 둥글게 */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .app-title {
+        display: flex;
+        align-items: center;
+    }
+
+    .card-body {
+        align-items: center; /* 수직 정렬 */
+        margin-bottom: 10px;
+    }
+
+    .ms-auto {
+        margin-left: auto;
+        text-align: right;
+    }
+</style>
+	
 	<div class="container-fluid">
 		<div class="row">
 			<!-- Column -->
@@ -48,75 +78,32 @@
 		</div>
 		<div class="row">
 			<div class="col-md-6">
+				<!-- 공지사항 -->
 				<div class="card">
 					<div class="card-body">
 						<h4 class="card-title">공지사항</h4>
 					</div>
-					
 					<div class="comment-widgets scrollable">
-						<div class="d-flex flex-row comment-row mt-0">
+						<div th:each="notice : ${notices}"
+							class="d-flex flex-row comment-row mt-0"
+							th:onclick="|location.href='@{/board/bodsInfo(postNo=${notice.postNo})}'|">
 							<div class="p-2">
-								<img src="" alt="user" width="50" class="rounded-circle" />
+								<img
+									th:src="${notice.profileImg != null ? '/imgs/' + notice.profileImg : '/assets/images/users/default.png'}"
+									alt="user" width="50" class="rounded-circle" />
 							</div>
 							<div class="comment-text w-100">
-								<h6 class="font-medium">James Anderson</h6>
-								<span class="mb-3 d-block">Lorem Ipsum is simply dummy
-									text of the printing and type setting industry. </span>
+								<h6 class="font-medium" th:text="${notice.empName}"></h6>
+								<span class="mb-3 d-block" th:text="${notice.title}"></span>
 								<div class="comment-footer">
-									<span class="text-muted float-end">April 14, 2021</span>
-									<button type="button" class="btn btn-cyan btn-sm text-white">
-										Edit</button>
-									<button type="button" class="btn btn-success btn-sm text-white">
-										Publish</button>
-									<button type="button" class="btn btn-danger btn-sm text-white">
-										Delete</button>
-								</div>
-							</div>
-						</div>
-						
-						<div class="d-flex flex-row comment-row">
-							<div class="p-2">
-								<img src="" alt="user" width="50"
-									class="rounded-circle" />
-							</div>
-							<div class="comment-text active w-100">
-								<h6 class="font-medium">Michael Jorden</h6>
-								<span class="mb-3 d-block">Lorem Ipsum is simply dummy
-									text of the printing and type setting industry. </span>
-								<div class="comment-footer">
-									<span class="text-muted float-end">May 10, 2021</span>
-									<button type="button" class="btn btn-cyan btn-sm text-white">
-										Edit</button>
-									<button type="button" class="btn btn-success btn-sm text-white">
-										Publish</button>
-									<button type="button" class="btn btn-danger btn-sm text-white">
-										Delete</button>
-								</div>
-							</div>
-						</div>
-						<!-- Comment Row -->
-						<div class="d-flex flex-row comment-row">
-							<div class="p-2">
-								<img src="" alt="user" width="50"
-									class="rounded-circle" />
-							</div>
-							<div class="comment-text w-100">
-								<h6 class="font-medium">Johnathan Doeting</h6>
-								<span class="mb-3 d-block">Lorem Ipsum is simply dummy
-									text of the printing and type setting industry. </span>
-								<div class="comment-footer">
-									<span class="text-muted float-end">August 1, 2021</span>
-									<button type="button" class="btn btn-cyan btn-sm text-white">
-										Edit</button>
-									<button type="button" class="btn btn-success btn-sm text-white">
-										Publish</button>
-									<button type="button" class="btn btn-danger btn-sm text-white">
-										Delete</button>
+									<span class="text-muted float-end"
+										th:text="${#dates.format(notice.regDate, 'yyyy년 MM월 dd일')}"></span>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
+				
 				<!-- Card -->
 				<div class="card">
 					<div class="card-body">
@@ -137,21 +124,17 @@
 									</div>
 									<ul class="list-style-none assignedto">
 										<li class="assignee"><img class="rounded-circle"
-											width="40" src="" alt="user"
-											data-toggle="tooltip" data-placement="top" title=""
-											data-original-title="Steave" /></li>
+											width="40" src="" alt="user" data-toggle="tooltip"
+											data-placement="top" title="" data-original-title="Steave" /></li>
 										<li class="assignee"><img class="rounded-circle"
-											width="40" src="" alt="user"
-											data-toggle="tooltip" data-placement="top" title=""
-											data-original-title="Jessica" /></li>
+											width="40" src="" alt="user" data-toggle="tooltip"
+											data-placement="top" title="" data-original-title="Jessica" /></li>
 										<li class="assignee"><img class="rounded-circle"
-											width="40" src="" alt="user"
-											data-toggle="tooltip" data-placement="top" title=""
-											data-original-title="Priyanka" /></li>
+											width="40" src="" alt="user" data-toggle="tooltip"
+											data-placement="top" title="" data-original-title="Priyanka" /></li>
 										<li class="assignee"><img class="rounded-circle"
-											width="40" src="" alt="user"
-											data-toggle="tooltip" data-placement="top" title=""
-											data-original-title="Selina" /></li>
+											width="40" src="" alt="user" data-toggle="tooltip"
+											data-placement="top" title="" data-original-title="Selina" /></li>
 									</ul>
 								</li>
 								<li class="list-group-item todo-item" data-role="task">
@@ -179,13 +162,11 @@
 									</div>
 									<ul class="list-style-none assignedto">
 										<li class="assignee"><img class="rounded-circle"
-											width="40" src="" alt="user"
-											data-toggle="tooltip" data-placement="top" title=""
-											data-original-title="Priyanka" /></li>
+											width="40" src="" alt="user" data-toggle="tooltip"
+											data-placement="top" title="" data-original-title="Priyanka" /></li>
 										<li class="assignee"><img class="rounded-circle"
-											width="40" src="" alt="user"
-											data-toggle="tooltip" data-placement="top" title=""
-											data-original-title="Selina" /></li>
+											width="40" src="" alt="user" data-toggle="tooltip"
+											data-placement="top" title="" data-original-title="Selina" /></li>
 									</ul>
 								</li>
 								<li class="list-group-item todo-item" data-role="task">
@@ -213,13 +194,11 @@
 									</div>
 									<ul class="list-style-none assignedto">
 										<li class="assignee"><img class="rounded-circle"
-											width="40" src="" alt="user"
-											data-toggle="tooltip" data-placement="top" title=""
-											data-original-title="Priyanka" /></li>
+											width="40" src="" alt="user" data-toggle="tooltip"
+											data-placement="top" title="" data-original-title="Priyanka" /></li>
 										<li class="assignee"><img class="rounded-circle"
-											width="40" src="" alt="user"
-											data-toggle="tooltip" data-placement="top" title=""
-											data-original-title="Selina" /></li>
+											width="40" src="" alt="user" data-toggle="tooltip"
+											data-placement="top" title="" data-original-title="Selina" /></li>
 									</ul>
 								</li>
 							</ul>
@@ -227,7 +206,40 @@
 					</div>
 				</div>
 			</div>
+			
 			<div class="col-md-6">
+				<!-- 전자결재현황 -->
+				<div class="card">
+					<div class="card-body">
+						<h4 class="card-title mb-0">전자결재현황</h4>
+					</div>
+						<ul class="list-style-none">
+						    <li th:each="app : ${apps}" class="d-flex no-block card-body">
+						        <div th:switch="${app.appStatus}">
+						            <span th:case="'a1'" class="btn btn-secondary status-btn text-white">대기</span>
+						            <span th:case="'a2'" class="btn btn-success status-btn text-white">진행</span>
+						            <span th:case="'a3'" class="btn btn-primary status-btn text-white">승인</span>
+						            <span th:case="'a4'" class="btn btn-danger status-btn text-white">반려</span>
+						        </div>
+						        <div class="app-title">
+						            <a th:href="|@{/approvals/readApprInfo(eaNo=${app.eaNo})}|" class="mb-0 font-medium p-0" 
+						               th:text="${app.appTitle}">앱 제목</a>
+						        </div>
+						        <div class="ms-auto">
+						            <div class="text-right">
+						                <h5 class="text-muted mb-0" 
+						                    th:text="${#dates.format(app.appDate, 'yyyy년 MM월 dd일')}"></h5>
+						            </div>
+						        </div>
+						    </li>
+						
+						    <!-- 리스트가 비어 있을 경우 메시지 출력 -->
+						    <li th:if="${#lists.isEmpty(apps)}" class="text-center d-flex no-block card-body">
+						        전자결재내역이 없습니다
+						    </li>
+						</ul>
+				</div>
+				
 				<div class="card">
 					<div class="card-body">
 						<h4 class="card-title mb-0">Progress Box</h4>
@@ -284,79 +296,6 @@
 							</div>
 						</div>
 					</div>
-				</div>
-				<!-- card new -->
-				<div class="card">
-					<div class="card-body">
-						<h4 class="card-title mb-0">News Updates</h4>
-					</div>
-					<ul class="list-style-none">
-						<li class="d-flex no-block card-body"><i
-							class="mdi mdi-check-circle fs-4 w-30px mt-1"></i>
-							<div>
-								<a href="#" class="mb-0 font-medium p-0">Lorem ipsum dolor
-									sit amet, consectetur adipiscing elit.</a> <span class="text-muted">dolor
-									sit amet, consectetur adipiscing</span>
-							</div>
-							<div class="ms-auto">
-								<div class="tetx-right">
-									<h5 class="text-muted mb-0">20</h5>
-									<span class="text-muted font-16">Jan</span>
-								</div>
-							</div></li>
-						<li class="d-flex no-block card-body border-top"><i
-							class="mdi mdi-gift fs-4 w-30px mt-1"></i>
-							<div>
-								<a href="#" class="mb-0 font-medium p-0">Congratulation
-									Maruti, Happy Birthday</a> <span class="text-muted">many
-									many happy returns of the day</span>
-							</div>
-							<div class="ms-auto">
-								<div class="tetx-right">
-									<h5 class="text-muted mb-0">11</h5>
-									<span class="text-muted font-16">Jan</span>
-								</div>
-							</div></li>
-						<li class="d-flex no-block card-body border-top"><i
-							class="mdi mdi-plus fs-4 w-30px mt-1"></i>
-							<div>
-								<a href="#" class="mb-0 font-medium p-0">Maruti is a
-									Responsive Admin theme</a> <span class="text-muted">But
-									already everything was solved. It will ...</span>
-							</div>
-							<div class="ms-auto">
-								<div class="tetx-right">
-									<h5 class="text-muted mb-0">19</h5>
-									<span class="text-muted font-16">Jan</span>
-								</div>
-							</div></li>
-						<li class="d-flex no-block card-body border-top"><i
-							class="mdi mdi-leaf fs-4 w-30px mt-1"></i>
-							<div>
-								<a href="#" class="mb-0 font-medium p-0">Envato approved
-									Maruti Admin template</a> <span class="text-muted">i am very
-									happy to approved by TF</span>
-							</div>
-							<div class="ms-auto">
-								<div class="tetx-right">
-									<h5 class="text-muted mb-0">20</h5>
-									<span class="text-muted font-16">Jan</span>
-								</div>
-							</div></li>
-						<li class="d-flex no-block card-body border-top"><i
-							class="mdi mdi-comment-question-outline fs-4 w-30px mt-1"></i>
-							<div>
-								<a href="#" class="mb-0 font-medium p-0"> I am alwayse here
-									if you have any question</a> <span class="text-muted">we
-									glad that you choose our template</span>
-							</div>
-							<div class="ms-auto">
-								<div class="tetx-right">
-									<h5 class="text-muted mb-0">15</h5>
-									<span class="text-muted font-16">Jan</span>
-								</div>
-							</div></li>
-					</ul>
 				</div>
 			</div>
 		</div>

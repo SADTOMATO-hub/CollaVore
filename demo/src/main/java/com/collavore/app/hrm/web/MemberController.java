@@ -59,35 +59,7 @@ public class MemberController {
 		model.addAttribute("sidemenu", "member_sidebar");
 	}
 
-	// 로그인 페이지
-	@GetMapping("/member/login")
-	public String loginForm() {
-		return "member/login"; // 로그인 페이지로 이동
-	}
-
-	// 로그인 처리
-	@PostMapping("/member/login")
-	public String login(@RequestParam("email") String email, @RequestParam("password") String password, Model model,
-			HttpSession session) {
-
-		HrmVO user = memberService.findByEmail(email); // 이메일로 사용자 조회
-		if (user == null) {
-			// 이메일이 등록되지 않은 경우
-			model.addAttribute("loginError", "등록되지 않은 이메일입니다. 관리자에게 문의 해주세요.");
-			return "member/login"; // 로그인 화면으로 다시 이동
-		}
-
-		if (!password.equals(user.getPassword())) {
-			// 비밀번호가 틀린 경우
-			model.addAttribute("loginError", "비밀번호가 올바르지 않습니다.");
-			return "member/login"; // 로그인 화면으로 다시 이동
-		}
-
-		// 로그인 성공 시 세션에 사용자 정보 저장
-		session.setAttribute("userEmail", user.getEmail());
-		session.setAttribute("userEmpNo", user.getEmpNo()); // 사원 번호 저장
-		return "redirect:/main"; // 로그인 후 메인 페이지로 리다이렉트
-	}
+	
 
 	// 로그인 후 메인 페이지로 이동
 	@GetMapping("/main")
@@ -107,13 +79,6 @@ public class MemberController {
 			return "redirect:/login";
 		}
 		return "redirect:/memberInfo?empNo=" + empNo;
-	}
-
-	// 로그아웃 처리
-	@GetMapping("/logout")
-	public String logout(HttpSession session) {
-		session.invalidate(); // 세션 무효화
-		return "redirect:/login"; // 로그아웃 후 로그인 페이지로 리다이렉트
 	}
 
 	// 사원 정보 조회
