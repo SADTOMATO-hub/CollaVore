@@ -42,16 +42,10 @@
 		MAX(a.alarm_yoil) AS alarm_yoil,
 		MAX(a.alarm_day) AS alarm_day,
 		MAX(a.alarm_time) AS alarm_time
-		FROM
-		schs s
-		LEFT JOIN
-		cals c ON s.cal_no =
-		c.cal_no
-		LEFT JOIN
-		schalarms a ON s.sch_no = a.sch_no
-		WHERE
-		s.sch_no =
-		#{schNo}
+		FROM schs s
+		LEFT JOIN cals c ON s.cal_no = c.cal_no
+		LEFT JOIN schalarms a ON s.sch_no = a.sch_no
+		WHERE s.sch_no = #{schNo}
 		GROUP BY
 		s.sch_no, s.title, s.start_date, s.end_date,
 		s.is_alarm, s.cal_no, c.name,
@@ -141,7 +135,8 @@
 		UPDATE schs
 		SET title = #{title},
 		start_date = #{startDate},
-		end_date = #{endDate},
+		end_date =
+		#{endDate},
 		cal_no = #{calNo},   <!-- cal_no가 올바르게 설정되었는지 확인 -->
 		is_alarm = #{isAlarm}
 		WHERE sch_no = #{schNo}
@@ -152,45 +147,47 @@
 		SET
 		alarm_type = #{alarmType},
 		alarm_yoil = #{alarmYoil},
-		alarm_day = #{alarmDay},
+		alarm_day =
+		#{alarmDay},
 		alarm_time = #{alarmTime}
 		WHERE sch_no = #{schNo}
 	</update>
-	
-	
-<!-- 새 알림 정보 삽입 -->
-<insert id="insertAlarmInfo" parameterType="SchsVO">
-    <!-- sa_no에 새로운 값을 설정 -->
-    <selectKey keyProperty="saNo" resultType="int" order="BEFORE">
-        SELECT NVL(MAX(sa_no), 0) + 1 FROM schalarms
-    </selectKey>
+	<!-- 새 알림 정보 삽입 -->
+	<insert id="insertAlarmInfo" parameterType="SchsVO">
+		<!-- sa_no에 새로운 값을 설정 -->
+		<selectKey keyProperty="saNo" resultType="int"
+			order="BEFORE">
+			SELECT NVL(MAX(sa_no), 0) + 1 FROM schalarms
+		</selectKey>
 
-    INSERT INTO schalarms (
-        sa_no,
-        sch_no,
-        alarm_type,
-        alarm_yoil,
-        alarm_day,
-        alarm_time
-    )
-    VALUES (
-        #{saNo},
-        #{schNo},
-        #{alarmType},
-        #{alarmYoil},
-        #{alarmDay},
-        #{alarmTime}
-    )
-</insert>
+		INSERT INTO schalarms (
+		sa_no,
+		sch_no,
+		alarm_type,
+		alarm_yoil,
+		alarm_day,
+		alarm_time
+		)
+		VALUES (
+		#{saNo},
+		#{schNo},
+		#{alarmType},
+		#{alarmYoil},
+		#{alarmDay},
+		#{alarmTime}
+		)
+	</insert>
 
 	<!-- 알림 정보 삭제 -->
 	<delete id="deleteAlarmInfo" parameterType="int">
-		DELETE FROM schalarms WHERE sch_no = #{schNo}
+		DELETE FROM schalarms
+		WHERE sch_no = #{schNo}
 	</delete>
 
 	<!-- 특정 sch_no의 알림 존재 여부 확인 -->
 	<select id="checkAlarm" parameterType="int" resultType="int">
-		SELECT COUNT(*) FROM schalarms WHERE sch_no = #{schNo}
+		SELECT
+		COUNT(*) FROM schalarms WHERE sch_no = #{schNo}
 	</select>
 
 

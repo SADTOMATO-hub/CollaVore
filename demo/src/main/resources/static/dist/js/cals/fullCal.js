@@ -263,21 +263,44 @@ document.addEventListener('DOMContentLoaded', function() {
 									};
 
 									this.onclick = function() {
+										let alarmTime = null;
+										const alarmType = alarmTypeInput.value;
+
+										// alarmType에 따른 alarmTime 설정
+										if (alarmType === 'd1') {
+											alarmTime = document.getElementById('viewDailyRepeat').value;
+										} else if (alarmType === 'd2') {
+											alarmTime = document.getElementById('viewWeeklyRepeat').value;
+										} else if (alarmType === 'd3') {
+											alarmTime = document.getElementById('viewMonthlyHour').value;
+										}
+
+										// 요일 체크박스 처리
+										const weeklyDaysArray = [];
+										document.querySelectorAll('.weekly-checkbox').forEach((checkbox) => {
+											if (checkbox.checked) {
+												weeklyDaysArray.push(checkbox.value);
+											}
+										});
+										const weeklyDays = weeklyDaysArray.length > 0 ? weeklyDaysArray.join(',') : null;
+
 										const updatedData = {
 											schNo: eventId,
 											title: document.getElementById('viewTitle').value,
 											startDate: document.getElementById('viewStartDate').value + 'T' + document.getElementById('viewStartTime').value,
 											endDate: document.getElementById('viewEndDate').value + 'T' + document.getElementById('viewEndTime').value,
-											calNo: eventData.calNo, // cal_no 추가
-											alarmType: alarmTypeInput.value,
-											dailyRepeat: document.getElementById('viewDailyRepeat').value,
-											weeklyDays: Array.from(document.querySelectorAll('.weekly-checkbox:checked')).map(cb => cb.value).join(','),
-											weeklyRepeat: document.getElementById('viewWeeklyRepeat').value,
-											monthlyDay: document.getElementById('viewMonthlyDay').value,
-											monthlyHour: document.getElementById('viewMonthlyHour').value,
+											calNo: eventData.calNo,
+											alarmType: alarmType,
+											alarmYoil: weeklyDays, // d2일 때 요일이 들어가도록
+											alarmDay: alarmType === 'd3' ? document.getElementById('viewMonthlyDay').value : null, // d3일 때만 날짜가 들어가도록
+											alarmTime: alarmTime,
 											isAlarm: alarmCheckbox.checked ? 'f1' : 'f2'
 										};
-										console.log(updatedData);
+
+										console.log("Updated Data:", updatedData); // 여기서 `monthlyDay`와 `weeklyDays` 값을 확인
+
+
+
 
 										// 서버에 업데이트된 데이터 전송
 										fetch("/sch/schUpdate", {
