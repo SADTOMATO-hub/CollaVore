@@ -196,5 +196,9 @@
 		)
 	</insert>
 
-
+	<select id="selectBoardName" resultType="String">
+		SELECT name
+		FROM bodscfig
+		WHERE board_no = #{boardNo}
+	</select>
 </mapper>

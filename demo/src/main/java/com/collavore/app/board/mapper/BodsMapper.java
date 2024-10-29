@@ -53,5 +53,7 @@ public interface BodsMapper {
 	 * 
 	 * // 게시판 전체 조회 public List<BodsVO> getlist();
 	 */
-
+	
+	// 게시판 이름 조회
+	public String selectBoardName(int boardNo);
 }

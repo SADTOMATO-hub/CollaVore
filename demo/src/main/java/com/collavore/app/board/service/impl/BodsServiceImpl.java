@@ -151,5 +151,14 @@ public class BodsServiceImpl implements BodsService {
 		int result = bodsMapper.insertBodsCfigInfo(bodsCfigVO);
 		return result == 1 ? bodsCfigVO.getBoardNo() : -1;
 	}
+
+	
+	// 게시판이름 조회
+	@Override
+	public String boardNameSearch(int boardNo) {
+		return bodsMapper.selectBoardName(boardNo);
+	}
+	
+	
 	
 }

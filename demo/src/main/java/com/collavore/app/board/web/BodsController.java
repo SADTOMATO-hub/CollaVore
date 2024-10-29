@@ -20,6 +20,8 @@ import com.collavore.app.board.service.BodsVO;
 import com.collavore.app.board.service.impl.BodsServiceImpl;
 import com.collavore.app.common.service.PageDTO;
 
+import jakarta.servlet.http.HttpSession;
+
 @Controller
 public class BodsController {
 	private static final String Intger = null;
@@ -40,6 +42,9 @@ public class BodsController {
 	@GetMapping("/board/bodsList") // 인터넷창에 치는 주소
 	public String bodsList(BodsVO bodsVO, Model model) {
 		String page = bodsVO.getPage() == null ? "1" : bodsVO.getPage();
+		
+		String boardName = bodsService.boardNameSearch(bodsVO.getBoardNo());
+		model.addAttribute("boardName", boardName);
 
 		List<BodsVO> list = bodsService.bodsList(bodsVO);
 		model.addAttribute("bodsList", list);
@@ -59,7 +64,9 @@ public class BodsController {
 	// 1) 객체 : 커맨드 객체
 	// 2) 단일값 : @ReqeustParam
 	@GetMapping("/board/bodsInfo")
-	public String bodsInfo(BodsVO bodsVO, Model model) {
+	public String bodsInfo(BodsVO bodsVO, Model model, HttpSession session) {
+		Integer empNo = (Integer) session.getAttribute("userEmpNo");
+		model.addAttribute("empNo", empNo);
 		BodsVO findVO = bodsService.bodsInfo(bodsVO);
 		model.addAttribute("bods", findVO);
 		return "board/bodsInfo";
@@ -67,7 +74,13 @@ public class BodsController {
 
 	// 등록 - 페이지 : URI - boardInsert / RETURN - board/boardInsert
 	@GetMapping("/board/bodsInsert")
-	public String boardInsertForm(BodsVO bodsVO) {
+	public String boardInsertForm(BodsVO bodsVO, Model model, HttpSession session) {
+		Integer empNo = (Integer) session.getAttribute("userEmpNo");
+		model.addAttribute("empNo", empNo);
+		
+		String boardName = bodsService.boardNameSearch(bodsVO.getBoardNo());
+		model.addAttribute("boardName", boardName);
+		
 		return "/board/bodsInsert";
 	}
 

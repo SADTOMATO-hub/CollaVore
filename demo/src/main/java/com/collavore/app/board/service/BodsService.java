@@ -59,5 +59,8 @@ public interface BodsService {
 
 	// 전체조회
 	// public List<BodsVO> bodsAll();
+	
+	// 게시판이름 조회
+	public String boardNameSearch(int boardNo);
 
 }
