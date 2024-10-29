@@ -41,7 +41,10 @@ public interface BodsMapper {
 	public BodsComtsVO selectBodsComtsInfo(BodsComtsVO bodsComtsVO);
 	
 	// 게시판 전체조회 페이지
-	 public List<BodsCfigVO> selectgbodsCfig(BodsCfigVO bodsCfigVO);
+	public List<BodsCfigVO> selectgbodsCfig(BodsCfigVO bodsCfigVO);
+	
+	// 게시판 등록 페이지
+	public int insertBodsCfigInfo(BodsCfigVO bodsCfigVO);
 
 	/*
 	 * // 게시판 수정 public int UpdateBodsInfo();
