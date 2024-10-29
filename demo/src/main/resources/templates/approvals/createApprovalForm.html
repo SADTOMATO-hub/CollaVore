@@ -15,74 +15,69 @@
 					<div class="card">
 						<form action="createAppr" method="post" class="form-horizontal"
 							name="insertForm">
-								<!-- 세큐리티 cors를 방지하는 기능  -->
-						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/> 
+							<!-- 세큐리티 cors를 방지하는 기능  -->
+							<input type="hidden" name="${_csrf.parameterName}"
+								value="${_csrf.token}" />
 							<div class="form-group row">
-									<label for="approvalTitle"> <input type="text"
-										id="approvalTitle" name="title" required
-										placeholder="전자결재 제목을 입력해주세요">
-									</label>
-									<div class="table-responsive">
-										<table id="apprerTable"
-											class="table table-striped table-bordered">
-											<thead>
-												<tr>
-													<td></td>
-													<!-- ------------------- -->
-													<td><button type="button" class="modalBtn"
-															data-seq="1" data-bs-target="#approversSelect"
-															data-bs-toggle="modal">결재자 선택</button></td>
-													<!-- ------------------- -->
-													<td><button type="button" class="modalBtn"
-															data-seq="2" data-bs-target="#approversSelect"
-															data-bs-toggle="modal">결재자 선택</button></td>
-													<!-- ------------------- -->
-													<td><button type="button" class="modalBtn"
-															data-seq="3" data-bs-target="#approversSelect"
-															data-bs-toggle="modal">결재자 선택</button></td>
-													<!-- ------------------- -->
-													<td><button type="button" class="modalBtn"
-															data-seq="4" data-bs-target="#approversSelect"
-															data-bs-toggle="modal">결재자 선택</button></td>
-												</tr>
-											</thead>
-											<tbody>
-												<tr>
-													<td>기안자 이름</td>
-													<td><span></span></td>
-													<td><span></span></td>
-													<td><span></span></td>
-													<td><span></span></td>
-												</tr>
-												<tr>
-													<td>기안자 직함</td>
-													<td><span></span></td>
-													<td><span></span></td>
-													<td><span></span></td>
-													<td><span></span></td>
-												</tr>
-											</tbody>
-										</table>
-										<input type="hidden" name="approvers[0].empNo" value=""> <input
-											type="hidden" name="approvers[1].empNo" value=""> <input
-											type="hidden" name="approvers[2].empNo" value=""> <input
-											type="hidden" name="approvers[3].empNo" value="">
-										<!--  
-										<input type="hidden" name="status" value=""> 
-										<input type="hidden" name="status" value=""> 
-										<input type="hidden" name="status" value="">
-										<input type="hidden" name="status" value="">
-										
-										<input type="hidden" name="procDate" value=""> 
-										<input type="hidden" name="procDate" value=""> 
-										<input type="hidden" name="procDate" value="">
-										<input type="hidden" name="procDate" value="">
-									-->
-										<input type="hidden" name="approvers[0].sort" value="1"> 
-										<input type="hidden" name="approvers[1].sort" value="2"> 
-										<input type="hidden" name="approvers[2].sort" value="3">
-										<input type="hidden" name="approvers[3].sort" value="4">
-									</div>
+								<label for="approvalTitle"> <input type="text"
+									id="approvalTitle" name="title" required
+									placeholder="전자결재 제목을 입력해주세요">
+								</label>
+								<div class="table-responsive">
+									<table id="apprerTable"
+										class="table table-striped table-bordered">
+										<thead>
+											<tr>
+												<td></td>
+												<!-- ------------------- -->
+												<td><button type="button" class="modalBtn" data-seq="1"
+														data-bs-target="#approversSelect" data-bs-toggle="modal">결재자
+														선택</button></td>
+												<!-- ------------------- -->
+												<td><button type="button" class="modalBtn" data-seq="2"
+														data-bs-target="#approversSelect" data-bs-toggle="modal">결재자
+														선택</button></td>
+												<!-- ------------------- -->
+												<td><button type="button" class="modalBtn" data-seq="3"
+														data-bs-target="#approversSelect" data-bs-toggle="modal">결재자
+														선택</button></td>
+												<!-- ------------------- -->
+												<td><button type="button" class="modalBtn" data-seq="4"
+														data-bs-target="#approversSelect" data-bs-toggle="modal">결재자
+														선택</button></td>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>이름</td>
+												<td><span></span></td>
+												<td><span></span></td>
+												<td><span></span></td>
+												<td><span></span></td>
+											</tr>
+											<tr>
+												<td>직함</td>
+												<td><span></span></td>
+												<td><span></span></td>
+												<td><span></span></td>
+												<td><span></span></td>
+											</tr>
+										</tbody>
+									</table>
+
+									<input type="hidden" name="approvers[0].empNo" value="">
+									<input type="hidden" name="approvers[1].empNo" value="">
+									<input type="hidden" name="approvers[2].empNo" value="">
+									<input type="hidden" name="approvers[3].empNo" value="">
+
+									<input type="hidden" name="approvers[0].sort" value="1">
+									<input type="hidden" name="approvers[1].sort" value="2">
+									<input type="hidden" name="approvers[2].sort" value="3">
+									<input type="hidden" name="approvers[3].sort" value="4">
+
+									<input type="hidden" name="drafterEmpNo" value="">
+
+								</div>
 								<div class="card-body">
 									<h4 class="card-title">전자결재 기안 페이지</h4>
 									<hr>
@@ -143,8 +138,8 @@
 						<div class="mb-3">
 							<select id="selectApprovers" class="form-select">
 								<option selected disabled>==결재자 선택==</option>
-								<option th:each="appver : ${employeesInfo}"
-									th:value="${appver.empNo}">[[${appver.empName}]]/[[${appver.info}]]</option>
+								<option th:each="appverInfo : ${employeesInfo}"
+									th:value="${appverInfo.empNo}">[[${appverInfo.empName}]]/[[${appverInfo.posiName}]]</option>
 							</select>
 						</div>
 						<button type="button" class="btn btn-primary" id="modalSubmit">결재자
@@ -163,9 +158,10 @@
 	<!-- ------------------------------------- -->
 	<!-- ------------------------------------- -->
 </body>
-<script>	
+<script>
+	const userEmpNo = '[[${session.userEmpNo}]]';
 	// SmartEditor 참조를 위한 배열
-	let oEditors = [];
+	var oEditors = [];
 	function smartEditor() {
 		console.log("Naver SmartEditor");
 		nhn.husky.EZCreator.createInIFrame({
@@ -184,9 +180,6 @@
 						function(event) {
 							var selectedVal = $(this).val();
 							var eatNo = $("#eatNo").val(selectedVal);
-							//console.log(selectedVal + '번 호출');
-							//console.log(eatNo)
-							//	if (selectedVal != null) {
 							$.ajax({
 								url : `/approvals/temp?eatNo=` + selectedVal,
 								type : 'GET',
@@ -201,9 +194,6 @@
 									alert('데이터 호출 실패: ' + error);
 								}
 							});
-							//	} else {
-							// oEditors.getById["content"].exec("SET_IR", [ "" ]); //내용초기화
-							//	}
 						});
 				// 버튼 클릭 시 폼 제출
 				$("#createButton").on("click", function(event) {
@@ -266,24 +256,22 @@ $(document).ready(
 			});
 		});
 	//
-
-
 //기안버튼을 누르면 form의 데이터를 전부 넘김
-	function submitPost(event) {	
+	function submitPost(event) {
+	var drafterEmpNo = $('input[name=drafterEmpNo]').val(userEmpNo);	
 		event.preventDefault(); // 폼 제출 방지
 		oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
 		if ( 	content  == null
 				|| content == '' 
 				|| content == '&nbsp;'
 				|| content == '<br>' 
-				|| content == '<p>&nbsp;</p>'
-				|| content == '<p></p>'){
+				|| content == '<p>&nbsp;</p>'){
 			alert("템플릿을 정해주세요.");
 			oEditors.getById["content"].exec("FOCUS");
 			return;
-		} else {
+		}else{
 			console.log(content);
-			insertForm.submit(); // 폼 제출
+			insertForm.submit(); // 폼 제출			
 		}
 	}
 //end of 기안버튼을 누르면 form의 데이터를 전부 넘김

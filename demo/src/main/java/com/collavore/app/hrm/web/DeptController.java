@@ -42,64 +42,114 @@ public class DeptController {
 		model.addAttribute("sidemenu", "member_sidebar");
 	}
 
-	// 관리자 페이지 부서 파트 메인
-	@GetMapping("deptManager")
-	public String deptManager() {
-		return "member/deptManager";
-	}
-
-	// 부서 정보 저장 처리
-	@PostMapping("/dept/save")
+	
+	// 부서 등록
+	@PostMapping("/dept/register")
 	@ResponseBody
-	public String saveDepts(@RequestBody List<HrmVO> deptList) throws Exception {
-		logger.info("Received data: {}", deptList); // 받은 데이터를 로깅
-
-		int result = 0;
-
-		for (HrmVO hrmVO : deptList) {
-			if (hrmVO.getDeptNo() != null) {
-				// 기존 부서 정보 업데이트
-				logger.info("Updating department: {}", hrmVO);
-				result += deptService.updateDept(hrmVO);
-			} else {
-				// 새로운 부서 정보 등록
-				logger.info("Inserting new department: {}", hrmVO);
-				result += deptService.insertDept(hrmVO);
-			}
-		}
-
-		// 결과 확인
-		logger.info("Save operation result: {}", result);
-		return result > 0 ? "success" : "failure";
-	}
-
-	// 조직 삭제 처리
-	@DeleteMapping("/dept/delete/{deptNo}")
-	@ResponseBody
-	public String deleteDepts(@PathVariable Integer deptNo) throws Exception {
-		logger.info("Deleting department with deptNo: {}", deptNo);
-
+	public String registerDept(@RequestBody HrmVO dept) {
 		try {
-			int result = deptService.deleteDept(deptNo);
-			if (result == 1) {
-				logger.info("Successfully deleted department with deptNo: {}", deptNo);
-				return "success";
-			} else {
-				logger.warn("Failed to delete department with deptNo: {}", deptNo);
-				return "failure";
-			}
+			logger.info("Registering new department: {}", dept);
+			int result = deptService.insertDept(dept);
+			return result > 0 ? "success" : "failure";
 		} catch (Exception e) {
-			logger.error("Error occurred while deleting department with deptNo: {}", deptNo, e);
+			logger.error("Error registering department: {}", dept, e);
 			return "error";
 		}
 	}
 
-	// 기존 조직 불러오기
-	@GetMapping("/dept/getExistingDepts")
+	// 부서 수정 (개별)
+	@PostMapping("/dept/update")
 	@ResponseBody
-	public List<HrmVO> getExistingDepts() {
-		logger.info("Fetching existing departments");
-		return deptService.getExistingDepts();
+	public String updateDept(@RequestBody HrmVO dept) {
+		try {
+			logger.info("Updating department: {}", dept);
+			int result = deptService.updateDept(dept);
+			return result > 0 ? "success" : "failure";
+		} catch (Exception e) {
+			logger.error("Error updating department: {}", dept, e);
+			return "error";
+		}
+	}
+
+	@PostMapping("/dept/save")
+	@ResponseBody
+	public String saveDepts(@RequestBody List<HrmVO> deptList) {
+		logger.info("Received modified departments: {}", deptList); // 데이터 로그 확인
+
+		try {
+			int result = 0;
+			for (HrmVO hrmVO : deptList) {
+				if (hrmVO.getDeptNo() != null) {
+					logger.info("Updating department: {}", hrmVO);
+					result += deptService.updateDept(hrmVO);
+				} else {
+					logger.info("Inserting new department: {}", hrmVO);
+					result += deptService.insertDept(hrmVO);
+				}
+			}
+			logger.info("Save operation result: {}", result);
+			return result > 0 ? "success" : "failure";
+		} catch (Exception e) {
+			logger.error("Error during department save operation", e);
+			return "error";
+		}
+	}
+
+	// 부서별 사원 목록 조회
+	@GetMapping("/employees/byDept/{deptNo}")
+	@ResponseBody
+	public List<HrmVO> getEmployeesByDept(@PathVariable Integer deptNo) {
+	    return deptService.getEmployeesByDept(deptNo);
+	}
+
+	// 부서장 업데이트
+	@PostMapping("/departments/updateManager")
+	@ResponseBody
+	public String updateManager(@RequestBody Map<String, Integer> payload) {
+	    Integer deptNo = payload.get("deptNo");
+	    Integer empNo = payload.get("empNo");
+	    
+	    int result = deptService.updateManager(deptNo, empNo);
+	    return result > 0 ? "success" : "failure";
+	}
+	
+	
+	// 부서 삭제
+	@DeleteMapping("/dept/delete/{deptNo}")
+	@ResponseBody
+	public String deleteDepts(@PathVariable Integer deptNo) {
+	    logger.info("Attempting to delete department with deptNo: {}", deptNo);
+
+	    // 부서에 사원이 있는지 확인하여 삭제 불가 메시지 반환
+	    if (deptService.hasEmployeesInDept(deptNo)) {
+	        logger.warn("Cannot delete department {}: Employees are assigned to this department", deptNo);
+	        return "cannot_delete"; // 사원이 있으면 삭제 불가 응답
+	    }
+
+	    try {
+	        int result = deptService.deleteDept(deptNo);
+	        if (result > 0) {
+	            logger.info("Successfully deleted department with deptNo: {}", deptNo);
+	            return "success";
+	        } else {
+	            logger.warn("Failed to delete department with deptNo: {}", deptNo);
+	            return "failure";
+	        }
+	    } catch (Exception e) {
+	        logger.error("Error occurred while deleting department with deptNo: {}", deptNo, e);
+	        return "error";
+	    }
+	}
+
+	// 기존 조직 불러오기
+	@GetMapping("/deptManager")
+	public String deptManager(Model model) {
+		logger.info("Fetching existing departments for deptManager page");
+
+		List<HrmVO> deptList = deptService.getExistingDepts();
+		model.addAttribute("deptList", deptList);
+
+		return "member/deptManager"; // deptManager.html 템플릿 반환
 	}
 
 	// 조직도 페이지 이동

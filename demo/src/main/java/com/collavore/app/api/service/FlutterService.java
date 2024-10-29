@@ -55,10 +55,16 @@ public interface FlutterService {
 	// 전자결재문서상세보기
 	public FlutterApprVO apprInfo(int empNo, int eaNo);
 	
+	// 전자결재문서 결재자보기
+	public List<FlutterApprVO> apprList(int empNo, int eaNo);
+	
 	// 전자결재문서승인,반려처리
-	public int apprProc(FlutterVO flutterVO);
+	public int apprProc(FlutterApprVO flutterApprVO);
+	
+	// 회원정보조회
+	public FlutterVO myEmpInfo(int empNo);
 	
 	// 회원정보수정
-	public FlutterVO memberModify(FlutterVO flutterVO);
+	public int memberModify(FlutterVO flutterVO);
 
 }

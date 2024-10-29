@@ -49,11 +49,18 @@ public class ProjectVO {
 	private Integer level ;
 	
 	// 프로젝트 상세 업무 코멘트관리
-		private Integer pdwcNo;
-		private Integer writerNo;
+	private Integer pdwcNo;
+	private Integer writerNo;
 
+	// 부서정보
+	private Integer deptNo;
+	
+	// 사원정보
+	private Integer empNo;
+	private String empName;
 	
 	
+	private String jobName;
 	private String table;
 	
 }

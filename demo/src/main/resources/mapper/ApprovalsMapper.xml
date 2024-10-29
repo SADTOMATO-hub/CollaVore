@@ -5,7 +5,9 @@
 
 	<!-- 템플릿 리스트 -->
 	<select id="tempList" resultType="ApprovalstempVO">
-		SELECT *
+		SELECT title
+			  ,content
+			  ,regDate
 		FROM approvalstemp
 		ORDER BY eat_no
 	</select>
@@ -30,13 +32,11 @@
 		eat_no
 		,title
 		,content
-		.reg_date
 		)
 		VALUES (
 		#{eatNo}
 		,#{title}
 		,#{content}
-		,#{regDate}
 		)
 	</insert>
 	<!-- -->
@@ -59,18 +59,8 @@
 	</update>
 	<!-- -->
 
-	<!-- 결재자 이름을 검색하면 그 대상의 정보를 호출하는 기능 -->
-	<select id="" resultType="HrmVO" parameterType="String">
-		SELECT emp_no
-		,d.name
-		,e.info
-		FROM employees
-		WHERE name = #{empName}
-	</select>
-	<!-- -->
-
 	<!-- 전자결재를 생성하는 기능 -->
-	<!-- approvals테이블에 넣기 -->
+		<!-- approvals테이블에 넣기 -->
 	<insert id="createApprsEaTable" parameterType="ApprovalsVO">
 		<selectKey keyProperty="eaNo" resultType="Integer"
 			order="BEFORE">
@@ -83,6 +73,7 @@
 		,eat_no
 		,approvals.reg_date
 		,content
+		,emp_no
 		)
 		VALUES (
 		#{eaNo}
@@ -90,11 +81,12 @@
 		,#{eatNo}
 		,sysdate
 		,#{content}
+		,#{drafterEmpNo}
 		)
 	</insert>
 	<!-- -->
 
-	<!-- approvers테이블에 넣기 -->
+		<!-- approvers테이블에 넣기 -->
 	<insert id="createApprsEarTable" parameterType="ApprovalsVO">
 		<selectKey keyProperty="earNo" resultType="Integer"
 			order="BEFORE">
@@ -127,55 +119,67 @@
 		SELECT * FROM dual
 	</insert>
 	<!-- -->
+	
+	<!-- 나의 진행 중인 전자결재 목록 조회 -->
+	<select id="myApprList" parameterType="ApprovalsVO" resultType="ApprovalsVO"></select>
 
-	<!-- 전자결재 정보 조회 -->
+	<!-- 전자결재 상세 조회 -->
 	<select id="readApproval" parameterType="Integer"
 		resultType="ApprovalsVO">
-		SELECT a.title
-		,a.content
-		,a.reg_date
-		,a.comp_date
-		,a.emp_no as "drafterEmpNo"
-		,e.name as "drafterName"
-		,a.status
-		FROM approvals a LEFT JOIN employees e
-		ON a.emp_no = e.emp_no
-		WHERE a.ea_no = #{eaNo}
-	</select>
-	<!-- -->
-
-	<!-- 결재자 조회 -->
-	<select id="readApprovers" parameterType="Integer"
-		resultType="ApprovalsVO">
 		SELECT
-		r.status as "approverStatus"
-		,e.name as "approverName"
-		,e.emp_no as "approverEmpNo"
-		,e.info as "jobTitle"
-		,r.sort
-		FROM
-		approvals a JOIN approvers r
-		ON a.ea_no = r.ea_no
-		JOIN employees e
-		ON r.emp_no = e.emp_no
+			   a.title
+			  ,a.content
+			  ,a.reg_date
+			  ,a.comp_date
+			  ,a.emp_no as "drafterEmpNo"
+			  ,e.name as "drafterName"
+			  ,a.status as "approverStatus"
+		FROM approvals a LEFT JOIN employees e
+			ON a.emp_no = e.emp_no
 		WHERE a.ea_no = #{eaNo}
-		ORDER BY r.sort
 	</select>
 	<!-- -->
 
-
-	<!-- 인사 테이블 조회 -->
-	<select id="employees" resultType="HrmVO">
-		SELECT *
-		FORM employees
+	<!-- 결재자 상세 조회 -->
+	<select id="readApprovers" parameterType="Integer"
+		resultType="map">
+		SELECT
+				r.status as "approverStatus"
+			   ,e.name as "approverName"
+			   ,e.emp_no as "approverEmpNo"
+			   ,e.info as "jobTitle"
+			   ,r.sort
+		FROM
+			approvals a JOIN approvers r
+		ON a.ea_no = r.ea_no
+			JOIN employees e
+		ON r.emp_no = e.emp_no
+			WHERE a.ea_no = #{eaNo}
+			ORDER BY r.sort
 	</select>
 	<!-- -->
 
 	<!-- 전자결재 삭제 -->
-	<select id="deleteApproval" statementType="CALLABLE">
-	  {call DELETE_EANO(#{eaNo})}
+	<select id="deleteApproval" statementType="CALLABLE" resultType="Integer">
+	  {call DELETE_EANO(#{eaNo}, #{resultCode, mode=OUT, jdbcType=INTEGER})}
 	</select>
 	<!-- -->
 
+	<!-- 인사 테이블 조회 -->
+	<select id="employees" resultType="HrmVO">
+		SELECT 
+				p.posi_no
+       		   ,e.name as "empName"
+       		   ,p.name as "posiName"
+       	       ,e.emp_no
+               ,d.name as "deptName"
+		FROM 
+			employees e JOIN positions p
+		ON e.posi_no = p.posi_no 
+			JOIN departments d
+		ON e.dept_no = d.dept_no
+		ORDER by p.posi_no
+	</select>
+	<!-- -->
 </mapper>
 <!-- 3번째 -->

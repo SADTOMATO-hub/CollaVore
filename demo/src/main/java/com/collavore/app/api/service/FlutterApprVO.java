@@ -24,7 +24,9 @@ public class FlutterApprVO {
 	// 전자결재결재자관련
 	private Integer earNo; // 전자결재자번호
 	private Integer apprEmpNo; // 전자결재자사원번호
-	private String apprstatus; // 전자결재자 결재상태
+	private String apprEmpName; // 전자결재자 이름
+	private String apprStatus; // 전자결재자 결재상태
+	private String apprPosiName; // 전자결재자 직급명
 	@DateTimeFormat(pattern = "yyyy-MM-dd") 
 	private Date procDate; // 전자결재자 결재처리날짜
 	private Integer sort; // 전자결재자 정렬순서

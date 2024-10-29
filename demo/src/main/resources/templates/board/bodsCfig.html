@@ -1,9 +1,176 @@
 <div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{common/layouts/default_layout}"
-    layout:fragment="Content">
-    
-    <h1>게시판 설정관리 페이지 입니다.</h1>
-    
-    
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	layout:fragment="Content">
+
+	<h3>이때까지 만들어진 게시판</h3>
+	<h5>모든게시판 목록</h5>
+
+	<div class="card"
+		style="width: 700px; height: 300px; border: 1px solid green;"
+		align="center">
+		<div class="card-body">
+			<h5 class="card-title">게시글 목록</h5>
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">게시글 번호</th>
+					<th scope="col">제목</th>
+				</tr>
+			</thead>
+			<tbody>
+				<th:block th:each="info : ${bodsList}">
+					<tr>
+						<td>[[${info.postNo}]]</td>
+						<td>[[${info.title}]]</td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+		<button type="button"
+			th:onclick='|location.href="@{/board/bodsInsert(boardNo=${param.boardNo})}"|'>글쓰기</button>
+	</div>
+
+
+	<div class="card"
+		style="width: 700px; height: 300px; border: 1px solid red;"
+		align="center">
+		<div class="card-body">
+			<h5 class="card-title">게시글 목록</h5>
+		</div>
+		<table class="table">
+			<thead>
+				<tr>
+					<th scope="col">게시글 번호</th>
+					<th scope="col">제목</th>
+				</tr>
+			</thead>
+			<tbody>
+				<th:block th:each="info : ${bodsList}">
+					<tr>
+						<td>[[${info.postNo}]]</td>
+						<td>[[${info.title}]]</td>
+					</tr>
+				</th:block>
+			</tbody>
+		</table>
+		<button type="button"
+			th:onclick='|location.href="@{/board/bodsInsert(boardNo=${param.boardNo})}"|'>글쓰기</button>
+	</div>
+
+
+
+
+	<button type='button' id="modal_btn">게시판 기본설정</button>
+	<div class="black_bg"></div>
+	<div class="modal_wrap">
+		<div class="modal_close">
+			<a href="#">close</a>
+		</div>
+		<form>
+			<div>게시판 등록(권한설정해서 게시판 생성)</div>
+
+			<div>
+				<input type="text" name="content" placeholder="게시판번호">
+			</div>
+
+			<div>
+				<input type="text" name="content" placeholder="게시판명">
+			</div>
+
+			<div>
+				<input type="text" name="content" placeholder="게시판설명">
+			</div>
+
+			<div>
+				<select class="form-select" aria-label="Default select example">
+
+				</select>
+			</div>
+
+			<div>
+				<select class="form-select" aria-label="Default select example">
+					<option selected>"게시글 댓글권한 숫자에 의한 번호부여"</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+				</select>
+			</div>
+
+			<div>
+				<select class="form-select" aria-label="Default select example">
+					<option selected>"게시글 읽기권한 숫자에 의한 번호부여"</option>
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+				</select>
+			</div>
+
+			<button type="submit">등록</button>
+
+
+		</form>
+	</div>
+
+
+	<script>
+		//제이쿼리 객체 생성
+		$('tbody > tr').on('click', function(event) {
+			let trTag = event.currentTarget;
+			let postno = $(trTag).children().first().text();
+			let url = `/board/bodsInfo?postNo=${postno}`;
+			location.href = url;
+		});
+
+		window.onload = function() {
+			function onClick() {
+				document.querySelector('.modal_wrap').style.display = 'block';
+				document.querySelector('.black_bg').style.display = 'block';
+			}
+			function offClick() {
+				document.querySelector('.modal_wrap').style.display = 'none';
+				document.querySelector('.black_bg').style.display = 'none';
+			}
+			document.getElementById('modal_btn').addEventListener('click',
+					onClick);
+			document.querySelector('.modal_close').addEventListener('click',
+					offClick);
+		};
+
+		// submit을 하기 전 제목, 작성자, 작성일자 확인
+		$(bodsCfig).on('submit', bodsCfig);
+
+		function bodsCfig(event) {
+			event.preventDefault();
+
+			let boardNo = $('form [name="boardNo"]');
+			if (boardNo.val() == '') {
+				alert('게시판 번호가 입력되지 않았습니다.');
+				title.focus();
+				return;
+			}
+
+			let name = $('form [name="title"]');
+			if (title.val() == '') {
+				alert('게시판명이 입력되지 않았습니다.');
+				title.focus();
+				return;
+			}
+
+			let writer = $('form [name="writer"]');
+			if (writer.val() == '') {
+				alert('작성자가 입력되지 않았습니다.');
+				writer.focus();
+				return;
+			}
+
+			alert('게시글이 등록되었습니다.');
+			insertForm.submit();
+		}
+	</script>
+
+
+
 </div>
+

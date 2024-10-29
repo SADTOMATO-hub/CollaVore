@@ -1,8 +1,7 @@
 package com.collavore.app.approvals.service;
 
 import java.util.List;
-
-import com.collavore.app.hrm.service.HrmVO;
+import java.util.Map;
 
 public interface ApprovalsService {
 	// 템플릿 생성
@@ -17,19 +16,19 @@ public interface ApprovalsService {
 	public int deleteTemplate(ApprovalstempVO apprsVO);
 	// 전자결재 생성
 		//전자결재 테이블에 데이터 넣기
-	 public int insertApprsEaTable (ApprovalsVO approvalsVO);
+	 public int insertApprsEa (ApprovalsVO approvalsVO);
 		//결재자 테이블에 데이터 넣기
-	 public int insertApprsEarTable (ApprovalsVO approvalsVO);
+	 public int insertApprsEar (ApprovalsVO approvalsVO);
 	// 진행 중인 전자결재 목록 조회
 	// 전체 전자결재 목록 조회
 	// 전자결재 상세 조회
 	public ApprovalsVO approvalsInfo (ApprovalsVO approvalsVO);
 	//결재자 상세
-	public List<ApprovalsVO> approversInfo (ApprovalsVO approvalsVo);
+	public List<Map<String,Object>> approversInfo (ApprovalsVO approvalsVo);
 	// 전자결재 수정
 	// 전자결재 삭제
 	public void deleteApprovals (ApprovalsVO approvalsVo);
 //인사 테이블 조회
-	public List<HrmVO> employeesInfo ();
+	public List<Map<String,Object>> employeesInfo ();
 }
 //4번째
