@@ -64,4 +64,6 @@ public class ProjectVO {
 	private String jobName;
 	private String table;
 	
+	private Integer pwtNo;
+	
 }

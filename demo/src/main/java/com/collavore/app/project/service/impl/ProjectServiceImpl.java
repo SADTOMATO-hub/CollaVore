@@ -155,6 +155,11 @@ public class ProjectServiceImpl implements PjService{
 		return projectMapper.deteilwrkerAll();
 	}
 
+	@Override
+	public int updatestatusProject(ProjectVO projectVO) {
+		return projectMapper.updateStatusProject(projectVO);
+	}
+
 
 
 	/*
