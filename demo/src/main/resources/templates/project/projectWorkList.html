@@ -29,7 +29,7 @@
                     <li id="node_collavore">Collavore -->
                         <ul>
                     <th:block th:each="project : ${projects}" th:if="${project.parentNo == null}">
-                        <th:block th:replace="~{::renderNode(projno=${project.no}, projname=${project.name}, parentNo=${project.parentNo}, table=${project.table}, level=${project.level})}"></th:block>
+                        <th:block th:replace="~{::renderNode(projno=${project.no}, projname=${project.name}, parentNo=${project.parentNo}, table=${project.table}, level=${project.level}, jobNo=${project.jobNo}, pdwNo=${project.pdwNo})}"></th:block>
                     </th:block>                            <!-- 자식 노드가 여기에 추가될 수 있습니다. -->
                         </ul>
                     <!-- </li>
@@ -100,23 +100,15 @@
                         </div>                 
                         <div>
                             <label class="form-label">업무 종료일</label>
-                            <input type="date" id="endDate" name="endDate" class="form-control" required>
+                            <input type="date" id="compDate" name="compDate" class="form-control" required>
                         </div>                 
                         <div>
                             <label class="form-label">프로젝트 깃 커밋ID</label>
                             <input type="text" id="commitId" name="commitId" class="form-control" required>
                         </div>                 
                         <div>
-                            <label class="form-label">업무 타입</label>
-                            <select class="form-select" name="jobNo" id="jobNoProjWrks" required>
-							<option value="0">선택하세요</option>
-							<option th:each="info : ${jobs}"
-								th:value="${info.jobNo}">[[${info.name}]]</option>
-						</select>
-                        </div>   
-                        <div>
-                            <label class="form-label" id="wrklabel2" style="display: none;">업무 담당자</label>
-							<select class="form-select" name="mgrNo" id="mgrNoProjdWrks" style="display: none;" required>
+                            <label class="form-label" id="wrklabel2">업무 담당자</label>
+							<select class="form-select" name="mgrNo" id="mgrNoProjdWrks" required>
 								<option value="0">선택하세요</option>
 								<option th:each="info : ${projmgriist}"
 									th:value="${info.empNo}">[[${info.name}]]</option>
@@ -203,7 +195,7 @@
             </div>
             <div>
                 <label class="form-label">업무 종료일</label>
-                <input type="date" id="updateendDate" name="endDate" class="form-control" required>
+                <input type="date" id="updatecompDate" name="compDate" class="form-control" required>
             </div>
             <div>
                 <label class="form-label">프로젝트 깃 커밋ID</label>
@@ -285,6 +277,10 @@
                 <div class="card-body">
                   <h4 class="card-title">Chat Option</h4>
                   <div class="chat-box scrollable" style="height: 475px">
+                  <span class="badge rounded-pill bg-secondary"  th:if="${isStatus == 'k1'}">진행전</span> 
+                  <span class="badge rounded-pill bg-info" th:if="${isStatus == 'k2'}">진행중</span> 
+                  <span class="badge rounded-pill bg-success" th:if="${isStatus == 'k3'}">완 료</span>
+                  
                     <!--chat Row -->
                     <ul class="chat-list" id="chat-list">
                       <!--chat Row -->
@@ -323,6 +319,7 @@
                       </div>
                     </div>
                     <div class="col-3">
+                     <input type="hidden" name="pdwNo" id="pdwNode"> 
                      <a class="btn-circle btn-lg btn-cyan float-end text-white" id="send-chat-btn">
 					    <i class="mdi mdi-send fs-3">
                       </i>
@@ -398,8 +395,8 @@
                     url: '/project/projectdwrkinsert', // 폼의 action URL
                     data: formData,
                     success: function(response) {
-                        alert('상세 업무가 성공적으로 추가되었습니다: ' + response.data.name);
-                        
+                        alert('상세 업무가 성공적으로 추가되었습니다: ');
+                        console.log(response);
                         // jsTree에 새 상세 업무 노드 추가
                         const parentNodeId = 'node_' + response.data.parentNo; // 부모 노드 ID
                         const newDetailNode = {
@@ -420,7 +417,7 @@
             });
         });
 
-        function myFunction(buttonElement, level) {
+        function myFunction(buttonElement, level, jobNo) {
             const projectName = $(buttonElement).parent().find('span').text().trim();
 
             const projNo = $(buttonElement).parent().attr('id').split('_')[1];
@@ -440,8 +437,7 @@
                 // 부모 노드로 이동
                 currentNode = currentNode.parent().closest('li'); // 부모 <li>를 찾기
             }
-            console.log(projNo);
-            console.log(pwNo);
+           
             
             
             if (level <= 1) {
@@ -455,6 +451,7 @@
                 
             } else {
                 $('#insertPanelProjdwrks h4').text(projectName + ' 상세업무 등록');
+                handleJobNoChange(jobNo);
                 $('#test').show();
                 $('#insertPanelProjwrks').hide();
                 $('#insertPanelProjdwrks').show();
@@ -558,9 +555,8 @@
                     type: 'GET',
                     dataType: 'json', 
                     success: function(response) {
-                    	
+                    	console.log(response);
                     	handleJobNoChange(response.jobNo);
-                    	
                         $('#projdwrkname').val(response.name);
                         $('#projdwrkcontent').val(response.content);
                         $('#updateimportance').val(response.importance); 
@@ -569,13 +565,15 @@
                             return date.toISOString().split('T')[0]; 
                         }; 
                         $('#updatestartDate').val(formatDate(response.startDate));
-                        $('#updateendDate').val(formatDate(response.endDate));
+                        $('#updatecompDate').val(formatDate(response.compDate));
                         $('#updatecommitId').val(response.commitId);
+                        $('#hiddenjobNoWrks').val(response.jobNo);
                         setTimeout(() => {
                             $('#updatemgrNoProjDwrks').val(response.mgrNo); // 선택된 값을 설정
                         }, 50);
                         $('#updateisStatus').val(response.isStatus);
-                        
+                        $('#selPwNo').val(pwNo); 
+                        $('#selParentPdwNo').val(projNo); 
                     },
                     error: function(xhr, status, error) {
                         alert('프로젝트 정보를 가져오는 데 실패했습니다: ' + error);
@@ -587,6 +585,11 @@
             $('#projNo').val(projNo.replace(/^[PW]/, '')); 
             $('#pwNo').val(pwNo); 
             $('#pdwNo').val(pwNo); 
+            
+            $('#selPwNo').val(pwNo); 
+            $('#selParentPdwNo').val(projNo); 
+            
+            
         }
     	// 프로젝트 수정 처리
         $('#editProjectForm').on('submit', function(e) {
@@ -649,8 +652,6 @@
      // 상세업무 수정 처리
         $('#updateFormProjdwrks').on('submit', function(e) {
         	e.preventDefault();
-
-          
             
             $.ajax({
                 url: `/project/projectdwrkupdate`,
@@ -679,13 +680,12 @@
                 }
             });
         });   
-     	// 상세업무 코멘트 리스트
         function toggleChat(buttonElement, level) {
-            const projectName = $(buttonElement).text(); 
-            const projNo = $(buttonElement).parent().attr('id').split('_')[1]; 
-            const pdwNo = parseInt(projNo.replace(/^[PW]/, ''), 10);         	
+            const projectName = $(buttonElement).text();
+            const projNo = $(buttonElement).parent().attr('id').split('_')[1];
+            const pdwNo = parseInt(projNo.replace(/^[PW]/, ''), 10);
+
             const chat = document.getElementById('chat');
-            
             if (level >= 3) {
                 $('#chat').show();
                 $('#editProjectModal').hide();
@@ -693,125 +693,150 @@
                 $('#dwrkInfo').hide();
                 $('#insertPanelProjdwrks').hide();
                 $('#insertPanelProjwrks').hide();
-                
+
                 $('#chat h4').text(projectName + ' 상세업무 코멘트');
-                
+                $('#pdwNode').val(pdwNo);
                 $.ajax({
-                    url: '/project/projecdwrkcomtstinfo/' + pdwNo, 
+                    url: '/project/projecdwrkcomtstinfo/' + pdwNo,
                     method: 'GET',
                     success: function(data) {
-                        // 데이터가 배열인지 확인
-                        const chatList = $('#chat .chat-list'); // chat-list 요소를 선택
+                        const chatList = $('#chat .chat-list');
+                        chatList.empty();
                         
-                        chatList.empty(); // 기존 내용을 비움
-                        let badgeDisplayed = false; 
-                     // data가 배열인지 확인
+                     	// 기존 배지 제거
+                        $('#chat .badge').remove();
+                     	// 기존 버튼 제거
+                        $('#chat .status-button').remove();
+                     	
                         if (Array.isArray(data)) {
-                            data.forEach(info => {
-                            	const isCurrentUser = parseInt(sessionUserEmpNo, 10) === parseInt(info.writerNo, 10);
-                            	
-                                // 상태 배지를 출력할지 여부 결정
-                                let statusBadge = '';
-                                if (!badgeDisplayed) {
-                                    if (info.isStatus == 'k1') {
-                                        statusBadge = `<span class="badge rounded-pill bg-secondary">진행전</span>`;
-                                        badgeDisplayed = true;
-                                    } else if (info.isStatus == 'k2') {
-                                        statusBadge = `<span class="badge rounded-pill bg-info">진행중</span>`;
-                                        badgeDisplayed = true;
-                                    } else if (info.isStatus == 'k3') {
-                                        statusBadge = `<span class="badge rounded-pill bg-success">완료</span>`;
-                                        badgeDisplayed = true;
-                                    }
+                            // 상태를 먼저 확인하여 배지 생성
+                            let statusBadge = '';
+                            // 버튼 생성
+                            let actionButton = '';
+                            
+                            // status값에 따라 뱃지 및 버튼 구별
+                            if (data.length > 0) {
+                                const firstInfo = data[0];
+                                if (firstInfo.isStatus === 'k1') {
+                                    statusBadge = '<span class="badge rounded-pill bg-secondary">진행전</span>';
+                                    actionButton = `
+                                        <button type="button" class="btn btn-outline-info status-button" style="float: right;">
+                                            작업시작
+                                        </button>`;
+                                } else if (firstInfo.isStatus === 'k2') {
+                                    statusBadge = '<span class="badge rounded-pill bg-info">진행중</span>';
+                                    actionButton = `
+                                        <button type="button" class="btn btn-outline-success status-button" style="float: right;">
+                                            컨펌요청
+                                        </button>`;
+                                } else if (firstInfo.isStatus === 'k3') {
+                                    statusBadge = '<span class="badge rounded-pill bg-success">완료</span>';
                                 }
-                            	
-                            	function formatDate(dateString) {
-                            	    const date = new Date(dateString);
-                            	    const year = date.getFullYear();
-                            	    const month = String(date.getMonth() + 1).padStart(2, '0');
-                            	    const day = String(date.getDate()).padStart(2, '0');
-                            	    return `${year}-${month}-${day}`;
-                            	}
-                            	
-                            	
-                            	
-                            	const chatItem = isCurrentUser
-                                ? `
-                                	${statusBadge}
-                                    <li class="odd chat-item">
-                                        <div class="chat-content">
-                                            <div class="box bg-light-inverse">${info.content}</div>
-                                            <br />
-                                        </div>
-                                        
-                                        <div class="chat-time">${formatDate(info.regDate)}</div>
-                                        <input type="hidden" name="pdwNo" id="pdwNo" class="pdwNo"  value="${info.pdwNo}">
-                                    </li>`
-                                : `
-                                    <li class="chat-item">
-                                        <div class="chat-img">
-                                            <img src="/assets/images/users/default.png" alt="user" />
-                                        </div>
-                                        <div class="chat-content">
-                                            <h6 class="font-medium">${info.name}</h6>
-                                            <div class="box bg-light-info">${info.content}</div>
-                                        </div>
-                                        <div class="chat-time">${formatDate(info.regDate)}</div>
-                                        <input type="hidden" name="pdwNo" id="pdwNo" class="pdwNo"  value="${info.pdwNo}">
-                                    </li>`;
+                            }
+							// status값에 따라 뱃지 및 버튼 노출
+                            $('#chat h4').after(statusBadge);
+                            $('#chat h4').append(actionButton);
+                            
+                            data.forEach(info => {
+                                const isCurrentUser = parseInt(sessionUserEmpNo, 10) === parseInt(info.writerNo, 10);
+
+                                function formatDate(dateString) {
+                                    const date = new Date(dateString);
+                                    const year = date.getFullYear();
+                                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                                    const day = String(date.getDate()).padStart(2, '0');
+                                    return `${year}-${month}-${day}`;
+                                }
+
+                                const chatItem = isCurrentUser
+                                    ? `
+                                        <li class="odd chat-item">
+                                            <div class="chat-content">
+                                                <div class="box bg-light-inverse">${info.content}</div>
+                                                <br />
+                                            </div>
+                                            <div class="chat-time">${formatDate(info.regDate)}</div>
+                                        </li>`
+                                    : `
+                                        <li class="chat-item">
+                                            <div class="chat-img">
+                                                <img src="/assets/images/users/default.png" alt="user" />
+                                            </div>
+                                            <div class="chat-content">
+                                                <h6 class="font-medium">${info.name}</h6>
+                                                <div class="box bg-light-info">${info.content}</div>
+                                            </div>
+                                            <div class="chat-time">${formatDate(info.regDate)}</div>
+                                        </li>`;
+
                                 chatList.append(chatItem); // 생성한 HTML 요소를 chat-list에 추가
                             });
-                        } 
+
+                            chatList.append(chatItem); // 생성한 HTML 요소를 chat-list에 추가
+                        }
                     },
                     error: function(error) {
                         console.error("오류발생!:", error);
                     }
                 });
-            }    
+            }
         }
+
      	
         // 상세업무 코멘트 등록
-        $(document).ready(function() {
-            $('#send-chat-btn').on('click', function() {
-                const message = $('#textarea1').val().trim(); // textarea의 내용을 가져옴
-                const pdwNo = $('#chat .pdwNo').last().val();
-                const writerNo = sessionUserEmpNo;
-
-                
-                /* const projNo = $(buttonElement).parent().attr('id').split('_')[1]; 
-                const pdwNo = parseInt(projNo.replace(/^[PW]/, ''), 10); */
-                
-                if (message) {
-                    $.ajax({
-                        type: 'POST',
-                        url: '/project/projectdwrkcomtinsert', // 메시지를 처리할 서버 URL
-                        data: JSON.stringify({ content: message, pdwNo: pdwNo, writerNo: writerNo }),
-                        contentType: 'application/json',
-                        success: function(response) {
-                           /*  console.log('Content:', response.content); // content 확인
-                            console.log('RegDate:', response.regDate); // regDate 확인 */
-                            // 응답 처리 (예: 서버에서 반환된 채팅 내용을 추가)
-                            const chatItem = `
-                                <li class="odd chat-item">
-                                    <div class="chat-content">
-                                        <div class="box bg-light-inverse">${response.content}</div>
-                                        <br />
-                                    </div>
-                                    <div class="chat-time">${getCurrentDate()}</div>
-                                </li>`;
-                            
-                            $('#chat-list').append(chatItem); // chat-list에 새 메시지 추가
-                            $('#textarea1').val(''); // textarea 초기화
-                        },
-                        error: function(xhr, status, error) {
-                            alert('코멘트 전송에 실패했습니다: ' + error);
-                        }
-                    });
-                } else {
-                    alert('코멘트를 입력하세요!');
+       $(document).ready(function() {
+    // 채팅 메시지 전송 함수
+    function sendMessage() {
+        const message = $('#textarea1').val().trim(); // textarea의 내용을 가져옴
+        //const pdwNo = $('#chat').data('pdwNo');
+        const pdwNo = $('#pdwNode').val();
+		//console.log(pdwNo);
+        const writerNo = sessionUserEmpNo;
+		
+        if (message) {
+            $.ajax({
+                type: 'POST',
+                url: '/project/projectdwrkcomtinsert', // 메시지를 처리할 서버 URL
+                data: JSON.stringify({ content: message, pdwNo: pdwNo, writerNo: writerNo }),
+                contentType: 'application/json',
+                success: function(response) {
+                    // 응답 처리 (예: 서버에서 반환된 채팅 내용을 추가)
+                    const chatItem = `
+                        <li class="odd chat-item">
+                            <div class="chat-content">
+                                <div class="box bg-light-inverse">${response.content}</div>
+                                <br />
+                            </div>
+                            <div class="chat-time">${getCurrentDate()}</div>
+                        </li>`;
+                    
+                    $('#chat-list').append(chatItem); // chat-list에 새 메시지 추가
+                    $('#textarea1').val(''); // textarea 초기화
+                },
+                error: function(xhr, status, error) {
+                    alert('코멘트 전송에 실패했습니다: ' + error);
                 }
             });
-        });
+        } else {
+            alert('코멘트를 입력하세요!');
+        }
+    }
+
+    // 버튼 클릭 이벤트
+    $('#send-chat-btn').on('click', function() {
+    	 
+        sendMessage();
+    });
+
+    // 엔터 키 입력 이벤트
+    $('#textarea1').on('keypress', function(event) {
+        if (event.which === 13) { // 엔터 키
+            event.preventDefault(); // 기본 동작 방지 (줄바꿈 방지)
+         
+            sendMessage();
+        }
+    });
+});
         // 담당자 조회
         $(document).ready(function() {
             $('select[name="jobNo"]').change(function() {
@@ -836,11 +861,13 @@
                             $('#mgrNoProjWrksUpdate').empty().append('<option value="0">선택하세요</option>');
                             
                             
+                            
                             // 새로운 옵션 추가
                             $.each(response, function(index, info) {
                                 $('#mgrNoProjWrks').append('<option value="' + info.empNo + '">' + info.name + '</option>');
                                 $('#mgrNoProjdWrks').append('<option value="' + info.empNo + '">' + info.name + '</option>');
                                 $('#mgrNoProjWrksUpdate').append('<option value="' + info.empNo + '">' + info.name + '</option>');
+                                
                                 
                             });
                         },
@@ -857,7 +884,7 @@
         
      // 수정 시 담당자 조회
         function handleJobNoChange(jobNo) {
-            
+            console.log('jobNo : ' +jobNo);
             if (jobNo !== '0') {
                 $('#mgrNoProjWrks').show();
                 $('#wrklabel').show();
@@ -872,16 +899,17 @@
                         $('#editProjManager').empty().append('<option value="0">선택하세요</option>');
                         $('#mgrNoProjWrksUpdate2').empty().append('<option value="0">선택하세요</option>');
                         $('#updatemgrNoProjDwrks').empty().append('<option value="0">선택하세요</option>');
+                        $('#mgrNoProjdWrks').empty().append('<option value="0">선택하세요</option>');
                         // 새로운 옵션 추가
                         $.each(response, function(index, info) {
                             $('#mgrNoProjWrks').append('<option value="' + info.empNo + '">' + info.name + '</option>');
                             $('#editProjManager').append('<option value="' + info.empNo + '">' + info.name + '</option>');
                             $('#mgrNoProjWrksUpdate2').append('<option value="' + info.empNo + '">' + info.name + '</option>');
                             $('#updatemgrNoProjDwrks').append('<option value="' + info.empNo + '">' + info.name + '</option>');
+                            $('#mgrNoProjdWrks').append('<option value="' + info.empNo + '">' + info.name + '</option>');
                         });
                     },
                     error: function() {
-                        alert('담당자 정보를 가져오는 데 실패했습니다.');
                     }
                 });
             } else {
@@ -891,14 +919,14 @@
                 $('#wrklabel').hide(); // 레이블 숨기기
             }
         }
-        
+
     </script>
 
     <!-- 재귀 함수 정의 -->
-    <th:block th:fragment="renderNode(projno, projname, parentNo, table, level)" th:data-current-table="${table}" id="'test'+${status.index}" th:data-index="${status.index}">
+    <th:block th:fragment="renderNode(projno, projname, parentNo, table, level, jobNo)" th:data-current-table="${table}" id="'test'+${status.index}" th:data-index="${status.index}">
 	    <li th:id="'node_' + ${projno}" style="display: none;">
-		    <span th:onclick="'toggleChat(this, ' + ${level} + ')'">[[${projname}]]</span>
-		    <button class="btn btn-info btn-lg no-border-button"  th:onclick="'event.stopPropagation(); myFunction(this, ' + ${level} + ')'" style="margin-left: 5px;">
+		    <span th:onclick="'toggleChat(this, ' + ${level} + ', ' + ${pdwNo} + ')'">[[${projname}]]</span>
+		    <button class="btn btn-info btn-lg no-border-button" th:onclick="'event.stopPropagation(); myFunction(this, ' + ${level} + ', ' + ${jobNo} + ')'" style="margin-left: 5px;">
         		<i class="mdi mdi-plus-circle-outline" style="color:black; margin-right: 10px; " ></i>
     		</button>
     		
@@ -908,7 +936,7 @@
     	<ul style="display: none;"> 
         <th:block th:each="child, status : ${projects}" th:if="${child.parentNo == projno}">
             <span th:data-current-table="${table}" th:data-index="${status.index}" id="'test'+${status.index}"></span>
-            <th:block th:replace="~{::renderNode(projno=${child.no}, projname=${child.name}, parentNo=${projno}, table=${child.table}, level=${child.level})}"></th:block>
+            <th:block th:replace="~{::renderNode(projno=${child.no}, projname=${child.name}, parentNo=${projno}, table=${child.table}, level=${child.level}, jobNo=${child.jobNo}, pdwNo=${child.pdwNo})}"></th:block>
         </th:block>
 	    </ul>
 		</li>

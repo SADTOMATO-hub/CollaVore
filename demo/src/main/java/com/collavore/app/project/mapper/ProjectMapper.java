@@ -76,6 +76,8 @@ public interface ProjectMapper {
 	public List<ProjectVO> selectjobs();
 	// 사원 리스트 조회
 	public List<ProjectVO> selectempAll();
+	
+	public List<ProjectVO> deteilwrkerAll();
 	 
 	
 	

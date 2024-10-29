@@ -150,6 +150,11 @@ public class ProjectServiceImpl implements PjService{
 		return projectMapper.selectempAll();
 	}
 
+	@Override
+	public List<ProjectVO> deteilwrkerList() {
+		return projectMapper.deteilwrkerAll();
+	}
+
 
 
 	/*

@@ -190,19 +190,12 @@ public class ProjectController {
 		List<ProjectVO> list = pjService.projecttreeList();
 		
 		List<ProjectVO> departments = pjService.departmentsList();
-		 List<ProjectVO> jobs = pjService.jobsList(); 
-//		List<ProjectVO> projmgr = pjService.projMgrInfo();
-//		List<ProjectVO> wrkmgr = pjService.wrkMgrIngo();
-		/* List<ProjectVO> dwrkmgr = pjService.dwrkMgrInfo(); */
-		
-//		System.err.println(list);
+		List<ProjectVO> jobs = pjService.jobsList(); 
+		 
 
 		model.addAttribute("projects", list);
 		model.addAttribute("jobs", jobs);
 		model.addAttribute("dept", departments);
-//		model.addAttribute("projmgriist", projmgr);
-//		model.addAttribute("wrkmgriist", wrkmgr);
-//		model.addAttribute("dwrkmgrlist", dwrkmgr);
 		return "project/projectWorkList";
 	}
 
@@ -211,7 +204,7 @@ public class ProjectController {
 	@ResponseBody
 	public Map<String, Object> insertwrkAjax(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
-//			 System.err.println(projectVO);
+			 //System.err.println(projectVO);
 		pjService.projectwrkinsert(projectVO);
 
 		map.put("type", "postAjax");
@@ -226,7 +219,7 @@ public class ProjectController {
 		Map<String, Object> map = new HashMap<>();
 		String selNo = projectVO.getSelPwNo();
 		String selParentNo = projectVO.getSelParentPdwNo();
-
+		//System.err.println(projectVO);
 		switch (selParentNo.substring(0, 1)) {
 		case "W":
 			projectVO.setPwNo(Integer.parseInt(selParentNo.replace("W", "")));
@@ -237,6 +230,7 @@ public class ProjectController {
 			projectVO.setPwNo(searchPwNo);
 			projectVO.setParentPdwNo(Integer.parseInt(selParentNo));
 		}
+		
 		pjService.projectdwrkinsert(projectVO);
 
 		map.put("type", "postAjax");
@@ -341,7 +335,7 @@ public class ProjectController {
 				@GetMapping("project/projectmgrlist/{jobNo}")
 				@ResponseBody
 				public List<ProjectVO> projectmgrInfo(@PathVariable int jobNo) {
-					System.err.println(jobNo);
+					//System.err.println(jobNo);
 				    return pjService.projectMgrListInfo(jobNo);
 				}
 				
