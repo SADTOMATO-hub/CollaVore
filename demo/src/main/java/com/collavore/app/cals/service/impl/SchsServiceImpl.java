@@ -124,9 +124,11 @@ public class SchsServiceImpl implements SchsService {
 	}
 
 	// =====================캘린더 사이드바=====================
-	// 사이드바 캘린더 전체
-
-	// 개인캘린더
+	// 일정생성창 캘린더 전체조회  
+		@Override
+		public List<SchsVO> allCal(int empNo) {
+			return schsMapper.selectAllCal(empNo);
+		}
 
 	// 공유캘린더 조회 (is_delete가 'h2'인 항목만)
 	@Override

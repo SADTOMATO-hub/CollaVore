@@ -22,23 +22,28 @@ public interface SchsService {
 
 	// 수정
 	public Map<String, Object> updateSchs(SchsVO schsVO);
+
 	// 알림관리 ================================
 	// 수정 알림설정
 	public int updateAlarm(SchsVO schNo);
-	 // 알림 정보 추가
-    public int insertAlarmInfo(SchsVO schsVO);
 
-    // 알림 정보 삭제
-    public int deleteAlarmInfo(int schNo);
-    //end 알림관리 ================================	
+	// 알림 정보 추가
+	public int insertAlarmInfo(SchsVO schsVO);
+
+	// 알림 정보 삭제
+	public int deleteAlarmInfo(int schNo);
+	// end 알림관리 ================================
 
 	// 삭제
 	public int deleteSchs(int schsNO);
 
 // 캘린더 =====================================
-	// 전체조회
+	//일정생성시 캘린더 전체조회
+	public List<SchsVO> allCal(int empNo); // 공유 일정 조회
+	
+
 	// 공유 캘린더 조회
-	List<SchsVO> teamCal(int empNo); // 공유 일정 조회
+	public List<SchsVO> teamCal(int empNo); // 공유 일정 조회
 
 	// 캘린더 등록
 	public int insertCals(SchsVO schsVO);
