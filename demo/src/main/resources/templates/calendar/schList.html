@@ -22,11 +22,7 @@
 				<!-- HTML 코드 -->
 				<select id="calendarSelectBox">
 					<!-- 캘린더 옵션들이 동적으로 추가될 예정 -->
-				</select>
-				
-				 
-
-				<label for="title">일정 제목</label> <input type="text" id="title"
+				</select> <label for="title">일정 제목</label> <input type="text" id="title"
 					placeholder="내용 입력" required> <label for="startDate">시작</label>
 				<input type="date" id="startDate" required> <input
 					type="time" id="startTime" required>
@@ -37,72 +33,65 @@
 				<label for="endDate">종료</label> <input type="date" id="endDate"
 					required> <input type="time" id="endTime" required>
 
-			
-
-					<!-- 알림 여부 -->
-							<label for="isAlarm">알림 설정</label>
-							<input type="checkbox" id="isAlarm">
-							
-							<!-- 알림 설정 필드 (기본적으로 숨김 처리) -->
-							<div id="alarmFields" style="display: none;">
-							    <label for="alarmFrequency">알림 빈도</label>
-							    <select id="alarmFrequency">
-							        <option value="daily">매일</option>
-							        <option value="weekly">매주</option>
-							        <option value="monthly">매달</option>
-							    </select>
-							
-							    <!-- 매일 알림 -->
-							    <div id="dailyRepeat" style="display: none;">
-							        <label for="dailyInterval"></label>
-							        <input type="number" id="dailyInterval" min="1" max="24" value="1">시 마다
-							    </div>
-							<!-- 매주 알림 -->
-								<div id="weeklyRepeat" style="display: none;">
-								    <label for="weeklyDays">알림 요일 선택</label>
-								    <div id="weeklyDays">
-								        <input type="checkbox" id="monday" name="weeklyDay" value="mon">
-								        <label for="monday">월요일</label>
-								
-								        <input type="checkbox" id="tuesday" name="weeklyDay" value="tue">
-								        <label for="tuesday">화요일</label>
-								
-								        <input type="checkbox" id="wednesday" name="weeklyDay" value="wed">
-								        <label for="wednesday">수요일</label>
-								
-								        <input type="checkbox" id="thursday" name="weeklyDay" value="thu">
-								        <label for="thursday">목요일</label>
-								
-								        <input type="checkbox" id="friday" name="weeklyDay" value="fri">
-								        <label for="friday">금요일</label>
-								
-								        <input type="checkbox" id="saturday" name="weeklyDay" value="sat">
-								        <label for="saturday">토요일</label>
-								
-								        <input type="checkbox" id="sunday" name="weeklyDay" value="sun">
-								        <label for="sunday">일요일</label>
-								    </div>
-								
-								    <label for="weeklyHour"></label>
-								    <input type="number" id="weeklyHour" min="1" max="24" value="1">시 마다
-								</div>
-							
-							    <!-- 매월 알림 -->
-							    <div id="monthlyRepeat" style="display: none;">
-								    <label for="monthlyDay"></label>
-								    <input type="number" id="monthlyDay" min="1" max="31" value="1">일
-								
-								    <label for="monthlyHour"></label>
-								    <input type="number" id="monthlyHour" min="1" max="24" value="1">시 마다
-								</div>
-							
-							    
-							</div>
-							
-							
 
 
-				
+				<!-- 알림 여부 -->
+				<label for="isAlarm">알림 설정</label> <input type="checkbox"
+					id="isAlarm">
+
+				<!-- 알림 설정 필드 (기본적으로 숨김 처리) -->
+				<div id="alarmFields" style="display: none;">
+					<label for="alarmFrequency">알림 빈도</label> <select
+						id="alarmFrequency">
+						<option value="daily">매일</option>
+						<option value="weekly">매주</option>
+						<option value="monthly">매달</option>
+					</select>
+
+					<!-- 매일 알림 -->
+					<div id="dailyRepeat" style="display: none;">
+						<label for="dailyInterval"></label> <input type="number"
+							id="dailyInterval" min="1" max="24" value="1">시 마다
+					</div>
+					<!-- 매주 알림 -->
+					<div id="weeklyRepeat" style="display: none;">
+						<label for="weeklyDays">알림 요일 선택</label>
+						<div id="weeklyDays">
+							<input type="checkbox" id="monday" name="weeklyDay" value="mon">
+							<label for="monday">월요일</label> <input type="checkbox"
+								id="tuesday" name="weeklyDay" value="tue"> <label
+								for="tuesday">화요일</label> <input type="checkbox" id="wednesday"
+								name="weeklyDay" value="wed"> <label for="wednesday">수요일</label>
+
+							<input type="checkbox" id="thursday" name="weeklyDay" value="thu">
+							<label for="thursday">목요일</label> <input type="checkbox"
+								id="friday" name="weeklyDay" value="fri"> <label
+								for="friday">금요일</label> <input type="checkbox" id="saturday"
+								name="weeklyDay" value="sat"> <label for="saturday">토요일</label>
+
+							<input type="checkbox" id="sunday" name="weeklyDay" value="sun">
+							<label for="sunday">일요일</label>
+						</div>
+
+						<label for="weeklyHour"></label> <input type="number"
+							id="weeklyHour" min="1" max="24" value="1">시 마다
+					</div>
+
+					<!-- 매월 알림 -->
+					<div id="monthlyRepeat" style="display: none;">
+						<label for="monthlyDay"></label> <input type="number"
+							id="monthlyDay" min="1" max="31" value="1">일 <label
+							for="monthlyHour"></label> <input type="number" id="monthlyHour"
+							min="1" max="24" value="1">시 마다
+					</div>
+
+
+				</div>
+
+
+
+
+
 
 				<button type="submit">저장</button>
 				<button type="button" id="addCancelBtn">취소</button>
@@ -121,16 +110,75 @@
 		<div class="modal-content">
 			<h2>일정 조회</h2>
 			<form id="viewScheduleForm">
-				<label for="viewCalendar">캘린더</label> 
-				<input type="text" id="viewCalendar" readonly> <label for="viewTitle">일정제목</label> 
-				<input type="text" id="viewTitle" readonly> 
-				<label for="viewStartDate">시작</label> 
-				<input type="date" id="viewStartDate" readonly> 
-				<input type="time" id="viewStartTime" readonly> 
-				<label for="viewEndDate">종료</label>
-				<input type="date" id="viewEndDate" readonly> 
-				<input type="time" id="viewEndTime" readonly>
+				<!-- 캘린더 -->
+				<label for="viewCalendar">캘린더</label> <input type="text"
+					id="viewCalendar" readonly>
 
+				<!-- 일정 제목 -->
+				<label for="viewTitle">일정 제목</label> <input type="text"
+					id="viewTitle" readonly>
+
+				<!-- 시작 날짜와 시간 -->
+				<label for="viewStartDate">시작</label> <input type="date"
+					id="viewStartDate" readonly> <input type="time"
+					id="viewStartTime" readonly>
+
+				<!-- 종료 날짜와 시간 -->
+				<label for="viewEndDate">종료</label> <input type="date"
+					id="viewEndDate" readonly> <input type="time"
+					id="viewEndTime" readonly>
+
+				<!-- 알림 설정 체크박스 래퍼 -->
+					<div id="viewAlarmCheckboxWrapper" style="display: none;">
+					    <label for="viewAlarmUse">알림 설정</label>
+					    <input type="checkbox" id="viewAlarmUse"> 사용
+					</div>
+
+				<!-- 알림 설정 -->
+				<div id="viewAlarmSettings" style="display: none;">
+					<label for="viewAlarmType">알림 빈도</label> <select id="viewAlarmType"
+						disabled>
+						<option value="d1">매일</option>
+						<option value="d2">매주</option>
+						<option value="d3">매달</option>
+					</select>
+
+					<!-- 매일 설정 -->
+					<div id="viewDailySettings" style="display: none;">
+						<label for="viewDailyRepeat">매일</label> <input type="number"
+							id="viewDailyRepeat" placeholder="시간입력 1~24" readonly> 시 마다
+					</div>
+
+					<!-- 매주 설정 -->
+					<div id="viewWeeklySettings" style="display: none;">
+						<label>알림 요일 선택</label>
+						<div>
+							<label><input type="checkbox" class="weekly-checkbox"
+								value="mon" disabled> 월요일</label> <label><input
+								type="checkbox" class="weekly-checkbox" value="tue" disabled>
+								화요일</label> <label><input type="checkbox"
+								class="weekly-checkbox" value="wed" disabled> 수요일</label> <label><input
+								type="checkbox" class="weekly-checkbox" value="thu" disabled>
+								목요일</label> <label><input type="checkbox"
+								class="weekly-checkbox" value="fri" disabled> 금요일</label> <label><input
+								type="checkbox" class="weekly-checkbox" value="sat" disabled>
+								토요일</label> <label><input type="checkbox"
+								class="weekly-checkbox" value="sun" disabled> 일요일</label>
+						</div>
+						<label for="viewWeeklyRepeat">시간</label> <input type="number"
+							id="viewWeeklyRepeat" placeholder="시간입력 1~24" readonly> 시 마다
+					</div>
+
+					<!-- 매달 설정 -->
+					<div id="viewMonthlySettings" style="display: none;">
+						<label for="viewMonthlyDay">매달</label> <input type="number"
+							id="viewMonthlyDay" placeholder="일" readonly> 일 <label
+							for="viewMonthlyHour">시간</label> <input type="number"
+							id="viewMonthlyHour" placeholder="시간입력 1~24" readonly> 시 마다
+					</div>
+				</div>
+
+				<!-- 모달 버튼들 -->
 				<div class="modal-buttons">
 					<button type="button" id="viewScheduleEditBtn">수정</button>
 					<button type="button" id="viewScheduleDeleteBtn">삭제</button>
@@ -141,32 +189,10 @@
 	</div>
 
 
-	<!-- 일정 수정 모달 -->
-	<div id="editScheduleModal" class="modal">
-		<div class="modal-content">
-			<h2>일정 수정</h2>
-			<form id="editScheduleForm">
 
-				<label for="editCalendarType">캘린더</label> <select
-					id="editCalendarType">
-					<option value="내캘린더">내캘린더</option>
-					<option value="공유캘린더">공유캘린더</option>
-					<option value="프로젝트">프로젝트</option>
-				</select> <label for="editTitle">일정 제목</label> <input type="text"
-					id="editTitle" required> <label for="editStartDate">시작</label>
-				<input type="date" id="editStartDate" required> <input
-					type="time" id="editStartTime" required> <label
-					for="editEndDate">종료</label> <input type="date" id="editEndDate"
-					required> <input type="time" id="editEndTime" required>
 
-				<label for="editAlarm">알림 설정</label> <input type="checkbox"
-					id="editAlarm">
 
-				<button type="submit">저장</button>
-				<button type="button" class="editScheduleClose">취소</button>
-			</form>
-		</div>
-	</div>
+
 
 
 

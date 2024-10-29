@@ -3,6 +3,7 @@ package com.collavore.app.api.mapper;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.collavore.app.api.service.FlutterApprVO;
@@ -52,4 +53,16 @@ public interface FlutterMapper {
 	
 	// 전자결재상세보기
 	public FlutterApprVO selectAppInfo(int eaNo);
+	
+	// 전자결재문서 결재자보기
+	public List<FlutterApprVO> selectApproversList(int eaNo);
+	
+	// 전자결재문서 승인,반려처리
+	public int updateApprStatus(FlutterApprVO flutterApprVO);
+	
+	// 회원정보조회
+	public FlutterVO selectMyEmpInfo(int empNo);
+	
+	// 회원정보수정
+	public int updateMyEmpInfo(FlutterVO flutterVO);
 }

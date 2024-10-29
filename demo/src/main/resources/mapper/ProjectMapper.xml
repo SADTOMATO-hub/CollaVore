@@ -4,32 +4,36 @@
 	namespace="com.collavore.app.project.mapper.ProjectMapper">
 	<!-- 전체조회 -->
 	<select id="selectProjectAll" resultType="ProjectVO">
-		SELECT proj_no
-		,name
-		,content
-		,start_date
-		,end_date
-		,is_template
-		,status
-		,proj_temp_no
-		,project_git_url
-		,p_mgr_no
-		FROM proj
+		SELECT p.proj_no
+		        ,p.name
+				,p.content
+				,p.start_date
+				,p.end_date
+				,p.is_template
+				,p.status
+				,p.proj_temp_no
+				,p.project_git_url
+				,p.p_mgr_no
+                ,e.name as empName
+		FROM proj p JOIN employees e ON p.p_mgr_no = e.emp_no
 		ORDER BY proj_no
 	</select>
 	<!-- 단건조회 -->
 	<select id="selectProjectById" resultType="ProjectVO">
-		SELECT proj_no,
-		name,
-		content,
-		start_date,
-		end_date,
-		is_template,
-		status,
-		proj_temp_no,
-		project_git_url,
-		p_mgr_no
-		FROM proj
+		SELECT p.proj_no,
+				p.name,
+				p.content,
+				p.start_date,
+				p.end_date,
+				p.is_template,
+				p.status,
+				p.proj_temp_no,
+				p.project_git_url,
+				p.p_mgr_no,
+		        e.job_no
+		        
+		FROM proj p JOIN employees e On p.p_mgr_no = e.emp_no
+		        
 		WHERE proj_no = #{projNo}
 	</select>
 	<!-- 프로젝트 생성 -->
@@ -70,8 +74,7 @@
 		SET
 		name = #{name}
 		,content = #{content}
-		,start_date =
-		#{startDate}
+		,start_date =	#{startDate}
 		,end_date = #{endDate}
 		<!--,is_template = #{is_template} -->
 		,status = #{status}
@@ -79,9 +82,9 @@
 		,project_git_url = #{projectGitUrl}
 		,p_mgr_no = #{pMgrNo}
 
-		WHERE proj_no
-		= #{projNo}
+		WHERE proj_no		= #{projNo}
 	</update>
+	
 	<!-- 삭제 -->
 	<delete id="projectDelete" parameterType="int">
 		DELETE FROM proj
@@ -221,6 +224,7 @@
 		<!-- ,#{sort} -->
 		)
 	</insert>
+	<!-- 상세업무 생성 -->
 	<insert id="ProjectdwrkInsert" parameterType="ProjectVO">
 		<selectKey keyProperty="pdwNo" resultType="Integer"
 			order="BEFORE">
@@ -237,7 +241,7 @@
 		,start_date
 		,req_date
 		,comp_date
-		,pw_no
+		,mgr_no
 		<!-- ,sort -->
 		)
 		VALUES(
@@ -250,7 +254,7 @@
 		,#{startDate}
 		,#{reqDate}
 		,#{compDate}
-		,#{pwNo}
+		,#{mgrNo}
 		<!-- ,#{sort} -->
 		)
 	</insert>
@@ -279,21 +283,22 @@
 
 	<!-- 상세업무 단건조회 -->
 	<select id="selectdwrkInfo" resultType="ProjectVO">
-		SELECT pdw_no,
-		parent_pdw_no,
-		name,
-		content,
-		reg_date,
-		is_status,
-		start_date,
-		req_date,
-		comp_date,
-		pw_no,
-		sort,
-		commit_id,
-		importance,
-		mgr_no
-		FROM projdwrks
+		SELECT p.pdw_no,
+				p.parent_pdw_no,
+				p.name,
+				p.content,
+				p.reg_date,
+				p.is_status,
+				p.start_date,
+				p.req_date,
+				p.comp_date,
+				p.pw_no,
+				p.sort,
+				p.commit_id,
+				p.importance,
+				p.mgr_no,
+		        w.job_no
+		FROM projdwrks p JOIN projwrks w ON p.pdw_no = w.pw_no
 		WHERE pdw_no = #{pdwNo}
 	</select>
 
@@ -321,12 +326,10 @@
 		,is_status = #{isStatus}
 		,start_date = #{startDate}
 		,comp_date = #{compDate}
-		,commit_id =
-		#{commitId}
+		,commit_id = #{commitId}
 		,importance = #{importance}
 		,mgr_no = #{mgrNo}
-		,reg_date =
-		sysdate
+		,reg_date = sysdate
 
 		WHERE pdw_no
 		= #{pdwNo}
@@ -390,4 +393,42 @@
 		,#{pdwNo}
 		)
 	</insert>
+	
+	<!-- 부서 조회 -->	
+	<select id="selectdepartments" resultType="ProjectVO">
+
+		select dept_no
+		        ,parent_dept_no
+		        ,name
+		        ,mgr_no
+        
+		from departments
+		where dept_no > 1
+	</select>
+	
+	<!-- 업무타입 조회 -->	
+	<select id="selectjobs" resultType="ProjectVO">
+
+		select job_no
+        		, name
+        
+		from jobs
+	</select>
+		
+	<select id="selectprojmgrInfo" resultType="ProjectVO">
+
+		SELECT j.job_no
+		        ,j.name as jobname
+		        ,e.emp_no
+		        ,e.name
+		FROM jobs j JOIN employees e ON j.job_no = e.job_no
+        WHERE j.job_no = #{jobNo}
+	</select>
+	
+	<!--  -->
+	<select id="selectempAll" resultType="ProjectVO">
+		SELECT emp_no
+	        , name
+	 	FROM employees
+	</select>
 </mapper>

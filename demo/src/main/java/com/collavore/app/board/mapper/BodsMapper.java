@@ -2,6 +2,7 @@ package com.collavore.app.board.mapper;
 
 import java.util.List;
 
+import com.collavore.app.board.service.BodsCfigVO;
 import com.collavore.app.board.service.BodsComtsVO;
 import com.collavore.app.board.service.BodsVO;
 
@@ -39,8 +40,8 @@ public interface BodsMapper {
 	// 댓글 상세보기
 	public BodsComtsVO selectBodsComtsInfo(BodsComtsVO bodsComtsVO);
 	
-	// 게시판 생성(등록)
-	// public int insertBodsInfo();
+	// 게시판 전체조회 페이지
+	 public List<BodsCfigVO> selectgbodsCfig(BodsCfigVO bodsCfigVO);
 
 	/*
 	 * // 게시판 수정 public int UpdateBodsInfo();

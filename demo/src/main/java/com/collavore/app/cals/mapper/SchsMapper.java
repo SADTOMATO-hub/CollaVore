@@ -12,6 +12,8 @@ public interface SchsMapper {
 
 	// 등록
 	public int insertSchsInfo(SchsVO schsVO);
+	// 등록
+		public int alarmInsert(SchsVO schsVO);
 	// type에 따른 cal_no 조회
     public int selectCalType(String type);
 	
@@ -23,6 +25,20 @@ public interface SchsMapper {
 
 	// 수정
 	public int updateSchsInfo(SchsVO schsVO);
+	// 수정 알림등록
+	public int updateAlarmInfo(SchsVO schsVO);
+	 // 알림 정보 삽입 (알림이 없는 경우 새로 삽입)
+    public int insertAlarmInfo(SchsVO schsVO);
+    // 알림 정보 삭제 (알림 설정이 비활성화된 경우)
+    public int deleteAlarmInfo(int schNo);
+    // 해당 sch_no의 알림 존재 여부 확인
+    public int checkAlarm(int schNo);
+	
+	
+	
+	
+	
+	
 
 	// 삭제 조건
 	public int deleteSchsInfo(int schsNO);
@@ -50,7 +66,6 @@ public interface SchsMapper {
 	public int permanentlyDeleteCal(int calNo); // 캘린더 완전 삭제 (휴지통에 있는 캘린더 삭제)
 	
 	
-	// 등록
-	public int alarmhisInsert(SchsVO schsVO);
+	
 
 }

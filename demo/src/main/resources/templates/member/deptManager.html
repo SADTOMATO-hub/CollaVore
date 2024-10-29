@@ -5,7 +5,7 @@
 
 	<div class="body-page-wrapper">
 		<div class="purple-background-container">
-			 <!-- <div class="breadcrumb">
+			<!-- <div class="breadcrumb">
 				<div class="breadcrumb-left">
 					<h4>조직관리</h4>
 					<nav>
@@ -75,30 +75,43 @@
 						조직 관리 <i class="fas fa-question-circle tooltip-icon"></i>
 						<div class="tooltip-text">조직 관리에 대한 안내</div>
 					</h4>
-					<button onclick="addDept()">
-						<i class="fas fa-plus"></i>
-					</button>
+
 				</div>
 
-
-
-
-				<div id="DeptTable" class="tree-container">
-					<div id="DeptTable" class="tree-container">
-						<!-- JavaScript로 동적 생성 -->
-					</div>
-				</div>
+				<ol id="orgMap" class="org_map"></ol>
 
 				<div class="button-container">
 					<button onclick="saveDept()">저장</button>
 				</div>
-
-
 			</div>
 		</div>
 	</div>
 
-	<link rel="stylesheet" href="/dist/css/hrm/hrm.css">
+	<!-- 모달 구조 -->
+	<div id="deptModal" class="modal">
+		<div class="modal-content">
+			<span class="close-button">&times;</span>
+			<h2>부서 정보</h2>
+			<p id="deptInfo">
+				부서 번호: <span id="deptNo"></span>
+			</p>
+
+			<!-- 사원 목록 표시 영역 -->
+			<div id="employeeList">
+				<p>부서에 속한 사원 목록:</p>
+				<ul id="employeeListItems"></ul>
+				<!-- 사원 리스트가 동적으로 추가됨 -->
+			</div>
+
+			<!-- 부서장 지정 버튼 -->
+			<button id="setManagerBtn">부서장 지정</button>
+		</div>
+	</div>
+
+
+</div>
+
+<link rel="stylesheet" href="/dist/css/hrm/hrm.css">
 <!-- 	<script src="/dist/js/hrm/posi.js"></script>
 	<script src="/dist/js/hrm/jobs.js"></script> -->
-	<script src="/dist/js/hrm/dept.js"></script>
+<script src="/dist/js/hrm/dept.js"></script>

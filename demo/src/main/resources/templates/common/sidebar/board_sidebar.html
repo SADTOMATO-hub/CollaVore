@@ -1,23 +1,21 @@
 <th:block xmlns:th="https://www.thymeleaf.org/" th:fragment="sidebar">
 
 	<ul id="sidebarnav" class="pt-4">
-		<li class="sidebar-item">
-		<a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"> 
-		<i class="mdi mdi-receipt"></i> 
-		<span class="hide-menu"> 게시판메뉴 </span></a>
-			
+		<li class="sidebar-item"><a
+			class="sidebar-link has-arrow waves-effect waves-dark"
+			href="javascript:void(0)" aria-expanded="false"> <i
+				class="mdi mdi-receipt"></i> <span class="hide-menu"> 게시판메뉴 </span></a>
+
 			<ul aria-expanded="false" class="collapse first-level">
-				<li class="sidebar-item">
-				<a th:href="@{/board/bodsList?boardNo=1}" class="sidebar-link"> <!-- 1번이 공지사항 -->
-				<i class="mdi mdi-note-outline"></i> 
-				<span class="hide-menu">공지사항</span></a>
+				<li class="sidebar-item"><a
+					th:href="@{/board/bodsList?boardNo=1}" class="sidebar-link"> <!-- 1번이 공지사항 -->
+						<i class="mdi mdi-note-outline"></i> <span class="hide-menu">공지사항</span></a>
 				</li>
 
-				<li class="sidebar-item">
-				<a th:href="@{/board/bodsList?boardNo=2}" class="sidebar-link"> <!-- 2번이 자유게시판  -->
-				<i class="mdi mdi-account-card-details"></i> 
-				<span class="hide-menu">자유게시판</span></a>
-				</li>
+				<li class="sidebar-item"><a
+					th:href="@{/board/bodsList?boardNo=2}" class="sidebar-link"> <!-- 2번이 자유게시판  -->
+						<i class="mdi mdi-account-card-details"></i> <span
+						class="hide-menu">자유게시판</span></a></li>
 
 				<!-- <li class="sidebar-item" th:onclick="|location.href='@{/memberInsert}'|">
                 <a class="sidebar-link"> 
@@ -27,15 +25,16 @@
             </li> -->
 
 			</ul></li>
-			
+
 		<li class="sidebar-item"><a
 			class="sidebar-link has-arrow waves-effect waves-dark"
 			href="javascript:void(0)" aria-expanded="false"> <i
-				class="mdi mdi-account-circle"></i> <span class="hide-menu"> 관리자페이지
-			</span></a>
+				class="mdi mdi-account-circle"></i> <span class="hide-menu">
+					관리자페이지 </span></a>
 			<ul aria-expanded="false" class="collapse first-level">
 				<li class="sidebar-item"><a th:href="@{/board/bodsCfig}"
 					class="sidebar-link"><i class="mdi mdi-clipboard-text"></i> <span
 						class="hide-menu">게시판관리</span></a></li>
-			</ul>
+			</ul></li>
+	</ul>
 </th:block>

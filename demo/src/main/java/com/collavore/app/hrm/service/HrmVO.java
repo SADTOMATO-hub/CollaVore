@@ -28,6 +28,7 @@ public class HrmVO {
    private Integer deptNo;       // 부서번호
    private String deptName;      // 부서명
    private Integer mgrNo;        // 부서장 사원번호
+   private String isMgr;        // 부서장 등록사원번호
    private Integer parentDeptNo; // 상위부서번호
    @DateTimeFormat(pattern = "yyyy-MM-dd")
    private Date deptDate;        // 부서 등록일

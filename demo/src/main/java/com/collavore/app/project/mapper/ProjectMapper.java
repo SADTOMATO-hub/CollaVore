@@ -62,4 +62,21 @@ public interface ProjectMapper {
 	// 프로젝트 상세업무 코멘트 생성
 	public int ProjectdwrkcomtInsert(ProjectVO projectVO);
 	
+	// 부서정보 조회
+	public List<ProjectVO> selectdepartments();
+	
+	// 프로젝트 담당자 조회
+	public List<ProjectVO> selectprojmgrInfo(int deptNo);
+	
+//	// 프로젝트 업무 담당자 조회 
+//	public List<ProjectVO> selectwrkmgrInfo(); 
+//	// 프로젝트 상세업무 담당자조회 
+//	public List<ProjectVO> selectdwrkmgrInfo(); 
+	// 업무종류 조회 
+	public List<ProjectVO> selectjobs();
+	// 사원 리스트 조회
+	public List<ProjectVO> selectempAll();
+	 
+	
+	
 }

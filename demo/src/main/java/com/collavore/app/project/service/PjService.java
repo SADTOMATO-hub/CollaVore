@@ -53,6 +53,23 @@ public interface PjService {
 	// 프로젝트 상세업무 코멘트 생성
 	public int projectdwrkcomtinsert(ProjectVO projectVO);
 	
+	// 부서정보 리스트
+	public List<ProjectVO> departmentsList();
+	/*
+	 * // 프로젝트 담당자 public List<ProjectVO> projMgrInfo(); // 프로젝트 업무 담당자 public
+	 * List<ProjectVO> wrkMgrIngo();
+	 */
+
+	
+	  // 프로젝트 상세업무 담당자 public List<ProjectVO> dwrkMgrInfo(); // 업무 리스트 public
+	  List<ProjectVO> jobsList();
+	 
+	// 업무별 담당자 리스트
+	public List<ProjectVO> projectMgrListInfo(int jobNo);
+	
+	// 사원 리스트 출력
+	public List<ProjectVO> empList();
+	
 	
 //	public List<ProjectVO> getProjects(int page, int size);
 //

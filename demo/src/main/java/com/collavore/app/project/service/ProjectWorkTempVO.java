@@ -20,6 +20,8 @@ public class ProjectWorkTempVO {
 	private Date regDate;
 
 	
+	private String jobName;
+	
 	
 	
 }

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.collavore.app.api.mapper.FlutterMapper;
@@ -17,11 +18,13 @@ import com.collavore.app.api.service.FlutterVO;
 
 @Service
 public class FlutterServiceImpl implements FlutterService {
-	private FlutterMapper flutterMapper;
+	private final FlutterMapper flutterMapper;
+	private final PasswordEncoder passwordEncoder;
 
 	@Autowired
-	FlutterServiceImpl(FlutterMapper flutterMapper){
+	FlutterServiceImpl(FlutterMapper flutterMapper, PasswordEncoder passwordEncoder){
 		this.flutterMapper = flutterMapper;
+		this.passwordEncoder = passwordEncoder;
 	}
 	
 	// 로그인
@@ -45,6 +48,13 @@ public class FlutterServiceImpl implements FlutterService {
 	// 비밀번호찾기 - 비밀번호변경
 	@Override
 	public int pwdModify(FlutterVO flutterVO) {
+		String insPwd = flutterVO.getResetPwd(); // 입력한 비밀번호 가져오기
+		if(insPwd != null) {
+			String encryptedPassword = passwordEncoder.encode(insPwd); // 입력한 비밀번호 암호화
+			flutterVO.setResetPwd(encryptedPassword); // 암호화된 비밀번호 다시 VO에 넣기
+		} else {
+			flutterVO.setResetPwd(null);
+		}
 		return flutterMapper.updatePassword(flutterVO);
 	}
 
@@ -133,17 +143,38 @@ public class FlutterServiceImpl implements FlutterService {
 	public FlutterApprVO apprInfo(int empNo, int eaNo) {
 		return flutterMapper.selectAppInfo(eaNo);
 	}
+	
+	// 전자결재문서 결재자보기
+	@Override
+	public List<FlutterApprVO> apprList(int empNo, int eaNo) {
+		return flutterMapper.selectApproversList(eaNo);
+	}
 
 	// 전자결재문서승인,반려처리
 	@Override
-	public int apprProc(FlutterVO flutterVO) {
-		return 0;
+	public int apprProc(FlutterApprVO flutterApprVO) {
+		return flutterMapper.updateApprStatus(flutterApprVO);
+	}
+
+	// 회원정보조회
+	@Override
+	public FlutterVO myEmpInfo(int empNo) {
+		return flutterMapper.selectMyEmpInfo(empNo);
 	}
 
 	// 회원정보수정
 	@Override
-	public FlutterVO memberModify(FlutterVO flutterVO) {
-		return null;
+	public int memberModify(FlutterVO flutterVO) {
+		// 비밀번호 암호화
+		
+		String insPwd = flutterVO.getPassword(); // 입력한 비밀번호 가져오기
+		if(insPwd != null) {
+			String encryptedPassword = passwordEncoder.encode(insPwd); // 입력한 비밀번호 암호화
+			flutterVO.setPassword(encryptedPassword); // 암호화된 비밀번호 다시 VO에 넣기
+		} else {
+			flutterVO.setPassword(null);
+		}
+		return flutterMapper.updateMyEmpInfo(flutterVO);
 	}
 
 }
