@@ -28,16 +28,20 @@
 		resultType="com.collavore.app.hrm.service.HrmVO">
 		SELECT e.emp_no AS empNo,
 		e.name AS empName,
-		(SELECT name FROM jobs WHERE job_no = e.job_no) AS jobName,
-		(SELECT name FROM positions WHERE posi_no = e.posi_no) AS posiName
+		(SELECT name
+		FROM jobs WHERE job_no = e.job_no) AS jobName,
+		(SELECT name FROM
+		positions WHERE posi_no = e.posi_no) AS posiName
 		FROM employees e
-		WHERE e.dept_no = #{deptNo}
+		WHERE
+		e.dept_no = #{deptNo}
 	</select>
 
 	<!-- 부서장 업데이트 -->
 	<update id="updateManager" parameterType="map">
 		UPDATE departments
-		SET mgr_no = #{empNo}
+		SET
+		mgr_no = #{empNo}
 		WHERE dept_no = #{deptNo}
 	</update>
 
@@ -84,19 +88,31 @@
 		<result property="level" column="LEVEL" /> <!-- LEVEL 필드를 매핑 -->
 	</resultMap>
 
-	<select id="" resultType="com.collavore.app.hrm.service.HrmVO">
-		SELECT *
-		FROM (
-		SELECT
-		e.emp_no,
-		e.name AS empName, 
+	<!-- 부서장 및 부서조회 -->
+	<select id="getMgrList" resultType="HrmVO">
+		SELECT d.dept_no,
 		d.name AS deptName,
-		p.name AS posiName,
-		CASE WHEN d.mgr_no = e.emp_no THEN 'Y' ELSE 'N' END AS isMgr,
-		e.dept_no
-		FROM employees e LEFT JOIN departments d ON e.dept_no = d.dept_no
-		LEFT JOIN positions p ON e.posi_no = p.posi_no
-		)
-		WHERE isMgr = #{isMgr} AND dept_no = #{deptNo}
+		e.name AS mgrName,
+		e.emp_no AS mgrNo,
+		e.img,
+		(SELECT name FROM positions WHERE posi_no = e.posi_no) AS posiName,
+		d.parent_dept_no,
+		LEVEL
+		FROM departments d
+		LEFT JOIN employees e ON d.MGR_NO = e.EMP_NO
+		START WITH d.parent_dept_no = 0
+		CONNECT BY PRIOR d.dept_no = d.parent_dept_no
+		ORDER SIBLINGS BY d.dept_no
+	</select>
+
+	<select id="getMemberList" resultType="HrmVO">
+		SELECT e.name AS empName
+		, (SELECT name FROM positions WHERE posi_no = e.posi_no) AS posiName
+		, e.img
+		FROM employees e
+		WHERE e.DEPT_NO = #{deptNo}
+		<![CDATA[
+        	AND e.emp_no <> (SELECT mgr_no FROM departments WHERE dept_no = #{deptNo})
+		]]>
 	</select>
 </mapper>
