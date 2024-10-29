@@ -36,6 +36,7 @@ public class ApprovalsVO {//전자결재 테이블
 	private String jobTitle;
 	private String drafterName;
 	private String approverStatus;
+	private Integer userId;
 	
 	//결과
 	private Integer resultCode; // 삭제 프로시저 outmode 실행 결과

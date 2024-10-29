@@ -121,11 +121,24 @@
 	<!-- -->
 	
 	<!-- 나의 진행 중인 전자결재 목록 조회 -->
-	<select id="myApprList" parameterType="ApprovalsVO" resultType="ApprovalsVO"></select>
-
+	<select id="myApprList" parameterType="ApprovalsVO" resultType="ApprovalsVO">
+	SELECT a.title
+    	  ,r.status as "approverStatus"
+       	  ,e.name as "drafterName"
+      	  ,r.emp_no
+      	  ,a.reg_date
+      	  ,a.ea_no
+	FROM approvals a JOIN approvers r
+    	ON a.ea_no = r.ea_no
+	JOIN employees e 
+		ON e.emp_no = r.emp_no
+	where r.status = #{status}
+	AND e.emp_no = #{userId}
+	ORDER BY a.reg_date
+	</select>
+	
 	<!-- 전자결재 상세 조회 -->
-	<select id="readApproval" parameterType="Integer"
-		resultType="ApprovalsVO">
+	<select id="readApproval" parameterType="Integer" resultType="ApprovalsVO">
 		SELECT
 			   a.title
 			  ,a.content

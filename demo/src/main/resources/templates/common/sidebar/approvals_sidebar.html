@@ -3,41 +3,41 @@
 		<!-- ------------------------------------ 진행 중인 전자결재 ------------------------------------- -->
 		<li class="sidebar-item"><a
 			class="sidebar-link has-arrow waves-effect waves-dark"
-			href="javascript:void(0)" aria-expanded="false"> <i
+			 th:href="@{/approvals/onProcess}" aria-expanded="false"> <i
 				class="mdi mdi-receipt"></i> <span class="hide-menu"> 진행 중인
 					전자결재 </span></a>
 			<ul aria-expanded="false" class="collapse first-level">
-				<li class="sidebar-item"><a href="form-basic.html"
+				<li class="sidebar-item"><a  th:href="@{/approvals/onProcess/emps}"
 					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
 						class="hide-menu"> 대기 </span></a></li>
-				<li class="sidebar-item"><a href="" class="sidebar-link"> <i
+				<li class="sidebar-item"><a th:href="@{/approvals/onProcess/emps}"
+				 class="sidebar-link"> <i
 						class="mdi mdi-note-outline"></i> <span class="hide-menu">
 							진행 </span></a></li>
-				<li class="sidebar-item"><a href="" class="sidebar-link"> <i
+				<li class="sidebar-item"><a th:href="@{/approvals/onProcess/emps}"
+				 class="sidebar-link"> <i
 						class="mdi mdi-note-outline"></i> <span class="hide-menu">
 							완료 </span></a></li>
 			</ul></li>
-		<!-- 
-				<li class="sidebar-item"><a href="form-wizard.html"
-					class="sidebar-link"> <i class="mdi mdi-note-plus"></i> <span
-						class="hide-menu"> 게시판하위메뉴2 </span></a></li>
-				->
 			<!-- ------------------------------문서함------------------------------------- -->
 		<li class="sidebar-item"><a
 			class="sidebar-link has-arrow waves-effect waves-dark"
-			href="javascript:void(0)" aria-expanded="false"> <i
+			th:href="@{/approvals/approvalList}" aria-expanded="false"> <i
 				class="mdi mdi-receipt"></i> <span class="hide-menu"> 문서함 </span></a>
 			<ul aria-expanded="false" class="collapse first-level">
-				<li class="sidebar-item"><a href="form-basic.html"
+				<li class="sidebar-item"><a th:href="@{/approvals/approvalList}"
 					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
 						class="hide-menu"> 전체 </span></a></li>
-				<li class="sidebar-item"><a href="" class="sidebar-link"> <i
+				<li class="sidebar-item"><a th:href="@{/approvals/approvalList/emps}"
+				 class="sidebar-link"> <i
 						class="mdi mdi-note-outline"></i> <span class="hide-menu">
 							기안 </span></a></li>
-				<li class="sidebar-item"><a href="" class="sidebar-link"> <i
+				<li class="sidebar-item"><a th:href="@{/approvals/approvalList/emps}"
+				 class="sidebar-link"> <i
 						class="mdi mdi-note-outline"></i> <span class="hide-menu">
 							진행 </span></a></li>
-				<li class="sidebar-item"><a href="" class="sidebar-link"> <i
+				<li class="sidebar-item"><a th:href="@{/approvals/approvalList/emps}"
+				 class="sidebar-link"> <i
 						class="mdi mdi-note-outline"></i> <span class="hide-menu">
 							반려 </span></a></li>
 			</ul></li>
@@ -49,11 +49,11 @@
 			</span></a>
 			<ul aria-expanded="false" class="collapse first-level">
 				<li class="sidebar-item"><a
-					th:onclick="|location.href='@{/approvals/tempList}'|"
+					th:href="@{/approvals/tempList}"
 					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
 						class="hide-menu"> 등록된 템플릿 </span></a></li>
 				<li class="sidebar-item"><a
-					th:onclick="|location.href='@{/approvals/createTempForm}'|"
+					th:href="@{/approvals/createTempForm}"
 					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
 						class="hide-menu"> 새 템플릿 생성 </span></a></li>
 			</ul></li>
