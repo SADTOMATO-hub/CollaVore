@@ -85,7 +85,7 @@
 										<select id="selectContent" class="form-select">
 											<option selected disabled>==템플릿 선택==</option>
 											<option th:each="temps : ${tempInfo}"
-												th:value="${temps.eatNo}">[[${temps.title}]]</option>
+												th:value="${temps.eatNo}">[[${temps.eatNo}]]/[[${temps.title}]]</option>
 										</select>
 									</div>
 									<!-- 선택한 option의 value를 eatNO로 저장하기 위한 태그 -->

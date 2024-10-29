@@ -29,7 +29,6 @@ public class ApprovalsImpl implements ApprovalsService {
 	// 템플릿 목록 조회, 템플릿의 모든 정보를 불러오는 기능
 	@Override
 	public List<ApprovalstempVO> apprTempList() {
-		log.debug("test");
 		return approvalsMapper.tempList();
 	}
 
@@ -67,7 +66,6 @@ public class ApprovalsImpl implements ApprovalsService {
 		int EaNo = approvalsMapper.createApprsEa(apprVO);
 		return EaNo > 0 ? apprVO.getEaNo() : -1;
 	}
-
 		// 결재자
 	@Override
 	@Transactional
@@ -81,7 +79,17 @@ public class ApprovalsImpl implements ApprovalsService {
 	}
 
 	// 진행 중인 전자결재 목록 조회
-	// 전체 전자결재 목록 조회
+	@Override
+	public List<ApprovalsVO> myApprList(ApprovalsVO approvalsVo) {
+		return approvalsMapper.myApprList(approvalsVo);
+	}
+	
+	//결재 해야할 전결 목록 조회
+	@Override
+	public List<ApprovalsVO> approveList(ApprovalsVO approvalsVo) {
+		return approvalsMapper.approveList(approvalsVo);
+	}
+	
 	// 전자결재 상세 조회
 	@Override
 	public ApprovalsVO approvalsInfo(ApprovalsVO approvalsVO) {

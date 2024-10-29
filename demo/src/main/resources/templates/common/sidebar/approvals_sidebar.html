@@ -1,45 +1,56 @@
+<input type="hidden" id="userId" value="">
 <th:block xmlns:th="https://www.thymeleaf.org/" th:fragment="sidebar">
 	<ul id="sidebarnav" class="pt-4">
 		<!-- ------------------------------------ 진행 중인 전자결재 ------------------------------------- -->
 		<li class="sidebar-item"><a
 			class="sidebar-link has-arrow waves-effect waves-dark"
-			 th:href="@{/approvals/onProcess}" aria-expanded="false"> <i
-				class="mdi mdi-receipt"></i> <span class="hide-menu"> 진행 중인
-					전자결재 </span></a>
+			th:href="@{/approvals/onProcess/emps/b1}" aria-expanded="false">
+				<i class="mdi mdi-receipt"></i> <span class="hide-menu"> 진행
+					중인 전자결재 </span>
+		</a>
 			<ul aria-expanded="false" class="collapse first-level">
-				<li class="sidebar-item"><a  th:href="@{/approvals/onProcess/emps}"
+				<li class="sidebar-item"><a
+					th:href="@{/approvals/myApprList/a1}"
 					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
 						class="hide-menu"> 대기 </span></a></li>
-				<li class="sidebar-item"><a th:href="@{/approvals/onProcess/emps}"
-				 class="sidebar-link"> <i
-						class="mdi mdi-note-outline"></i> <span class="hide-menu">
-							진행 </span></a></li>
-				<li class="sidebar-item"><a th:href="@{/approvals/onProcess/emps}"
-				 class="sidebar-link"> <i
-						class="mdi mdi-note-outline"></i> <span class="hide-menu">
-							완료 </span></a></li>
+				<li class="sidebar-item"><a
+					th:href="@{/approvals/myApprList/a2}"
+					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
+						class="hide-menu"> 진행 </span></a></li>
+				<li class="sidebar-item"><a
+					th:href="@{/approvals/myApprList/a3}"
+					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
+						class="hide-menu"> 승인 완료 </span></a></li>
+						<li class="sidebar-item"><a
+					th:href="@{/approvals/myApprList/a4}"
+					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
+						class="hide-menu"> 반려 완료 </span></a></li>
 			</ul></li>
-			<!-- ------------------------------문서함------------------------------------- -->
+		<!-- ------------------------------문서함------------------------------------- -->
 		<li class="sidebar-item"><a
 			class="sidebar-link has-arrow waves-effect waves-dark"
 			th:href="@{/approvals/approvalList}" aria-expanded="false"> <i
 				class="mdi mdi-receipt"></i> <span class="hide-menu"> 문서함 </span></a>
 			<ul aria-expanded="false" class="collapse first-level">
-				<li class="sidebar-item"><a th:href="@{/approvals/approvalList}"
-					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
-						class="hide-menu"> 전체 </span></a></li>
-				<li class="sidebar-item"><a th:href="@{/approvals/approvalList/emps}"
-				 class="sidebar-link"> <i
+				<li class="sidebar-item"><a
+					th:href="@{/approvals/approveList}" class="sidebar-link"> <i
 						class="mdi mdi-note-outline"></i> <span class="hide-menu">
-							기안 </span></a></li>
-				<li class="sidebar-item"><a th:href="@{/approvals/approvalList/emps}"
-				 class="sidebar-link"> <i
-						class="mdi mdi-note-outline"></i> <span class="hide-menu">
-							진행 </span></a></li>
-				<li class="sidebar-item"><a th:href="@{/approvals/approvalList/emps}"
-				 class="sidebar-link"> <i
-						class="mdi mdi-note-outline"></i> <span class="hide-menu">
-							반려 </span></a></li>
+							전체 </span></a></li>
+				<li class="sidebar-item"><a
+					th:href="@{/approvals/approveList/b1}" class="sidebar-link">
+						<i class="mdi mdi-note-outline"></i> <span class="hide-menu">
+							기안 </span>
+				</a></li>
+				<li class="sidebar-item"><a
+					th:href="@{/approvals/approveList/b2}" class="sidebar-link">
+						<i class="mdi mdi-note-outline"></i> <span class="hide-menu">
+							진행 </span>
+				</a></li>
+				<li class="sidebar-item"><a
+					th:href="@{/approvals/approveList/b3}" class="sidebar-link">
+						<i class="mdi mdi-note-outline"></i> <span class="hide-menu">
+							반려 </span>
+				</a></li>
 			</ul></li>
 		<!-- ------------------------------템플릿 관리----------------------------------------- -->
 		<li class="sidebar-item"><a
@@ -48,14 +59,17 @@
 				class="mdi mdi-receipt"></i> <span class="hide-menu"> 템플릿 관리
 			</span></a>
 			<ul aria-expanded="false" class="collapse first-level">
-				<li class="sidebar-item"><a
-					th:href="@{/approvals/tempList}"
+				<li class="sidebar-item"><a th:href="@{/approvals/tempList}"
 					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
 						class="hide-menu"> 등록된 템플릿 </span></a></li>
 				<li class="sidebar-item"><a
-					th:href="@{/approvals/createTempForm}"
-					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
-						class="hide-menu"> 새 템플릿 생성 </span></a></li>
+					th:href="@{/approvals/createTempForm}" class="sidebar-link"> <i
+						class="mdi mdi-note-outline"></i> <span class="hide-menu">
+							새 템플릿 생성 </span></a></li>
 			</ul></li>
 	</ul>
 </th:block>
+<script>
+	const userId = '[[${session.userEmpNo}]]';
+	var userEmpNo = $('#userId').val(userId);
+</script>
