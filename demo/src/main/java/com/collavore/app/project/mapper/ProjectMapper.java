@@ -78,6 +78,8 @@ public interface ProjectMapper {
 	public List<ProjectVO> selectempAll();
 	
 	public List<ProjectVO> deteilwrkerAll();
+	//  상세업무 진행상황 업데이트
+	public int updateStatusProject(ProjectVO projectVO);
 	 
 	
 	

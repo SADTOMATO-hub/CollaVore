@@ -73,6 +73,9 @@ public interface PjService {
 	// 상세업무의 업무자 리스트 출력
 	public List<ProjectVO> deteilwrkerList();
 	
+	// 상세업무 진행현황 업데이트
+	public int updatestatusProject(ProjectVO projectVO);
+	
 	
 //	public List<ProjectVO> getProjects(int page, int size);
 //

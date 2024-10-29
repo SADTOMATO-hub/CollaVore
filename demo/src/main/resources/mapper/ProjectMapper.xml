@@ -444,5 +444,14 @@
 		WHERE job_no = #{jobNo}
 	</select>
 	
+	<!-- 프로젝트 상세 업무 진행상황 수정 -->
+	<update id="updateStatusProject" parameterType="ProjectVO">
+		UPDATE projdwrks
+
+		SET is_status = #{isStatus}
+
+		WHERE pdw_no = #{pdwNo}
+	</update>
+	
 	
 </mapper>

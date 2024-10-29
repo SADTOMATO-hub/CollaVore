@@ -720,18 +720,21 @@
                                 if (firstInfo.isStatus === 'k1') {
                                     statusBadge = '<span class="badge rounded-pill bg-secondary">진행전</span>';
                                     actionButton = `
-                                        <button type="button" class="btn btn-outline-info status-button" style="float: right;">
+                                        <button type="button" class="btn btn-outline-info status-button" onclick="updateStatus('k1')" style="float: right;">
                                             작업시작
                                         </button>`;
                                 } else if (firstInfo.isStatus === 'k2') {
                                     statusBadge = '<span class="badge rounded-pill bg-info">진행중</span>';
                                     actionButton = `
-                                        <button type="button" class="btn btn-outline-success status-button" style="float: right;">
+                                        <button type="button" class="btn btn-outline-success status-button"onclick="updateStatus( 'k2')" style="float: right;">
                                             컨펌요청
                                         </button>`;
                                 } else if (firstInfo.isStatus === 'k3') {
-                                    statusBadge = '<span class="badge rounded-pill bg-success">완료</span>';
+                                	statusBadge = '<span class="badge rounded-pill bg-info">컨펌중</span>';
+                                }else if (firstInfo.isStatus === 'k4'){
+                                	statusBadge = '<span class="badge rounded-pill bg-success">완료</span>';
                                 }
+                                
                             }
 							// status값에 따라 뱃지 및 버튼 노출
                             $('#chat h4').after(statusBadge);
@@ -772,7 +775,6 @@
                                 chatList.append(chatItem); // 생성한 HTML 요소를 chat-list에 추가
                             });
 
-                            chatList.append(chatItem); // 생성한 HTML 요소를 chat-list에 추가
                         }
                     },
                     error: function(error) {
@@ -884,7 +886,7 @@
         
      // 수정 시 담당자 조회
         function handleJobNoChange(jobNo) {
-            console.log('jobNo : ' +jobNo);
+            
             if (jobNo !== '0') {
                 $('#mgrNoProjWrks').show();
                 $('#wrklabel').show();
@@ -919,7 +921,60 @@
                 $('#wrklabel').hide(); // 레이블 숨기기
             }
         }
+     	// 작업 진행현황 업데이트
+		function updateStatus(currentStatus){
+			
+			const pdwNo = $('#pdwNode').val();
+			
+			let isStatus = "";
+			if(currentStatus == 'k1'){
+				isStatus = 'k2';
+				$.ajax({
+                    url: '/project/projectupdatestatus/' + pdwNo,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                    pdwNo: pdwNo, isStatus : isStatus 
+                    }),
+                    success: function(response) {
+                    	let buttonElement = $(`button[onclick="updateStatus('k1')"]`);
+                    	 $('#chat .badge').remove();
+                        // 버튼 추가
+                        let statusBadge = '<span class="badge rounded-pill bg-info">진행중</span>';
+                        $('#chat h4').after(statusBadge);
+                    	buttonElement.replaceWith(`
+                                <button type="button" class="btn btn-outline-success status-button" onclick="updateStatus('k2')" style="float: right;">
+                                    컨펌요청
+                                </button>
+                            `);
 
+                    }
+				});
+			}else if(currentStatus == 'k2'){
+				isStatus = 'k3';
+				$.ajax({
+                    url: '/project/projectupdatestatus/' + pdwNo,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                    pdwNo: pdwNo, isStatus : isStatus 
+                    }),
+                    success: function(response) {
+                    	let buttonElement = $(`button[onclick="updateStatus('${currentStatus}')"]`);
+                    	$('#chat .badge').remove();
+                    	buttonElement.remove();
+                    	$('.status-button').remove();
+                    	
+                    	let statusBadge = '<span class="badge rounded-pill bg-info">컨펌중</span>';
+                        $('#chat h4').after(statusBadge);
+                    	
+
+                    }
+				});	
+			}
+			
+		}
+		
     </script>
 
     <!-- 재귀 함수 정의 -->
