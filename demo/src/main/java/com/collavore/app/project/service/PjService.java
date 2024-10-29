@@ -70,6 +70,9 @@ public interface PjService {
 	// 사원 리스트 출력
 	public List<ProjectVO> empList();
 	
+	// 상세업무의 업무자 리스트 출력
+	public List<ProjectVO> deteilwrkerList();
+	
 	
 //	public List<ProjectVO> getProjects(int page, int size);
 //

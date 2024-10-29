@@ -38,6 +38,7 @@ public class ProjectVO {
 	private Date regDate;
 	private String isStatus;
     private Date reqDate;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date compDate;
     private String commitId;
     private String importance;
