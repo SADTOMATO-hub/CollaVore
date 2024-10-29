@@ -89,9 +89,9 @@
 		<!-- 최상위 조직 -->
 		<div class="org-level">
 			<div class="org-box">
-				<img th:src="@{${deptList[0].mgrImg}}" alt="본부장 사진">
-				<div class="name" th:text="${deptList[0].mgrName}">본부장 이름</div>
-				<div class="position" th:text="${deptList[0].mgrPosition}">본부장
+				<img th:src="@{${deptList[0].img}}" alt="본부장 사진">
+				<div class="name" th:text="${deptList[0].empName}">본부장 이름</div>
+				<div class="position" th:text="${deptList[0].posiName}">본부장
 					직위</div>
 			</div>
 		</div>
@@ -100,7 +100,7 @@
 		<div class="org-level">
 			<div th:each="dept : ${deptList}" class="org-box">
 				<div class="name" th:text="${dept.deptName}">팀명</div>
-				<div class="position" th:text="${dept.mgrName}">팀장</div>
+				<div class="position" th:text="${dept.empName}">팀장</div>
 			</div>
 		</div>
 
