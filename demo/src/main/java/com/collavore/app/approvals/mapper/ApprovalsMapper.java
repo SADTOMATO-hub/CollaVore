@@ -17,14 +17,15 @@ public interface ApprovalsMapper {
 	public int updateTemp (ApprovalstempVO apprsVO);
 	//템플릿 삭제
 	public int deleteTemp (ApprovalstempVO apprsVO);
-	//전자결재 생성
-		//전자결재 테이블에 데이터 넣기
-		public int createApprsEa (ApprovalsVO approvalsVo);
-		//결재자 테이블에 데이터 넣기
-		public int createApprsEar (ApprovalsVO approvalsVo);
+		//전자결재 생성
+			//전자결재 테이블에 데이터 넣기
+			public int createApprsEa (ApprovalsVO approvalsVo);
+			//결재자 테이블에 데이터 넣기
+			public int createApprsEar (ApprovalsVO approvalsVo);
 	//나의 진행 중인 전자결재 목록 조회
 	public List<ApprovalsVO> myApprList (ApprovalsVO approvalsVo);
-	//전체 전자결재 목록 조회
+	//결재 해야할 전결 목록 조회
+	public List<ApprovalsVO> approveList (ApprovalsVO approvalsVo);
 	//전자결재 상세 조회
 	public ApprovalsVO readApproval (ApprovalsVO approvalsVo);
 	//결재자 상세

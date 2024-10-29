@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.collavore.app.approvals.service.ApprovalsService;
 import com.collavore.app.approvals.service.ApprovalsVO;
 import com.collavore.app.approvals.service.ApprovalstempVO;
+
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/approvals")
@@ -26,6 +29,7 @@ public class ApprovalsController {
 		this.approvalsService = approvalsService;
 	}
 
+	
 	@ModelAttribute
 	public void addAttributes(Model model) {
 		model.addAttribute("sidemenu", "approvals_sidebar");
@@ -103,13 +107,12 @@ public class ApprovalsController {
 		model.addAttribute("employeesInfo", employeesInfo);
 		return "approvals/createApprovalForm";
 	}
+	
 	// 전자결재 생성 시, 데이터를 받는 곳
 	@PostMapping("/createAppr")
 	public String createAppr(ApprovalsVO apprVO) {
-		System.out.println(apprVO);
 		approvalsService.insertApprsEa(apprVO); 
 		if (apprVO.getEaNo() >= 0) {
-			//apprVO.setEaNo(EaNo); //새로 만들어진 전자결재에 전자결재 번호를 매겨 줌
 			int resultOfEar = approvalsService.insertApprsEar(apprVO); // 전자결재 //원래 없던 ea가 들어감
 			if (resultOfEar >= 0) {
 				return "redirect:/approvals/tempList";
@@ -118,12 +121,30 @@ public class ApprovalsController {
 		return null;
 	}
 
-	// 전자결재 템플릿 내용만 호출하는 기능
-	@GetMapping("/temp")
-	@ResponseBody
-	public ApprovalstempVO info(ApprovalstempVO apprVO) {
-		ApprovalstempVO tempInfo = approvalsService.apprInfo(apprVO);
-		return tempInfo;
+	//진행 중인 전자결재 목록
+	@GetMapping("/myApprList/{status}")
+	public String myApprList(ApprovalsVO apprVO
+													,Model model
+													,@PathVariable("status") String approvalStatus
+												  ,HttpSession session) {
+		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
+		apprVO.setUserEmpNo(userEmpNo);
+		List<ApprovalsVO> apprList = approvalsService.myApprList(apprVO);
+		model.addAttribute("myApprList", apprList);
+		return "approvals/onProcess";
+	} 
+	
+	//결재 해야할 전결 목록 조회
+	@GetMapping("/approveList/{status}")
+	public String approveList(ApprovalsVO apprVO
+													,Model model
+													,@PathVariable("status") String approverStatus
+												  ,HttpSession session) {
+		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
+		apprVO.setUserEmpNo(userEmpNo);
+		List<ApprovalsVO> apprList = approvalsService.approveList(apprVO);
+		model.addAttribute("approveList", apprList);
+		return "approvals/approvalList";
 	}
 	
 	//전자결재 상세페이지
@@ -134,6 +155,14 @@ public class ApprovalsController {
 		model.addAttribute("approvals", approvals);
 		model.addAttribute("approvers", approvers);
 		return "approvals/readApproval";
+	}
+	
+//전자결재 템플릿 내용만 호출하는 기능
+	@GetMapping("/temp")
+	@ResponseBody
+	public ApprovalstempVO info(ApprovalstempVO apprVO) {
+		ApprovalstempVO tempInfo = approvalsService.apprInfo(apprVO);
+		return tempInfo;
 	}
 	
 	//전자결재 삭제
