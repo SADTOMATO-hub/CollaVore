@@ -42,7 +42,7 @@ public class MemberController {
 	private final DeptService deptService;
 	private final JobService jobService;
 	private final PosiService posiService;
-	@Value("${file.upload.path}") // 메모리에 올라가 있는 변수값을 가져오기 때문에 표현이 다름
+	@Value("${file.upload.path}") // 메모리에 올라가 있는 변수값을 가져오기 때문에 표현이 다름아아아아아
     private String uploadPath;
 	
 	@Autowired
