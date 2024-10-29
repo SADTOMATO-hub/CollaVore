@@ -87,7 +87,7 @@
 							<li><a class="dropdown-item" th:href="@{/board/bodsList?boardNo=1}">공지사항</a></li>
 							<li><a class="dropdown-item" th:href="@{/board/bodsList?boardNo=2}">자유게시판</a></li>
 							<li><hr class="dropdown-divider" /></li>
-							<li><a class="dropdown-item" href="#">게시판설정</a></li>
+							<li><a class="dropdown-item" th:href="@{/board/bodsCfig}">게시판관리</a></li>
 						</ul>
 					</li>
 				</ul>
@@ -116,7 +116,7 @@
 							</li>
 							<li>
 								<!-- 링링 로그아웃 -->
-								<a class="dropdown-item" href="/logout"> 
+								<a class="dropdown-item" th:href="@{/logout}"> 
 									<i class="fa fa-power-off me-1 ms-1"></i> Logout
 								</a>
 							</li>
