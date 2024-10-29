@@ -2,29 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.collavore.app.cals.mapper.SchsMapper">
 
-	<!--============================== 일정관리 ==================================== -->
 	<select id="selectSchsAll" resultType="SchsVO">
 		SELECT
-		schs.sch_no,
-		schs.title,
-		schs.start_date,
-		schs.end_date,
-		schs.cal_no,
-		cals.name,       <!-- 캘린더 이름 조회 -->
-		cals.cal_type,   <!-- 캘린더 타입 조회 -->
-		schs.is_alarm,
-		cals.color       <!-- 색상 정보 조회 -->
-		FROM
-		schs
-		JOIN
-		cals ON schs.cal_no = cals.cal_no  <!-- schs와 cals 테이블 조인 -->
+			schs.sch_no,
+			schs.title,
+			schs.start_date,
+			schs.end_date,
+			schs.cal_no,
+			cals.name AS cal_name, 
+			cals.cal_type, 
+			schs.is_alarm,
+			cals.color, 
+			LISTAGG(calshares.emp_no, ',') WITHIN GROUP (ORDER BY calshares.emp_no) AS emp_nos
+		FROM schs
+			JOIN cals ON schs.cal_no = cals.cal_no AND cals.is_delete = 'h2'
+			LEFT JOIN calshares ON schs.cal_no = calshares.cal_no 
 		WHERE
-		cals.is_delete = 'h2'  <!-- 삭제되지 않은 일정만 조회 -->
-		ORDER BY
-		schs.sch_no      <!-- 콘솔에서 보기 편하려고 임시로 설정 -->
+			calshares.emp_no = #{empNo}
+		GROUP BY
+			schs.sch_no, schs.title, schs.start_date, schs.end_date, schs.cal_no, cals.name,
+			cals.cal_type, schs.is_alarm, cals.color
+			ORDER BY
+			schs.sch_no 
 	</select>
-
-
 	<!-- 단건 일정 조회 -->
 	<select id="selectSchsInfo" parameterType="SchsVO"
 		resultType="SchsVO">
@@ -43,9 +43,11 @@
 		MAX(a.alarm_day) AS alarm_day,
 		MAX(a.alarm_time) AS alarm_time
 		FROM schs s
-		LEFT JOIN cals c ON s.cal_no = c.cal_no
+		LEFT JOIN cals c ON s.cal_no
+		= c.cal_no
 		LEFT JOIN schalarms a ON s.sch_no = a.sch_no
-		WHERE s.sch_no = #{schNo}
+		WHERE s.sch_no =
+		#{schNo}
 		GROUP BY
 		s.sch_no, s.title, s.start_date, s.end_date,
 		s.is_alarm, s.cal_no, c.name,
@@ -117,12 +119,6 @@
 		WHERE type = #{type} AND is_delete
 		= 'h2'
 	</select>
-
-	<!-- <insert id="insertSchsInfo" parameterType="SchsVO"> <selectKey keyProperty="schNo" 
-		resultType="Integer" order="BEFORE"> SELECT NVL(MAX(sch_no), 0)+1 FROM schs 
-		</selectKey> INSERT INTO schs ( sch_no ,title ,start_Date ,end_date ,cal_no 
-		,is_alarm ) VALUES ( #{schNo} ,#{title} ,#{startDate,jdbcType=TIMESTAMP} 
-		,#{endDate,jdbcType=TIMESTAMP} ,#{calNo} ,#{isAlarm} ) </insert> -->
 
 
 	<delete id="deleteSchsInfo" parameterType="int">
@@ -206,23 +202,49 @@
 	<!--==============================개인 캘린더==================================== -->
 
 
-	<select id="selectTeamCal" resultType="SchsVO">
+	<!-- <select id="selectTeamCal" resultType="SchsVO"> SELECT cs.cal_no, c.name 
+		|| ' ' || CASE WHEN c.cal_type = 'g1' THEN '(개인)' WHEN c.cal_type = 'g2' 
+		THEN '(공유)' ELSE '프로젝트' END AS name FROM calshares cs INNER JOIN cals c ON 
+		c.cal_no = cs.cal_no WHERE cs.emp_no = #{empNo} AND c.cal_type = 'g1' ORDER 
+		BY CASE WHEN c.cal_type = 'g1' THEN 1 ELSE 9999 END, c.name </select> -->
+
+	<!-- 캘린더 일정 조회 -->
+	<select id="selectAllCal" resultType="SchsVO">
 		SELECT cs.cal_no,
-		c.name || ' ' || CASE
-		WHEN c.cal_type = 'g1' THEN
-		'(개인)'
-		WHEN c.cal_type = 'g2' THEN '(공유)'
+		c.name ||
+		' ' || CASE
+		WHEN c.cal_type = 'g1' THEN '(개인)'
+		WHEN
+		c.cal_type = 'g2'
+		THEN '(공유)'
 		ELSE '프로젝트' END AS name
 		FROM
 		calshares cs
-		INNER JOIN cals c ON c.cal_no = cs.cal_no
+		INNER JOIN cals c ON
+		c.cal_no = cs.cal_no
 		WHERE cs.emp_no =
 		#{empNo}
-		<!-- AND c.cal_type = 'g1' -->
 		ORDER BY CASE WHEN c.cal_type = 'g1' THEN 1 ELSE 9999 END, c.name
 	</select>
 
+	<!-- 공유캘린더 리스트 -->
+	<select id="selectTeamCal" resultType="SchsVO">
+		SELECT cs.cal_no,
+			c.name ||
+			' ' || CASE
+			WHEN c.cal_type = 'g1' THEN '(개인)'
+			WHEN c.cal_type = 'g2'
+			THEN '(공유)'
+			ELSE '프로젝트' END AS name
+		FROM calshares cs
+			INNER JOIN cals c ON c.cal_no = cs.cal_no
+		WHERE cs.emp_no = #{empNo}
+			AND c.cal_type = 'g2'
+		ORDER BY c.name
+	</select>
 
+
+	<!-- 캘린더 등록 -->
 	<insert id="insertCalsInfo" parameterType="SchsVO">
 		<!-- INSERT 전 calNo를 계산하기 위한 selectKey -->
 		<selectKey keyProperty="calNo" resultType="Integer"
@@ -304,6 +326,14 @@
 	</delete>
 	<!--==============================END 개인 캘린더 ==================================== -->
 
+
+	<!-- 새로 등록된 사원에 내캘린더 생성 메 -->
+	<update id="insertMyCal" statementType="CALLABLE">
+		{call insert_my_cal(
+			#{empNo, mode=IN, jdbcType=NUMERIC},
+			#{result, mode=OUT, jdbcType=NUMERIC}
+		)}
+	</update>
 
 
 </mapper>
