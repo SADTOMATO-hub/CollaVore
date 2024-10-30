@@ -151,7 +151,6 @@
 	<!-- ------------------------------------- -->
 	<!-- ------------------------------------- -->
 	<!-- ------------------------------------- -->
-	</body>
 	<script>
 	const userEmpNo = '[[${session.userEmpNo}]]';
 	// SmartEditor 참조를 위한 배열
@@ -200,7 +199,6 @@
 $(document).ready(
 		function() {
 			const modal = $("#apprModal");
-			const modalBtn = $("#modalBtn");
 			const closeBtn = $(".close");
 			// 모달 열기 버튼 클릭 시 이벤트 처리
 			$('.modalBtn').on('click', function() {
@@ -238,15 +236,6 @@ $(document).ready(
 				$('#apprerTable tbody tr').eq(1).children().eq(seq).find('span').html(selectedApproversInfo);					
 				$('#selectApprovers').prop('selectedIndex', 0);
 				$('#approversSelect').modal('hide');				
-				
-				console.log('================================================')
-				console.log('직함 = ' + selectedApproversInfo);
-				console.log('사원명 = ' + selectedApproversName);
-				console.log('사원 번호 = ' + selectedApproversEmp)
-				console.log('seq = ' + seq);
-				console.log('empNoList = ' + `${JSON.stringify(empNoListVal)}`);
-				//console.log('sort = ' + `${JSON.stringify(sortVal)}`);
-				console.log('================================================')
 			});
 		});
 	//

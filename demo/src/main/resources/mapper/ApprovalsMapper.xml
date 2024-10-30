@@ -122,53 +122,67 @@
 	<!-- 나의 진행 중인 전자결재 목록 조회 -->
 	<select id="myApprList" parameterType="ApprovalsVO"
 		resultType="ApprovalsVO">
-		SELECT ea_no
-		,title
-		,status
-		,reg_date
+		SELECT  a.ea_no 
+			  ,a.title
+     		  ,e.name as "drafterName"
+   		 	  ,a.reg_date
 		<if test="compDate != null || compDate != ''">
-			,comp_date
+			,a.comp_date
 		</if>
-		FROM approvals
-		WHERE emp_no = #{userEmpNo}
+		FROM approvals a INNER JOIN employees e
+				ON a.emp_no = e.emp_no
+		WHERE e.emp_no = #{userEmpNo}
 		<choose>
 			<when test="approvalStatus == 'a1'">
-				AND status = #{approvalStatus}
+				AND a.status = 'a1'
 			</when>
 			<when test="approvalStatus == 'a2'">
-				AND status = #{approvalStatus}
+				 AND a.status = 'a2'
 			</when>
-			<otherwise>
-				AND status IN (#{approvalStatus}, a4')
-			</otherwise>
+			<when test="approvalStatus == 'a3'"> 
+				 AND a.status = 'a3'
+			</when>
+			<when test="approvalStatus == 'a4'">
+				 AND a.status = 'a4'
+			</when>
 		</choose>
+		ORDER BY a.reg_date
 	</select>
 	<!-- -->
 
 	<!-- 문서함 -->
-	<select id="approveList" parameterType="ApprovalsVO"
-		resultType="ApprovalsVO">
-			SELECT *
+	<select id="approveList" parameterType="ApprovalsVO" resultType="ApprovalsVO">
+			SELECT 	 a.ea_no
+					 ,a.title
+     				 ,e.name as "drafterName"
+   		 		  	 ,a.reg_date
+				<if test="compDate != null || compDate != ''">
+					,a.comp_date
+				</if>
 			FROM approvals a
-			INNER JOIN approvers ar ON a.ea_no = ar.ea_no
+				INNER JOIN approvers ar 
+					ON a.ea_no = ar.ea_no
+				JOIN employees E
+   					ON a.emp_no = e.emp_no
 		<choose>
-			<when test=" apprStatus == all ">
+			<when test="listStatus == 'all'">
 				WHERE a.status IN ('a3','a4')
 				AND (a.emp_no = #{userEmpNo} OR ar.emp_no = #{userEmpNo})
 			</when>
-			<when test="apprStatus == userEmpNo">
+			<when test="listStatus == 'drafted'">
 				WHERE a.status IN ('a3','a4')
 				AND (a.emp_no = #{userEmpNo})
 			</when>
-			<when test="apprStatus ==  userEmpNo">
+			<when test="listStatus == 'approved'">
 				WHERE a.status IN ('a3','a4')
 				 AND (ar.emp_no = #{userEmpNo})
 			</when>
-			<otherwise>
+			<when test="listStatus == 'denied'">
 				WHERE a.status IN ('a3','a4')
 				AND (a.emp_no = #{userEmpNo} OR ar.emp_no = #{userEmpNo})
-			</otherwise>
+			</when>
 		</choose>
+		ORDER BY a.comp_date
 	</select>
 	<!-- -->
 
@@ -180,10 +194,9 @@
 		,a.content
 		,a.reg_date
 		,a.comp_date
-		,a.emp_no as
-		"drafterEmpNo"
+		,a.emp_no as "drafterEmpNo"
 		,e.name as "drafterName"
-		,a.status as "approvalStatus"
+		,a.status as "approverStatus"
 		FROM approvals a LEFT JOIN employees e
 		ON a.emp_no = e.emp_no
 		WHERE
@@ -191,22 +204,17 @@
 	</select>
 	<!-- -->
 
-	<!-- 결재하기 -->
-	<update id="updateApprStatus" statementType="CALLABLE">
-		{ CALL
-		appr_status_update(#{earNo, mode=IN}, #{apprStatus, mode=IN}) }
-	</update>
-	<!-- -->
 
 	<!-- 결재자 상세 조회 -->
 	<select id="readApprovers" parameterType="Integer"
 		resultType="map">
 		SELECT
-		r.status as "approverStatus"
-		,e.name as "approverName"
-		,e.emp_no as "approverEmpNo"
-		,p.name as "positionTitle"
-		,r.sort
+				r.status as "approverStatus"
+				,e.name as "approverName"
+				,e.emp_no as "approverEmpNo"
+				,p.name as "positionTitle"
+				,r.sort
+				,r.ear_no
 		FROM
 		approvals a JOIN approvers r
 		ON a.ea_no = r.ea_no
@@ -221,6 +229,13 @@
 	</select>
 	<!-- -->
 
+	<!-- 결재하기 -->
+	<update id="updateApprStatus" statementType="CALLABLE">
+		{ CALL
+		appr_status_update(#{earNo, mode=IN}, #{approverStatus, mode=IN}) }
+	</update>
+	<!-- -->
+	
 	<!-- 전자결재 삭제 -->
 	<select id="deleteApproval" statementType="CALLABLE"
 		resultType="Integer">

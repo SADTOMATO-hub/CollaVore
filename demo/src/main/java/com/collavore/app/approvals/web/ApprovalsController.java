@@ -122,8 +122,9 @@ public class ApprovalsController {
 	}
 
 	//진행 중인 전자결재 목록
-	@GetMapping("/myApprList/")
+	@GetMapping("/myApprList/{approvalStatus}")
 	public String myApprList(ApprovalsVO apprVO
+													,@PathVariable("approvalStatus") String approvalStatus
 													,Model model
 												  ,HttpSession session) {
 		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
@@ -134,10 +135,10 @@ public class ApprovalsController {
 	} 
 	
 	//문서함
-	@GetMapping("/approveList/{status}")
+	@GetMapping("/approveList/{listStatus}")
 	public String approveList(ApprovalsVO apprVO
 													,Model model
-													,@PathVariable("status") String approverStatus
+													,@PathVariable("listStatus") String listStatus
 												  ,HttpSession session) {
 		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
 		apprVO.setUserEmpNo(userEmpNo);
@@ -148,7 +149,9 @@ public class ApprovalsController {
 	
 	//전자결재 상세페이지
 	@GetMapping("/readApprInfo")
-	public String readapprinfo (Model model,ApprovalsVO apprVO) {
+	public String readapprinfo (Model model, ApprovalsVO apprVO, HttpSession session) {
+		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
+		apprVO.setUserEmpNo(userEmpNo);
 		ApprovalsVO approvals = approvalsService.approvalsInfo(apprVO);
 		List<Map<String,Object>> approvers = approvalsService.approversInfo(apprVO);
 		model.addAttribute("approvals", approvals);
@@ -156,7 +159,18 @@ public class ApprovalsController {
 		return "approvals/readApproval";
 	}
 	
-//전자결재 템플릿 내용만 호출하는 기능
+	//결재하기
+	@PostMapping("/updateAppr")
+	@ResponseBody
+	public int updateApprove (ApprovalsVO apprVO) {
+		int updateApprStatus = approvalsService.updateApprStatus(apprVO);
+		if(updateApprStatus > 0) {
+			return 1;
+		}
+		return 2;
+	}
+	
+	//전자결재 템플릿 내용만 호출하는 기능
 	@GetMapping("/temp")
 	@ResponseBody
 	public ApprovalstempVO info(ApprovalstempVO apprVO) {

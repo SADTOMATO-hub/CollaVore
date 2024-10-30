@@ -11,7 +11,7 @@
 		<!-- ------------------------------------ 진행 중인 전자결재 ------------------------------------- -->
 		<li class="sidebar-item"><a
 			class="sidebar-link has-arrow waves-effect waves-dark"
-			th:href="@{/approvals/onProcess/emps/b1}" aria-expanded="false">
+			href="javascript:void(0)" aria-expanded="false">
 				<i class="mdi mdi-receipt"></i> <span class="hide-menu"> 진행
 					중인 전자결재 </span>
 		</a>
@@ -36,7 +36,7 @@
 		<!-- ------------------------------문서함------------------------------------- -->
 		<li class="sidebar-item"><a
 			class="sidebar-link has-arrow waves-effect waves-dark"
-			th:href="@{/approvals/approvalList/}" aria-expanded="false"> <i
+			href="javascript:void(0)" aria-expanded="false"> <i
 				class="mdi mdi-receipt"></i> <span class="hide-menu"> 문서함 </span></a>
 			<ul aria-expanded="false" class="collapse first-level">
 				<li class="sidebar-item"><a
@@ -44,17 +44,17 @@
 						class="mdi mdi-note-outline"></i> <span class="hide-menu">
 							전체 </span></a></li>
 				<li class="sidebar-item"><a
-					th:href="@{/approvals/approveList/}" class="sidebar-link">
+					th:href="@{/approvals/approveList/drafted}" class="sidebar-link">
 						<i class="mdi mdi-note-outline"></i> <span class="hide-menu">
 							기안 </span>
 				</a></li>
 				<li class="sidebar-item"><a
-					th:href="@{/approvals/approveList/b2}" class="sidebar-link">
+					th:href="@{/approvals/approveList/approved}" class="sidebar-link">
 						<i class="mdi mdi-note-outline"></i> <span class="hide-menu">
-							진행 </span>
+							승인 </span>
 				</a></li>
 				<li class="sidebar-item"><a
-					th:href="@{/approvals/approveList/b3}" class="sidebar-link">
+					th:href="@{/approvals/approveList/denied}" class="sidebar-link">
 						<i class="mdi mdi-note-outline"></i> <span class="hide-menu">
 							반려 </span>
 				</a></li>
