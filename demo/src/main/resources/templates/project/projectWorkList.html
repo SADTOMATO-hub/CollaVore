@@ -2,10 +2,7 @@
      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
      layout:decorate="~{common/layouts/default_layout}"
      layout:fragment="Content">
-    <head>
-        <link rel="stylesheet"
-              href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
-    </head>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
     <style>
         .no-border-button {
             border: none;
@@ -325,10 +322,118 @@
                       </i>
                      </a>
                     </div>
-</div></div></div>
-            </div>
+				</div>
+			</div>
+		</div>
+		<!-- 프로젝트 Info -->
+<div class="insert-panel" id="projinfodel" style="display: none;">
+    <h4>프로젝트 Info</h4>
+    <form id="projinofodelform">
+        <div class="mb-3">
+            <label for="nameProjWrks" class="form-label">프로젝트 명</label>
+            <input type="text" id="projectname" name="name" class="form-control" readonly>
         </div>
+        <div class="mb-3">
+            <label class="form-label">개 요</label>
+            <input type="text" id="projectcontent" name="content" class="form-control" readonly>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">프로젝트 시작</label>
+            <input type="text" id="projectstartdate" name="startDate" class="form-control" readonly>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">프로젝트 종료</label>
+            <input type="text" id="projectenddate" name="endDate" class="form-control" readonly>
+        </div>
+         	<div class="mb-3">
+				<span class="badge rounded-pill bg-secondary"
+					th:if="${isStatus == 'j1'}">진행전</span> 
+				<span
+					class="badge rounded-pill bg-info"
+					th:if="${isStatus == 'j2'}">진행중</span>
+				<span
+					class="badge rounded-pill bg-success"
+					th:if="${isStatus == 'j3'}">완 료</span>
+			</div>
+            <div class="mb-3">
+            <label class="form-label">프로젝트 깃 주소</label>
+            <input type="text" id="projectgiturl" name="projectGiturl" class="form-control" readonly>
+        	</div>
+<!--             <div class="mb-3">
+            <label class="form-label">프로젝트 담당자</label>
+            <input type="text" id="projectmgrno" name="pMgrNo" class="form-control" readonly>
+        	</div> -->
+            <div>
+                  <label class="form-label">업무 타입</label>
+                  <select class="form-select" name="jobNo" id="jobnoinfo" required>
+					<option value="0">선택하세요</option>
+					<option th:each="info : ${jobs}"
+						th:value="${info.jobNo}">[[${info.name}]]</option>
+				</select>
+               </div>
+           <div class="mb-3">
+            <label class="form-label" >업무 담당자</label>
+			<select class="form-select" name="pmgrNo" id="projectmgrno"disabled>
+				<option value="0">선택하세요</option>
+				<option th:each="info : ${projmgriist}"
+					th:value="${info.empNo}">[[${info.name}]]</option>
+			</select>
+        </div> 
+         
+        <div>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">삭제</button>
+        </div>
+    </form>
+</div>
+
+<div class="insert-panel" id="wrkInfodel" style="display: none;">
+    <h4>업무 Info</h4>
+    <form id="wrkinfodelform">
+        <div>
+            <label for="nameProjWrks" class="form-label">업무 이름</label>
+            <input type="text" id="wrkname" name="name" class="form-control" readonly>
+        </div>
+        <div>
+            <label class="form-label">업무 내용</label>
+            <input type="text" id="wrkcontent" name="content" class="form-control" readonly>
+        </div>
+<!--         <div>
+            <label class="form-label">업무 타입</label>
+            <input type="text" id="jobwrks" name="jobNo" class="form-control" readonly>
+        </div> 
+        <div>
+            <label class="form-label">업무 담당자</label>
+            <input type="text" id="wrkmgrinfo" name="mgrNo" class="form-control" readonly>
+        </div>  -->
+		<div>
+             <label class="form-label">업무 타입</label>
+             <select class="form-select" name="jobNo" id="jobwrks" disabled>
+		<option value="0">선택하세요</option>
+		<option th:each="info : ${jobs}"
+			th:value="${info.jobNo}">[[${info.name}]]</option>
+	</select>
+          </div>   
+         <div>
+            <label class="form-label" >업무 담당자</label>
+	<select class="form-select" name="mgrNo" id="wrkmgrinfo"disabled>
+		<option value="0">선택하세요</option>
+		<option th:each="info : ${projmgriist}"
+			th:value="${info.empNo}">[[${info.name}]]</option>
+	</select>
+        </div>            
+        <div>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary">삭제</button>
+        </div>
+    </form>
+</div>
+
+      </div>
     </div>
+</div>
 
 
     <!-- Include jQuery library -->
@@ -493,7 +598,8 @@
                         $('#insertPanelProjdwrks').hide();
                         $('#insertPanelProjwrks').hide();
                         $('#chat').hide();
-                        
+                        $('#wrkInfodel').hide();
+                        $('#projinfodel').hide();
                         
                         $('#editProjName').val(response.name);
                         $('#editProjContent').val(response.content);
@@ -521,6 +627,8 @@
                 $('#insertPanelProjdwrks').hide();
                 $('#insertPanelProjwrks').hide();
                 $('#chat').hide();
+                $('#wrkInfodel').hide();
+                $('#projinfodel').hide();
                 
                 $.ajax({
                     url: `/project/projectwrklistinfo/${pwNo}`, 
@@ -549,13 +657,15 @@
                 $('#insertPanelProjwrks').hide();
                 $('#editProjectModal').hide();
                 $('#chat').hide();
+                $('#wrkInfodel').hide();
+                $('#projinfodel').hide();
                 
                 $.ajax({
                     url: `/project/projectdwrkinfo/${pwNo}`, 
                     type: 'GET',
                     dataType: 'json', 
                     success: function(response) {
-                    	console.log(response);
+                    	
                     	handleJobNoChange(response.jobNo);
                         $('#projdwrkname').val(response.name);
                         $('#projdwrkcontent').val(response.content);
@@ -684,16 +794,100 @@
             const projectName = $(buttonElement).text();
             const projNo = $(buttonElement).parent().attr('id').split('_')[1];
             const pdwNo = parseInt(projNo.replace(/^[PW]/, ''), 10);
-
+			const pwNo = pdwNo;
             const chat = document.getElementById('chat');
-            if (level >= 3) {
+            
+            if(level <= 1){
+            	$('#projinfodel').show();
+            	 $('#chat').hide();
+                 $('#editProjectModal').hide();
+                 $('#wrkInfo').hide();
+                 $('#dwrkInfo').hide();
+                 $('#insertPanelProjdwrks').hide();
+                 $('#insertPanelProjwrks').hide();
+                 
+                 
+                 $.ajax({
+                	    url: `/project/projectlistinfo/${pwNo}`, 
+                	    type: 'GET',
+                	    success: function(response) {
+                	    	// 옵션값 함수 호출
+                        	handleJobNoChange(response.jobNo);
+                	    	
+                	        $('#projinfodel').show();
+                	        $('#editProjectModal').hide();
+                	        $('#wrkInfo').hide();
+                	        $('#dwrkInfo').hide();
+                	        $('#insertPanelProjdwrks').hide();
+                	        $('#insertPanelProjwrks').hide();
+                	        $('#chat').hide();
+                	        $('#wrkInfodel').hide();
+                	        
+                	        // 값 설정
+                	        $('#projinfodel h4').text(response.name);
+                	        $('#projectname').val(response.name);
+                	        $('#projectcontent').val(response.content);
+                	        $('#projectgiturl').val(response.projectGitUrl);
+                	        $('#projNo').val(response.projNo);
+                	        
+                	        const formatDate = (dateString) => {
+                	            const date = new Date(dateString);
+                	            return date.toISOString().split('T')[0]; 
+                	        }; 
+                	        $('#projectstartdate').val(formatDate(response.startDate));
+                	        $('#projectenddate').val(formatDate(response.endDate));
+                	        setTimeout(() => {
+                	        	$('#projectmgrno').val(response.pmgrNo);
+                            }, 50);
+                	        $('#"jobnoinfo"').val(response.jobNo);
+                	    }
+                	});
+            }else if(level <= 2){
+                $('#wrkInfodel').show();
+                $('#projinfodel').hide();
+                $('#chat').hide();
+                $('#editProjectModal').hide();
+                $('#wrkInfo').hide();
+                $('#dwrkInfo').hide();
+                $('#insertPanelProjdwrks').hide();
+                $('#insertPanelProjwrks').hide();
+                
+
+                $.ajax({
+                    url: `/project/projectwrklistinfo/${pwNo}`, 
+                    type: 'GET',
+                    dataType: 'json', 
+                    success: function(response) {
+                        // 응답 확인
+                        console.log('Response:', response);
+                        handleJobNoChange(response.jobNo);
+                        
+                        // DOM 요소에 값 설정
+                        $('#wrkInfodel h4').text(projectName);
+                        $('#wrkname').val(response.name);
+                        $('#wrkcontent').val(response.content);
+                        $('#jobwrks').val(response.jobNo);
+                        setTimeout(() => {
+                            $('#wrkmgrinfo').val(response.mgrNo); // 선택된 값을 설정
+                        }, 50);
+                    },
+                    error: function(xhr, status, error) {
+                        alert('프로젝트 정보를 가져오는 데 실패했습니다: ' + error);
+                        console.error(`Error: ${status} - ${error}`);
+                    }
+                });
+
+            }else {
                 $('#chat').show();
                 $('#editProjectModal').hide();
                 $('#wrkInfo').hide();
                 $('#dwrkInfo').hide();
                 $('#insertPanelProjdwrks').hide();
                 $('#insertPanelProjwrks').hide();
-
+                $('#projinfodel').hide();
+                $('#wrkInfodel').hide();
+                $('#projinfodel').hide();
+                
                 $('#chat h4').text(projectName + ' 상세업무 코멘트');
                 $('#pdwNode').val(pdwNo);
                 $.ajax({
@@ -902,6 +1096,7 @@
                         $('#mgrNoProjWrksUpdate2').empty().append('<option value="0">선택하세요</option>');
                         $('#updatemgrNoProjDwrks').empty().append('<option value="0">선택하세요</option>');
                         $('#mgrNoProjdWrks').empty().append('<option value="0">선택하세요</option>');
+                        $('#wrkmgrinfo').empty().append('<option value="0">선택하세요</option>');
                         // 새로운 옵션 추가
                         $.each(response, function(index, info) {
                             $('#mgrNoProjWrks').append('<option value="' + info.empNo + '">' + info.name + '</option>');
@@ -909,6 +1104,7 @@
                             $('#mgrNoProjWrksUpdate2').append('<option value="' + info.empNo + '">' + info.name + '</option>');
                             $('#updatemgrNoProjDwrks').append('<option value="' + info.empNo + '">' + info.name + '</option>');
                             $('#mgrNoProjdWrks').append('<option value="' + info.empNo + '">' + info.name + '</option>');
+                            $('#wrkmgrinfo').append('<option value="' + info.empNo + '">' + info.name + '</option>');
                         });
                     },
                     error: function() {
