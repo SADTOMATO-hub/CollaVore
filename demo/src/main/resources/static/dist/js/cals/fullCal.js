@@ -806,6 +806,9 @@ document.addEventListener('DOMContentLoaded', function() {
 					sharedCalendarList.appendChild(newCalendarItem);
 
 					//============ 사이드바 내 캘린더 수정 ==============
+
+
+
 					// 연필 아이콘 클릭 이벤트 바로 추가
 					const editIcon = newCalendarItem.querySelector('.edit-icon');
 					editIcon.addEventListener('click', function() {
@@ -815,8 +818,11 @@ document.addEventListener('DOMContentLoaded', function() {
 						// 선택된 calNo 값을 hidden input에 설정
 						document.getElementById('selectedCalNo').value = selectedCalNo;
 						// 모달 열기
+						loadDeptAndEmpForEditModal();  // 부서와 사원 목록 로드
 						document.getElementById('editCalendarModal').style.display = 'block';
 					});
+
+
 
 					// 연필 아이콘 클릭 이벤트 바로 추가
 					// 사이드바의 전체 영역에 이벤트 위임을 사용하여 edit-icon 클릭 이벤트 처리
@@ -851,6 +857,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						});
 					});
 
+
 					document.getElementById('editCalendarForm').onsubmit = function(e) {
 						e.preventDefault();
 
@@ -858,6 +865,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						const calNo = document.getElementById('selectedCalNo').value;
 						const name = document.getElementById('editCalendarName').value;
 						const color = document.querySelector('input[name="color"]:checked').value;
+
 
 						// 서버로 수정 요청 보내기
 						fetch('/cal/calUpdate', {
@@ -896,51 +904,128 @@ document.addEventListener('DOMContentLoaded', function() {
 	};
 	document.getElementById('cancelSharedCalendar').onclick = function() {
 		document.getElementById('sharedCalendarModal').style.display = 'none';
+
 	};
 
 
-	// 부서 선택 시 해당 부서의 사원 목록을 가져와서 참여자 리스트에 추가
-	document.getElementById("sharedCalendarDept").addEventListener("change", function() {
-		const selectedDeptNo = this.value; // 선택된 부서 번호
-		console.log("Selected Dept No:", selectedDeptNo); // 선택된 부서 번호 확인
-		// 서버에 요청하여 해당 부서의 사원 목록 가져오기
-		fetch(`/cal/deptEmp?deptNo=${selectedDeptNo}`)
-			.then(response => response.json())
-			.then(data => {
-				console.log("Fetched Employee Data:", data); // 서버에서 받은 데이터 확인
-				// 참여자 셀렉트 박스 초기화
-				const participantsSelect = document.getElementById("participants");
-				participantsSelect.innerHTML = "";
 
-				// 받아온 데이터를 참여자 셀렉트 박스에 추가
-				data.forEach(employee => {
-					const option = document.createElement("option");
-					option.value = employee.emp_no; // 사원 번호
-					option.textContent = employee.name; // 사원 이름
-					participantsSelect.appendChild(option);
-				});
-			})
-			.catch(error => {
-				console.error("Error fetching department employees:", error);
+
+	// 중복 체크용 Set 생성
+	const selectedEmpNos = new Set();
+
+	// 페이지 로드 시 부서와 사원 데이터를 한 번에 가져오기
+
+	fetch("/cal/deptWithEmp")
+		.then(response => response.json())
+		.then(data => {
+
+			const deptListContainer = document.getElementById("sharedCalendarDeptList");
+			deptListContainer.innerHTML = ""; // 중복 방지를 위해 리스트 초기화
+
+			// 부서별로 사원을 저장할 객체 생성
+			const deptEmployeeMap = {};
+
+			data.forEach(item => {
+				const deptNo = item.DEPT_NO;
+				const deptName = item.DEPT_NAME;
+				const empNo = item.EMP_NO;
+				const empName = item.EMP_NAME;
+
+				// 부서 항목이 없으면 생성
+				if (!deptEmployeeMap[deptNo]) {
+					deptEmployeeMap[deptNo] = {
+						deptName: deptName,
+						employees: []
+					};
+				}
+
+				// 사원이 있으면 목록에 추가
+				if (empNo) {
+					deptEmployeeMap[deptNo].employees.push({ empNo, empName });
+				}
 			});
-	});
 
-	// 참여자를 추가할 때 선택된 항목을 참여자 리스트로 이동
-	document.getElementById("participants").addEventListener("change", function() {
-		const selectedOptions = Array.from(this.selectedOptions);
-		const selectedList = document.getElementById("selectedParticipantsList");
-		console.log("Selected Options:", selectedOptions); // 선택된 옵션들 확인
-		// 선택된 참여자 목록에 추가
-		selectedOptions.forEach(option => {
-			const participant = document.createElement("li");
-			participant.textContent = option.textContent;
-			participant.setAttribute("data-empno", option.value); // 사원 번호를 데이터 속성으로 추가
-			selectedList.appendChild(participant);
-		});
+			// 부서 목록 렌더링
+			Object.keys(deptEmployeeMap).forEach(deptNo => {
+				const deptItem = document.createElement("li");
+				deptItem.classList.add("dept-item");
+				deptItem.textContent = deptEmployeeMap[deptNo].deptName;
+				deptItem.dataset.deptno = deptNo;
 
-		// 선택된 항목은 다시 선택되지 않도록 제거
-		selectedOptions.forEach(option => option.remove());
-	});
+				// 부서 클릭 시 사원 목록 표시
+				deptItem.onclick = function() {
+					const employeeContainer = document.getElementById("employeeContainer");
+					employeeContainer.innerHTML = ''; // 이전 사원 목록 초기화
+
+					const employeeListUl = document.createElement("ul");
+					employeeListUl.classList.add("employee-list");
+
+					deptEmployeeMap[deptNo].employees.forEach(employee => {
+						const empItem = document.createElement("li");
+						empItem.classList.add("emp-item");
+						empItem.dataset.empno = employee.empNo;
+
+						// 사원 이름 span
+						const empNameSpan = document.createElement("span");
+						empNameSpan.textContent = employee.empName;
+
+						// 체크 표시 span
+						const checkIcon = document.createElement("span");
+						checkIcon.classList.add("check-icon");
+						checkIcon.textContent = "✔️";
+						checkIcon.style.visibility = selectedEmpNos.has(employee.empNo) ? "visible" : "hidden";
+
+						// empItem에 사원 이름과 체크 표시 추가
+						empItem.appendChild(empNameSpan);
+						empItem.appendChild(checkIcon);
+
+						// empItem 클릭 시 참여자 목록에 추가 또는 삭제
+						empItem.onclick = function() {
+							const selectedList = document.getElementById("selectedParticipantsList");
+
+							if (!selectedEmpNos.has(employee.empNo)) {
+								// Set에 추가
+								selectedEmpNos.add(employee.empNo);
+
+								// 참여자 목록에 추가
+								const participant = document.createElement("li");
+								participant.textContent = employee.empName;
+								participant.dataset.empno = employee.empNo;
+
+								// 참여자 클릭 시 목록에서 삭제
+								participant.onclick = function() {
+									selectedEmpNos.delete(employee.empNo);  // Set에서 삭제
+									participant.remove();  // UI에서 삭제
+
+									// 체크 표시 제거
+									const currentEmpItem = document.querySelector(`[data-empno="${employee.empNo}"]`);
+									if (currentEmpItem) {
+										const currentCheckIcon = currentEmpItem.querySelector(".check-icon");
+										currentCheckIcon.style.visibility = "hidden";
+									}
+								};
+
+								selectedList.appendChild(participant);
+
+								// 체크 표시 추가
+								checkIcon.style.visibility = "visible";
+							} else {
+								console.log(`${employee.empName} already in participants list`);
+							}
+						};
+
+						employeeListUl.appendChild(empItem);
+					});
+
+					employeeContainer.appendChild(employeeListUl);
+				};
+
+				deptListContainer.appendChild(deptItem);
+			});
+
+		})
+
+		.catch(error => console.error("Error fetching department and employee list:", error));
 
 
 
@@ -950,13 +1035,12 @@ document.addEventListener('DOMContentLoaded', function() {
 	document.getElementById('sharedCalendarForm').onsubmit = function(e) {
 		e.preventDefault();
 
-
-
 		// 입력받은 캘린더 정보 가져오기
 		const sharedCalendarName = document.getElementById('sharedCalendarName').value;
 		const selectedColor = document.querySelector('input[name="color"]:checked').value;
-		const members = Array.from(document.getElementById('selectedParticipantsList').children).map(li => li.getAttribute('data-empno'));
-
+		const members = Array.from(document.getElementById('selectedParticipantsList').children)
+			.map(li => li.getAttribute('data-empno'));  // 참여자 목록을 배열로 추출
+			console.log(members);
 		if (!sharedCalendarName || !selectedColor || members.length === 0) {
 			alert('캘린더 이름, 색상, 공유 대상을 선택해주세요.');
 			return;
@@ -976,205 +1060,192 @@ document.addEventListener('DOMContentLoaded', function() {
 		})
 			.then(response => response.json())
 			.then(data => {
+				
 				if (data.success) {
 					const sharedCalendarList = document.getElementById('sharedCalendarList');
 					const newCalendarItem = document.createElement('li');
-					newCalendarItem.innerHTML = makeSidEvent(data.schsVO);
+					newCalendarItem.innerHTML = makeSidEvent(data); // data로 전달
 					sharedCalendarList.appendChild(newCalendarItem);
 				} else {
+					console.log(data);
 					alert('캘린더 추가에 실패했습니다: ' + data.message);
 				}
 			})
-			.catch(error => {
-				console.error('Error:', error);
-				alert('서버와 통신 중 문제가 발생했습니다.');
+					.catch(error => {
+						console.error('Error:', error);
+						alert('서버와 통신 중 문제가 발생했습니다.');
+					});
+
+				// 모달 닫기
+				document.getElementById('sharedCalendarModal').style.display = 'none';
+			};
+
+
+		//============END 사이드바 공유 캘린더 생성 ===========
+		//============ 사이드바 휴지통 보내기  ===========
+		// 삭제 버튼 클릭 시 이벤트 
+		document.getElementById('deleteBtn').onclick = function() {
+			const calNo = parseInt(document.getElementById('selectedCalNo').value); // 문자열을 숫자로 변환
+
+			if (confirm('정말로 이 캘린더를 삭제하시겠습니까?')) {
+				fetch('/cal/calTrash', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ calNo: calNo }) // 선택된 캘린더 번호를 전송
+				})
+					.then(response => response.json())
+					.then(data => {
+						if (data.success) {
+							alert('캘린더가 휴지통으로 이동되었습니다.');
+							document.getElementById('editCalendarModal').style.display = 'none';
+							location.reload();  // 페이지 새로고침하여 변경 반영
+						} else {
+							alert('캘린더 삭제에 실패했습니다.');
+						}
+					})
+					.catch(error => console.error('Error:', error));
+			}
+		};
+		//============ 사이드바 휴지통 보내기   ===========
+
+		//============ 사이드바 휴지통에서 복원 ==============
+
+
+		//============ 사이드바 휴지통에서 복원 ==============
+
+		//============ 휴지통 리스트 불러오기 ===========
+		fetch('/cal/trashList')
+			.then(response => response.json())
+			.then(data => {
+				const wasteCalendarList = document.getElementById('wasteCalendarList');
+				wasteCalendarList.innerHTML = '';  // 기존 리스트 초기화
+
+				data.forEach(calendar => {
+					const newTrashItem = document.createElement('li');
+					newTrashItem.classList.add('trash-item');
+					newTrashItem.setAttribute('data-calno', calendar.calNo);
+					newTrashItem.innerHTML = makeSidEvent(calendar);
+					wasteCalendarList.appendChild(newTrashItem);
+					//========================= 휴지통 리스트 옆 연필 아이콘 클릭 모달 ==================================
+					const editIcon = newTrashItem.querySelector('.edit-icon');
+					editIcon.addEventListener('click', function() {
+						const calendarItem = this.closest('.trash-item');
+						const selectedCalNo = calendarItem.getAttribute('data-calno');
+						const calendarName = calendarItem.textContent.trim();
+
+						// 모달창에 기존 값 설정
+						document.getElementById('trashSelectedCalNo').value = selectedCalNo;
+						document.getElementById('trashCalendarName').value = calendarName;
+
+						// 모달 열기
+						document.getElementById('trashCalendarModal').style.display = 'block';
+
+						//========================= END 휴지통 리스트 옆 연필 아이콘 클릭 모달 ==================================
+
+					});
+
+				});
+
+
+
+
+
+
+
+
+			})
+			.catch(error => console.error('Error loading trash calendars:', error));
+
+
+		//=========================  휴지통 리스트 옆 연필 아이콘 클릭 모달 ==================================
+		// 모달 닫기 버튼 처리
+		document.querySelectorAll('.close').forEach(closeBtn => {
+			closeBtn.addEventListener('click', function() {
+				const modal = this.closest('.modal');
+				modal.style.display = 'none'; // 모달 닫기
 			});
+		});
+		//=========================  휴지통 리스트 옆 연필 아이콘 클릭 모달 ==================================
 
-		// 모달 닫기
-		document.getElementById('sharedCalendarModal').style.display = 'none';
-	};
+		//============ 사이드바 휴지통 복원   ===========
 
+		// 휴지통에서 복원 버튼 클릭 시 복원 처리
+		document.getElementById('restoreCalendarBtn').onclick = function() {
+			const calNo = document.getElementById('trashSelectedCalNo').value;
 
-
-
-	//============END 사이드바 내 캘린더 생성 ===========
-
-
-
-
-	//============ 사이드바 공유 캘린더 생성 ===========
-
-
-
-
-
-
-
-	//============END 사이드바 공유 캘린더 생성 ===========
-	//============ 사이드바 휴지통 보내기  ===========
-	// 삭제 버튼 클릭 시 이벤트 
-	document.getElementById('deleteBtn').onclick = function() {
-		const calNo = parseInt(document.getElementById('selectedCalNo').value); // 문자열을 숫자로 변환
-
-		if (confirm('정말로 이 캘린더를 삭제하시겠습니까?')) {
-			fetch('/cal/calTrash', {
+			fetch('/cal/calRestore', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ calNo: calNo }) // 선택된 캘린더 번호를 전송
+				body: JSON.stringify({ calNo: calNo })
 			})
 				.then(response => response.json())
 				.then(data => {
 					if (data.success) {
-						alert('캘린더가 휴지통으로 이동되었습니다.');
-						document.getElementById('editCalendarModal').style.display = 'none';
-						location.reload();  // 페이지 새로고침하여 변경 반영
-					} else {
-						alert('캘린더 삭제에 실패했습니다.');
-					}
-				})
-				.catch(error => console.error('Error:', error));
-		}
-	};
-	//============ 사이드바 휴지통 보내기   ===========
-
-	//============ 사이드바 휴지통에서 복원 ==============
-
-
-	//============ 사이드바 휴지통에서 복원 ==============
-
-	//============ 휴지통 리스트 불러오기 ===========
-	fetch('/cal/trashList')
-		.then(response => response.json())
-		.then(data => {
-			const wasteCalendarList = document.getElementById('wasteCalendarList');
-			wasteCalendarList.innerHTML = '';  // 기존 리스트 초기화
-
-			data.forEach(calendar => {
-				const newTrashItem = document.createElement('li');
-				newTrashItem.classList.add('trash-item');
-				newTrashItem.setAttribute('data-calno', calendar.calNo);
-				newTrashItem.innerHTML = makeSidEvent(calendar);
-				wasteCalendarList.appendChild(newTrashItem);
-				//========================= 휴지통 리스트 옆 연필 아이콘 클릭 모달 ==================================
-				const editIcon = newTrashItem.querySelector('.edit-icon');
-				editIcon.addEventListener('click', function() {
-					const calendarItem = this.closest('.trash-item');
-					const selectedCalNo = calendarItem.getAttribute('data-calno');
-					const calendarName = calendarItem.textContent.trim();
-
-					// 모달창에 기존 값 설정
-					document.getElementById('trashSelectedCalNo').value = selectedCalNo;
-					document.getElementById('trashCalendarName').value = calendarName;
-
-					// 모달 열기
-					document.getElementById('trashCalendarModal').style.display = 'block';
-
-					//========================= END 휴지통 리스트 옆 연필 아이콘 클릭 모달 ==================================
-
-				});
-
-			});
-
-
-
-
-
-
-
-
-		})
-		.catch(error => console.error('Error loading trash calendars:', error));
-
-
-	//=========================  휴지통 리스트 옆 연필 아이콘 클릭 모달 ==================================
-	// 모달 닫기 버튼 처리
-	document.querySelectorAll('.close').forEach(closeBtn => {
-		closeBtn.addEventListener('click', function() {
-			const modal = this.closest('.modal');
-			modal.style.display = 'none'; // 모달 닫기
-		});
-	});
-	//=========================  휴지통 리스트 옆 연필 아이콘 클릭 모달 ==================================
-
-	//============ 사이드바 휴지통 복원   ===========
-
-	// 휴지통에서 복원 버튼 클릭 시 복원 처리
-	document.getElementById('restoreCalendarBtn').onclick = function() {
-		const calNo = document.getElementById('trashSelectedCalNo').value;
-
-		fetch('/cal/calRestore', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ calNo: calNo })
-		})
-			.then(response => response.json())
-			.then(data => {
-				if (data.success) {
-					alert('캘린더가 복원되었습니다.');
-					document.getElementById('trashCalendarModal').style.display = 'none';
-					location.reload();  //페이지 새로고침
-				} else {
-					alert('복원에 실패했습니다.');
-				}
-			})
-			.catch(error => console.error('Error:', error));
-	};
-
-
-
-	//============END 사이드바 휴지통 복원   ===========
-
-	//============ 사이드바 휴지통 완전삭제 =============
-	//============ 휴지통에서 영구 삭제  ===========
-	// 영구 삭제 버튼 클릭 시 이벤트 처리
-	//============ 휴지통에서 영구 삭제  ===========
-	// 기존에 등록된 이벤트 리스너 제거 후 새로 등록
-	const deleteBtn = document.getElementById('permanentlyDeleteBtn');
-
-	// 기존 이벤트 리스너 제거
-	deleteBtn.removeEventListener('click', handlePermanentlyDelete);
-
-	// 삭제 처리 함수
-	function handlePermanentlyDelete() {
-		const calNo = parseInt(document.getElementById('trashSelectedCalNo').value);  // 선택된 캘린더 번호 가져오기
-
-		if (confirm('정말로 이 캘린더를 완전히 삭제하시겠습니까?')) {
-			fetch('/cal/calDel', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ calNo: calNo })  // JSON 데이터로 전송
-			})
-				.then(response => response.json())
-				.then(data => {
-					if (data === "캘린더가 완전히 삭제되었습니다.") {
-						alert('캘린더가 영구적으로 삭제되었습니다.');
+						alert('캘린더가 복원되었습니다.');
 						document.getElementById('trashCalendarModal').style.display = 'none';
 						location.reload();  //페이지 새로고침
 					} else {
-						alert('캘린더 삭제에 실패했습니다.');
+						alert('복원에 실패했습니다.');
 					}
 				})
 				.catch(error => console.error('Error:', error));
+		};
+
+
+
+		//============END 사이드바 휴지통 복원   ===========
+
+		//============ 사이드바 휴지통 완전삭제 =============
+		//============ 휴지통에서 영구 삭제  ===========
+		// 영구 삭제 버튼 클릭 시 이벤트 처리
+		//============ 휴지통에서 영구 삭제  ===========
+		// 기존에 등록된 이벤트 리스너 제거 후 새로 등록
+		const deleteBtn = document.getElementById('permanentlyDeleteBtn');
+
+		// 기존 이벤트 리스너 제거
+		deleteBtn.removeEventListener('click', handlePermanentlyDelete);
+
+		// 삭제 처리 함수
+		function handlePermanentlyDelete() {
+			const calNo = parseInt(document.getElementById('trashSelectedCalNo').value);  // 선택된 캘린더 번호 가져오기
+
+			if (confirm('정말로 이 캘린더를 완전히 삭제하시겠습니까?')) {
+				fetch('/cal/calDel', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ calNo: calNo })  // JSON 데이터로 전송
+				})
+					.then(response => response.json())
+					.then(data => {
+						if (data === "캘린더가 완전히 삭제되었습니다.") {
+							alert('캘린더가 영구적으로 삭제되었습니다.');
+							document.getElementById('trashCalendarModal').style.display = 'none';
+							location.reload();  //페이지 새로고침
+						} else {
+							alert('캘린더 삭제에 실패했습니다.');
+						}
+					})
+					.catch(error => console.error('Error:', error));
+			}
 		}
-	}
 
-	// 영구 삭제 버튼 클릭 이벤트 등록
-	document.getElementById('permanentlyDeleteBtn').onclick = handlePermanentlyDelete;
+		// 영구 삭제 버튼 클릭 이벤트 등록
+		document.getElementById('permanentlyDeleteBtn').onclick = handlePermanentlyDelete;
 
 
-	//============ 사이드바 휴지통 완전삭제 =============
+		//============ 사이드바 휴지통 완전삭제 =============
 
-	//============ 사이드바 휴지통 리스트  ===========
+		//============ 사이드바 휴지통 리스트  ===========
 
-	//============END 사이드바 휴지통  ===========
-
+		//============END 사이드바 휴지통  ===========
 
 
 
-	loadSharedCalendars(); //사이드바 맨위
-	//============END 사이드바 ============
 
-});
+		loadSharedCalendars(); //사이드바 맨위
+		//============END 사이드바 ============
+
+	
 //location.reload();  //페이지 새로고침 ㅎㅎㅎㅎ
 //=================================함수모음======================================
 // 오늘 날짜를 YYYY-MM-DD 형식으로 반환하는 함수
@@ -1233,6 +1304,129 @@ function resetAlarmFields() {
 
 
 
+// 상태 초기화 함수
+function resetModal() {
+	selectedEmpNos.clear(); // Set 비우기
+	document.getElementById("selectedParticipantsList").innerHTML = ""; // 참여자 목록 초기화
+	document.getElementById("employeeContainer").innerHTML = ""; // 사원 목록 초기화
+	document.getElementById("sharedCalendarDeptList").innerHTML = ""; // 부서 목록 초기화
+	document.getElementById("calendarNameInput").value = ""; // 캘린더 이름 초기화
+
+	fetchDataAndRender(); // 부서와 사원 목록 다시 로드
+}
 
 
+
+
+
+// 중복 체크용 Set 생성
+const selectedEditEmpNos = new Set();
+
+// 수정 모달에서 부서 및 사원 목록 로드
+function loadDeptAndEmpForEditModal() {
+	fetch("/cal/deptWithEmp")
+		.then(response => response.json())
+		.then(data => {
+			const deptListContainer = document.getElementById("editSharedCalendarDeptList");
+			const empSelectContainer = document.getElementById("editEmployeeContainer");
+			const participantList = document.getElementById("editSelectedParticipantsList");
+
+			deptListContainer.innerHTML = ''; // 부서 초기화
+			empSelectContainer.innerHTML = ''; // 사원 초기화
+			participantList.innerHTML = ''; // 참여자 초기화
+			selectedEditEmpNos.clear(); // 선택된 사원 초기화
+
+			const deptEmployeeMap = {};
+
+			data.forEach(item => {
+				const deptNo = item.DEPT_NO;
+				const deptName = item.DEPT_NAME;
+				const empNo = item.EMP_NO;
+				const empName = item.EMP_NAME;
+
+				if (!deptEmployeeMap[deptNo]) {
+					deptEmployeeMap[deptNo] = {
+						deptName: deptName,
+						employees: []
+					};
+				}
+				if (empNo) {
+					deptEmployeeMap[deptNo].employees.push({ empNo, empName });
+				}
+			});
+
+			// 부서 목록 추가
+			Object.keys(deptEmployeeMap).forEach(deptNo => {
+				const deptItem = document.createElement("li");
+				deptItem.classList.add("dept-item");
+				deptItem.textContent = deptEmployeeMap[deptNo].deptName;
+				deptItem.dataset.deptno = deptNo;
+
+				// 부서 클릭 시 사원 목록 표시
+				deptItem.onclick = function() {
+					empSelectContainer.innerHTML = ''; // 사원 초기화
+
+					const employeeListUl = document.createElement("ul");
+					employeeListUl.classList.add("employee-list");
+
+					deptEmployeeMap[deptNo].employees.forEach(employee => {
+						const empItem = document.createElement("li");
+						empItem.classList.add("emp-item");
+						empItem.dataset.empno = employee.empNo;
+
+						const empNameSpan = document.createElement("span");
+						empNameSpan.textContent = employee.empName;
+
+						const checkIcon = document.createElement("span");
+						checkIcon.classList.add("check-icon");
+						checkIcon.textContent = "✔️";
+						checkIcon.style.visibility = selectedEditEmpNos.has(employee.empNo) ? "visible" : "hidden";
+
+						empItem.appendChild(empNameSpan);
+						empItem.appendChild(checkIcon);
+
+						// 사원 선택 시 참여자 목록에 추가 또는 삭제
+						empItem.onclick = function() {
+							if (!selectedEditEmpNos.has(employee.empNo)) {
+								selectedEditEmpNos.add(employee.empNo);
+
+								const participant = document.createElement("li");
+								participant.textContent = employee.empName;
+								participant.dataset.empno = employee.empNo;
+
+								participant.onclick = function() {
+									selectedEditEmpNos.delete(employee.empNo);
+									participant.remove();
+
+									const currentEmpItem = document.querySelector(`[data-empno="${employee.empNo}"]`);
+									if (currentEmpItem) {
+										const currentCheckIcon = currentEmpItem.querySelector(".check-icon");
+										currentCheckIcon.style.visibility = "hidden";
+									}
+								};
+
+								participantList.appendChild(participant);
+								checkIcon.style.visibility = "visible";
+							} else {
+								console.log(`${employee.empName} 이미 선택됨`);
+							}
+						};
+
+						employeeListUl.appendChild(empItem);
+					});
+
+					empSelectContainer.appendChild(employeeListUl);
+				};
+
+				deptListContainer.appendChild(deptItem);
+			});
+		})
+		.catch(error => console.error("부서 및 사원 목록 불러오기 에러:", error));
+}
+
+// 모달 열릴 때마다 사원 목록 초기화 및 로드
+document.getElementById("editCalendarModal").addEventListener("show", function() {
+	loadDeptAndEmpForEditModal();
+});
+});
 //================================END 함수모음====================================

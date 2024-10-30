@@ -124,11 +124,11 @@ public class SchsServiceImpl implements SchsService {
 	}
 
 	// =====================캘린더 사이드바=====================
-	// 일정생성창 캘린더 전체조회  
-		@Override
-		public List<SchsVO> allCal(int empNo) {
-			return schsMapper.selectAllCal(empNo);
-		}
+	// 일정생성창 캘린더 전체조회
+	@Override
+	public List<SchsVO> allCal(int empNo) {
+		return schsMapper.selectAllCal(empNo);
+	}
 
 	// 공유캘린더 조회 (is_delete가 'h2'인 항목만)
 	@Override
@@ -138,13 +138,31 @@ public class SchsServiceImpl implements SchsService {
 
 	// 프로젝트 캘린더
 
-	// 캘린더 등록
-	@Override
-	public int insertCals(SchsVO schsVO) {
-		int result = schsMapper.insertCalsInfo(schsVO);
-		return result == 1 ? schsVO.getCalNo() : -1;
+	// 첫 번째 인서트: 캘린더 등록
+    @Override
+    public int insertCals(SchsVO schsVO) {
+        schsMapper.insertCalsInfo(schsVO); // 캘린더 정보 저장
+        return schsVO.getCalNo(); // 생성된 캘린더 번호 반환
+    }
 
-	}
+ // 두 번째 인서트: 참여자 정보 저장
+    @Override
+    public int insertCalShares(int calNo, List<Integer> empNos) {
+        int count = 0;
+        for (Integer empNo : empNos) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("calNo", calNo);
+            params.put("empNo", empNo);
+
+            // 디버그: 각 삽입 시도를 로깅
+            System.out.println("Inserting calNo: " + calNo + ", empNo: " + empNo);
+
+            count += schsMapper.insertCalShares(params); // 매퍼 호출
+        }
+        System.out.println("Total inserted rows: " + count);
+        return count;
+    }
+
 
 	// 캘린더 수정
 	@Override
@@ -188,13 +206,20 @@ public class SchsServiceImpl implements SchsService {
 	public int permanentlyDel(int calNo) {
 		return schsMapper.permanentlyDeleteCal(calNo);
 	}
-	
-	
-	// 서비스
+
 	@Override
-	public List<Map<String, Object>> getDeptEmp(int calNo) {
-	    return schsMapper.selectDeptEmp(calNo);
+	public List<Map<String, Object>> getDeptWithEmp() {
+		return schsMapper.selectDeptWithEmp();
 	}
+//	@Override
+//	public List<SchsVO> getDeptList() {
+//	    return schsMapper.selectDeptList();
+//	}
+//	// 서비스
+//	@Override
+//	public List<Map<String, Object>> getDeptEmp(int deptNo) {
+//	    return schsMapper.selectDeptEmp(deptNo);
+//	}
 	// =====================END 캘린더 사이드바=====================
 	// =====================알림관리========================
 
