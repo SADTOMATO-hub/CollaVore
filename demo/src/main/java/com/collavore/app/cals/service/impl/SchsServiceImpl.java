@@ -188,7 +188,13 @@ public class SchsServiceImpl implements SchsService {
 	public int permanentlyDel(int calNo) {
 		return schsMapper.permanentlyDeleteCal(calNo);
 	}
-
+	
+	
+	// 서비스
+	@Override
+	public List<Map<String, Object>> getDeptEmp(int calNo) {
+	    return schsMapper.selectDeptEmp(calNo);
+	}
 	// =====================END 캘린더 사이드바=====================
 	// =====================알림관리========================
 

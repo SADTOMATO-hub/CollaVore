@@ -3,28 +3,31 @@
 <mapper namespace="com.collavore.app.cals.mapper.SchsMapper">
 
 	<select id="selectSchsAll" resultType="SchsVO">
-		SELECT
-			schs.sch_no,
-			schs.title,
-			schs.start_date,
-			schs.end_date,
-			schs.cal_no,
-			cals.name AS cal_name, 
-			cals.cal_type, 
-			schs.is_alarm,
-			cals.color, 
-			LISTAGG(calshares.emp_no, ',') WITHIN GROUP (ORDER BY calshares.emp_no) AS emp_nos
-		FROM schs
-			JOIN cals ON schs.cal_no = cals.cal_no AND cals.is_delete = 'h2'
-			LEFT JOIN calshares ON schs.cal_no = calshares.cal_no 
-		WHERE
-			calshares.emp_no = #{empNo}
-		GROUP BY
-			schs.sch_no, schs.title, schs.start_date, schs.end_date, schs.cal_no, cals.name,
-			cals.cal_type, schs.is_alarm, cals.color
-			ORDER BY
-			schs.sch_no 
-	</select>
+    SELECT
+        schs.sch_no,
+        schs.title,
+        schs.start_date,
+        schs.end_date,
+        schs.cal_no,
+        cals.name AS cal_name, 
+        cals.cal_type, 
+        schs.is_alarm,
+        cals.color, 
+        LISTAGG(calshares.emp_no, ',') WITHIN GROUP (ORDER BY calshares.emp_no) AS empNos,   <!-- 사원 번호 집계 -->
+        LISTAGG(employees.name, ',') WITHIN GROUP (ORDER BY employees.name) AS empNames,    <!-- 사원 이름 집계 -->
+        LISTAGG(departments.dept_no, ',') WITHIN GROUP (ORDER BY departments.dept_no) AS deptNos,  <!-- 부서 번호 집계 -->
+        LISTAGG(departments.name, ',') WITHIN GROUP (ORDER BY departments.name) AS deptNames  <!-- 부서 이름 집계 -->
+    FROM schs
+    JOIN cals ON schs.cal_no = cals.cal_no AND cals.is_delete = 'h2'
+    LEFT JOIN calshares ON schs.cal_no = calshares.cal_no
+    LEFT JOIN employees ON calshares.emp_no = employees.emp_no
+    LEFT JOIN departments ON employees.dept_no = departments.dept_no
+    GROUP BY
+        schs.sch_no, schs.title, schs.start_date, schs.end_date, schs.cal_no, cals.name,
+        cals.cal_type, schs.is_alarm, cals.color
+    ORDER BY
+        schs.sch_no
+</select>
 	<!-- 단건 일정 조회 -->
 	<select id="selectSchsInfo" parameterType="SchsVO"
 		resultType="SchsVO">
@@ -324,7 +327,29 @@
 		WHERE cal_no = #{calNo} AND is_delete = 'h1'  <!-- 휴지통에 있는 
 			캘린더만 삭제 -->
 	</delete>
+	<!-- 공유캘린더 부서 사원 리스트 가지고오기   -->
+	
+	<select id="selectDeptEmp" resultType="Map">
+    SELECT 
+        d.name AS department_name,
+        e.emp_no,
+        e.name AS employee_name
+    FROM 
+        cals c
+    JOIN 
+        calshares cs ON c.cal_no = cs.cal_no
+    JOIN 
+        employees e ON cs.emp_no = e.emp_no
+    JOIN 
+        departments d ON e.dept_no = d.dept_no
+    WHERE 
+        c.cal_no = #{calNo}
+</select>
+	
+	
+	
 	<!--==============================END 개인 캘린더 ==================================== -->
+	
 
 
 	<!-- 새로 등록된 사원에 내캘린더 생성 메 -->

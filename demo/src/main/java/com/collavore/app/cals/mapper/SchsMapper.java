@@ -71,5 +71,8 @@ public interface SchsMapper {
 	
 	// 새로 등록된 사원에 내캘린더 생성
 	public int insertMyCal(int empNo);
+	
+	// 캘린더 수정 추가시 부서 사원 리스트
+	List<Map<String, Object>> selectDeptEmp(@Param("calNo") int calNo);
 
 }

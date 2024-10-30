@@ -295,6 +295,11 @@ public class SchsController {
 		return result > 0 ? "캘린더가 완전히 삭제되었습니다." : "캘린더 삭제에 실패했습니다.";
 	}
 
-	// 테스트
+	// 부서별 사원 목록 조회 (캘린더 번호 기반)
+    @GetMapping("/cal/deptEmp")
+    @ResponseBody
+    public List<Map<String, Object>> getDeptEmployees(@RequestParam int calNo) {
+        return schsService.getDeptEmp(calNo);
+    }
 
 }

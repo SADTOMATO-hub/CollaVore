@@ -899,24 +899,68 @@ document.addEventListener('DOMContentLoaded', function() {
 	};
 
 
+	// 부서 선택 시 해당 부서의 사원 목록을 가져와서 참여자 리스트에 추가
+	document.getElementById("sharedCalendarDept").addEventListener("change", function() {
+		const selectedDeptNo = this.value; // 선택된 부서 번호
+		console.log("Selected Dept No:", selectedDeptNo); // 선택된 부서 번호 확인
+		// 서버에 요청하여 해당 부서의 사원 목록 가져오기
+		fetch(`/cal/deptEmp?deptNo=${selectedDeptNo}`)
+			.then(response => response.json())
+			.then(data => {
+				console.log("Fetched Employee Data:", data); // 서버에서 받은 데이터 확인
+				// 참여자 셀렉트 박스 초기화
+				const participantsSelect = document.getElementById("participants");
+				participantsSelect.innerHTML = "";
+
+				// 받아온 데이터를 참여자 셀렉트 박스에 추가
+				data.forEach(employee => {
+					const option = document.createElement("option");
+					option.value = employee.emp_no; // 사원 번호
+					option.textContent = employee.name; // 사원 이름
+					participantsSelect.appendChild(option);
+				});
+			})
+			.catch(error => {
+				console.error("Error fetching department employees:", error);
+			});
+	});
+
+	// 참여자를 추가할 때 선택된 항목을 참여자 리스트로 이동
+	document.getElementById("participants").addEventListener("change", function() {
+		const selectedOptions = Array.from(this.selectedOptions);
+		const selectedList = document.getElementById("selectedParticipantsList");
+		console.log("Selected Options:", selectedOptions); // 선택된 옵션들 확인
+		// 선택된 참여자 목록에 추가
+		selectedOptions.forEach(option => {
+			const participant = document.createElement("li");
+			participant.textContent = option.textContent;
+			participant.setAttribute("data-empno", option.value); // 사원 번호를 데이터 속성으로 추가
+			selectedList.appendChild(participant);
+		});
+
+		// 선택된 항목은 다시 선택되지 않도록 제거
+		selectedOptions.forEach(option => option.remove());
+	});
+
+
+
 
 
 	// 모달 폼 제출 처리
 	document.getElementById('sharedCalendarForm').onsubmit = function(e) {
 		e.preventDefault();
 
+
+
 		// 입력받은 캘린더 정보 가져오기
 		const sharedCalendarName = document.getElementById('sharedCalendarName').value;
 		const selectedColor = document.querySelector('input[name="color"]:checked').value;
-		const members = Array.from(document.getElementById('sharedCalendarMembers').selectedOptions).map(option => option.value);
+		const members = Array.from(document.getElementById('selectedParticipantsList').children).map(li => li.getAttribute('data-empno'));
 
-		// calendarName 대신 sharedCalendarName 사용
 		if (!sharedCalendarName || !selectedColor || members.length === 0) {
 			alert('캘린더 이름, 색상, 공유 대상을 선택해주세요.');
 			return;
 		}
-
-
 
 		// 서버에 캘린더 정보 저장 요청
 		fetch('/cal/calInsert', {
@@ -926,23 +970,17 @@ document.addEventListener('DOMContentLoaded', function() {
 				name: sharedCalendarName,
 				color: selectedColor,
 				type: 'g2', // 공유 캘린더 타입
-				isDelete: 'h2' // 기본값으로 'h2' 설정
+				isDelete: 'h2', // 기본값으로 'h2' 설정
+				members: members // 참여자 목록 추가
 			})
 		})
 			.then(response => response.json())
 			.then(data => {
 				if (data.success) {
-					// 캘린더가 성공적으로 추가되었을 때만 사이드바에 추가
 					const sharedCalendarList = document.getElementById('sharedCalendarList');
 					const newCalendarItem = document.createElement('li');
-
-					//li추가 연필추가
-					newCalendarItem.innerHTML = makeSidEvent(data.calsVO);
-
-
+					newCalendarItem.innerHTML = makeSidEvent(data.schsVO);
 					sharedCalendarList.appendChild(newCalendarItem);
-
-
 				} else {
 					alert('캘린더 추가에 실패했습니다: ' + data.message);
 				}
@@ -951,6 +989,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				console.error('Error:', error);
 				alert('서버와 통신 중 문제가 발생했습니다.');
 			});
+
 		// 모달 닫기
 		document.getElementById('sharedCalendarModal').style.display = 'none';
 	};

@@ -61,5 +61,9 @@ public interface SchsService {
 	public int calRestore(int schsVO); // 캘린더 복원
 
 	public int permanentlyDel(int schsVO); // 캘린더 완전 삭제
+	
+	
+	//캘린더 추가 수정시 부서 사원번호 리스트
+	public  List<Map<String, Object>> getDeptEmp(int calNo);
 
 }
