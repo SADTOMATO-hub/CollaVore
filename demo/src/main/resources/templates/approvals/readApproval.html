@@ -2,8 +2,8 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
-<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js"
-	charset="utf-8"></script>
+	<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js"
+		charset="utf-8"></script>
 	<div class="container-fluid">
 		<div class="row">
 			<h4 class="card-title">기안자 : [[${approvals.drafterName}]]</h4>
@@ -17,7 +17,7 @@
 								</div>
 							</div>
 							<div class="table-responsive">
-								<table class="table table-striped table-bordered">
+								<table class="table table-striped table-bordered" id="table">
 									<thead>
 										<tr>
 											<th:block th:each="appr : ${approvers}">
@@ -36,16 +36,24 @@
 										<tr>
 											<th:block th:each="appr : ${approvers}">
 												<th:block th:switch="${appr.approverStatus}">
-													<td><span th:case="b1" th:text="'대기'"></span>
-														<span th:case="b2" th:text="'반려'"></span>
-														<span th:case="b3" th:text="'승인'"></span> 
-														<span th:case="*" th:text="'-'"></span>
-														</td>
+													<td>
+													<th:block th:case="b1" id="approveOrdenine">
+															<button type="button" th:if="${session.userEmpNo == appr.approverEmpNo}"
+																class="approveBtn badge rounded-pill bg-danger" th:text="승인"></button>
+															<button type="button" th:if="${session.userEmpNo == appr.approverEmpNo}"	
+																class="approveBtn badge rounded-pill bg-warning" th:text="반려"></button>
+															<span th:unless="${session.userEmpNo == appr.approverEmpNo}">대기</span>
+													</th:block> 
+													<span th:case="b2">반려</span>
+													<span th:case="b3">승인</span>
+													<span th:case="*">-</span>
+													</td>
 												</th:block>
 											</th:block>
 										</tr>
 									</tfoot>
 								</table>
+								<input type="hidden" id="earNo" value="earNo">
 							</div>
 							<div class="card-body">
 								<span th:utext="${approvals.content}"></span>
@@ -56,4 +64,23 @@
 			</div>
 		</div>
 	</div>
+	<script>
+	var approve = $('.approveBtn').eq(0).text(); 
+	var denine = $('.approveBtn').eq(1).text(); 
+	var ear = $('#earNo').val();
+		$(".approveBtn").on('click', function(event) {
+			$.ajax({
+				url : `/approvals/updateAppr`,
+				type : 'POST',
+				success : function(response) {
+					if(response.approverStatus === 'b1'){
+						var approve = $('.approveBtn').eq(0).text();
+					}
+				},
+				error : function(xhr, status, error) {
+					alert('수정 실패: ' + error);
+				}
+			});
+		});
+	</script>
 </div>

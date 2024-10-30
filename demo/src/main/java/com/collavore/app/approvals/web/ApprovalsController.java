@@ -162,12 +162,12 @@ public class ApprovalsController {
 	//결재하기
 	@PostMapping("/updateAppr")
 	@ResponseBody
-	public int updateApprove (ApprovalsVO apprVO) {
+	public String updateApprove (ApprovalsVO apprVO) {
 		int updateApprStatus = approvalsService.updateApprStatus(apprVO);
 		if(updateApprStatus > 0) {
-			return 1;
+			return "redirect:/approvals/tempList";
 		}
-		return 2;
+		return "redirect:/approvals/tempList";
 	}
 	
 	//전자결재 템플릿 내용만 호출하는 기능
