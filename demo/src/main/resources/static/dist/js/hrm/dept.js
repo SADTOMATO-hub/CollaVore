@@ -175,7 +175,7 @@ function closeModal() {
 }
 
 // 닫기 버튼 이벤트 리스너
-document.querySelector(".close-button").addEventListener("click", closeModal);
+document.querySelector(".btn-close").addEventListener("click", closeModal);
 
 // 모달 외부 클릭 시 닫기
 window.addEventListener("click", (event) => {

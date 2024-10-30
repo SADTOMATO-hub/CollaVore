@@ -324,7 +324,7 @@
     margin: 15% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 300px;
+    width: 350px;
     text-align: center;
     border-radius: 8px;
 }
@@ -433,4 +433,57 @@ button:hover {
 	align-items: center; /* 버튼 높이 일치 */
 	gap: 10px; /* 버튼 간격 */
 	margin-bottom: 20px;
+}
+
+
+
+#employeeList {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 20px auto; /* 중앙 정렬 */
+}
+
+#employeeList p {
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+#employeeListItems {
+    list-style: none; /* 기본 리스트 스타일 제거 */
+    padding: 0;
+    margin: 0;
+}
+
+#employeeListItems li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+#employeeListItems li:last-child {
+    border-bottom: none; /* 마지막 항목의 구분선 제거 */
+}
+
+input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: #4CAF50; /* 체크박스 색상 변경 */
+    margin-right: 10px;
+}
+
+#employeeListItems li span {
+    font-size: 1em;
+    font-weight: 500;
+}
+
+#employeeListItems li:hover {
+    background-color: #f1f1f1; /* 항목에 마우스 오버 시 색상 변경 */
+    border-radius: 8px;
+    transition: background-color 0.3s ease;
 }
