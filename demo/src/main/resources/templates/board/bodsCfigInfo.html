@@ -1,0 +1,93 @@
+<div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	layout:fragment="Content">
+
+	<div class="body-page-wrapper">
+		<div class="purple-background-container">
+			<div class="breadcrumb">
+				<div class="breadcrumb-left">
+					<h4>게시판 상세보기</h4>
+					<p>게시판 상세보기 페이지 입니다.</p>
+				</div>
+			</div>
+			<div class="card_memberInsert"></div>
+			<div class="col-md-9">
+				<form class="form-horizontal" name="insertForm"
+					th:action="@{/board/bodsCfig}" method="post">
+					<input type="hidden" name="boardNo" th:value="${param.boardNo}" />
+
+					<div class="form-group row">
+						
+						<div class="form-group row">
+							<label for="name"
+								class="col-sm-3 text-end control-label col-form-label">게시판명</label>
+							<div class="col-sm-9">
+								<div th:text="${bodsCfig.name}"></div>	
+							</div>
+						</div>
+						
+						<div class="form-group row">
+							<label for="subject"
+								class="col-sm-3 text-end control-label col-form-label">말머리</label>
+							<div class="col-sm-9">
+								<div th:text="${bodsCfig.subject}"></div>	
+							</div>
+						</div>
+						
+						<div class="form-group row">
+							<label for="subject"
+								class="col-sm-3 text-end control-label col-form-label">게시글읽기권한</label>
+							<div class="col-sm-9">
+								<div th:text="${bodsCfig.readAuth}"></div>	
+							</div>
+						</div>
+						
+						
+						<div class="form-group row">
+							<label for="writeAuth"
+								class="col-sm-3 text-end control-label col-form-label">게시글쓰기권한</label>
+							<div class="col-sm-9">
+								<div th:text="${bodsCfig.writeAuth}"></div>	
+							</div>
+						</div>
+						
+						
+						<div class="form-group row">
+							<label for="commentAuth"
+								class="col-sm-3 text-end control-label col-form-label">게시글댓글권한</label>
+							<div class="col-sm-9">
+								<div th:text="${bodsCfig.commentAuth}"></div>	
+							</div>
+						</div>
+						
+					
+						<label for="readAuth"
+							class="col-sm-3 text-end control-label col-form-label">등록일</label>
+						<div class="col-sm-9">
+							<div>[[${#dates.format(bodsCfig.regDate, 'yyyy년 MM월
+								dd일')}]]</div>
+						</div>
+						<label for="modDate"
+							class="col-sm-3 text-end control-label col-form-label">수정일</label>
+						<div class="col-sm-9">
+							<div>[[${#dates.format(bodsCfig.modDate, 'yyyy년 MM월
+								dd일')}]]</div>
+						</div>
+					</div>
+					<!-- 등록 버튼 -->
+					<div class="insert-btn">
+						<button class="btn btn-success" type="button"
+							th:onclick='|location.href="@{/board/bodsCfigUpdate(boardNo=${bodsCfig.boardNo})}"|'>수정</button>
+						<button class="btn btn-primary" type="button"
+							th:onclick='|location.href="@{/board/bodsCfig(boardNo=${bodsCfig.boardNo})}"|'>목록</button>
+						<button class="btn btn-danger" type="button"
+							th:onclick='|location.href="@{/board/bodsCfigDelete(name=${bodsCfig.name},boardNo=${bodsCfig.boardNo})}"|'>삭제</button>
+					</div>
+
+
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

@@ -163,8 +163,7 @@ button:active {
 							<label for="title"
 								class="col-sm-3 text-end control-label col-form-label">제목</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" id="title" name="title"
-									th:value="${bods.title}" readonly />
+								<div th:utext="${bods.title}"></div>	
 							</div>
 						</div>
 						<div class="form-group row">

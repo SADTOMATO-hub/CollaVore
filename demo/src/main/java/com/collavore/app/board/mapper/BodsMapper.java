@@ -45,6 +45,17 @@ public interface BodsMapper {
 	
 	// 게시판 등록 페이지
 	public int insertBodsCfigInfo(BodsCfigVO bodsCfigVO);
+	
+	// 게시판 상세조회 페이지
+	public BodsCfigVO selectBodsCfigInfo(BodsCfigVO bodsCfigVO);
+	
+	// 게시판 수정 페이지
+	public int updateBodsCfigInfo(BodsCfigVO BodsCfigVO);
+	
+	// 게시판 삭제 페이지
+	public int deleteBodsCfigInfo(int boardNo); 
+	
+	
 
 	/*
 	 * // 게시판 수정 public int UpdateBodsInfo();
