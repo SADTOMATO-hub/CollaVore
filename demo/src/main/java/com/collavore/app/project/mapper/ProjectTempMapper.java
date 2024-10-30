@@ -39,4 +39,8 @@ public interface ProjectTempMapper {
 	public ProjectDWorkTempVO selectDwrktempProject(int pdwtNo);
 	// 상세 업무 템플릿 수정
 	public int projectDwrktempUpdate(ProjectDWorkTempVO projectDworktempVO);
+	
+	List<ProjectWorkTempVO> projectwrktemplistInfo(Integer projTempNo);
+	
+	List<ProjectDWorkTempVO> projectDwrktemplistInfo(Integer pwtNo);
 }

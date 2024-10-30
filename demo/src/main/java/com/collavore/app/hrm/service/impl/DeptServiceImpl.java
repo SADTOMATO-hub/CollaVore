@@ -13,52 +13,70 @@ import com.collavore.app.hrm.service.HrmVO;
 @Service
 public class DeptServiceImpl implements DeptService {
 
-    private final DeptMapper deptMapper;
+	private final DeptMapper deptMapper;
 
-    @Autowired
-    public DeptServiceImpl(DeptMapper deptMapper) {
-        this.deptMapper = deptMapper;
-    }
+	@Autowired
+	public DeptServiceImpl(DeptMapper deptMapper) {
+		this.deptMapper = deptMapper;
+	}
 
-    // 트랜잭션 관리가 필요한 부서 삽입 메서드
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public int insertDept(HrmVO hrmVO) {
-        return deptMapper.insertDept(hrmVO);
-    }
+	@Override
+	public List<HrmVO> getOrganizationStructure(Integer deptNo, String isMgr) {
+		// 부서 및 사원 정보를 특정 조건으로 조회
+		return deptMapper.getOrganizationStructure(deptNo, isMgr);
+	}
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public int updateDept(HrmVO hrmVO) {
-        return deptMapper.updateDept(hrmVO);
-    }
+	@Override
+	public int insertDept(HrmVO hrmVO) throws Exception {
+		// 새로운 부서 추가
+		return deptMapper.insertDept(hrmVO);
+	}
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public int deleteDept(Integer deptNo) {
-        return deptMapper.deleteDept(deptNo);
-    }
-    @Override
-    public boolean hasEmployeesInDept(Integer deptNo) {
-        return deptMapper.countEmployeesInDept(deptNo) > 0;
-    }
+	@Override
+	public int updateDept(HrmVO hrmVO) throws Exception {
+		// 기존 부서 정보 업데이트
+		return deptMapper.updateDept(hrmVO);
+	}
 
- // 부서별 사원 목록 조회
-    @Override
-    public List<HrmVO> getEmployeesByDept(Integer deptNo) {
-        return deptMapper.selectEmployeesByDept(deptNo);
-    }
+	@Override
+	public int deleteDept(Integer deptNo) throws Exception {
+		// 부서 삭제
+		return deptMapper.deleteDept(deptNo);
+	}
 
-    // 부서장 업데이트
-    @Override
-    @Transactional
-    public int updateManager(Integer deptNo, Integer empNo) {
-        return deptMapper.updateManager(deptNo, empNo);
-    }
+	@Override
+	public boolean hasEmployeesInDept(Integer deptNo) {
+		// 부서에 사원이 있는지 확인
+		return deptMapper.countEmployeesInDept(deptNo) > 0;
+	}
 
-    @Override
-    public List<HrmVO> getExistingDepts() {
-        return deptMapper.selectDeptList();
-    }
+	@Override
+	public List<HrmVO> getExistingDepts() {
+		// 기존 부서 목록 가져오기
+		return deptMapper.selectDeptList();
+	}
+
+	@Override
+	public List<HrmVO> getEmployeesByDept(Integer deptNo) {
+		// 특정 부서별 사원 목록 조회
+		return deptMapper.selectEmployeesByDept(deptNo);
+	}
+
+	@Override
+	public int updateManager(Integer deptNo, Integer empNo) {
+		// 부서장 업데이트
+		return deptMapper.updateManager(deptNo, empNo);
+	}
+	
+	// 부서정보관련 
+	// 조회
+	@Override
+	public List<HrmVO> getMgrList() {
+		return deptMapper.getMgrList();
+	}
+
+	@Override
+	public List<HrmVO> getMemberList(Integer deptNo) {
+		return deptMapper.getMemberList(deptNo);
+	}
 }
-    

@@ -38,9 +38,13 @@ public interface BodsService {
 	
 	// 댓글 상세조회
 	public BodsComtsVO bodsComtsInfo(BodsComtsVO bodsComtsVO);
+
 	
-	// 게시판 상세 설정 (게시판 생성)
-	public List<BodsCfigVO> bodsCfig(BodsCfigVO bodsCfigVO);
+	// 게시판 전체 조회
+	public List<BodsCfigVO> bodsListAll(BodsCfigVO bodsCfigVO);
+	
+	// 게시판 등록
+	public int insertBodsCfig(BodsCfigVO bodsCfigVO);
 
 	
 	
@@ -55,5 +59,8 @@ public interface BodsService {
 
 	// 전체조회
 	// public List<BodsVO> bodsAll();
+	
+	// 게시판이름 조회
+	public String boardNameSearch(int boardNo);
 
 }

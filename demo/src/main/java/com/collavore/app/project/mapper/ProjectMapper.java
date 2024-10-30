@@ -76,6 +76,10 @@ public interface ProjectMapper {
 	public List<ProjectVO> selectjobs();
 	// 사원 리스트 조회
 	public List<ProjectVO> selectempAll();
+	
+	public List<ProjectVO> deteilwrkerAll();
+	//  상세업무 진행상황 업데이트
+	public int updateStatusProject(ProjectVO projectVO);
 	 
 	
 	

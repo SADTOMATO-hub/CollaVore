@@ -87,6 +87,15 @@ public class ProjectTempServiceImpl implements PjTempService{
 	public int projectdwrktempUpdate(ProjectDWorkTempVO projectDworktempVO) {
 		return ProjecttempMapper.projectDwrktempUpdate(projectDworktempVO);
 	}
+	@Override
+	public List<ProjectWorkTempVO> projectwrktemplistInfo(Integer projTempNo) {
+		return ProjecttempMapper.projectwrktemplistInfo(projTempNo);
+	}
+	
+	@Override
+	public List<ProjectDWorkTempVO> projectDwrktemplistInfo(Integer pwtNo) {
+		return ProjecttempMapper.projectDwrktemplistInfo(pwtNo);
+	}
 
 
 

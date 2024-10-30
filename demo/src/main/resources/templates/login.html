@@ -71,10 +71,10 @@ body, html {
 			<img th:src="@{/assets/images/users/logo.png}" alt="로고">
 			<form th:action="@{/login}" method="post">
 				<input list="email-suggestions" type="email" id="username" name="username" class="form-control"
-				 placeholder="username" required> 
+				 placeholder="아이디 입력" required> 
 				<datalist id="email-suggestions"></datalist>
 
-				<input type="password" name="password" class="form-control" placeholder="Password" autocomplete="current-password" required>
+				<input type="password" name="password" class="form-control" placeholder="비밀번호 입력" autocomplete="current-password" required>
 				<button type="submit">로그인</button>
 
 				<div th:if="${loginError}" class="error">

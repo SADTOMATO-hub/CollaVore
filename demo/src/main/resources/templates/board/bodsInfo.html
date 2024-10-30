@@ -3,276 +3,447 @@
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
 
+	<style>
+/* 페이지 기본 스타일 */
+.body-page-wrapper {
+	padding: 20px;
+	background-color: #f9f9f9;
+	align-items: center;
+}
 
-	<div class="text-center">
-		<form name="insertForm" th:action="@{/boardInsert}" method="post">
-			<h3>게시글 정보</h3>
-			<table class="table">
-				<tr>
-					<th>제목</th>
-					<td>[[${bods.title}]]</td>
-				</tr>
-				<tr>
-					<th>작성자</th>
-					<td>[[${bods.writer}]]</td>
-				</tr>
-				<tr>
-					<th>내용</th>
-					<td>[[${bods.content}]]</td>
-				</tr>
-				<tr>
-					<th>작성일자</th>
-					<!-- yyyy/MM/dd -->
-					<td>[[${#dates.format(bods.regDate, 'yyyy/MM/dd')}]]</td>
-				</tr>
-				<tr>
-					<th>수정일자</th>
-					<td>[[${#dates.format(bods.modDate, 'yyyy/MM/dd')}]]</td>
-					<!--<td>[[${bods.modDate}]]</td> -->
-				</tr>
+/* Breadcrumb 스타일 */
+.breadcrumb {
+	background-color: #ffffff;
+	padding: 10px 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	height: 70px;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	color: #333;
+	position: relative;
+}
 
-			</table>
-			<button type="button"
-				th:onclick='|location.href="@{/board/bodsUpdate(postNo=${bods.postNo})}"|'>수정</button>
-			<button type="button"
-				th:onclick='|location.href="@{/board/bodsList(boardNo=${bods.boardNo})}"|'>목록</button>
-			<button type="button"
-				th:onclick='|location.href="@{/board/bodsDelete(postNo=${bods.postNo},boardNo=${bods.boardNo})}"|'>삭제</button>
-		</form>
+.breadcrumb h4 {
+	margin: 0;
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+}
 
-		<!-- 댓글창 -->
-		<div class="text-center">
-			<form name="insertBodsComts" th:action="@{/board/bodsComts}"
-				method="post">
-				<input type="hidden" id="postNo" name="postNo"
-					th:value="${param.postNo}">
-				<!-- 댓글 작성 부분 -->
-				<h3>댓글 작성</h3>
-				<input type="text" name="writer" placeholder="작성자"> 
-				<input type="text" name="content" placeholder="내용">
-				<button type="button" id="btninsert">댓글작성</button>
-				
-			</form>
+.breadcrumb-left {
+	display: flex; /* flexbox로 요소 정렬 */
+	flex-direction: column; /* 세로로 배치 */
+	justify-content: center; /* 세로 중앙 정렬 */
+}
+
+.breadcrumb-left h4 {
+	font-size: 22px;
+	font-weight: bold;
+	margin: 0; /* 기본 마진 제거 */
+	margin-top: 2px;
+}
+
+.breadcrumb-left p {
+	font-size: 14px;
+	color: #666;
+	margin-top: 2px;
+	margin-bottom: 0;
+}
+
+.breadcrumb-right span {
+	font-size: 14px;
+	color: #999;
+	white-space: nowrap;
+	position: relative;
+	top: -12px;
+}
+
+.card_memberInsert {
+	background-color: #ffffff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+}
+
+.insert-btn {
+	display: flex;
+	justify-content: flex-end; /* 오른쪽으로 정렬 */
+	margin-right: 20px; /* 필요에 따라 여백 조정 */
+}
+
+button {
+	padding: 5px 10px;
+	margin-left: 5px;
+	background-color: #9b8df6;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: background-color 0.3s ease;
+}
+
+/* 마우스 호버 시 효과 */
+button:hover {
+	background-color: #5a4bcf;
+}
+
+/* 추가적인 버튼 스타일링 */
+button:active {
+	background-color: #4839a9;
+}
+
+/* 에러 메시지 스타일 */
+.error {
+	border-color: red;
+}
+
+/* 부모 요소에 relative를 설정 */
+.form-group {
+	position: relative;
+}
+
+/* 아이콘을 입력 필드 옆으로 배치 */
+.error-icon {
+	color: red;
+	font-size: 24px;
+	display: inline-block;
+	position: absolute; /* 절대 위치 */
+	top: 50%; /* 입력 필드의 중간에 위치하도록 */
+	transform: translateY(-50%); /* 수직으로 중앙 정렬 */
+	right: -20px; /* 입력 필드의 오른쪽 끝에서 약간 떨어지게 */
+	z-index: 1; /* 겹치지 않도록 설정 */
+}
+
+.error-message {
+	color: red;
+	font-size: 12px;
+	margin-top: 5px;
+}
+
+/* 필수 입력값 누락 시 아이콘 */
+.required-field {
+	border: 2px solid red;
+}
+
+.field-icon {
+	color: red;
+	margin-left: 5px;
+}
+/*
+#content + iframe {
+	height : 500px !important;
+}
+*/
+</style>
+	<div class="body-page-wrapper">
+		<div class="purple-background-container">
+			<div class="breadcrumb">
+				<div class="breadcrumb-left">
+					<h4>게시글 상세보기</h4>
+					<p>게시글 상세보기 페이지 입니다.</p>
+				</div>
+				<div class="breadcrumb-right">
+					<span>게시판 > 게시글 상세보기</span>
+				</div>
+			</div>
+			<div class="card_memberInsert">
+				<div class="col-md-9">
+					<form class="form-horizontal" name="insertForm"
+						th:action="@{/board/bodsInsert}" method="post">
+						<input type="hidden" name="boardNo" th:value="${param.boardNo}" />
+						<input type="hidden" name="empNo" th:value="${empNo}" />
+
+						<div class="form-group row">
+							<label for="title"
+								class="col-sm-3 text-end control-label col-form-label">제목</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control" id="title" name="title"
+									th:value="${bods.title}" readonly />
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="content"
+								class="col-sm-3 text-end control-label col-form-label">내용</label>
+							<div class="col-sm-9">
+								<div th:utext="${bods.content}"></div>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="regDate"
+								class="col-sm-3 text-end control-label col-form-label">작성일</label>
+							<div class="col-sm-9">
+								<div>[[${#dates.format(bods.regDate, 'yyyy년 MM월 dd일')}]]</div>
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="modDate"
+								class="col-sm-3 text-end control-label col-form-label">수정일</label>
+							<div class="col-sm-9">
+								<div>[[${#dates.format(bods.modDate, 'yyyy년 MM월 dd일')}]]</div>
+							</div>
+						</div>
+						<!-- 등록 버튼 -->
+						<div class="insert-btn">
+							<button class="btn btn-success" type="button"
+								th:onclick='|location.href="@{/board/bodsUpdate(postNo=${bods.postNo})}"|'>수정</button>
+							<button class="btn btn-primary" type="button"
+								th:onclick='|location.href="@{/board/bodsList(boardNo=${bods.boardNo})}"|'>목록</button>
+							<button class="btn btn-danger" type="button"
+								th:onclick='|location.href="@{/board/bodsDelete(postNo=${bods.postNo},boardNo=${bods.boardNo})}"|'>삭제</button>
+						</div>
+					</form>
+				</div>
+			</div>
 		</div>
-		
-		<table id="commentsTable">
-			<thead>
-				<tr>
-					<th>댓글 번호</th>
-					<th>작성자</th>
-					<th>내용</th>
-					<th>등록 날짜</th>
-				</tr>
-			</thead>
-			<tbody id="commentsBody">
-				<!-- AJAX로 불러온 댓글이 여기에 추가됩니다 -->
-			</tbody>
-		</table>
+		<div class="purple-background-container">
+			<div class="card_memberInsert">
+				<h3>댓글 작성</h3>
+				<div class="col-md-9">
+					<form class="form-horizontal" name="insertBodsComts"
+						th:action="@{/board/bodsComts}" method="post">
+						<input type="hidden" id="postNo" name="postNo"
+							th:value="${param.postNo}"> <input type="hidden"
+							name="writer" th:value="${empNo}">
+						<!-- 댓글 작성 부분 -->
 
+						<div class="form-group row">
+							<label for="content" class="col-sm-3 text-end control-label col-form-label">제목</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control" id="content" name="content" placeholder="댓글 내용" />
+							</div>
+						</div>
+						<div class="insert-btn">
+							<button type="button" id="btninsert">댓글작성</button>
+						</div>
+					</form>
+				</div>
+				<div class="card_memberInsert">
+					<table id="commentsTable">
+						<thead>
+							<tr>
+								<th>댓글 번호</th>
+								<th>작성자</th>
+								<th>내용</th>
+								<th>등록 날짜</th>
+							</tr>
+						</thead>
+						<tbody id="commentsBody">
+							<!-- AJAX로 불러온 댓글이 여기에 추가됩니다 -->
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
 
-		<script th:inline="javascript">
-			// 작성자 가져오기
-            //let writer = /*<![CDATA[*/ [[${#authentication.name}]]  /*]]>*/
-			
-            
-            //ajax로 댓글 불러오기
-			let postNo = $('#postNo').val();
-			
-			getCommentList();
-			
-			function getCommentList(){
-				$.ajax({
-					type : "get", // HTTP 요청 메소드를 GET으로 설정
-					url : `/board/comtsList?postNo=` + postNo, // URL에 postNo를 동적으로 추가
-					success : function(rs) { // 요청이 성공했을 때 실행되는 콜백 함수
-						console.log(rs);// 서버에서 받은 결과
-						let commentsBody = $('#commentsBody'); // 테이블 본문 요소를 선택
-						commentsBody.empty(); // 기존의 댓글 목록을 지움 (선택 사항)
-						rs.forEach(function(comt) { // 결과로 받은 댓글 목록을 순회
-							let row = `<tr  id="cmtNo${comt.cmtNo}">` + // HTML 테이블 행 생성
-							`<td>` + comt.cmtNo + '</td>' + // 댓글 번호
-							`<td id="replyno${comt.writer}">` + comt.writer + '</td>' + // 작성자
-							`<td id="updateContent${comt.cmtNo}">` + comt.content + '</td>' + // 댓글 내용
-							'<td>' + comt.regDate + '</td>' + // 등록 날짜
-							`<td><button type="button" onclick='deletebodsComts("${comt.cmtNo}")'>댓글삭제</button></td>`+ // 삭제버튼
-							`<td><button type="button" onclick='updateBodsComtsform(${comt.cmtNo},"${comt.writer}","${comt.content}")'>댓글수정</button></td>`+  // 수정버튼 
-							'</tr>';
-	
-							commentsBody.append(row);
-						});
-	
-					}
-				});
-			}
-			//댓글 수정 폼
-			//$("#comtsUpdate").on('click', updateBodsComts);
-			function updateBodsComtsform(cmtNo, writer, content){
-				
-				
-				
-				var updatebodsComtsView = "";
-				
-				if($('#cmtNo').val() != null) {
-					alert("이미 수정 중인 댓글이 있습니다.");
-					return;
-				}
-			
-				updatebodsComtsView += '<tr><td colspan="6"><div class="reply" style="white-space:pre" id="cmtNo'+cmtNo+'">';
-				updatebodsComtsView += '<p>&nbsp;&nbsp;' + writer + ' / ' + '</p>';
-				updatebodsComtsView += '<p> <label>&nbsp;&nbsp;댓글 수정</label> <br>';
-				updatebodsComtsView += '<input type="hidden" id="cmtNo" name="cmtNo" value="'+cmtNo+'">';
-				updatebodsComtsView += '<textarea style="white-space:pre" id="updateContent'+cmtNo+'" class="mini2" rows="5" cols="80" name="updateContent'+cmtNo+'"';
-				updatebodsComtsView += 'maxlength="300" placeholder="'+content+'" autofocus>'+content+'</textarea></p>'; 
-				updatebodsComtsView += '<div class="row">';
-				updatebodsComtsView += '<div class="col-12">';
-				updatebodsComtsView += '<button type="button" onclick="updateBodsComts('+cmtNo+')" class="mini">댓글 수정</button>';
-				
-				updatebodsComtsView += '</div></div> </div></td></tr>';
-				
+	<script>
+		// 작성자 가져오기
+		//let writer = /*<![CDATA[*/ [[${#authentication.name}]]  /*]]>*/
 
-				$('#cmtNo'+cmtNo).replaceWith(updatebodsComtsView);
-			
-			
-			};
-			
-			
-			
-			
-			
-			// 댓글 수정
-			//$("#comtsUpdate").on('click', updateBodsComts);
-			function updateBodsComts(cmtNo){
-				
-				
-		
-		
-			    var updateContent = $('#updateContent'+cmtNo).val();
-			    
-			    if(updateContent =='') {
-				       alert("수정 할 내용을 입력하세요");
-				       return;
-				    } 
-				    
-				    $.ajax({
-				       type:'post',
-				       url: '/board/bodsComtsUpdate',
-				       data: JSON.stringify(
-				             {
-				            	 "content":updateContent,
-				            	 "cmtNo":cmtNo,
-				                "postNo":postNo,
-				             }
-				       ),
-				       contentType:'application/json',
-				       success:function(data){
-				          if(data.result ===true) {
-				             alert('댓글이 수정되었습니다!');
-				             
-				             getCommentList();
-				          } else {
-				             alert('댓글 수정에 실패했습니다.');
-				          }
-				       },
-				       error:function() {
-				          alert('통신실패');
-				       }
-				    });   
-				    
-				 };
-				
+		//ajax로 댓글 불러오기
+		let postNo = $('#postNo').val();
 
-				
-				/*let contentUpdate = $('form [name="content"]');
-				if (contentUpdate.val() == '') {
-					alert('내용이 입력되지 않았습니다.');
-					contentUpdate.focus();
-					return;
-				}*/
-				// 수정 아작스
-				/*$.ajax({
-					type : 'post',
-					url : '/board/bodsComtsUpdate',
-					data : {'content' : contentUpdate.val() },
-					success : function(data) {						
-							//getCommentList();
-							content.val("");
-							alert('댓글이 수정되었습니다.');
-					},
-					error : function(request, status, error) {
-						alert("댓글 수정 중 오류가 발생했습니다.");
-					}
+		getCommentList();
 
-				});
+		function getCommentList() {
+			$
+					.ajax({
+						type : "get", // HTTP 요청 메소드를 GET으로 설정
+						url : `/board/comtsList?postNo=` + postNo, // URL에 postNo를 동적으로 추가
+						success : function(rs) { // 요청이 성공했을 때 실행되는 콜백 함수
+							console.log(rs);// 서버에서 받은 결과
+							let commentsBody = $('#commentsBody'); // 테이블 본문 요소를 선택
+							commentsBody.empty(); // 기존의 댓글 목록을 지움 (선택 사항)
+							rs
+									.forEach(function(comt) { // 결과로 받은 댓글 목록을 순회
+										let row = `<tr  id="cmtNo${comt.cmtNo}">`
+												+ // HTML 테이블 행 생성
+												`<td>`
+												+ comt.cmtNo
+												+ '</td>'
+												+ // 댓글 번호
+												`<td id="replyno${comt.writer}">`
+												+ comt.writer
+												+ '</td>'
+												+ // 작성자
+												`<td id="updateContent${comt.cmtNo}">`
+												+ comt.content
+												+ '</td>'
+												+ // 댓글 내용
+												'<td>'
+												+ comt.regDate
+												+ '</td>'
+												+ // 등록 날짜
+												`<td><button type="button" onclick='deletebodsComts("${comt.cmtNo}")'>댓글삭제</button></td>`
+												+ // 삭제버튼
+												`<td><button type="button" onclick='updateBodsComtsform(${comt.cmtNo},"${comt.writer}","${comt.content}")'>댓글수정</button></td>`
+												+ // 수정버튼 
+												'</tr>';
 
-			}*/
+										commentsBody.append(row);
+									});
 
-			
-			// 댓글 삭제 
-			$("#comtsdelete").on('click', deletebodsComts);
-			function deletebodsComts(cmtNo) {
-				if (confirm("정말 삭제하시겠습니까?") == true) {
-					// 삭제 아작스
-					$.ajax({
-						type : 'post',
-						url : '/board/bodsComtsDelete',
-						data : {
-							cmtNo : cmtNo
-						},
-						success : function(response) {
-							if (response) {
-								alert("댓글이 성공적으로 삭제되었습니다.");
-								getCommentList();
-							} else {
-								alert("댓글 삭제 실패.");
-							}
-						},
-						error : function() {
-							alert('서버 오류가 발생했습니다.');
 						}
 					});
-				}
+		}
+		//댓글 수정 폼
+		//$("#comtsUpdate").on('click', updateBodsComts);
+		function updateBodsComtsform(cmtNo, writer, content) {
+
+			var updatebodsComtsView = "";
+
+			if ($('#cmtNo').val() != null) {
+				alert("이미 수정 중인 댓글이 있습니다.");
+				return;
 			}
 
-			
-			// 댓글 등록
-			$("#btninsert").on('click', boardInsertHandler);
-			function boardInsertHandler() {
+			updatebodsComtsView += '<tr><td colspan="6"><div class="reply" style="white-space:pre" id="cmtNo'+cmtNo+'">';
+			updatebodsComtsView += '<p>&nbsp;&nbsp;' + writer + ' / ' + '</p>';
+			updatebodsComtsView += '<p> <label>&nbsp;&nbsp;댓글 수정</label> <br>';
+			updatebodsComtsView += '<input type="hidden" id="cmtNo" name="cmtNo" value="'+cmtNo+'">';
+			updatebodsComtsView += '<textarea style="white-space:pre" id="updateContent'+cmtNo+'" class="mini2" rows="5" cols="80" name="updateContent'+cmtNo+'"';
+				updatebodsComtsView += 'maxlength="300" placeholder="'+content+'" autofocus>'
+					+ content + '</textarea></p>';
+			updatebodsComtsView += '<div class="row">';
+			updatebodsComtsView += '<div class="col-12">';
+			updatebodsComtsView += '<button type="button" onclick="updateBodsComts('
+					+ cmtNo + ')" class="mini">댓글 수정</button>';
 
-				let writer = $('form [name="writer"]');
-				if (writer.val() == '') {
-					alert('작성자가 입력되지 않았습니다.');
-					writer.focus();
-					return;
+			updatebodsComtsView += '</div></div> </div></td></tr>';
+
+			$('#cmtNo' + cmtNo).replaceWith(updatebodsComtsView);
+
+		};
+
+		// 댓글 수정
+		//$("#comtsUpdate").on('click', updateBodsComts);
+		function updateBodsComts(cmtNo) {
+
+			var updateContent = $('#updateContent' + cmtNo).val();
+
+			if (updateContent == '') {
+				alert("수정 할 내용을 입력하세요");
+				return;
+			}
+
+			$.ajax({
+				type : 'post',
+				url : '/board/bodsComtsUpdate',
+				data : JSON.stringify({
+					"content" : updateContent,
+					"cmtNo" : cmtNo,
+					"postNo" : postNo,
+				}),
+				contentType : 'application/json',
+				success : function(data) {
+					if (data.result === true) {
+						alert('댓글이 수정되었습니다!');
+
+						getCommentList();
+					} else {
+						alert('댓글 수정에 실패했습니다.');
+					}
+				},
+				error : function() {
+					alert('통신실패');
 				}
+			});
 
-				let content = $('form [name="content"]');
-				if (content.val() == '') {
-					alert('내용이 입력되지 않았습니다.');
-					content.focus();
-					return;
-				}
+		};
 
-				//document.insertBodsComts.submit();
-				console.log($(document.insertBodsComts).serialize());
+		/*let contentUpdate = $('form [name="content"]');
+		if (contentUpdate.val() == '') {
+			alert('내용이 입력되지 않았습니다.');
+			contentUpdate.focus();
+			return;
+		}*/
+		// 수정 아작스
+		/*$.ajax({
+			type : 'post',
+			url : '/board/bodsComtsUpdate',
+			data : {'content' : contentUpdate.val() },
+			success : function(data) {						
+					//getCommentList();
+					content.val("");
+					alert('댓글이 수정되었습니다.');
+			},
+			error : function(request, status, error) {
+				alert("댓글 수정 중 오류가 발생했습니다.");
+			}
 
-				//등록아작스
+		});
+
+		}*/
+
+		// 댓글 삭제 
+		$("#comtsdelete").on('click', deletebodsComts);
+		function deletebodsComts(cmtNo) {
+			if (confirm("정말 삭제하시겠습니까?") == true) {
+				// 삭제 아작스
 				$.ajax({
 					type : 'post',
-					url : '/board/bodsComts',
-					data : $(document.insertBodsComts).serialize(),
-					success : function(data) {						
-							getCommentList();
-							content.val("");
-						
-
+					url : '/board/bodsComtsDelete',
+					data : {
+						cmtNo : cmtNo
 					},
-					error : function(request, status, error) {
-						//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+					success : function(response) {
+						if (response) {
+							alert("댓글이 성공적으로 삭제되었습니다.");
+							getCommentList();
+						} else {
+							alert("댓글 삭제 실패.");
+						}
+					},
+					error : function() {
+						alert('서버 오류가 발생했습니다.');
 					}
-
 				});
-				alert('댓글이 등록되었습니다.');
 			}
-		</script>
-	</div>
+		}
+
+		// 댓글 등록
+		$("#btninsert").on('click', boardInsertHandler);
+		function boardInsertHandler() {
+
+			let writer = $('form [name="writer"]');
+			if (writer.val() == '') {
+				alert('작성자가 입력되지 않았습니다.');
+				writer.focus();
+				return;
+			}
+
+			let content = $('form [name="content"]');
+			if (content.val() == '') {
+				alert('내용이 입력되지 않았습니다.');
+				content.focus();
+				return;
+			}
+
+			//document.insertBodsComts.submit();
+			console.log($(document.insertBodsComts).serialize());
+
+			//등록아작스
+			$.ajax({
+				type : 'post',
+				url : '/board/bodsComts',
+				data : $(document.insertBodsComts).serialize(),
+				success : function(data) {
+					getCommentList();
+					content.val("");
+
+				},
+				error : function(request, status, error) {
+					//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				}
+
+			});
+			alert('댓글이 등록되었습니다.');
+		}
+	</script>
 </div>

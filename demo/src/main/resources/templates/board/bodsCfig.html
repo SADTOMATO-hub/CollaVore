@@ -3,174 +3,122 @@
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
 
-	<h3>이때까지 만들어진 게시판</h3>
-	<h5>모든게시판 목록</h5>
-
 	<div class="card"
 		style="width: 700px; height: 300px; border: 1px solid green;"
 		align="center">
 		<div class="card-body">
-			<h5 class="card-title">게시글 목록</h5>
+			<h5 class="card-title">모든게시판 목록</h5>
 		</div>
 		<table class="table">
 			<thead>
 				<tr>
-					<th scope="col">게시글 번호</th>
-					<th scope="col">제목</th>
+					<th scope="col">게시판 번호</th>
+					<!-- 1번이 공지사항 2번이 자유게시판 -->
+					<th scope="col">게시판 명</th>
+					<th scope="col">말머리</th>
+					<th scope="col">등록일</th>
 				</tr>
 			</thead>
 			<tbody>
-				<th:block th:each="info : ${bodsList}">
+				<th:block th:each="info : ${bodsCfigList}">
 					<tr>
-						<td>[[${info.postNo}]]</td>
-						<td>[[${info.title}]]</td>
+						<td>[[${info.boardNo}]]</td>
+						<td>[[${info.name}]]</td>
+						<td>[[${info.subject}]]</td>
+						<td>[[${info.regDate}]]</td>
 					</tr>
 				</th:block>
 			</tbody>
 		</table>
-		<button type="button"
-			th:onclick='|location.href="@{/board/bodsInsert(boardNo=${param.boardNo})}"|'>글쓰기</button>
+
+
+
+
+		<!--<button type="button"
+			th:onclick='|location.href="@{/board/bodsInsert(boardNo=${param.boardNo})}"|'>글쓰기</button>-->
+
 	</div>
-
-
-	<div class="card"
-		style="width: 700px; height: 300px; border: 1px solid red;"
-		align="center">
-		<div class="card-body">
-			<h5 class="card-title">게시글 목록</h5>
+	<!-- 게시판 등록 -->
+		<div class="text-center">
+			<form name="insertBodsCfig" th:action="@{/board/bodsCfig}"
+				method="post">
+				<input type="hidden" id="boardNo" name="boardNo"
+					th:value="${param.boardNo}">
+				<!-- 게시판 등록 -->
+				<h3>게시판 등록</h3>
+				<input type="text" name="name" placeholder="게시판이름">
+				<input type="text" name="subject" placeholder="말머리">
+				<input type="text" name="readAuth" placeholder="읽기권한">
+				<input type="text" name="writeAuth" placeholder="쓰기권한">
+				<input type="text" name="commentAuth" placeholder="댓글권한">
+				<input type="hidden" name="content" placeholder="등록시간">
+				<button type="button" id="btninsert">게시판등록</button>
+				
+			</form>
 		</div>
-		<table class="table">
-			<thead>
-				<tr>
-					<th scope="col">게시글 번호</th>
-					<th scope="col">제목</th>
-				</tr>
-			</thead>
-			<tbody>
-				<th:block th:each="info : ${bodsList}">
-					<tr>
-						<td>[[${info.postNo}]]</td>
-						<td>[[${info.title}]]</td>
-					</tr>
-				</th:block>
-			</tbody>
-		</table>
-		<button type="button"
-			th:onclick='|location.href="@{/board/bodsInsert(boardNo=${param.boardNo})}"|'>글쓰기</button>
-	</div>
-
-
-
-
-	<button type='button' id="modal_btn">게시판 기본설정</button>
-	<div class="black_bg"></div>
-	<div class="modal_wrap">
-		<div class="modal_close">
-			<a href="#">close</a>
-		</div>
-		<form>
-			<div>게시판 등록(권한설정해서 게시판 생성)</div>
-
-			<div>
-				<input type="text" name="content" placeholder="게시판번호">
-			</div>
-
-			<div>
-				<input type="text" name="content" placeholder="게시판명">
-			</div>
-
-			<div>
-				<input type="text" name="content" placeholder="게시판설명">
-			</div>
-
-			<div>
-				<select class="form-select" aria-label="Default select example">
-
-				</select>
-			</div>
-
-			<div>
-				<select class="form-select" aria-label="Default select example">
-					<option selected>"게시글 댓글권한 숫자에 의한 번호부여"</option>
-					<option value="1">1</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-				</select>
-			</div>
-
-			<div>
-				<select class="form-select" aria-label="Default select example">
-					<option selected>"게시글 읽기권한 숫자에 의한 번호부여"</option>
-					<option value="1">1</option>
-					<option value="2">2</option>
-					<option value="3">3</option>
-				</select>
-			</div>
-
-			<button type="submit">등록</button>
-
-
-		</form>
-	</div>
-
-
+	
+	
 	<script>
-		//제이쿼리 객체 생성
-		$('tbody > tr').on('click', function(event) {
-			let trTag = event.currentTarget;
-			let postno = $(trTag).children().first().text();
-			let url = `/board/bodsInfo?postNo=${postno}`;
-			location.href = url;
-		});
+		// 게시판 등록
+		$("#btninsert").on('click', boardInsertHandler);
+		function boardInsertHandler() {
 
-		window.onload = function() {
-			function onClick() {
-				document.querySelector('.modal_wrap').style.display = 'block';
-				document.querySelector('.black_bg').style.display = 'block';
+
+			let name = $('form [name="name"]');
+			if (name.val() == '') {
+				alert('게시판이름이 입력되지 않았습니다.');
+				content.focus();
+				return;
 			}
-			function offClick() {
-				document.querySelector('.modal_wrap').style.display = 'none';
-				document.querySelector('.black_bg').style.display = 'none';
+			
+			let subject = $('form [name="subject"]');
+			if (subject.val() == '') {
+				alert('말머리가 입력되지 않았습니다.');
+				content.focus();
+				return;
 			}
-			document.getElementById('modal_btn').addEventListener('click',
-					onClick);
-			document.querySelector('.modal_close').addEventListener('click',
-					offClick);
-		};
-
-		// submit을 하기 전 제목, 작성자, 작성일자 확인
-		$(bodsCfig).on('submit', bodsCfig);
-
-		function bodsCfig(event) {
-			event.preventDefault();
-
-			let boardNo = $('form [name="boardNo"]');
-			if (boardNo.val() == '') {
-				alert('게시판 번호가 입력되지 않았습니다.');
-				title.focus();
+			
+			let readAuth = $('form [name="readAuth"]');
+			if (name.val() == '') {
+				alert('게시판이름이 입력되지 않았습니다.');
+				readAuth.focus();
+				return;
+			}
+			
+			let writeAuth = $('form [name="writeAuth"]');
+			if (name.val() == '') {
+				alert('게시판이름이 입력되지 않았습니다.');
+				writeAuth.focus();
+				return;
+			}
+			
+			let commentAuth = $('form [name="commentAuth"]');
+			if (name.val() == '') {
+				alert('게시판이름이 입력되지 않았습니다.');
+				commentAuth.focus();
 				return;
 			}
 
-			let name = $('form [name="title"]');
-			if (title.val() == '') {
-				alert('게시판명이 입력되지 않았습니다.');
-				title.focus();
-				return;
-			}
+			//document.insertBodsComts.submit();
+			console.log($(document.insertBodsComts).serialize());
 
-			let writer = $('form [name="writer"]');
-			if (writer.val() == '') {
-				alert('작성자가 입력되지 않았습니다.');
-				writer.focus();
-				return;
-			}
+			//등록아작스
+			$.ajax({
+				type : 'post',
+				url : '/board/bodsCfig',
+				data : $(document.insertBodsCfig).serialize(),
+				success : function(data) {
+					//getCommentList();
+					boardNo.val("");
 
-			alert('게시글이 등록되었습니다.');
-			insertForm.submit();
+				},
+				error : function(request, status, error) {
+					//alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				}
+
+			});
+			alert('게시판이 등록되었습니다.');
 		}
+
 	</script>
-
-
-
 </div>
-

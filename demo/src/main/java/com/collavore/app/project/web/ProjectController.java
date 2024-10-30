@@ -30,10 +30,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.collavore.app.common.service.FileUtill;
 import com.collavore.app.project.service.PjService;
 import com.collavore.app.project.service.PjTempService;
+import com.collavore.app.project.service.ProjectDWorkTempVO;
 import com.collavore.app.project.service.ProjectFilesVO;
 import com.collavore.app.project.service.ProjectFoldersVO;
 import com.collavore.app.project.service.ProjectTempVO;
 import com.collavore.app.project.service.ProjectVO;
+import com.collavore.app.project.service.ProjectWorkTempVO;
 
 import lombok.RequiredArgsConstructor;
 
@@ -54,8 +56,7 @@ public class ProjectController {
 		List<ProjectVO> list = pjService.projectList();
 		List<ProjectTempVO> templist = pjtempService.projecttempList();
 		List<ProjectVO> emplist = pjService.empList();
-		
-		
+
 		model.addAttribute("projects", list);
 		model.addAttribute("templist", templist);
 		model.addAttribute("emp", emplist);
@@ -67,7 +68,34 @@ public class ProjectController {
 	@ResponseBody
 	public Map<String, Object> insertAjax(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
+		//System.err.println(projectVO);
+		
 		pjService.projectinsert(projectVO);
+		
+		List<ProjectWorkTempVO> projwrklist =  pjtempService.projectwrktemplistInfo(projectVO.getProjTempNo());
+		  for (ProjectWorkTempVO user : projwrklist) {
+			  projectVO.setName(user.getName()); 
+			  projectVO.setContent(user.getContent()); 
+			  projectVO.setProjTempNo(user.getProjTempNo()); 
+			  projectVO.setJobNo(user.getJobNo()); 
+			  //System.err.println(projectVO);
+	          pjService.projectwrkinsert(projectVO);
+			  List<ProjectDWorkTempVO> projdwrklist = pjtempService.projectDwrktemplistInfo(user.getPwtNo());
+			  for(ProjectDWorkTempVO dwrk : projdwrklist) {
+				  projectVO.setName(dwrk.getName());
+				  projectVO.setContent(dwrk.getContent());
+				  projectVO.setPwtNo(dwrk.getPwtNo());
+				  projectVO.setImportance(dwrk.getImportance());
+				  //System.err.println("-----------------------------------");
+				  //System.err.println(projectVO);
+				pjService.projectdwrkinsert(projectVO);
+			  }
+	        }
+		
+		//pjService.projectwrkinsert(projectVO);
+		
+		
+		//pjService.projectdwrkinsert(projectVO);
 
 		map.put("type", "postAjax");
 		map.put("data", projectVO);
@@ -123,9 +151,8 @@ public class ProjectController {
 
 	// 파일 업로드 처리 메소드
 	@PostMapping("/project/uploadfile")
-	public String uploadFile(@RequestPart("file") MultipartFile file, 
-			                 @ModelAttribute ProjectFilesVO ProjectFilesVO,
-			                 Model model) {
+	public String uploadFile(@RequestPart("file") MultipartFile file, @ModelAttribute ProjectFilesVO ProjectFilesVO,
+			Model model) {
 		if (file.isEmpty()) {
 			model.addAttribute("message", "파일이 비어 있습니다.");
 			return "redirect:/project/projectfilelist"; // 파일이 비어 있으면 목록으로 리다이렉트
@@ -188,21 +215,13 @@ public class ProjectController {
 	@GetMapping("project/projectworklist")
 	public String projectworkList(Model model) {
 		List<ProjectVO> list = pjService.projecttreeList();
-		
+
 		List<ProjectVO> departments = pjService.departmentsList();
-		 List<ProjectVO> jobs = pjService.jobsList(); 
-//		List<ProjectVO> projmgr = pjService.projMgrInfo();
-//		List<ProjectVO> wrkmgr = pjService.wrkMgrIngo();
-		/* List<ProjectVO> dwrkmgr = pjService.dwrkMgrInfo(); */
-		
-//		System.err.println(list);
+		List<ProjectVO> jobs = pjService.jobsList();
 
 		model.addAttribute("projects", list);
 		model.addAttribute("jobs", jobs);
 		model.addAttribute("dept", departments);
-//		model.addAttribute("projmgriist", projmgr);
-//		model.addAttribute("wrkmgriist", wrkmgr);
-//		model.addAttribute("dwrkmgrlist", dwrkmgr);
 		return "project/projectWorkList";
 	}
 
@@ -211,7 +230,7 @@ public class ProjectController {
 	@ResponseBody
 	public Map<String, Object> insertwrkAjax(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
-//			 System.err.println(projectVO);
+		// System.err.println(projectVO);
 		pjService.projectwrkinsert(projectVO);
 
 		map.put("type", "postAjax");
@@ -226,7 +245,7 @@ public class ProjectController {
 		Map<String, Object> map = new HashMap<>();
 		String selNo = projectVO.getSelPwNo();
 		String selParentNo = projectVO.getSelParentPdwNo();
-
+		// System.err.println(projectVO);
 		switch (selParentNo.substring(0, 1)) {
 		case "W":
 			projectVO.setPwNo(Integer.parseInt(selParentNo.replace("W", "")));
@@ -237,6 +256,7 @@ public class ProjectController {
 			projectVO.setPwNo(searchPwNo);
 			projectVO.setParentPdwNo(Integer.parseInt(selParentNo));
 		}
+
 		pjService.projectdwrkinsert(projectVO);
 
 		map.put("type", "postAjax");
@@ -252,97 +272,112 @@ public class ProjectController {
 	 * @ResponseBody public int getProjectwrkInfo(@PathVariable int pdwNo) { return
 	 * pjService.selectPwNo(pdwNo); }
 	 */
-	
+
 	// 업무 단건조회리스트
 	@GetMapping("/project/projectwrklistinfo/{pwNo}")
 	@ResponseBody
 	public ProjectVO getProjectwrklistInfo(@PathVariable int pwNo) {
 		return pjService.projectwrkInfo(pwNo);
-	}	
+	}
+
 	// 상세업무 단건조회리스트
 	@GetMapping("/project/projectdwrkinfo/{pdwNo}")
 	@ResponseBody
 	public ProjectVO getProjectdwrkInfo(@PathVariable int pdwNo) {
 		return pjService.projectdwrkInfo(pdwNo);
-	}	
-	
-	
+	}
+
 	// 프로젝트 단건 조회
 	@GetMapping("/project/projectlistinfo/{pwNo}")
 	@ResponseBody
 	public ProjectVO getProjectInfo2(@PathVariable int pwNo) {
 		return pjService.projectInfo(pwNo);
 	}
-	
+
 	// 프로젝트 업무 수정 요청 처리
-		@PostMapping("/project/projectwrkupdate")
-		@ResponseBody
-		public Map<String, Object> updatewrkProject(@RequestBody ProjectVO projectVO) {
-			Map<String, Object> response = new HashMap<>();
-			try {
-				pjService.updatewrkProject(projectVO);
-				response.put("message", "수정 완료");
-				response.put("status", "success");
-			} catch (Exception e) {
-				e.printStackTrace();
-				response.put("message", "수정 실패: " + e.getMessage());
-				response.put("status", "error");
-			}
-			return response;
+	@PostMapping("/project/projectwrkupdate")
+	@ResponseBody
+	public Map<String, Object> updatewrkProject(@RequestBody ProjectVO projectVO) {
+		Map<String, Object> response = new HashMap<>();
+		try {
+			pjService.updatewrkProject(projectVO);
+			response.put("message", "수정 완료");
+			response.put("status", "success");
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("message", "수정 실패: " + e.getMessage());
+			response.put("status", "error");
 		}
-		
-		
-		// 프로젝트 상세업무 수정 요청 처리
-				@PostMapping("/project/projectdwrkupdate")
-				@ResponseBody
-				public Map<String, Object> updatedwrkProject(@RequestBody ProjectVO projectVO) {
-					Map<String, Object> response = new HashMap<>();
-					try {
-						System.err.println(projectVO);
-						pjService.updatedwrkProject(projectVO);
-						response.put("message", "수정 완료");
-						response.put("status", "success");
-					} catch (Exception e) {
-						e.printStackTrace();
-						response.put("message", "수정 실패: " + e.getMessage());
-						response.put("status", "error");
-					}
-					return response;
-				}		
-		
-				// 상세업무 코멘트 단건 리스트
-				@GetMapping("/project/projecdwrkcomtstinfo/{pdwNo}")
-				@ResponseBody
-				public List<ProjectVO> projectDWrkComtInfo(@PathVariable int pdwNo) {
-				    return pjService.projectDWrkComtInfo(pdwNo);
-				}
-				
+		return response;
+	}
 
-				// 상세업무 코멘트 생성
-				@PostMapping("project/projectdwrkcomtinsert")
-				@ResponseBody
-				public Map<String, Object> dwrkcomtinsertAjax(@RequestBody ProjectVO projectVO) {
-					Map<String, Object> map = new HashMap<>();
-					System.err.println(projectVO);
-					pjService.projectdwrkcomtinsert(projectVO);
+	// 프로젝트 상세업무 수정 요청 처리
+	@PostMapping("/project/projectdwrkupdate")
+	@ResponseBody
+	public Map<String, Object> updatedwrkProject(@RequestBody ProjectVO projectVO) {
+		Map<String, Object> response = new HashMap<>();
+		try {
+			System.err.println(projectVO);
+			pjService.updatedwrkProject(projectVO);
+			response.put("message", "수정 완료");
+			response.put("status", "success");
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("message", "수정 실패: " + e.getMessage());
+			response.put("status", "error");
+		}
+		return response;
+	}
 
-					// regDate를 포맷팅하여 응답에 추가
-				    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				    String formattedRegDate = projectVO.getRegDate() != null ? sdf.format(projectVO.getRegDate()) : null;
-					
-					map.put("type", "postAjax");
-					map.put("data", projectVO);
-					map.put("content", projectVO.getContent()); // message
-					map.put("regDate", formattedRegDate); // 현재 시간 등
-					return map;
-				}
-				
-				// 프로젝트 업무별 매니저 리스트
-				@GetMapping("project/projectmgrlist/{jobNo}")
-				@ResponseBody
-				public List<ProjectVO> projectmgrInfo(@PathVariable int jobNo) {
-					System.err.println(jobNo);
-				    return pjService.projectMgrListInfo(jobNo);
-				}
-				
+	// 상세업무 코멘트 단건 리스트
+	@GetMapping("/project/projecdwrkcomtstinfo/{pdwNo}")
+	@ResponseBody
+	public List<ProjectVO> projectDWrkComtInfo(@PathVariable int pdwNo) {
+		return pjService.projectDWrkComtInfo(pdwNo);
+	}
+
+	// 상세업무 코멘트 생성
+	@PostMapping("project/projectdwrkcomtinsert")
+	@ResponseBody
+	public Map<String, Object> dwrkcomtinsertAjax(@RequestBody ProjectVO projectVO) {
+		Map<String, Object> map = new HashMap<>();
+		System.err.println(projectVO);
+		pjService.projectdwrkcomtinsert(projectVO);
+
+		// regDate를 포맷팅하여 응답에 추가
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String formattedRegDate = projectVO.getRegDate() != null ? sdf.format(projectVO.getRegDate()) : null;
+
+		map.put("type", "postAjax");
+		map.put("data", projectVO);
+		map.put("content", projectVO.getContent()); // message
+		map.put("regDate", formattedRegDate); // 현재 시간 등
+		return map;
+	}
+
+	// 프로젝트 업무별 매니저 리스트
+	@GetMapping("project/projectmgrlist/{jobNo}")
+	@ResponseBody
+	public List<ProjectVO> projectmgrInfo(@PathVariable int jobNo) {
+		// System.err.println(jobNo);
+		return pjService.projectMgrListInfo(jobNo);
+	}
+
+	// 프로젝트 상세업무 수정 요청 처리
+	@PostMapping("/project/projectupdatestatus/{pdwNo}")
+	@ResponseBody
+	public Map<String, Object> updatestatusProject(@PathVariable String pdwNo, @RequestBody ProjectVO projectVO) {
+		Map<String, Object> response = new HashMap<>();
+		try {
+			System.err.println(projectVO);
+			pjService.updatestatusProject(projectVO);
+			response.put("message", "수정 완료");
+			response.put("status", "success");
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("message", "수정 실패: " + e.getMessage());
+			response.put("status", "error");
+		}
+		return response;
+	}
 }
