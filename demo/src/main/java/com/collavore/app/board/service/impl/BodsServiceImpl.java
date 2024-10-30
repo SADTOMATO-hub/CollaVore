@@ -14,7 +14,6 @@ import com.collavore.app.board.service.BodsCfigVO;
 import com.collavore.app.board.service.BodsComtsVO;
 import com.collavore.app.board.service.BodsService;
 import com.collavore.app.board.service.BodsVO;
-import com.collavore.app.hrm.service.HrmVO;
 
 @Service
 public class BodsServiceImpl implements BodsService {
@@ -38,18 +37,18 @@ public class BodsServiceImpl implements BodsService {
 		return bodsMapper.selectBoardAll(bodsVO);
 	}
 
-	@Override // 상세조회
+	@Override // 상세조회(게시글상세조회)
 	public BodsVO bodsInfo(BodsVO bodsVO) {
 		return bodsMapper.selectBodsInfo(bodsVO);
 	}
 
-	@Override // 등록
+	@Override // 게시글 등록
 	public int insertBods(BodsVO bodsVO) {
 		int result = bodsMapper.insertBodsInfo(bodsVO);
 		return result == 1 ? bodsVO.getPostNo() : -1;
 	}
 
-	@Override //수정
+	@Override // 게시글 수정
 	public Map<String, Object> updateBods(BodsVO bodsVO) {
 		Map<String, Object> map = new HashMap<>();
 		boolean isSuccessed = false;
@@ -77,7 +76,7 @@ public class BodsServiceImpl implements BodsService {
 		// return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
 	}
 
-	@Override //삭제
+	@Override // 게시글 삭제
 	public int deleteBods(int bodsVO) {
 		return bodsMapper.deleteBodsInfo(bodsVO);
 		//return 0;
@@ -152,12 +151,54 @@ public class BodsServiceImpl implements BodsService {
 		return result == 1 ? bodsCfigVO.getBoardNo() : -1;
 	}
 
+	@Override // 게시판 수정 
+	public Map<String, Object> updateBodsCfig(BodsCfigVO bodsCfigVO) {
+		Map<String, Object> map = new HashMap<>();
+		boolean isSuccessed = false;
+
+		int result = bodsMapper.updateBodsCfigInfo(bodsCfigVO);
+		if (result == 1) {
+			isSuccessed = true;
+		}
+
+		String updateDate = getbodsCfigUpdate();
+
+		map.put("date", updateDate);
+		map.put("result", isSuccessed);
+		map.put("target", bodsCfigVO);
+		
+
+		return map;
+	}
+	
+	private String getbodsCfigUpdate() {
+		LocalDate today = LocalDate.now();
+		DateTimeFormatter dtFormat = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+		String updateDt = today.format(dtFormat);
+		return updateDt;
+
+		// return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+	}// 게시판 수정 여까지
+	
 	
 	// 게시판이름 조회
 	@Override
 	public String boardNameSearch(int boardNo) {
 		return bodsMapper.selectBoardName(boardNo);
 	}
+
+	// 게시판 상세조회
+	@Override
+	public BodsCfigVO bodsCfigInfo(BodsCfigVO bodsCfigVO) {
+		return  bodsMapper.selectBodsCfigInfo(bodsCfigVO);
+	}
+
+	// 게시판 삭제
+	@Override
+	public int deleteBodsCfig(int bodsCfigVO) {
+		return bodsMapper.deleteBodsInfo(bodsCfigVO);
+	}
+	
 	
 	
 	

@@ -17,13 +17,13 @@
 								</tr>
 							</thead>
 							<tbody>
-								<th:block th:each=" approve, sts : ${approveList}">
+								<th:block th:each=" myAppr, sts : ${myApprList}">
 									<tr
-										th:onclick="|location.href='@{/approvals/readApprInfo(eaNo=${approve.eaNo})}'|">
+										th:onclick="|location.href='@{/approvals/readApprInfo(eaNo=${myAppr.eaNo})}'|">
 										<td>[[${sts.count}]]</td>
-										<td>[[${approve.title}]]</td>
-										<td>[[${approve.drafterName}]]</td>
-										<td>[[${#dates.format(approve.regDate, "yyyy년 MM월 dd일")}]]</td>
+										<td>[[${myAppr.title}]]</td>
+										<td>[[${myAppr.drafterName}]]</td>
+										<td>[[${#dates.format(myAppr.regDate, "yyyy년 MM월 dd일")}]]</td>
 									</tr>
 								</th:block>
 							</tbody>
@@ -33,4 +33,7 @@
 			</div>
 		</div>
 	</div>
+	<script>
+		
+	</script>
 </div>

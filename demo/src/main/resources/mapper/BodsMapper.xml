@@ -26,7 +26,7 @@
 		BY post_no
 	</select>
 
-	<!-- 단건조회 -->
+	<!-- 게시글 상세조회 -->
 	<select id="selectBodsInfo" resultType="BodsVO">
 		SELECT post_no
 		, title
@@ -84,7 +84,7 @@
 		WHERE post_no = #{postNo}
 	</update>
 
-	<!-- 삭제 -->
+	<!-- 게시글 삭제 -->
 	<delete id="deleteBodsInfo" parameterType="BodsVO">
 		DELETE FROM bods
 		WHERE
@@ -166,12 +166,12 @@
 		from bodscfig
 		order by board_no
 	</select>
-	
-	<!-- 게시판 등록  -->
+
+	<!-- 게시판 등록 -->
 	<insert id="insertBodsCfigInfo" parameterType="BodsCfigVO">
 		<selectKey keyProperty="boardNo" resultType="Integer"
 			order="BEFORE">
-			SELECT NVL(MAX(boardNo),0) + 1
+			SELECT NVL(MAX(board_No),0) + 1
 			FROM bodscfig
 		</selectKey>
 		INSERT INTO bodscfig
@@ -180,8 +180,9 @@
 		, name
 		, subject
 		, read_auth
-		, writer_auth
-		, comment_auth
+		, write_auth
+		,
+		comment_auth
 		, reg_date
 		)
 		VALUES
@@ -189,16 +190,44 @@
 		#{boardNo}
 		, #{name}
 		, #{subject}
-		, #{readAuth}
+		,
+		#{readAuth}
 		, #{writeAuth}
 		, #{commentAuth}
 		, sysdate
 		)
 	</insert>
 
+	<!-- 게시판 상세조회 -->
+	<select id="selectBodsCfigInfo" resultType="BodsCfigVO">
+		select board_no
+          ,NAME 
+          ,SUBJECT
+          ,READ_AUTH
+          ,WRITE_AUTH
+          ,COMMENT_AUTH
+          ,REG_DATE
+          ,MOD_DATE
+from bodscfig
+where board_no = #{boardNo}
+	</select>
+
+
+
+
+	<!-- 게시판 이름조회 -->
 	<select id="selectBoardName" resultType="String">
 		SELECT name
 		FROM bodscfig
 		WHERE board_no = #{boardNo}
 	</select>
+	
+	<!-- 게시판 삭제 -->
+	<delete id="deleteBodsCfigInfo" parameterType="BodsCfigVO">
+		DELETE FROM bodscfig
+		WHERE board_no = #{boardNo}
+	</delete>
+
+
+
 </mapper>

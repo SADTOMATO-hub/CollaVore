@@ -1,9 +1,8 @@
-<!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org/"
+
+<div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
-<div class="page-wrapper">
 	<div class="container-fluid">
 		<div class="row">
 			<h4 class="card-title">템플릿 정보</h4>
@@ -39,7 +38,6 @@
 			</div>
 		</div>
 	</div>
-</div>
 <script type="text/javascript">
 	$(deleteButton).on("click", function() {
 		if (confirm("정말 삭제하시겠습니까??") == true) { //확인
@@ -49,4 +47,4 @@
 		}
 	})
 </script>
-<
+</div>

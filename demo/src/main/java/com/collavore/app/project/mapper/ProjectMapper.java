@@ -81,6 +81,8 @@ public interface ProjectMapper {
 	//  상세업무 진행상황 업데이트
 	public int updateStatusProject(ProjectVO projectVO);
 	 
+	// 등록된 깃의 clone_url값을 받아와서 git 주소로 입력하기.
+	public int insertGitUrl(ProjectVO projectVO);
 	
 	
 }

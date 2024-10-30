@@ -3,7 +3,6 @@ package com.collavore.app.board.service;
 import java.util.List;
 import java.util.Map;
 
-import com.collavore.app.hrm.service.HrmVO;
 
 public interface BodsService {
 	// 게시글 전체 건수 확인하기(페이징을 위함)
@@ -45,14 +44,15 @@ public interface BodsService {
 	
 	// 게시판 등록
 	public int insertBodsCfig(BodsCfigVO bodsCfigVO);
-
-	
-	
-	// 게시판 생성
-	
 	
 	// 게시판 수정
-	// public 
+	public Map<String, Object> updateBodsCfig(BodsCfigVO bodsCfigVO);
+	
+	//게시판 상세조회
+	public BodsCfigVO bodsCfigInfo(BodsCfigVO bodsCfigVO);
+	
+	// 게시판 삭제
+	public int deleteBodsCfig(int bodsCfigVO);
 	
 	// 게시판 상세조회
 	// public 

@@ -21,7 +21,6 @@ public class ProjectVO {
 	private String isTemplate;	
 	private String status;	
 	private Integer projTempNo;
-	private String projectGitUrl;
 	private Integer pMgrNo;
 //	private String pMgrNo;
 	
@@ -65,5 +64,10 @@ public class ProjectVO {
 	private String table;
 	
 	private Integer pwtNo;
+	
+	// 프로젝트 깃 관련
+	private String projectGitUrl;	// git주소
+	private String gitToken; // 회원의 git 토큰
+	private String cloneLocalPath; // 클론받을 로컬경로
 	
 }

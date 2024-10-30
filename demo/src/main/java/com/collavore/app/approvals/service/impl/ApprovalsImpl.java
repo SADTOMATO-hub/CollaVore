@@ -84,7 +84,7 @@ public class ApprovalsImpl implements ApprovalsService {
 		return approvalsMapper.myApprList(approvalsVo);
 	}
 	
-	//결재 해야할 전결 목록 조회
+	//문서함
 	@Override
 	public List<ApprovalsVO> approveList(ApprovalsVO approvalsVo) {
 		return approvalsMapper.approveList(approvalsVo);
@@ -94,6 +94,13 @@ public class ApprovalsImpl implements ApprovalsService {
 	@Override
 	public ApprovalsVO approvalsInfo(ApprovalsVO approvalsVO) {
 		return approvalsMapper.readApproval(approvalsVO);
+	}
+	
+	// 결재하기
+	@Override
+	public int updateApprStatus(ApprovalsVO approvalsVo) {
+		int result = approvalsMapper.updateApprStatus(approvalsVo);
+		return result;
 	}
 
 	// 결재자 상세 조회

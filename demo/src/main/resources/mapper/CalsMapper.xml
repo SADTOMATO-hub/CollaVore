@@ -4,26 +4,37 @@
 
 	<select id="selectSchsAll" resultType="SchsVO">
 		SELECT
-			schs.sch_no,
-			schs.title,
-			schs.start_date,
-			schs.end_date,
-			schs.cal_no,
-			cals.name AS cal_name, 
-			cals.cal_type, 
-			schs.is_alarm,
-			cals.color, 
-			LISTAGG(calshares.emp_no, ',') WITHIN GROUP (ORDER BY calshares.emp_no) AS emp_nos
+		schs.sch_no,
+		schs.title,
+		schs.start_date,
+		schs.end_date,
+		schs.cal_no,
+		cals.name AS cal_name,
+		cals.cal_type,
+		schs.is_alarm,
+		cals.color,
+		LISTAGG(calshares.emp_no, ',') WITHIN GROUP (ORDER BY
+		calshares.emp_no) AS empNos,   <!-- 사원 번호 집계 -->
+		LISTAGG(employees.name, ',') WITHIN GROUP (ORDER BY employees.name) AS
+		empNames,    <!-- 사원 이름 집계 -->
+		LISTAGG(departments.dept_no, ',') WITHIN GROUP (ORDER BY
+		departments.dept_no) AS deptNos,  <!-- 부서 번호 집계 -->
+		LISTAGG(departments.name, ',') WITHIN GROUP (ORDER BY
+		departments.name) AS deptNames  <!-- 부서 이름 집계 -->
 		FROM schs
-			JOIN cals ON schs.cal_no = cals.cal_no AND cals.is_delete = 'h2'
-			LEFT JOIN calshares ON schs.cal_no = calshares.cal_no 
-		WHERE
-			calshares.emp_no = #{empNo}
+		JOIN cals ON schs.cal_no = cals.cal_no AND cals.is_delete =
+		'h2'
+		LEFT JOIN calshares ON schs.cal_no = calshares.cal_no
+		LEFT JOIN
+		employees ON calshares.emp_no = employees.emp_no
+		LEFT JOIN departments
+		ON employees.dept_no = departments.dept_no
 		GROUP BY
-			schs.sch_no, schs.title, schs.start_date, schs.end_date, schs.cal_no, cals.name,
-			cals.cal_type, schs.is_alarm, cals.color
-			ORDER BY
-			schs.sch_no 
+		schs.sch_no,
+		schs.title, schs.start_date, schs.end_date, schs.cal_no, cals.name,
+		cals.cal_type, schs.is_alarm, cals.color
+		ORDER BY
+		schs.sch_no
 	</select>
 	<!-- 단건 일정 조회 -->
 	<select id="selectSchsInfo" parameterType="SchsVO"
@@ -224,54 +235,85 @@
 		c.cal_no = cs.cal_no
 		WHERE cs.emp_no =
 		#{empNo}
-		ORDER BY CASE WHEN c.cal_type = 'g1' THEN 1 ELSE 9999 END, c.name
+		ORDER BY CASE WHEN
+		c.cal_type = 'g1' THEN 1 ELSE 9999 END, c.name
 	</select>
 
-	<!-- 공유캘린더 리스트 -->
+	<!-- 공유캘린더 리스트 
 	<select id="selectTeamCal" resultType="SchsVO">
 		SELECT cs.cal_no,
-			c.name ||
-			' ' || CASE
-			WHEN c.cal_type = 'g1' THEN '(개인)'
-			WHEN c.cal_type = 'g2'
-			THEN '(공유)'
-			ELSE '프로젝트' END AS name
+		c.name ||
+		' ' || CASE
+		WHEN c.cal_type = 'g1' THEN '(개인)'
+		WHEN c.cal_type = 'g2'
+		THEN '(공유)'
+		ELSE '프로젝트' END AS name
 		FROM calshares cs
-			INNER JOIN cals c ON c.cal_no = cs.cal_no
+		INNER JOIN cals c ON c.cal_no = cs.cal_no
 		WHERE cs.emp_no = #{empNo}
-			AND c.cal_type = 'g2'
+		AND c.cal_type = 'g2'
+		ORDER BY c.name
+	</select>-->
+	<!-- -->
+	<select id="selectTeamCal" resultType="SchsVO">
+		SELECT cs.cal_no,
+		c.name || ' ' ||
+		CASE
+		WHEN c.cal_type = 'g1' THEN '(개인)'
+		WHEN c.cal_type = 'g2' THEN '(공유)'
+		ELSE '(프로젝트)'
+		END AS name
+		FROM calshares cs
+		INNER JOIN cals c ON c.cal_no = cs.cal_no
+		WHERE cs.emp_no = #{empNo}
+		AND c.cal_type = 'g2'
 		ORDER BY c.name
 	</select>
 
 
 	<!-- 캘린더 등록 -->
+	<!-- 첫 번째 INSERT: 캘린더 정보 삽입 -->
 	<insert id="insertCalsInfo" parameterType="SchsVO">
-		<!-- INSERT 전 calNo를 계산하기 위한 selectKey -->
 		<selectKey keyProperty="calNo" resultType="Integer"
 			order="BEFORE">
-			SELECT GREATEST(NVL(MAX(cal_no), 99) + 1, 100)
-			FROM cals
+			SELECT NVL(MAX(cal_no), 0) + 1 FROM cals
 		</selectKey>
-
 		INSERT INTO cals (
 		cal_no
 		, name
 		, cal_type
 		, reg_date
 		, is_delete
-		,
-		delete_date
+		, delete_date
 		, color
-		)
-		VALUES (
+		) VALUES (
 		#{calNo}
 		, #{name}
 		, #{calType}
 		, SYSDATE
-		,
-		#{isDelete}
+		, #{isDelete}
 		, NULL
 		, #{color}
+		)
+	</insert>
+
+	<!-- 캘린더 공유자 정보 삽입 -->
+	<insert id="insertCalShares" parameterType="map">
+		<selectKey keyProperty="csNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(cs_no), 0) + 1 FROM calshares
+		</selectKey>
+		INSERT INTO calshares (
+		cs_no
+		, cal_no
+		, emp_no
+		, reg_date
+		)
+		VALUES (
+		#{csNo}
+		, #{calNo}
+		, #{empNo}
+		, SYSDATE
 		)
 	</insert>
 
@@ -324,14 +366,45 @@
 		WHERE cal_no = #{calNo} AND is_delete = 'h1'  <!-- 휴지통에 있는 
 			캘린더만 삭제 -->
 	</delete>
+
+
+
+
+
+
+
+
+	<select id="selectDeptWithEmp" resultType="map">
+		SELECT d.dept_no
+		,
+		d.name AS dept_name
+		, e.emp_no
+		, e.name AS emp_name
+		FROM departments d
+		JOIN employees e ON d.dept_no = e.dept_no
+		WHERE
+		d.dept_no != 1
+		ORDER BY
+		d.dept_no, e.emp_no
+	</select>
+
+	<!-- <select id="selectDeptList" resultType="SchsVO"> SELECT dept_no, name 
+		FROM departments WHERE dept_no != 1 </select> 공유캘린더 부서 사원 리스트 가지고오기 <select 
+		id="selectDeptEmp" parameterType="int" resultType="Map"> SELECT emp_no, name 
+		FROM employees WHERE dept_no = #{deptNo} </select> -->
+
+
+
 	<!--==============================END 개인 캘린더 ==================================== -->
+
 
 
 	<!-- 새로 등록된 사원에 내캘린더 생성 메 -->
 	<update id="insertMyCal" statementType="CALLABLE">
 		{call insert_my_cal(
-			#{empNo, mode=IN, jdbcType=NUMERIC},
-			#{result, mode=OUT, jdbcType=NUMERIC}
+		#{empNo, mode=IN, jdbcType=NUMERIC},
+		#{result, mode=OUT,
+		jdbcType=NUMERIC}
 		)}
 	</update>
 
