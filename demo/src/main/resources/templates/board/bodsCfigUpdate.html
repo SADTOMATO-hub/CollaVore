@@ -1,0 +1,87 @@
+<div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	layout:fragment="Content">
+
+	
+	<form th:action="@{/board/bodsUpdate}" method="post"
+		enctype="multipart/form-data" th:object="${bods}" name="updateForm">
+		<input type="hidden" id="boardNo"	th:field="*{boardNo}">
+		<h3>게시판 수정 페이지</h3>
+		
+		<div>
+		     <label for="postNo">게시판 번호</label><input type="hidden" id="boardNo" >
+		</div>
+		
+	
+		<div>
+			<label for="title">제목</label> <input type="text" id="title"
+				th:field="*{title}">
+		</div>
+		<div>
+			<label for="content">내용</label>
+			<textarea id="content" th:field="*{content}"></textarea>
+		</div>
+		<div>
+			<label for="writer">작성자</label> <input type="text" id="writer" th:field="*{writer}" readonly="readonly">
+		</div>
+		
+		
+		
+		<div>
+			<button type="button" id="updateBtn" th:onclick='|location.href="@{/board/bodsList?boardNo=1}"|'>저장</button>
+		</div>
+	</form>
+	<script>
+		$('#updateBtn').on('click', updateAjax);
+
+		function updateAjax(event){
+			// 1) 보낼 데이터 가져오기
+			// alert('작성일자가 입력되지 않았습니다.');
+			// console.log("===================================");
+			let dataObj = getFormData();
+			// console.log(dataObj);
+			// 2) AJAX
+			// console.log("===================================");
+			// console.log(dataObj);
+			// return;
+			$.ajax("/board/bodsUpdate", {
+				type : 'post',  //method
+				//data : dataObj	// 객체 => QueryString
+				
+				//JOSN : @RequestBody
+				contentType : 'application/json',
+				data:JSON.stringify(dataObj)
+			})
+			.done((data)=>{
+				console.log(data);
+				if(data.result){
+					alert('성공적으로 수정되었습니다.');
+				}else{
+					alert('수정되지 않았습니다.');
+				}
+				
+			})
+			.fail((err)=>console.log(err));
+		}
+	
+
+		function getFormData(){
+			let formAry = $('form[name="updateForm"]').serializeArray();
+			/*
+			[ { name : "employeeId", value : "100"},
+				{ name : "lastName",  value : "King"},
+				 ... ]
+			*/
+
+			let formObj = {};
+			$.each(formAry, function(idx, tag){
+					// tag) { name : "employeeId", value : "100"}
+					formObj[tag.name] = tag.value;
+					//formObj["employeeId"] = "100";
+			});
+
+			return formObj;/* { "employeeId" : 100, "lastName" : "King", ...} */
+		}
+	</script>
+</div>

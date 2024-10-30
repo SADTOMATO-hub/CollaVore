@@ -4,7 +4,7 @@
 	layout:fragment="Content">
 
 	<div class="card"
-		style="width: 700px; height: 300px; border: 1px solid green;"
+		style="width: 800px; min-height: 300px;  border: 1px solid green;"
 		align="center">
 		<div class="card-body">
 			<h5 class="card-title">모든게시판 목록</h5>
@@ -42,10 +42,10 @@
 		<div class="text-center">
 			<form name="insertBodsCfig" th:action="@{/board/bodsCfig}"
 				method="post">
-				<input type="hidden" id="boardNo" name="boardNo"
-					th:value="${param.boardNo}">
 				<!-- 게시판 등록 -->
 				<h3>게시판 등록</h3>
+				<input type="hidden" id="boardNo" name="boardNo"
+					th:value="${param.boardNo}">
 				<input type="text" name="name" placeholder="게시판이름">
 				<input type="text" name="subject" placeholder="말머리">
 				<input type="text" name="readAuth" placeholder="읽기권한">
@@ -59,6 +59,18 @@
 	
 	
 	<script>
+	//제이쿼리 객체 생성
+	$('tbody > tr').on('click', function(event) {
+		console.log(event.currentTarget);
+		let trTag = event.currentTarget;
+		let boardNo = $(trTag).data('boardNo');
+		let url = `/board/bodsCfigInfo?boardNo=1`;
+		location.href = url;
+	});
+	
+	
+	
+	
 		// 게시판 등록
 		$("#btninsert").on('click', boardInsertHandler);
 		function boardInsertHandler() {
@@ -79,22 +91,22 @@
 			}
 			
 			let readAuth = $('form [name="readAuth"]');
-			if (name.val() == '') {
-				alert('게시판이름이 입력되지 않았습니다.');
+			if (readAuth.val() == '') {
+				alert('읽기권한이 입력되지 않았습니다.');
 				readAuth.focus();
 				return;
 			}
 			
 			let writeAuth = $('form [name="writeAuth"]');
-			if (name.val() == '') {
-				alert('게시판이름이 입력되지 않았습니다.');
+			if (writeAuth.val() == '') {
+				alert('쓰기권한이 입력되지 않았습니다.');
 				writeAuth.focus();
 				return;
 			}
 			
 			let commentAuth = $('form [name="commentAuth"]');
-			if (name.val() == '') {
-				alert('게시판이름이 입력되지 않았습니다.');
+			if (commentAuth.val() == '') {
+				alert('댓글권한이 입력되지 않았습니다.');
 				commentAuth.focus();
 				return;
 			}
@@ -108,8 +120,7 @@
 				url : '/board/bodsCfig',
 				data : $(document.insertBodsCfig).serialize(),
 				success : function(data) {
-					//getCommentList();
-					boardNo.val("");
+					location.reload()
 
 				},
 				error : function(request, status, error) {

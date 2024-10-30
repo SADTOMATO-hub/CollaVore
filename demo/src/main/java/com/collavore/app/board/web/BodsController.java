@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -42,7 +43,7 @@ public class BodsController {
 	@GetMapping("/board/bodsList") // 인터넷창에 치는 주소
 	public String bodsList(BodsVO bodsVO, Model model) {
 		String page = bodsVO.getPage() == null ? "1" : bodsVO.getPage();
-		
+
 		String boardName = bodsService.boardNameSearch(bodsVO.getBoardNo());
 		model.addAttribute("boardName", boardName);
 
@@ -77,10 +78,10 @@ public class BodsController {
 	public String boardInsertForm(BodsVO bodsVO, Model model, HttpSession session) {
 		Integer empNo = (Integer) session.getAttribute("userEmpNo");
 		model.addAttribute("empNo", empNo);
-		
+
 		String boardName = bodsService.boardNameSearch(bodsVO.getBoardNo());
 		model.addAttribute("boardName", boardName);
-		
+
 		return "/board/bodsInsert";
 	}
 
@@ -171,32 +172,78 @@ public class BodsController {
 	// 게시판 전체 목록 조회
 	@GetMapping("/board/bodsCfig") // 인터넷창에 치는 주소
 	public String bodsCfigList(BodsCfigVO bodsCfigVO, Model model) {
-		//String page = bodsCfigVO.getPage() == null ? "1" : bodsCfigVO.getPage();
-		
+		// String page = bodsCfigVO.getPage() == null ? "1" : bodsCfigVO.getPage();
+
 		List<BodsCfigVO> list = bodsService.bodsListAll(bodsCfigVO);
 		model.addAttribute("bodsCfigList", list);
-		
-		/*int totalCnt = bodsService.bodsListAll(bodsCfigVO);
-		PageDTO pageing = new PageDTO(page, totalCnt);
-		model.addAttribute("pageing", pageing);*/
+
+		/*
+		 * int totalCnt = bodsService.bodsListAll(bodsCfigVO); PageDTO pageing = new
+		 * PageDTO(page, totalCnt); model.addAttribute("pageing", pageing);
+		 */
 		return "board/bodsCfig";
 	}
-	
-	//게시판 등록 페이지
+
+	// 게시판 등록 페이지
 	@GetMapping("/board/bodsCfigInsert")
 	public String bodsCfigInsertForm(BodsCfigVO bodsCfigVO) {
 		return "board/bodsCfigInsert";
 	}
-	
-	//게시판 등록 처리
+
+	// 게시판 등록 처리
 	//// RETURN - 단건조회 다시 호출 /board/bodsCfig
-	@PostMapping("/board/bodsCfigInsert")
+	@PostMapping("/board/bodsCfig")
 	@ResponseBody
 	public BodsCfigVO bodsCfigInsertProcess(BodsCfigVO bodsCfigVO) {
 		int eid = bodsService.insertBodsCfig(bodsCfigVO);
 		System.out.println(bodsCfigVO);
 		return bodsCfigVO;
-	
+
+	}
+
+	// 게시판 상세보기
+	@GetMapping("/board/bodsCfigInfo")
+	public String bodsCfigInfo(BodsCfigVO bodsCfigVO, Model model, HttpSession session) {
+		Integer boardNo = (Integer) session.getAttribute("userboardNo");
+
+		if (bodsCfigVO.getBoardNo() == null) {
+			bodsCfigVO.setBoardNo(boardNo);
+		}
+		model.addAttribute("boardNo", boardNo);
+		BodsCfigVO findVO = bodsService.bodsCfigInfo(bodsCfigVO);
+		model.addAttribute("bodsCfig", findVO);
+		return "board/bodsCfigInfo";
+	}
+
+	// 게시판 수정
+	// 수정 - 페이지 : URI - boardUpdate / PARAMETER - BoardVO(QueryString)
+	// RETURN - board/boardUpdate
+	// => 단건조회
+	@GetMapping("/board/bodsCfigUpdate")
+	public String bodsCfigUpdateForm(BodsCfigVO bodsCfigVO, Model model) {
+		BodsCfigVO findVO = bodsService.bodsCfigInfo(bodsCfigVO);
+		model.addAttribute("bodsCfig", findVO);
+		return "board/bodsCfigUpdate";
+	}
+
+	// 수정 - 처리 : URI - boardUpdate / PARAMETER - BoardVO(JSON)
+	// RETURN - 수정결과 데이터(Map)
+	// => 등록(내부에서 수행하는 쿼리문 - UPDATE문)
+	@PostMapping("/board/bodsCfigUpdate")
+	@ResponseBody
+	public Map<String, Object> bodsCfigUpdateProcess(@RequestBody BodsCfigVO bodsCfigVO) {
+		return bodsService.updateBodsCfig(bodsCfigVO);
 	}
 	
+	// 게시판 삭제 
+	@GetMapping("board/bodsCfigDelete") // QueryString : @RequestParam
+	public String bodsCfigDelete(@RequestParam Integer boardNo) {
+		bodsService.deleteBodsCfig(boardNo);
+
+		return "redirect:bodsCfigInfo?boardNo=" + boardNo;
+	}
+	
+	
+	
+
 }
