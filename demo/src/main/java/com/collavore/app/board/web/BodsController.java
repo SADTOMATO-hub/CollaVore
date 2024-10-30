@@ -25,13 +25,6 @@ import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class BodsController {
-	private static final String Intger = null;
-
-	@ModelAttribute
-	public void addAttributes(Model model) {
-		model.addAttribute("sidemenu", "board_sidebar");
-	}
-
 	private BodsService bodsService;
 
 	@Autowired
@@ -39,6 +32,14 @@ public class BodsController {
 		this.bodsService = bodsService;
 	}
 
+	@ModelAttribute
+	public void addAttributes(BodsCfigVO bodsCfigVO, Model model) {
+
+		List<BodsCfigVO> list = bodsService.bodsListAll(bodsCfigVO);
+		model.addAttribute("bodsCfigList", list);
+		model.addAttribute("sidemenu", "board_sidebar");
+	}
+	
 	// 전체조회 : URI - boardList / RETURN - board/boardList
 	@GetMapping("/board/bodsList") // 인터넷창에 치는 주소
 	public String bodsList(BodsVO bodsVO, Model model) {

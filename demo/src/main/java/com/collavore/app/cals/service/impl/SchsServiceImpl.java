@@ -223,4 +223,22 @@ public class SchsServiceImpl implements SchsService {
 	// =====================END 캘린더 사이드바=====================
 	// =====================알림관리========================
 
+	
+	// 새로 등록된 사원에 내캘린더 생성
+	@Override
+	public int addNewMyCal(int empNo) {
+	    Map<String, Object> result = new HashMap<>();
+	    result.put("result", null);  // 초기값 설정
+	    try {
+	        // 프로시저 호출
+		    schsMapper.insertMyCal(empNo, result);
+
+	        // 결과 값이 null인 경우 기본값 0 반환
+	        Integer resultValue = (Integer) result.get("result");
+	        return (resultValue != null) ? resultValue : 0;
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return 0;  // 예외 발생 시 기본값 반환
+	    }
+	}
 }

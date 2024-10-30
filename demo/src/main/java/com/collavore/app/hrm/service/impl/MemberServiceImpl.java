@@ -116,7 +116,7 @@ public class MemberServiceImpl implements MemberService {
 		String insPwd = hrmVO.getPassword(); // 입력한 비밀번호 가져오기
 		String encryptedPassword = passwordEncoder.encode(insPwd); // 입력한 비밀번호 암호화
 		hrmVO.setPassword(encryptedPassword); // 암호화된 비밀번호 다시 VO에 넣기
-		return memberMapper.insertMember(hrmVO);
+		return memberMapper.insertMember(hrmVO) > 0 ? empNo : -1;
 	}
 
 	// 연락처 중복 확인

@@ -75,7 +75,7 @@
 			</a>
 			<ul aria-expanded="false" class="collapse first-level">
 			    <li th:each="board : ${boards}" class="sidebar-item">
-			        <a th:href="@{|/board/bodsList?board=${board.boardNo}|}" class="sidebar-link">
+			        <a th:href="@{|/board/bodsList?boardNo=${board.boardNo}|}" class="sidebar-link">
 			            <i class="mdi mdi-note-outline"></i>
 			            <span class="hide-menu" th:text="${board.name}"></span>
 			        </a>

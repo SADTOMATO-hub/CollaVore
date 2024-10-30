@@ -3,78 +3,371 @@
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
 
-	<div class="card"
-		style="width: 800px; min-height: 300px;  border: 1px solid green;"
-		align="center">
-		<div class="card-body">
-			<h5 class="card-title">모든게시판 목록</h5>
+	<style>
+/* 페이지 기본 스타일 */
+.body-page-wrapper {
+	padding: 20px;
+	background-color: #f9f9f9;
+	align-items: center;
+}
+
+/* Breadcrumb 스타일 */
+.breadcrumb {
+	background-color: #ffffff;
+	padding: 10px 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	height: 70px;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	color: #333;
+	position: relative;
+}
+
+.breadcrumb h4 {
+	margin: 0;
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+}
+
+.breadcrumb-left {
+	display: flex; /* flexbox로 요소 정렬 */
+	flex-direction: column; /* 세로로 배치 */
+	justify-content: center; /* 세로 중앙 정렬 */
+}
+
+.breadcrumb-left h4 {
+	font-size: 22px;
+	font-weight: bold;
+	margin: 0; /* 기본 마진 제거 */
+	margin-top: 2px;
+}
+
+.breadcrumb-left p {
+	font-size: 14px;
+	color: #666;
+	margin-top: 2px;
+	margin-bottom: 0;
+}
+
+.breadcrumb-right span {
+	font-size: 14px;
+	color: #999;
+	white-space: nowrap;
+	position: relative;
+	top: -12px;
+}
+
+/* 카드 스타일 */
+.card_memberList {
+	background-color: #ffffff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+}
+
+/* 검색 기능을 위한 컨테이너 */
+.search-container {
+	display: flex;
+	justify-content: flex-end; /* 오른쪽 정렬 */
+	margin-bottom: 15px; /* 테이블과의 간격 */
+}
+
+/* 검색 입력 박스 스타일 */
+#searchBox {
+	padding: 8px;
+	font-size: 14px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	width: 200px;
+	margin-right: 10px;
+}
+
+/* 테이블 스타일 */
+.memberList_table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 14px;
+	text-align: left;
+	margin-bottom: 5px;
+}
+
+.memberList_table thead th {
+	text-align: center;
+	font-weight: bold;
+	color: #555;
+	padding: 12px;
+	border-bottom: 2px solid #ddd;
+	font-weight: bold;
+}
+
+.memberList_table tbody td {
+	text-align: center;
+	font-size: 12px;
+	color: #666666;;
+	padding: 5px 20px;
+	border-bottom: 1px solid #ddd;
+	color: #333;
+	white-space: nowrap; /* 텍스트가 여러 줄로 나뉘지 않고 한 줄로 유지됩니다 */
+	overflow: hidden; /* 넘친 텍스트를 숨깁니다 */
+	text-overflow: ellipsis; /* 넘친 텍스트는 "..."으로 표시됩니다 */
+}
+
+.memberList_table tbody tr:hover {
+	background-color: #f9f9f9; /* 마우스 오버 시 행 배경색 변경 */
+}
+
+.form-select {
+	border: none;
+}
+
+.pagination-and-insert-wrapper {
+	display: flex;
+	justify-content: space-between; /* 페이지네이션과 등록 버튼을 좌우로 배치 */
+	align-items: center; /* 세로 중앙 정렬 */
+	width: 100%; /* 전체 너비 사용 */
+	padding: 10px;
+}
+
+.pagination-outer {
+	text-align: center; /* 페이지네이션을 중앙 정렬 */
+	flex-grow: 1;
+}
+
+.pagination {
+	font-family: 'Ubuntu', sans-serif;
+	display: inline-flex;
+	position: relative;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+/* prev 또는 next 클래스를 가지지 않는 경우에만 배경 적용 */
+.pagination li a.page-link:not(.prev):not(.next) {
+	color: #333;
+	background-color: #e7e7e7; /* 배경 적용 */
+	font-size: 20px;
+	font-weight: 500;
+	line-height: 39px;
+	height: 40px;
+	width: 40px;
+	padding: 0;
+	margin: 0 5px;
+	border: none;
+	border-radius: 10px;
+	position: relative;
+	z-index: 1;
+	transition: all 0.3s ease 0s;
+}
+
+/* prev 또는 next 클래스를 가진 경우에만 적용할 스타일 (필요 시 추가) */
+.pagination li a.page-link.prev, .pagination li a.page-link.next {
+	background-color: transparent; /* 배경 투명 */
+	color: #333;
+	font-size: 20px;
+	font-weight: 500;
+	line-height: 39px;
+	height: 40px;
+	width: 40px;
+	padding: 0;
+	margin: 0 5px;
+	border: none;
+	position: relative;
+	z-index: 1;
+	transition: all 0.3s ease 0s;
+}
+
+/* prev 또는 next를 가지지 않는 .page-link에만 적용 */
+.pagination li a.page-link:not(.prev):not(.next):hover, .pagination li a.page-link:not(.prev):not(.next):focus,
+	.pagination li.active a.page-link:not(.prev):not(.next):hover,
+	.pagination li.active a.page-link:not(.prev):not(.next) {
+	color: #fff;
+	background: transparent;
+}
+
+.pagination li a.page-link:not(.prev):not(.next):before, .pagination li a.page-link:not(.prev):not(.next):after
+	{
+	content: '';
+	background: linear-gradient(to right, #706fd3 50%, transparent 50%);
+	height: 100%;
+	width: 100%;
+	border-radius: 50%;
+	opacity: 0;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: -1;
+	transition: all 0.4s ease 0s;
+}
+
+.pagination li a.page-link:not(.prev):not(.next):after {
+	background: linear-gradient(to right, #474787 50%, transparent 50%);
+	transform: rotateY(180deg);
+	top: auto;
+	bottom: 0;
+}
+
+.pagination li a.page-link:not(.prev):not(.next):hover:before,
+	.pagination li a.page-link:not(.prev):not(.next):focus:before,
+	.pagination li.active a.page-link:not(.prev):not(.next):before,
+	.pagination li a.page-link:not(.prev):not(.next):hover:after,
+	.pagination li a.page-link:not(.prev):not(.next):focus:after,
+	.pagination li.active a.page-link:not(.prev):not(.next):after {
+	height: 85%;
+	opacity: 1;
+}
+
+@media only screen and (max-width: 480px) {
+	.pagination {
+		font-size: 0;
+		border: none;
+		display: inline-block;
+	}
+	.pagination li {
+		display: inline-block;
+		vertical-align: top;
+		margin: 0 0 10px;
+	}
+}
+
+button {
+	padding: 5px 10px;
+	background-color: #9b8df6;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: background-color 0.3s ease;
+}
+
+.insert-btn-container {
+	text-align: right; /* 등록 버튼을 오른쪽 정렬 */
+	padding-right: 10px;
+}
+
+/* 마우스 호버 시 효과 */
+button:hover {
+	background-color: #5a4bcf;
+}
+
+/* 추가적인 버튼 스타일링 */
+button:active {
+	background-color: #4839a9;
+}
+
+.none {
+	display: none;
+}
+</style>
+	<div class="body-page-wrapper">
+		<div class="purple-background-container">
+			<div class="breadcrumb">
+				<div class="breadcrumb-left">
+					<h4>게시판 관리</h4>
+					<p>게시판의 관리 페이지 입니다.</p>
+				</div>
+				<div class="breadcrumb-right">
+					<span>게시판 관리 > 게시판 목록</span>
+				</div>
+			</div>
+
+			<div class="card_memberList">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th scope="col">게시판 번호</th>
+							<th scope="col">게시판 명</th>
+							<th scope="col">말머리</th>
+							<th scope="col">등록일</th>
+						</tr>
+					</thead>
+					<tbody>
+						<th:block th:each="info : ${bodsCfigList}">
+							<tr>
+								<td>[[${info.boardNo}]]</td>
+								<td>[[${info.name}]]</td>
+								<td>[[${info.subject}]]</td>
+								<td>[[${info.regDate}]]</td>
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+				<!-- 등록 버튼 -->
+				<div class="insert-btn-container">
+					<button type="button" class="btn btn-info btn-lg"
+						data-bs-toggle="modal" data-bs-target="#bodsCfig"
+						style="float: right; margin-top: 10px;">게시판 생성</button>
+				</div>
+			</div>
 		</div>
-		<table class="table">
-			<thead>
-				<tr>
-					<th scope="col">게시판 번호</th>
-					<!-- 1번이 공지사항 2번이 자유게시판 -->
-					<th scope="col">게시판 명</th>
-					<th scope="col">말머리</th>
-					<th scope="col">등록일</th>
-				</tr>
-			</thead>
-			<tbody>
-				<th:block th:each="info : ${bodsCfigList}">
-					<tr>
-						<td>[[${info.boardNo}]]</td>
-						<td>[[${info.name}]]</td>
-						<td>[[${info.subject}]]</td>
-						<td>[[${info.regDate}]]</td>
-					</tr>
-				</th:block>
-			</tbody>
-		</table>
-
-
-
-
-		<!--<button type="button"
-			th:onclick='|location.href="@{/board/bodsInsert(boardNo=${param.boardNo})}"|'>글쓰기</button>-->
-
 	</div>
-	<!-- 게시판 등록 -->
-		<div class="text-center">
-			<form name="insertBodsCfig" th:action="@{/board/bodsCfig}"
-				method="post">
-				<!-- 게시판 등록 -->
-				<h3>게시판 등록</h3>
-				<input type="hidden" id="boardNo" name="boardNo"
-					th:value="${param.boardNo}">
-				<input type="text" name="name" placeholder="게시판이름">
-				<input type="text" name="subject" placeholder="말머리">
-				<input type="text" name="readAuth" placeholder="읽기권한">
-				<input type="text" name="writeAuth" placeholder="쓰기권한">
-				<input type="text" name="commentAuth" placeholder="댓글권한">
-				<input type="hidden" name="content" placeholder="등록시간">
-				<button type="button" id="btninsert">게시판등록</button>
-				
-			</form>
+
+	<!-- 모달 폼 -->
+	<div class="modal fade" id="bodsCfig" tabindex="-1"
+		aria-labelledby="bodsCfigModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="bodsCfigModalLabel">게시판 등록</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form name="insertBodsCfig" th:action="@{/board/bodsCfig}"
+						method="post">
+						<input type="hidden" id="boardNo" name="boardNo"
+							th:value="${param.boardNo}">
+						<div class="mb-3">
+							<label for="name" class="form-label">게시판이름</label> <input
+								type="text" class="form-control" name="name" placeholder="게시판이름">
+						</div>
+						<div class="mb-3">
+							<label for="subject" class="form-label">말머리</label> <input
+								type="text" class="form-control" name="subject"
+								placeholder="말머리">
+						</div>
+						<div class="mb-3">
+							<label for="readAuth" class="form-label">읽기권한</label> <input
+								type="text" class="form-control" name="readAuth"
+								placeholder="읽기권한">
+						</div>
+						<div class="mb-3">
+							<label for="writeAuth" class="form-label">쓰기권한</label> <input
+								type="text" class="form-control" name="writeAuth"
+								placeholder="쓰기권한">
+						</div>
+						<div class="mb-3">
+							<label for="commentAuth" class="form-label">댓글권한</label> <input
+								type="text" class="form-control" name="commentAuth"
+								placeholder="댓글권한">
+						</div>
+						<button type="button" id="btninsert">게시판등록</button>
+					</form>
+				</div>
+			</div>
 		</div>
-	
-	
+	</div>
+
+
 	<script>
-	//제이쿼리 객체 생성
-	$('tbody > tr').on('click', function(event) {
-		console.log(event.currentTarget);
-		let trTag = event.currentTarget;
-		let boardNo = $(trTag).data('boardNo');
-		let url = `/board/bodsCfigInfo?boardNo=1`;
-		location.href = url;
-	});
-	
-	
-	
-	
+		//제이쿼리 객체 생성
+		$('tbody > tr').on('click', function(event) {
+			console.log(event.currentTarget);
+			let trTag = event.currentTarget;
+			let boardNo = $(trTag).data('boardNo');
+			let url = `/board/bodsCfigInfo?boardNo=1`;
+			location.href = url;
+		});
+
 		// 게시판 등록
 		$("#btninsert").on('click', boardInsertHandler);
 		function boardInsertHandler() {
-
 
 			let name = $('form [name="name"]');
 			if (name.val() == '') {
@@ -82,28 +375,28 @@
 				content.focus();
 				return;
 			}
-			
+
 			let subject = $('form [name="subject"]');
 			if (subject.val() == '') {
 				alert('말머리가 입력되지 않았습니다.');
 				content.focus();
 				return;
 			}
-			
+
 			let readAuth = $('form [name="readAuth"]');
 			if (readAuth.val() == '') {
 				alert('읽기권한이 입력되지 않았습니다.');
 				readAuth.focus();
 				return;
 			}
-			
+
 			let writeAuth = $('form [name="writeAuth"]');
 			if (writeAuth.val() == '') {
 				alert('쓰기권한이 입력되지 않았습니다.');
 				writeAuth.focus();
 				return;
 			}
-			
+
 			let commentAuth = $('form [name="commentAuth"]');
 			if (commentAuth.val() == '') {
 				alert('댓글권한이 입력되지 않았습니다.');
@@ -130,6 +423,5 @@
 			});
 			alert('게시판이 등록되었습니다.');
 		}
-
 	</script>
 </div>

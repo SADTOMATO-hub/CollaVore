@@ -124,7 +124,7 @@ public class ApprovalsController {
 	//진행 중인 전자결재 목록
 	@GetMapping("/myApprList/{approvalStatus}")
 	public String myApprList(ApprovalsVO apprVO
-													,@PathVariable("approvalStatus") String approvalStatus
+													,@PathVariable String approvalStatus
 													,Model model
 												  ,HttpSession session) {
 		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
@@ -138,7 +138,7 @@ public class ApprovalsController {
 	@GetMapping("/approveList/{listStatus}")
 	public String approveList(ApprovalsVO apprVO
 													,Model model
-													,@PathVariable("listStatus") String listStatus
+													,@PathVariable String listStatus
 												  ,HttpSession session) {
 		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
 		apprVO.setUserEmpNo(userEmpNo);

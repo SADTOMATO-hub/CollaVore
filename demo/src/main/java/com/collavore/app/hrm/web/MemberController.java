@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.collavore.app.cals.service.SchsService;
 import com.collavore.app.common.service.PageDTO;
 import com.collavore.app.hrm.service.DeptService;
 import com.collavore.app.hrm.service.HrmVO;
@@ -42,16 +43,18 @@ public class MemberController {
 	private final DeptService deptService;
 	private final JobService jobService;
 	private final PosiService posiService;
+	private final SchsService schsService;
 	@Value("${file.upload.path}") // 메모리에 올라가 있는 변수값을 가져오기 때문에 표현이 다름아아아아아
     private String uploadPath;
 	
 	@Autowired
 	public MemberController(MemberService memberService, DeptService deptService, JobService jobService,
-			PosiService posiService) {
+			PosiService posiService, SchsService schsService) {
 		this.memberService = memberService;
 		this.deptService = deptService;
 		this.jobService = jobService;
 		this.posiService = posiService;
+		this.schsService = schsService;
 	}
 
 	@ModelAttribute
@@ -316,6 +319,7 @@ public class MemberController {
 	    try {
 	        int result = memberService.insertMember(hrmVO);
 	        if (result > 0) {
+	        	schsService.addNewMyCal(hrmVO.getEmpNo());
 	            model.addAttribute("message", "사원이 성공적으로 등록되었습니다.");
 	            return "redirect:/memberList";
 	        } else {

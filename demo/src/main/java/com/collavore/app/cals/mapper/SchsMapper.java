@@ -75,7 +75,7 @@ public interface SchsMapper {
 	
 	
 	// 새로 등록된 사원에 내캘린더 생성
-	public int insertMyCal(int empNo);
+	public void insertMyCal(@Param("empNo") int empNo, @Param("result") Map<String, Object> result);
 	
 	
 	

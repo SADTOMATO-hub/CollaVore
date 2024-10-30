@@ -79,5 +79,8 @@ public interface SchsService {
 //	public List<SchsVO> getDeptList();
 //	//캘린더 추가 수정시 부서 사원번호 리스트
 //	public  List<Map<String, Object>> getDeptEmp(int deptNo);
+	
+	// 새로 등록된 사원에 내캘린더 생성
+	public int addNewMyCal(int empNo);
 
 }
