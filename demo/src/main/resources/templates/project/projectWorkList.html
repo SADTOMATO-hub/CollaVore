@@ -380,7 +380,8 @@
         <div>
         </div>
         <div>
-            <button type="submit" class="btn btn-primary">삭제</button>
+            <input type="hidden" name="projNo" id="projNumber">
+            <button type="button" class="btn btn-danger text-white delete-btn" data-type="project">삭제</button>
         </div>
     </form>
 </div>
@@ -415,7 +416,8 @@
         <div>
         </div>
         <div>
-            <button type="submit" class="btn btn-primary">삭제</button>
+        	<input type="hidden" name="pwNo" id="wrkNumber">	
+            <button type="button" class="btn btn-danger text-white delete-btn" data-type="work">삭제</button>
         </div>
     </form>
 </div>
@@ -461,7 +463,7 @@
                     url: '/project/projectwrkinsert', // 폼의 action URL
                     data: formData,
                     success: function(response) {
-                        alert('프로젝트가 성공적으로 추가되었습니다: ' + response.data.name);
+                        alert('프로젝트가 성공적으로 추가되었습니다: ');
                         
                         // jsTree에 새 노드 추가
                         const newNode = {
@@ -469,8 +471,17 @@
                             text: response.data.name, // 새 노드의 텍스트
                             children: [] // 자식 노드 초기화
                         };
-                        $('#jstree').jstree().create_node('#', newNode, 'last'); // jsTree에 노드 추가
-                        
+                        console.log(newNode);
+                        // 부모 ID 결정 (부모가 없으면 루트)
+                        const parentId = response.data.parentNo ? 'node_' + response.data.parentNo : '#'; 
+                        console.log(parentId);
+
+                        // jsTree에 노드 추가
+                        const tree = $('#jstree').jstree();
+                        tree.create_node(parentId, newNode, 'last', function(new_node) {
+                            console.log('새 노드가 추가되었습니다:', new_node);
+                        });
+                        location.reload(true); // 페이지 새로고침
                         // 폼 초기화
                         $('#insertFormProjwrks')[0].reset();
                     },
@@ -500,7 +511,7 @@
                         };
 
                         $('#jstree').jstree().create_node(parentNodeId, newDetailNode, 'last'); // jsTree에 노드 추가
-
+                        location.reload(true); // 페이지 새로고침
                         // 폼 초기화
                         $('#insertFormProjdwrks')[0].reset();
                     },
@@ -542,6 +553,8 @@
                 $('#wrkInfo').hide();
                 $('#editProjectModal').hide();
                 $('#chat').hide();
+                $('#wrkInfodel').hide();
+                $('#projinfodel').hide();
                 
             } else {
                 $('#insertPanelProjdwrks h4').text(projectName + ' 상세업무 등록');
@@ -553,6 +566,8 @@
                 $('#wrkInfo').hide();
                 $('#editProjectModal').hide();
                 $('#chat').hide();
+                $('#wrkInfodel').hide();
+                $('#projinfodel').hide();
             }
 
             $('#projNo').val(projNo.replace(/^[PW]/, ''));
@@ -714,6 +729,7 @@
                     alert('프로젝트가 성공적으로 수정되었습니다!');
 
                     $('#editProjectModal').hide(); // 수정 모달 닫기
+                    location.reload(true); // 페이지 새로고침
                 },
                 error: function(xhr, status, error) {
                     alert('프로젝트 수정에 실패했습니다: ' + error);
@@ -734,7 +750,7 @@
                     name: $('#nameProjWrksUpdate').val(),
                     content: $('#contentProjWrksUpdate').val(),
                     jobNo: $('#jobNoWrks').val(),
-                    mgrNo: $('#mgrNoProjWrksUpdate').val(),
+                    mgrNo: $('#mgrNoProjWrksUpdate2').val(),
                     
 
                 }),
@@ -742,6 +758,7 @@
                     alert('프로젝트가 성공적으로 수정되었습니다!');
 
                     $('#updateFormProjdwrks').hide();
+                    location.reload(true); // 페이지 새로고침
                 },
                 error: function(xhr, status, error) {
                     alert('프로젝트 수정에 실패했습니다: ' + error);
@@ -773,6 +790,7 @@
                     alert('상세업무가 성공적으로 수정되었습니다!');
 
                     $('#dwrkInfo').hide(); // 수정 모달 닫기
+                    location.reload(true); // 페이지 새로고침
                 },
                 error: function(xhr, status, error) {
                     alert('프로젝트 수정에 실패했습니다: ' + error);
@@ -794,6 +812,7 @@
                  $('#dwrkInfo').hide();
                  $('#insertPanelProjdwrks').hide();
                  $('#insertPanelProjwrks').hide();
+                 $('#wrkInfodel').hide();
                  
                  
                  $.ajax({
@@ -802,7 +821,7 @@
                 	    success: function(response) {
                 	    	// 옵션값 함수 호출
                         	handleJobNoChange(response.jobNo);
-                	    	
+                	    	console.log(response);
                 	        $('#projinfodel').show();
                 	        $('#editProjectModal').hide();
                 	        $('#wrkInfo').hide();
@@ -818,6 +837,7 @@
                 	        $('#projectcontent').val(response.content);
                 	        $('#projectgiturl').val(response.projectGitUrl);
                 	        $('#jobnoinfo').val(response.jobNo);
+                	        $('#projNumber').val(response.projNo);
                 	        
                 	        const formatDate = (dateString) => {
                 	            const date = new Date(dateString);
@@ -840,6 +860,7 @@
                 $('#insertPanelProjdwrks').hide();
                 $('#insertPanelProjwrks').hide();
                 
+                
 
                 $.ajax({
                     url: `/project/projectwrklistinfo/${pwNo}`, 
@@ -855,6 +876,7 @@
                         $('#wrkname').val(response.name);
                         $('#wrkcontent').val(response.content);
                         $('#jobwrks').val(response.jobNo);
+                        $('#wrkNumber').val(response.pwNo);
                         setTimeout(() => {
                             $('#wrkmgrinfo').val(response.mgrNo); // 선택된 값을 설정
                         }, 50);
@@ -874,7 +896,6 @@
                 $('#insertPanelProjwrks').hide();
                 $('#projinfodel').hide();
                 $('#wrkInfodel').hide();
-                $('#projinfodel').hide();
                 
                 $('#chat h4').text(projectName + ' 상세업무 코멘트');
                 $('#pdwNode').val(pdwNo);
@@ -885,55 +906,64 @@
                         const chatList = $('#chat .chat-list');
                         chatList.empty();
                         
-                     	// 기존 배지 제거
+                        // 기존 배지 제거
                         $('#chat .badge').remove();
-                     	// 기존 버튼 제거
+                        // 기존 버튼 제거
                         $('#chat .status-button').remove();
-                     	
-                        if (Array.isArray(data)) {
+                        
+                        // data가 객체 형태일 경우
+                        if (data && data.comments && Array.isArray(data.comments)) {
                             // 상태를 먼저 확인하여 배지 생성
                             let statusBadge = '';
-                            // 버튼 생성
                             let actionButton = '';
                             
-                            // status값에 따라 뱃지 및 버튼 구별
-                            if (data.length > 0) {
-                                const firstInfo = data[0];
-                                if (firstInfo.isStatus === 'k1') {
+                            
+                                const firstInfo = data.comments[0];
+                                const projectManager = data.mgrs[0]; // 단일 객체가 리스트로 변환되었으므로 첫 번째 요소 사용
+                                const managerEmpNo = projectManager.mgrNo; // 프로젝트 매니저의 empNo
+                                
+                                
+                                if (projectManager.isStatus === 'k1' ) {
                                     statusBadge = '<span class="badge rounded-pill bg-secondary">진행전</span>';
+                                    if(sessionUserEmpNo ===  managerEmpNo){
                                     actionButton = `
                                         <button type="button" class="btn btn-outline-info status-button" onclick="updateStatus('k1')" style="float: right;">
                                             작업시작
                                         </button>`;
-                                } else if (firstInfo.isStatus === 'k2') {
+                                    }
+                                } else if (projectManager.isStatus === 'k2') {
                                     statusBadge = '<span class="badge rounded-pill bg-info">진행중</span>';
+                                    if(sessionUserEmpNo ===  managerEmpNo){
                                     actionButton = `
-                                        <button type="button" class="btn btn-outline-success status-button"onclick="updateStatus( 'k2')" style="float: right;">
+                                        <button type="button" class="btn btn-outline-success status-button" onclick="updateStatus('k2')" style="float: right;">
                                             컨펌요청
                                         </button>`;
-                                } else if (firstInfo.isStatus === 'k3') {
-                                	statusBadge = '<span class="badge rounded-pill bg-info">컨펌중</span>';
-                                }else if (firstInfo.isStatus === 'k4'){
-                                	statusBadge = '<span class="badge rounded-pill bg-success">완료</span>';
-                                }else if(firstInfo.isStatus === 'k3' && sessionUserEmpNo === firstInfo.mgrNo){
-                                	statusBadge = '<span class="badge rounded-pill bg-info">컨펌중</span>'
-                                		actionButton = `
-                                            <button type="button" class="btn btn-outline-success status-button"onclick="updateStatus( 'k4')" style="float: right;">
+                                    }
+                                } else if (projectManager.isStatus === 'k3') {
+                                    statusBadge = '<span class="badge rounded-pill bg-info">컨펌중</span>';
+                                    console.log(projectManager.directboss);
+                                    if(sessionUserEmpNo ==  projectManager.directboss){
+                                    	actionButton = `
+                                            <button type="button" class="btn btn-outline-success status-button" onclick="updateStatus('k4')" style="float: right;">
                                                 컨펌완료
                                             </button>
-                                            <button type="button" class="btn btn-outline-success status-button"onclick="updateStatus( 'k2')" style="float: right;">
+                                            <button type="button" class="btn btn-outline-success status-button" id="delbtn" onclick="updateStatus('k5')" style="float: right;">
                                                 반려
-                                            </button>    
-                                                `;
-                                }
-                            }
-							// status값에 따라 뱃지 및 버튼 노출
-                            $('#chat h4').after(statusBadge);
-                            $('#chat h4').append(actionButton);
+                                            </button>`;
+                                    }
+                                } else if (projectManager.isStatus === 'k4') {
+                                    statusBadge = '<span class="badge rounded-pill bg-success">완료</span>';
+                                } 
                             
-                            data.forEach(info => {
+                            
+                            // status값에 따라 뱃지 및 버튼 노출
+                            $('#chat h4').after(statusBadge);
+                            if(actionButton){
+                            $('#chat h4').append(actionButton);
+                            }
+                            data.comments.forEach(info => {
                                 const isCurrentUser = parseInt(sessionUserEmpNo, 10) === parseInt(info.writerNo, 10);
-
+                                
                                 function formatDate(dateString) {
                                     const date = new Date(dateString);
                                     const year = date.getFullYear();
@@ -941,19 +971,17 @@
                                     const day = String(date.getDate()).padStart(2, '0');
                                     return `${year}-${month}-${day}`;
                                 }
-
+                                
                                 const chatItem = isCurrentUser
                                     ? `
-                                    	
                                         <li class="odd chat-item">
                                             <div class="chat-content">
-                                            <button class="btn btn-link btn-sm text-decoration-none" th:onclick="">
-                                            <i class="me-2 mdi mdi-delete"></i>
-                                            </button>
+                                                <button class="btn btn-link btn-sm text-decoration-none">
+                                                    <i class="me-2 mdi mdi-delete"></i>
+                                                </button>
                                                 <div class="box bg-light-inverse">${info.content}</div>
                                                 <br />
                                             </div>
-                                            
                                             <div class="chat-time">${formatDate(info.regDate)}</div>
                                         </li>`
                                     : `
@@ -1057,6 +1085,7 @@
                             $('#mgrNoProjWrks').empty().append('<option value="0">선택하세요</option>');
                             $('#mgrNoProjdWrks').empty().append('<option value="0">선택하세요</option>');
                             $('#mgrNoProjWrksUpdate').empty().append('<option value="0">선택하세요</option>');
+                            $('#mgrNoProjWrksUpdate2').empty().append('<option value="0">선택하세요</option>');
                             
                             
                             
@@ -1065,6 +1094,7 @@
                                 $('#mgrNoProjWrks').append('<option value="' + info.empNo + '">' + info.name + '</option>');
                                 $('#mgrNoProjdWrks').append('<option value="' + info.empNo + '">' + info.name + '</option>');
                                 $('#mgrNoProjWrksUpdate').append('<option value="' + info.empNo + '">' + info.name + '</option>');
+                                $('#mgrNoProjWrksUpdate2').append('<option value="' + info.empNo + '">' + info.name + '</option>');
                                 
                                 
                             });
@@ -1125,7 +1155,10 @@
 		function updateStatus(currentStatus){
 			
 			const pdwNo = $('#pdwNode').val();
-			
+			// 반려 시 초기값으로 돌림
+			if(currentStatus == 'k5'){
+				currentStatus = 'k1'
+			}
 			let isStatus = "";
 			if(currentStatus == 'k1'){
 				isStatus = 'k2';
@@ -1139,6 +1172,8 @@
                     success: function(response) {
                     	let buttonElement = $(`button[onclick="updateStatus('k1')"]`);
                     	 $('#chat .badge').remove();
+                    	 $('.status-button').remove();
+                    	 $('#delbtn').remove();
                         // 버튼 추가
                         let statusBadge = '<span class="badge rounded-pill bg-info">진행중</span>';
                         $('#chat h4').after(statusBadge);
@@ -1147,7 +1182,6 @@
                                     컨펌요청
                                 </button>
                             `);
-
                     }
 				});
 			}else if(currentStatus == 'k2'){
@@ -1164,58 +1198,69 @@
                     	$('#chat .badge').remove();
                     	buttonElement.remove();
                     	$('.status-button').remove();
+                    	$('#delbtn').remove();
                     	
                     	let statusBadge = '<span class="badge rounded-pill bg-info">컨펌중</span>';
                         $('#chat h4').after(statusBadge);
-                    	
-
                     }
 				});	
+			}else if(currentStatus == 'k4'){
+				isStatus = 'k4';
+				$.ajax({
+                    url: '/project/projectupdatestatus/' + pdwNo,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                    pdwNo: pdwNo, isStatus : isStatus 
+                    }),
+                    success: function(response) {
+                    	let buttonElement = $(`button[onclick="updateStatus('${currentStatus}')"]`);
+                    	$('#chat .badge').remove();
+                    	buttonElement.remove();
+                    	$('.status-button').remove();
+                    	$('#delbtn').remove();
+                    	
+                    	let statusBadge = '<span class="badge rounded-pill bg-success">완료</span>';
+                        $('#chat h4').after(statusBadge);
+                    }
+				});					
 			}
 			
 		}
-     	// 프로젝트 삭제 기능
 		$(document).ready(function() {
-		    $('#projinofodelform').on('submit', function(event) {
-		        event.preventDefault(); // 기본 폼 제출 방지
-	            const projNo = $(buttonElement).parent().attr('id').split('_')[1]; 
-	            projNo = parseInt(projNo.replace(/^[PW]/, ''), 10); 
+		    // 삭제 버튼 클릭 이벤트
+		    $('.delete-btn').on('click', function(event) {
+		        event.preventDefault(); 
 
-		        // AJAX 호출
-		        $.ajax({
-		            url: `/project/projectdelete/${projNo}`, 
-		            type: 'DELETE', 
-		            success: function(response) {
-		                alert('프로젝트가 삭제되었습니다.');
-		                location.reload(); // 페이지 새로고침
-		            },
-		            error: function(xhr, status, error) {
-		                alert('삭제 중 오류가 발생했습니다: ' + error);
-		            }
-		        });
-		    });
-		});	
-     	// 프로젝트 업무 삭제 
-		$(document).ready(function() {
-		    $('#wrkinfodelform').on('submit', function(event) {
-		        event.preventDefault(); // 기본 폼 제출 방지
-	            const projNo = $(buttonElement).parent().attr('id').split('_')[1]; 
-	            const pwNo = parseInt(projNo.replace(/^[PW]/, ''), 10); 
+		        const type = $(this).data('type'); 
+		        
+		        const projNo = $('#projNumber').val();
+		        const pwNo = $('#wrkNumber').val();
+		        console.log	(pwNo);
+		        let url;
+		        if (type === 'project') {
+		            url = `/project/projectdelete/${projNo}`; // 프로젝트 삭제 URL
+		        } else if (type === 'work') {
+		        	
+		            url = `/project/projectwrkdel/${pwNo}`; // 업무 삭제 URL
+		        }
 
-		        // AJAX 호출
-		        $.ajax({
-		            url: `/project/projectwrkdel/${pwNo}`, 
-		            type: 'DELETE', 
-		            success: function(response) {
-		                alert('프로젝트가 삭제되었습니다.');
-		                location.reload(); // 페이지 새로고침
-		            },
-		            error: function(xhr, status, error) {
-		                alert('삭제 중 오류가 발생했습니다: ' + error);
-		            }
-		        });
+		        if (confirm('정말로 삭제하시겠습니까?')) {
+		            // AJAX 호출
+		            $.ajax({
+		                url: url, 
+		                type: 'DELETE', 
+		                success: function(response) {
+		                    alert('삭제되었습니다.');
+		                    location.reload(true); // 페이지 새로고침
+		                },
+		                error: function(xhr, status, error) {
+		                    alert('삭제 중 오류가 발생했습니다: ' + error);
+		                }
+		            });
+		        }
 		    });
-		});	
+		});
 		// 프로젝트 상세업무 삭제 
 		$(document).ready(function() {
 		    $('#').on('submit', function(event) {

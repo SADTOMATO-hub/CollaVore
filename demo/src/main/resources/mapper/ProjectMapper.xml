@@ -300,7 +300,8 @@
 				p.commit_id,
 				p.importance,
 				p.mgr_no,
-		        w.job_no
+		        w.job_no,
+		        w.mgr_no as directboss
 		FROM projdwrks p JOIN projwrks w ON p.pw_no = w.pw_no
 		WHERE pdw_no = #{pdwNo}
 	</select>
@@ -458,4 +459,34 @@
 		WHERE proj_no = #{projNo}
 	</update>
 	
+	
+	<!-- 프로젝트 업무 삭제-->
+	<delete id="projectwrkDelete" parameterType="int">
+	    DELETE FROM projwrks
+	    WHERE proj_no = #{projNo}
+	    
+	</delete>
+
+
+	<!-- 프로젝트 업무 삭제-->
+	<delete id="projectwrkDelete2" parameterType="int">
+	    DELETE FROM projwrks
+	    WHERE pw_no = #{pwNo}
+	</delete>
+	
+	<!-- 프로젝트 상세업무 삭제-->
+	<delete id="projectdwrkDelete" parameterType="int">
+		delete 
+		FROM 
+	        projdwrks
+		WHERE
+			pw_no = #{pdwNo} OR parent_pdw_no = #{pdwNo}
+	</delete>
+	
+	<select id="projwrkList" resultType="ProjectVO">
+		SELECT pw_no
+        
+		FROM projwrks
+		WHERE proj_no = #{projNo}
+	</select>	
 </mapper>

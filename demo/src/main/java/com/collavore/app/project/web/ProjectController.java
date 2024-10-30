@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -134,10 +135,33 @@ public class ProjectController {
 	@DeleteMapping("project/projectdelete/{projNo}")
 	@ResponseBody
 	public String deleteProject(@PathVariable int projNo) {
+		
 		pjService.projectDelete(projNo);
+		List<ProjectVO> projectVOList = pjService.projectwrkList(projNo);
+		pjService.projectwrkDelete(projNo);
+		
+		for(ProjectVO info :  projectVOList) {
+			pjService.projectdwrkDelete(info.getPwNo());
+		}
 		return "삭제 완료";
 	}
+	
+	// 프로젝트 업무 삭제
+		@DeleteMapping("project/projectwrkdel/{pwNo}")
+		@ResponseBody
+		public String deletewrkProject(@PathVariable int pwNo) {
+			pjService.projectwrkDelete(pwNo);
+			return "삭제 완료";
+		}
 
+		// 프로젝트 상세 업무 삭제
+		@DeleteMapping("project/projectdwrkdel/{pdwNo}")
+		@ResponseBody
+		public String deletedwrkProject(@PathVariable int pdwNo) {
+			pjService.projectdwrkDelete(pdwNo);
+			return "삭제 완료";
+		}
+		
 	// 프로젝트 폴더 관리
 	@GetMapping("project/projectfilelist")
 	public String projectFileList(Model model) {
@@ -334,13 +358,31 @@ public class ProjectController {
 		return response;
 	}
 
+//	// 상세업무 코멘트 단건 리스트
+//	@GetMapping("/project/projecdwrkcomtstinfo/{pdwNo}")
+//	@ResponseBody
+//	public List<ProjectVO> projectDWrkComtInfo(@PathVariable int pdwNo) {
+//		return pjService.projectDWrkComtInfo(pdwNo);
+//	}
+//	
 	// 상세업무 코멘트 단건 리스트
 	@GetMapping("/project/projecdwrkcomtstinfo/{pdwNo}")
 	@ResponseBody
-	public List<ProjectVO> projectDWrkComtInfo(@PathVariable int pdwNo) {
-		return pjService.projectDWrkComtInfo(pdwNo);
-	}
+	public Map<String, Object> projectDWrkComtInfo(@PathVariable int pdwNo) {
+	    // 프로젝트 업무 코멘트 정보를 가져오는 메서드 호출
+	    List<ProjectVO> projectComments = pjService.projectDWrkComtInfo(pdwNo);
+	    
+	    ProjectVO projectManager = pjService.projectdwrkInfo(pdwNo);
+	    List<ProjectVO> selectmgrs = Collections.singletonList(projectManager);
 
+	    // 결과를 하나의 Map으로 결합하여 반환
+	    Map<String, Object> response = new HashMap<>();
+	    response.put("comments", projectComments);
+	    response.put("mgrs", selectmgrs);
+
+	    return response; // 결합된 정보를 반환
+	}
+	
 	// 상세업무 코멘트 생성
 	@PostMapping("project/projectdwrkcomtinsert")
 	@ResponseBody

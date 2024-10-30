@@ -11,6 +11,8 @@ public interface PjService {
 	public int projectinsert(ProjectVO proejctVO);
 	// 프로젝트 삭제
 	public int projectDelete(int projNo);
+	// 프로젝트 업무 삭제
+	public int projectwrkDelete(int pwNo);	
 	// 프로젝트 단건조회
 	public ProjectVO projectInfo(int projNo); 
 	// 프로젝트 수정
@@ -85,4 +87,10 @@ public interface PjService {
 	
 	// 등록된 깃의 clone_url값을 받아와서 git 주소로 입력하기.
 	public int addGitUrl(ProjectVO projectVO);
+	
+	// 상세업무 삭제
+	public int projectdwrkDelete(int pdwNo);
+	// 업무리스트 
+	public List<ProjectVO> projectwrkList(int projNo);
+
 }
