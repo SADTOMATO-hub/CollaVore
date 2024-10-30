@@ -64,7 +64,7 @@ public class ProjectVO {
 	private String table;
 	
 	private Integer pwtNo;
-	
+	private Integer directboss;
 	// 프로젝트 깃 관련
 	private String projectGitUrl;	// git주소
 	private String gitToken; // 회원의 git 토큰

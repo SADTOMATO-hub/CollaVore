@@ -84,5 +84,13 @@ public interface ProjectMapper {
 	// 등록된 깃의 clone_url값을 받아와서 git 주소로 입력하기.
 	public int insertGitUrl(ProjectVO projectVO);
 	
+	// 프로젝트 업무 삭제
+	public int projectwrkDelete(int pwNo);
+	//프로젝트 상세업무 삭제
+	public int projectdwrkDelete(int pdwNo);
+	
+	//프로젝트 업무 리스트
+	public List<ProjectVO> projwrkList(int projNo);
+	
 	
 }

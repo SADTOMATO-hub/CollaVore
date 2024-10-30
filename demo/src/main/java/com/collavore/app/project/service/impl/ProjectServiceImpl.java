@@ -182,4 +182,19 @@ public class ProjectServiceImpl implements PjService{
 	public int addGitUrl(ProjectVO projectVO) {
 		return projectMapper.insertGitUrl(projectVO);
 	}
+
+	@Override
+	public int projectwrkDelete(int pwNo) {
+		return projectMapper.projectwrkDelete(pwNo);
+	}
+
+	@Override
+	public int projectdwrkDelete(int pdwNo) {
+		return projectMapper.projectdwrkDelete(pdwNo);
+	}
+
+	@Override
+	public List<ProjectVO> projectwrkList(int projNo) {
+		return projectMapper.projwrkList(projNo);
+	}
 }
