@@ -21,12 +21,14 @@ public interface ApprovalsService {
 			public int insertApprsEar (ApprovalsVO approvalsVO);
 	// 진행 중인 전자결재 목록 조회
 	public List<ApprovalsVO> myApprList (ApprovalsVO approvalsVo);
-	//결재 해야할 전결 목록 조회
+	//문서함
 	public List<ApprovalsVO> approveList (ApprovalsVO approvalsVo);
 	// 전자결재 상세 조회
 	public ApprovalsVO approvalsInfo (ApprovalsVO approvalsVO);
 	//결재자 상세
 	public List<Map<String,Object>> approversInfo (ApprovalsVO approvalsVo);
+	//결재하기
+	public int updateApprStatus (ApprovalsVO approvalsVo);
 	// 전자결재 수정
 	// 전자결재 삭제
 	public void deleteApprovals (ApprovalsVO approvalsVo);

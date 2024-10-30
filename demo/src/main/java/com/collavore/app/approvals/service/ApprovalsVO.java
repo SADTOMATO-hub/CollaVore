@@ -34,10 +34,12 @@ public class ApprovalsVO {
 	private String approvalStatus;	//전자결재 상태
 	private String approverName;
 	private String approverEmpNo;
-	private String positionTitle;
-	private String drafterName;
 	private String approverStatus;
+	private String drafterName;
 	private Integer userEmpNo;
+	
+	//문서함 리스트 조건
+	private String listStatus;
 	
 	//결과
 	private Integer resultCode; // 삭제 프로시저 outmode 실행 결과

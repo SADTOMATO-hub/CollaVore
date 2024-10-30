@@ -24,12 +24,14 @@ public interface ApprovalsMapper {
 			public int createApprsEar (ApprovalsVO approvalsVo);
 	//나의 진행 중인 전자결재 목록 조회
 	public List<ApprovalsVO> myApprList (ApprovalsVO approvalsVo);
-	//결재 해야할 전결 목록 조회
+	//문서함
 	public List<ApprovalsVO> approveList (ApprovalsVO approvalsVo);
 	//전자결재 상세 조회
 	public ApprovalsVO readApproval (ApprovalsVO approvalsVo);
 	//결재자 상세
 	public List<Map<String,Object>> readApprovers (ApprovalsVO approvalsVo);
+	//결재하기
+	public int updateApprStatus (ApprovalsVO approvalsVo);
 	//전자결재 수정
 	//전자결재 삭제
 	public void deleteApproval (ApprovalsVO approvalsVo);
