@@ -39,6 +39,9 @@ public class ApprovalsVO {
 	private String approverStatus;
 	private Integer userEmpNo;
 	
+	//상태값의 변수를
+	//private String 
+	
 	//결과
 	private Integer resultCode; // 삭제 프로시저 outmode 실행 결과
 	
