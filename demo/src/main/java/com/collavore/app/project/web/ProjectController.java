@@ -1,5 +1,8 @@
 package com.collavore.app.project.web;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -37,6 +40,7 @@ import com.collavore.app.project.service.ProjectTempVO;
 import com.collavore.app.project.service.ProjectVO;
 import com.collavore.app.project.service.ProjectWorkTempVO;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -52,11 +56,13 @@ public class ProjectController {
 
 	// 프로젝트 리스트 출력
 	@GetMapping("project/projectlist")
-	public String projectList(Model model) {
+	public String projectList(Model model, HttpSession session) {
+		Integer empNo = (Integer) session.getAttribute("userEmpNo");
 		List<ProjectVO> list = pjService.projectList();
 		List<ProjectTempVO> templist = pjtempService.projecttempList();
 		List<ProjectVO> emplist = pjService.empList();
 
+		model.addAttribute("empNo", empNo);
 		model.addAttribute("projects", list);
 		model.addAttribute("templist", templist);
 		model.addAttribute("emp", emplist);
@@ -68,34 +74,33 @@ public class ProjectController {
 	@ResponseBody
 	public Map<String, Object> insertAjax(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
-		//System.err.println(projectVO);
-		
+		// System.err.println(projectVO);
+
 		pjService.projectinsert(projectVO);
-		
-		List<ProjectWorkTempVO> projwrklist =  pjtempService.projectwrktemplistInfo(projectVO.getProjTempNo());
-		  for (ProjectWorkTempVO user : projwrklist) {
-			  projectVO.setName(user.getName()); 
-			  projectVO.setContent(user.getContent()); 
-			  projectVO.setProjTempNo(user.getProjTempNo()); 
-			  projectVO.setJobNo(user.getJobNo()); 
-			  //System.err.println(projectVO);
-	          pjService.projectwrkinsert(projectVO);
-			  List<ProjectDWorkTempVO> projdwrklist = pjtempService.projectDwrktemplistInfo(user.getPwtNo());
-			  for(ProjectDWorkTempVO dwrk : projdwrklist) {
-				  projectVO.setName(dwrk.getName());
-				  projectVO.setContent(dwrk.getContent());
-				  projectVO.setPwtNo(dwrk.getPwtNo());
-				  projectVO.setImportance(dwrk.getImportance());
-				  //System.err.println("-----------------------------------");
-				  //System.err.println(projectVO);
+
+		List<ProjectWorkTempVO> projwrklist = pjtempService.projectwrktemplistInfo(projectVO.getProjTempNo());
+		for (ProjectWorkTempVO user : projwrklist) {
+			projectVO.setName(user.getName());
+			projectVO.setContent(user.getContent());
+			projectVO.setProjTempNo(user.getProjTempNo());
+			projectVO.setJobNo(user.getJobNo());
+			// System.err.println(projectVO);
+			pjService.projectwrkinsert(projectVO);
+			List<ProjectDWorkTempVO> projdwrklist = pjtempService.projectDwrktemplistInfo(user.getPwtNo());
+			for (ProjectDWorkTempVO dwrk : projdwrklist) {
+				projectVO.setName(dwrk.getName());
+				projectVO.setContent(dwrk.getContent());
+				projectVO.setPwtNo(dwrk.getPwtNo());
+				projectVO.setImportance(dwrk.getImportance());
+				// System.err.println("-----------------------------------");
+				// System.err.println(projectVO);
 				pjService.projectdwrkinsert(projectVO);
-			  }
-	        }
-		
-		//pjService.projectwrkinsert(projectVO);
-		
-		
-		//pjService.projectdwrkinsert(projectVO);
+			}
+		}
+
+		// pjService.projectwrkinsert(projectVO);
+
+		// pjService.projectdwrkinsert(projectVO);
 
 		map.put("type", "postAjax");
 		map.put("data", projectVO);
@@ -380,4 +385,43 @@ public class ProjectController {
 		}
 		return response;
 	}
+
+	// 등록된 깃의 clone_url값을 받아와서 git 주소로 입력하기.
+	@PostMapping("/project/projGitUrlAdd")
+	@ResponseBody
+	public boolean addGitUrl(@RequestBody ProjectVO projectVO) {
+		pjService.addGitUrl(projectVO);
+		return true;
+	}
+
+	// 프로젝트 gitURL을 기준으로 내 로컬 경로에 클론하기
+	@PostMapping("/project/gitClone")
+	@ResponseBody
+	public String cloneRepository(@RequestBody ProjectVO projectVO) throws InterruptedException {
+		String cloneGitUrl = projectVO.getProjectGitUrl();
+		String localPath = projectVO.getCloneLocalPath();
+
+		try {
+			Process process = Runtime.getRuntime().exec(new String[] { "git", "clone", cloneGitUrl, localPath });
+			process.waitFor();
+
+			// 오류 로그 출력
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+			StringBuilder errorLog = new StringBuilder();
+			String line;
+			while ((line = reader.readLine()) != null) {
+				errorLog.append(line).append("\n");
+			}
+			if (errorLog.length() > 0) {
+				System.err.println("Git Clone Error: " + errorLog);
+				return "Failed to clone repository: " + errorLog.toString();
+			}
+
+			return "Repository cloned successfully!";
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Failed to clone repository: " + e.getMessage();
+		}
+	}
+
 }

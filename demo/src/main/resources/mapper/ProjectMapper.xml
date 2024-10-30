@@ -51,7 +51,6 @@
 		,is_template
 		,status
 		,proj_temp_no
-		,project_git_url
 		,p_mgr_no)
 		VALUES(
 		#{projNo}
@@ -62,7 +61,6 @@
 		,#{isTemplate}
 		,#{status}
 		,#{projTempNo}
-		,#{projectGitUrl}
 		,#{pMgrNo}
 		)
 	</insert>
@@ -454,5 +452,10 @@
 		WHERE pdw_no = #{pdwNo}
 	</update>
 	
+	<update id="insertGitUrl" parameterType="ProjectVO">
+		UPDATE proj
+		SET project_git_url = #{projectGitUrl}
+		WHERE proj_no = #{projNo}
+	</update>
 	
 </mapper>

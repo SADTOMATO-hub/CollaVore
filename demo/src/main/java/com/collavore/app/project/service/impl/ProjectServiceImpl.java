@@ -160,8 +160,6 @@ public class ProjectServiceImpl implements PjService{
 		return projectMapper.updateStatusProject(projectVO);
 	}
 
-
-
 	/*
 	 * @Override public List<ProjectVO> projectDWrkComtInfo(int pdwNo) { return
 	 * projectMapper.searchPdwNo(pdwNo); }
@@ -179,4 +177,9 @@ public class ProjectServiceImpl implements PjService{
 //    }
 	
 
+	// 등록된 깃의 clone_url값을 받아와서 git 주소로 입력하기.
+	@Override
+	public int addGitUrl(ProjectVO projectVO) {
+		return projectMapper.insertGitUrl(projectVO);
+	}
 }

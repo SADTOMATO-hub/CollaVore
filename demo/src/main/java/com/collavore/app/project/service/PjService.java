@@ -80,5 +80,9 @@ public interface PjService {
 //	public List<ProjectVO> getProjects(int page, int size);
 //
 //	public long getTotalProjects();
+
+	// 로그인한 회원의 깃토큰값 가져오기
 	
+	// 등록된 깃의 clone_url값을 받아와서 git 주소로 입력하기.
+	public int addGitUrl(ProjectVO projectVO);
 }
