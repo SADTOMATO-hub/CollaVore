@@ -4,18 +4,142 @@
 	layout:fragment="Content">
 
 	<style>
-/* 기본 부서 스타일 */
-.department {
-	margin: 10px;
-	padding: 10px;
-	border: 1px solid #333;
-	border-radius: 5px;
-	width: 300px;
+/* 페이지 기본 스타일 */
+.body-page-wrapper {
+	padding: 20px;
+	background-color: #f9f9f9;
+	align-items: center;
 }
 
-/* 부서장 정보 */
-.manager {
+/* Breadcrumb 스타일 */
+.breadcrumb {
+	background-color: #ffffff;
+	padding: 10px 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	height: 70px;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	color: #333;
+	position: relative;
+}
+
+.breadcrumb h4 {
+	margin: 0;
+	font-size: 24px;
 	font-weight: bold;
+	color: #333;
+}
+
+.breadcrumb-left {
+	display: flex; /* flexbox로 요소 정렬 */
+	flex-direction: column; /* 세로로 배치 */
+	justify-content: center; /* 세로 중앙 정렬 */
+}
+
+.breadcrumb-left h4 {
+	font-size: 22px;
+	font-weight: bold;
+	margin: 0; /* 기본 마진 제거 */
+	margin-top: 2px;
+}
+
+.breadcrumb-left p {
+	font-size: 14px;
+	color: #666;
+	margin-top: 2px;
+	margin-bottom: 0;
+}
+
+.breadcrumb-right span {
+	font-size: 14px;
+	color: #999;
+	white-space: nowrap;
+	position: relative;
+	top: -12px;
+}
+
+.card_memberInsert {
+	background-color: #ffffff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+}
+
+.dept-info {
+	position: relative;
+	background-color: #f8f9fa;
+	padding: 10px 20px;
+	border-radius: 8px;
+	text-align: center;
+	width: 220px;
+	height: 100px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	transition: background-color 0.3s ease, box-shadow 0.3s ease;
+	position: relative; /* 자식 요소의 위치를 상대적으로 설정 */
+}
+
+.dept-name {
+	border-top-left-radius: 8px; /* dept-name의 모서리도 곡선 */
+	border-top-right-radius: 8px; /* dept-name의 모서리도 곡선 */
+	background-color: black; /* 배경색 검정 */
+	color: white; /* 글자색 흰색 */
+	height: 30%; /* dept-info 높이의 30% */
+	display: flex; /* 텍스트 중앙 정렬을 위해 사용 */
+	align-items: center; /* 세로 중앙 정렬 */
+	justify-content: center; /* 가로 중앙 정렬 */
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%; /* 가로로 꽉 채움 */
+}
+
+.mgr-info {
+	display: flex;
+	height: 70%; /* dept-info의 나머지 부분 사용 */
+	margin-top: 30px;
+	position: relative;
+}
+
+.mgr-image {
+	flex: 0 0 40%; /* mgr-info의 40% 너비 */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.profile-image {
+	border-radius: 50%; /* 프로필 이미지를 원형으로 만듦 */
+	width: 50px;
+	height: 50px;
+}
+
+.mgr-basic {
+	flex: 0 0 60%; /* mgr-info의 60% 너비 */
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between; /* 자식 요소를 위아래로 배치 */
+}
+
+.mgr-name {
+	/*margin: 0 auto;**/
+	height: 40%; /* mgr-basic 높이의 40% */
+	display: flex;
+	align-items: center;
+	font-weight: bold;
+}
+
+.mgr-job {
+	/*margin: 0 auto;*/
+	height: 60%; /* mgr-basic 높이의 60% */
+	display: flex;
+	align-items: center;
+	color: gray;
+	font-size: 0.9em;
 }
 
 /* 부서원 목록 */
@@ -29,7 +153,32 @@
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 	padding: 10px;
 	z-index: 1000; /* 다른 요소 위에 표시되도록 설정 */
+	margin-top: 10px;
+	
+    max-height: 400px; /* 최대 높이 지정 */
+    overflow-y: auto; /* 세로 스크롤 생성 */
+    box-sizing: border-box; /* 패딩 포함 크기 계산 */
 }
+
+/* 스크롤바 스타일 (선택 사항) */
+.employee-list::-webkit-scrollbar {
+    width: 8px;
+}
+
+.employee-item{ 
+    text-align: center;
+    vertical-align: middle;
+	border-radius: 8px;
+}
+.employee-name{
+	border-top-left-radius: 8px; /* dept-name의 모서리도 곡선 */
+	border-top-right-radius: 8px; /* dept-name의 모서리도 곡선 */
+	background-color: black; /* 배경색 검정 */
+	color: white; /* 글자색 흰색 */ 
+    text-align: center;
+    height:20px;
+}
+
 /* 토글 버튼 스타일 */
 .toggle-btn {
 	cursor: pointer;
@@ -62,14 +211,7 @@
 
 /* 개별 부서 노드 스타일 */
 .tree-node {
-	background-color: #f8f9fa;
-	padding: 10px 20px;
-	border-radius: 8px;
-	text-align: center;
-	width: 180px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-	transition: background-color 0.3s ease, box-shadow 0.3s ease;
-	position: relative; /* 자식 요소의 위치를 상대적으로 설정 */
+	
 }
 
 /* 선택된 노드 스타일 */
@@ -94,11 +236,26 @@
 }
 </style>
 
-	<!-- 기존 부서/부서원 리스트 표시 영역 -->
-	<div id="department-container"></div>
+	<div class="body-page-wrapper">
+		<div class="purple-background-container">
+			<div class="breadcrumb">
+				<div class="breadcrumb-left">
+					<h4>부서정보 조회</h4>
+					<p>부서정보 조회 페이지 입니다.</p>
+				</div>
+				<div class="breadcrumb-right">
+					<span>마이페이지 > 부서정보 조회기</span>
+				</div>
+			</div>
+			<div class="card_memberInsert">
+				<!-- 기존 부서/부서원 리스트 표시 영역 -->
+				<div id="department-container"></div>
 
-	<!-- 조직도 트리 구조 표시 영역 -->
-	<div id="DeptTable" class="tree-container"></div>
+				<!-- 조직도 트리 구조 표시 영역 -->
+				<div id="DeptTable" class="tree-container"></div>
+			</div>
+		</div>
+	</div>
 
 
 	<script>
@@ -166,10 +323,20 @@
         deptHeader.classList.add('dept-header');
         deptHeader.innerHTML = `
             <div class="dept-info">
-                <span class="dept-name">${dept.deptName || '부서명 없음'}</span> - 부서장:
-                <span class="mgr-name">${dept.mgrName || '없음'}</span>
+                <div class="dept-name">
+               		${dept.deptName}
+                </div>
+                <div class="mgr-info">
+                	<div class="mgr-image">
+                		<img class="profile-image" src="${dept.mgrImg ? `/imgs/${dept.mgrImg}` : '/assets/images/users/default.png'}" alt="부서장 이미지" width="40px">
+                	</div>
+                	<div class="mgr-basic">
+                		<div class="mgr-name">${dept.mgrName}</div>
+                		<div class="mgr-job">${dept.posiName}</div>
+                	</div>
+                </div>
             </div>
-            <img class="profile-image" src="${dept.mgrImg ? `/imgs/${dept.mgrImg}` : '/assets/images/users/default.png'}" alt="부서장 이미지" width="40px">
+            
         `;
         
         // 부서명을 클릭하면 부서원 목록을 토글
@@ -230,14 +397,29 @@
             const employees = await response.json();
 
             if (employees && employees.length > 0) {
-                employeeListDiv.innerHTML = employees.map(emp => `
-                    <div class="employee-item">
-                        <img class="profile-image" src="${emp.img ? `/imgs/${emp.img}` : '/assets/images/users/default.png'}" alt="이미지 미리보기" width="40px">
-                        <p>${emp.empName} - ${emp.posiName}</p>
-                    </div>
-                `).join('');
+            	employeeListDiv.innerHTML = `
+            	    <div class="employee-name">부서원</div>
+            	    ${employees.map(emp => `
+            	        <div class="employee-item">
+            	            <div class="mgr-info">
+            	                <div class="mgr-image">
+            	                    <img class="profile-image" src="${emp.img ? `/imgs/${emp.img}` : '/assets/images/users/default.png'}" alt="소속사원 이미지" width="40px">
+            	                </div>
+            	                <div class="mgr-basic">
+            	                    <div class="mgr-name">${emp.empName}</div>
+            	                    <div class="mgr-job">${emp.posiName}</div>
+            	                </div>
+            	            </div>
+            	        </div>
+            	    `).join('')}
+            	`;
+
             } else {
-                employeeListDiv.innerHTML = '<p>부서원이 없습니다.</p>';
+                employeeListDiv.innerHTML = `
+                <div class="employee-item">
+                	<p style="margin:0;">부서원이 없습니다.</p>
+                </div>
+                `;
             }
 
             // 위치 계산
@@ -265,7 +447,5 @@
     }
 
 </script>
-
-
 
 </div>
