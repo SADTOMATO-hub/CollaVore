@@ -12,16 +12,14 @@
 	<ul id="sidebarnav" class="pt-4">
 
 
-		
+
 
 		<!-- 개인 캘린더 섹션 -->
-			<li class="sidebar-item" id="personalCalendar">
-			    <a class="sidebar-link waves-effect waves-dark"
-			       href="javascript:(0);" aria-expanded="false">
-			        <i class="mdi mdi-calendar-check"></i>
-			        <span class="hide-menu">내 캘린더</span>
-			    </a>
-			</li>
+		<li class="sidebar-item" id="personalCalendar"><a
+			class="sidebar-link waves-effect waves-dark" href="javascript:(0);"
+			aria-expanded="false"> <i class="mdi mdi-calendar-check"></i> <span
+				class="hide-menu">내 캘린더</span>
+		</a></li>
 
 
 
@@ -31,44 +29,76 @@
 				<span class="close">&times;</span>
 				<h2>공유 캘린더 수정</h2>
 				<form id="editCalendarForm">
+					<!-- 캘린더 ID 숨김 필드 -->
+					<input type="hidden" id="selectedCalNo" value="">
 
-					<input type="hidden" id="selectedCalNo" value=""> <label
-						for="editCalendarName">캘린더 이름</label> <input type="text"
-						id="editCalendarName" placeholder="캘린더 이름 입력" required> <label
-						for="calendarColor">색상</label>
-
-					<div id="colorPalette" class="color-selection">
-						<input type="radio" name="color" value="red" id="editRed">
-						<label for="editRed" style="background-color: red;"></label> <input
-							type="radio" name="color" value="orange" id="editOrange">
-						<label for="editOrange" style="background-color: orange;"></label>
-						<input type="radio" name="color" value="pink" id="editPink">
-						<label for="editPink" style="background-color: pink;"></label> <input
-							type="radio" name="color" value="yellow" id="editYellow">
-						<label for="editYellow" style="background-color: yellow;"></label>
-						<input type="radio" name="color" value="cyan" id="editCyan">
-						<label for="editCyan" style="background-color: cyan;"></label> <input
-							type="radio" name="color" value="skyblue" id="editSkyblue">
-						<label for="editSkyblue" style="background-color: skyblue;"></label>
-						<input type="radio" name="color" value="blue" id="editBlue">
-						<label for="editBlue" style="background-color: blue;"></label>
+					<!-- 캘린더 이름 입력 -->
+					<div class="form-group">
+						<label for="editCalendarName">캘린더 이름</label> <input type="text"
+							id="editCalendarName" placeholder="캘린더 이름 입력" required>
 					</div>
 
-					<label for="editSharedCalendarMembers">공유 대상</label> <select
-						id="editSharedCalendarMembers" multiple>
-						<option value="team1">팀 1</option>
-						<option value="team2">팀 2</option>
-						<option value="team3">팀 3</option>
-					</select>
+					<!-- 색상 선택 -->
+					<div class="form-group">
+						<label>색깔 선택</label>
+						<div id="editColorPalette" class="color-selection">
+							<input type="radio" name="color" value="red" id="editRed">
+							<label for="editRed" style="background-color: red;"></label> <input
+								type="radio" name="color" value="orange" id="editOrange">
+							<label for="editOrange" style="background-color: orange;"></label>
+							<input type="radio" name="color" value="violet" id="editViolet">
+							<label for="editViolet" style="background-color: violet;"></label>
+							<input type="radio" name="color" value="pink" id="editPink">
+							<label for="editPink" style="background-color: pink;"></label> <input
+								type="radio" name="color" value="yellow" id="editYellow">
+							<label for="editYellow" style="background-color: yellow;"></label>
+							<input type="radio" name="color" value="cyan" id="editCyan">
+							<label for="editCyan" style="background-color: cyan;"></label> <input
+								type="radio" name="color" value="skyblue" id="editSkyblue">
+							<label for="editSkyblue" style="background-color: skyblue;"></label>
+							<input type="radio" name="color" value="blue" id="editBlue">
+							<label for="editBlue" style="background-color: blue;"></label>
+						</div>
+					</div>
 
 
-					<!-- 저장, 삭제, 취소 버튼 -->
-					<button type="submit" class="btn btn-primary">저장</button>
-					<button type="button" id="deleteBtn" class="btn btn-danger">삭제</button>
-					<button type="button" class="close btn btn-secondary">취소</button>
+
+
+
+
+
+
+
+
+
+					<!-- 공유 대상 -->
+					<div class="form-group">
+					    <label for="editSharedCalendarDeptList">공유 대상</label>
+					    <div class="team-selection-horizontal">
+					        <!-- 부서 목록 -->
+					        <ul id="editSharedCalendarDeptList" class="dept-list"></ul>
+					
+					        <!-- 사원 목록 -->
+					        <div id="editEmployeeContainer" class="employee-list"></div>
+					    </div>
+					</div>
+					
+					<!-- 참여자 리스트 -->
+					<div class="form-group">
+					    <label for="editSelectedParticipantsList">참여자</label>
+					    <ul id="editSelectedParticipantsList" class="selected-participants-list"></ul>
+					</div>
+
+					<!-- 버튼 영역 -->
+					<div class="modal-buttons">
+						<button type="submit" class="btn btn-primary">저장</button>
+						<button type="button" id="deleteBtn" class="btn btn-danger">삭제</button>
+						<button type="button" class="close btn btn-secondary">취소</button>
+					</div>
 				</form>
 			</div>
 		</div>
+
 
 		<!-- 공유 캘린더 섹션 -->
 		<li class="sidebar-item" id="sharedCalendar"><a
@@ -115,82 +145,64 @@
 
 	</ul>
 
-	<div id="personalCalendarModal" class="modal">
-		<div class="modal-content">
-			<span class="close" id="cancelPersonalCalendar">&times;</span>
-			<h2>내 캘린더</h2>
 
-
-
-			<!-- 새로운 캘린더 이름 입력 -->
-			<form id="addPersonalCalendarForm">
-				<label for="calendarName">캘린더 이름</label> <input type="text"
-					id="calendarName" placeholder="캘린더 이름 입력" required> <label
-					for="calendarColor">선택</label>
-
-				<div id="colorPalette" class="color-selection">
-
-					<input type="radio" name="color" value="red" id="red"> <label
-						for="red" style="background-color: red;"></label> <input
-						type="radio" name="color" value="orange" id="orange"> <label
-						for="orange" style="background-color: orange;"></label> <input
-						type="radio" name="color" value="violet" id="violet"> <label
-						for="violet" style="background-color: violet;"></label> <input
-						type="radio" name="color" value="pink" id="pink"> <label
-						for="pink" style="background-color: pink;"></label> <input
-						type="radio" name="color" value="yellow" id="yellow"> <label
-						for="yellow" style="background-color: yellow;"></label> <input
-						type="radio" name="color" value="cyan" id="cyan"> <label
-						for="cyan" style="background-color: cyan;"></label> <input
-						type="radio" name="color" value="skyblue" id="skyblue"> <label
-						for="skyblue" style="background-color: skyblue;"></label> <input
-						type="radio" name="color" value="blue" id="blue"> <label
-						for="blue" style="background-color: blue;"></label>
-				</div>
-
-				<button type="submit">저장</button>
-				<button type="button" id="cancelPersonalCalendar">취소</button>
-			</form>
-		</div>
-	</div>
 	<!-- 공유 캘린더 생성 모달 -->
 	<div id="sharedCalendarModal" class="modal">
 		<div class="modal-content">
 			<h2>공유 캘린더</h2>
 			<form id="sharedCalendarForm">
-				<label for="sharedCalendarName">캘린더 이름</label> <input type="text"
-					id="sharedCalendarName" placeholder="캘린더 이름 입력" required> <label
-					for="calendarColor">선택</label>
-				<div id="colorPalette" class="color-selection">
-
-					<input type="radio" name="color" value="red" id="red"> <label
-						for="red" style="background-color: red;"></label> <input
-						type="radio" name="color" value="orange" id="orange"> <label
-						for="orange" style="background-color: orange;"></label> <input
-						type="radio" name="color" value="violet" id="violet"> <label
-						for="violet" style="background-color: violet;"></label> <input
-						type="radio" name="color" value="pink" id="pink"> <label
-						for="pink" style="background-color: pink;"></label> <input
-						type="radio" name="color" value="yellow" id="yellow"> <label
-						for="yellow" style="background-color: yellow;"></label> <input
-						type="radio" name="color" value="cyan" id="cyan"> <label
-						for="cyan" style="background-color: cyan;"></label> <input
-						type="radio" name="color" value="skyblue" id="skyblue"> <label
-						for="skyblue" style="background-color: skyblue;"></label> <input
-						type="radio" name="color" value="blue" id="blue"> <label
-						for="blue" style="background-color: blue;"></label>
+				<!-- 캘린더 이름 입력 -->
+				<div class="form-group">
+					<label for="sharedCalendarName">캘린더 이름</label> <input type="text"
+						id="sharedCalendarName" placeholder="캘린더 이름 입력" required>
 				</div>
-				<label for="sharedCalendarMembers">공유 대상</label> <select
-					id="sharedCalendarMembers" multiple>
-					<option value="team1">팀 1</option>
-					<option value="team2">팀 2</option>
-					<option value="team3">팀 3</option>
-				</select>
 
+				<!-- 색상 선택 -->
+				<div class="form-group">
+					<label>색깔 선택</label>
+					<div id="colorPalette" class="color-selection">
+						<input type="radio" name="color" value="red" id="red"> <label
+							for="red" style="background-color: red;"></label> <input
+							type="radio" name="color" value="orange" id="orange"> <label
+							for="orange" style="background-color: orange;"></label> <input
+							type="radio" name="color" value="violet" id="violet"> <label
+							for="violet" style="background-color: violet;"></label> <input
+							type="radio" name="color" value="pink" id="pink"> <label
+							for="pink" style="background-color: pink;"></label> <input
+							type="radio" name="color" value="yellow" id="yellow"> <label
+							for="yellow" style="background-color: yellow;"></label> <input
+							type="radio" name="color" value="cyan" id="cyan"> <label
+							for="cyan" style="background-color: cyan;"></label> <input
+							type="radio" name="color" value="skyblue" id="skyblue"> <label
+							for="skyblue" style="background-color: skyblue;"></label> <input
+							type="radio" name="color" value="blue" id="blue"> <label
+							for="blue" style="background-color: blue;"></label>
+					</div>
+				</div>
+
+				<!-- 공유 대상 -->
+					<div class="form-group">
+					    <label for="sharedCalendarDeptList">공유 대상</label>
+					    <div class="team-selection-horizontal">
+					        <!-- 부서 목록 -->
+					        <ul id="sharedCalendarDeptList" class="dept-list"></ul>
+					
+					        <!-- 사원 목록 -->
+					        <div id="employeeContainer" class="employee-list"></div>
+					    </div>
+					</div>
+					
+					<!-- 참여자 리스트 -->
+					<div class="form-group">
+					    <label for="selectedParticipantsList">참여자</label>
+					    <ul id="selectedParticipantsList" class="selected-participants-list"></ul>
+					</div>
+
+
+				<!-- 버튼 영역 -->
 				<div class="modal-buttons">
 					<button type="submit" class="btn btn-primary">저장</button>
-					<button type="button" id="cancelSharedCalendar"
-						class="btn btn-secondary">취소</button>
+					<button type="button" id="cancelSharedCalendar" class="btn btn-secondary" onclick="resetModal()">취소</button>
 				</div>
 			</form>
 		</div>

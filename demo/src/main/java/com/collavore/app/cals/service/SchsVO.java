@@ -55,4 +55,14 @@ public class SchsVO {
 	private Date viewDate; //알림확인일
 	//private Integer saNo; //알림번호
 	//private Integer empNo; //사원번호		
+	
+	 //  employees 테이블 (사원명)
+    private String empName; // 사원 이름
+    
+    // departments 테이블 (부서 정보)
+    private Integer deptNo; // 부서 번호
+    private String deptName; // 부서 이름
+	
+	//테이블 employees
+	
 }

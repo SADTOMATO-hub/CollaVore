@@ -1,9 +1,11 @@
 package com.collavore.app.cals.web;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -42,9 +44,7 @@ public class SchsController {
 	public String SchsListView() {
 		return "calendar/schList";
 	}
-	
-	
-	
+
 //	@PostMapping("/sch/schList")
 //	@ResponseBody
 //	public List<SchsVO> getCalendarEvents(@RequestBody Map<String, Object> params,HttpSession session) {
@@ -59,14 +59,14 @@ public class SchsController {
 //	        return schsService.SchsList(empNo); // 전체 일정
 //	    }
 //	}
-	
+
 //	// 캘린더 이벤트 조회
 //    @PostMapping("/sch/schList")
 //    public List<SchsVO> getCalendarEvents(@RequestBody Map<String, Object> params, HttpSession session) {
 //        Integer empNo = (Integer) session.getAttribute("userEmpNo");
 //        return schsService.getCalendarEvents(empNo, params);
 //    }
-	
+
 	// 조회 json 뿌려주기
 	@PostMapping("/sch/schList")
 	@ResponseBody
@@ -77,8 +77,16 @@ public class SchsController {
 
 	// 단건 조회 API
 	@GetMapping("/sch/schInfo")
-	public ResponseEntity<Map<String, Object>> getEventById(@RequestParam Integer schNo) {
+	public ResponseEntity<Map<String, Object>> getEventById(@RequestParam Integer schNo, HttpSession session) {
+		Integer empNo = (Integer) session.getAttribute("userEmpNo");
 		Map<String, Object> result = new HashMap<>();
+
+		if (empNo == null) {
+			result.put("success", false);
+			result.put("message", "로그인이 필요합니다.");
+			return ResponseEntity.ok(result);
+		}
+
 		try {
 			// SchsVO 객체에 schNo 설정
 			SchsVO schsVO = new SchsVO();
@@ -192,17 +200,16 @@ public class SchsController {
 //		return schsService.soloCal(empNo);
 //	}
 	// 공유조회
-		@GetMapping("/cal/calAllList")
-		@ResponseBody
-		public List<SchsVO> getAllCalendars(HttpSession session) {
-			// 세션에서 userId 값을 가져옴
-			Integer empNo = (Integer) session.getAttribute("userEmpNo");
+	@GetMapping("/cal/calAllList")
+	@ResponseBody
+	public List<SchsVO> getAllCalendars(HttpSession session) {
+		// 세션에서 userId 값을 가져옴
+		Integer empNo = (Integer) session.getAttribute("userEmpNo");
 
-			// userId를 기준으로 팀 캘린더 목록을 가져옴 (예: schsService에서 userId 사용)
-			return schsService.allCal(empNo);
-		}
-		
-		
+		// userId를 기준으로 팀 캘린더 목록을 가져옴 (예: schsService에서 userId 사용)
+		return schsService.allCal(empNo);
+	}
+
 	// 공유조회
 	@GetMapping("/cal/calTeamList")
 	@ResponseBody
@@ -214,15 +221,36 @@ public class SchsController {
 		return schsService.teamCal(empNo);
 	}
 
-	// 등록
 	@PostMapping("/cal/calInsert")
 	@ResponseBody
-	public Map<String, Object> insertCals(@RequestBody SchsVO schsVO) {
+	public Map<String, Object> insertCals(@RequestBody Map<String, Object> requestData, HttpSession session) {
 		Map<String, Object> result = new HashMap<>();
 		try {
-			schsService.insertCals(schsVO); // Service를 통해 캘린더 등록
+			// 세션에서 현재 사용자의 empNo 가져오기
+			Integer empNo = (Integer) session.getAttribute("userEmpNo");
+
+			// 캘린더 정보 설정
+			SchsVO schsVO = new SchsVO();
+			schsVO.setName((String) requestData.get("name"));
+			schsVO.setColor((String) requestData.get("color"));
+			schsVO.setCalType((String) requestData.get("type"));
+			schsVO.setIsDelete((String) requestData.get("isDelete"));
+
+			// 캘린더 정보 저장
+			int calNo = schsService.insertCals(schsVO);
+
+			// 참여자 목록 추출 및 본인 empNo 추가
+			List<Integer> members = ((List<?>) requestData.get("members")).stream()
+					.map(e -> Integer.parseInt(e.toString())).collect(Collectors.toList());
+			members.add(empNo); // 본인 사원 번호 추가
+
+			// 참여자 정보 저장
+			if (calNo > 0 && !members.isEmpty()) {
+				schsService.insertCalShares(calNo, members);
+			}
+
 			result.put("success", true);
-			result.put("calsVO", schsVO); // 등록된 캘린더 번호 반환
+			result.put("calNo", calNo);
 		} catch (Exception e) {
 			result.put("success", false);
 			result.put("message", "캘린더 등록에 실패했습니다.");
@@ -295,6 +323,23 @@ public class SchsController {
 		return result > 0 ? "캘린더가 완전히 삭제되었습니다." : "캘린더 삭제에 실패했습니다.";
 	}
 
-	// 테스트
+	@GetMapping("/cal/deptWithEmp")
+	@ResponseBody
+	public List<Map<String, Object>> getDeptWithEmployees() {
+		return schsService.getDeptWithEmp();
+	}
+
+//	@GetMapping("/cal/deptList")
+//	@ResponseBody
+//	public List<SchsVO> getDeptList() {
+//	    return schsService.getDeptList();
+//	}
+//
+//	// 부서별 사원 목록 조회 (캘린더 번호 기반)
+//    @GetMapping("/cal/deptEmp")
+//    @ResponseBody
+//    public List<Map<String, Object>> getDeptEmployees(@RequestParam int deptNo) {
+//        return schsService.getDeptEmp(deptNo);
+//    }
 
 }

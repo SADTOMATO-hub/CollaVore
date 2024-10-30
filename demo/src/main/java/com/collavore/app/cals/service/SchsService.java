@@ -44,10 +44,17 @@ public interface SchsService {
 
 	// 공유 캘린더 조회
 	public List<SchsVO> teamCal(int empNo); // 공유 일정 조회
+	
+	
 
 	// 캘린더 등록
 	public int insertCals(SchsVO schsVO);
-
+	// 공유 캘린더 참여자 등록
+	public int insertCalShares(int calNo, List<Integer> members); // 참여자 정보를 저장하고 성공한 레코드 수를 반환
+	
+	
+	
+	
 	// 캘린더 수정
 	public Map<String, Object> updateCals(SchsVO schsVO);
 
@@ -61,5 +68,16 @@ public interface SchsService {
 	public int calRestore(int schsVO); // 캘린더 복원
 
 	public int permanentlyDel(int schsVO); // 캘린더 완전 삭제
+	
+	
+	
+	
+	List<Map<String, Object>> getDeptWithEmp();
+
+
+
+//	public List<SchsVO> getDeptList();
+//	//캘린더 추가 수정시 부서 사원번호 리스트
+//	public  List<Map<String, Object>> getDeptEmp(int deptNo);
 
 }
