@@ -190,20 +190,19 @@
 	<select id="readApproval" parameterType="Integer"
 		resultType="ApprovalsVO">
 		SELECT
-		a.title
-		,a.content
-		,a.reg_date
-		,a.comp_date
-		,a.emp_no as "drafterEmpNo"
-		,e.name as "drafterName"
-		,a.status as "approverStatus"
+				a.title
+				,a.content
+				,a.reg_date
+				,a.comp_date
+				,a.emp_no as "drafterEmpNo"
+				,e.name as "drafterName"
+				,a.status as "approverStatus"
 		FROM approvals a LEFT JOIN employees e
 		ON a.emp_no = e.emp_no
 		WHERE
 		a.ea_no = #{eaNo}
 	</select>
 	<!-- -->
-
 
 	<!-- 결재자 상세 조회 -->
 	<select id="readApprovers" parameterType="Integer"
@@ -239,8 +238,7 @@
 	<!-- 전자결재 삭제 -->
 	<select id="deleteApproval" statementType="CALLABLE"
 		resultType="Integer">
-		{call DELETE_EANO(#{eaNo}, #{resultCode, mode=OUT,
-		jdbcType=INTEGER})}
+		{call DELETE_EANO(#{eaNo}, #{resultCode, mode=OUT, jdbcType=INTEGER})}
 	</select>
 	<!-- -->
 
