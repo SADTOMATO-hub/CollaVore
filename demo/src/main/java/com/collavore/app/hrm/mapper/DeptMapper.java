@@ -8,6 +8,9 @@ import com.collavore.app.hrm.service.HrmVO;
 
 public interface DeptMapper {
 
+	// 사원-부서리스트
+    List<HrmVO> getOrganizationStructure(@Param("deptNo") Integer deptNo, @Param("isMgr") String isMgr);
+
 	// 부서 정보 삽입
 	public int insertDept(HrmVO hrmVO);
 
@@ -28,4 +31,10 @@ public interface DeptMapper {
 
 	// 부서장 업데이트
 	int updateManager(@Param("deptNo") Integer deptNo, @Param("empNo") Integer empNo);
+	
+	// 부서정보관련
+	// 부서의 부서장 조회
+	public List<HrmVO> getMgrList();
+	// 부서의 부서원 조회
+	public List<HrmVO> getMemberList(Integer deptNo);
 }

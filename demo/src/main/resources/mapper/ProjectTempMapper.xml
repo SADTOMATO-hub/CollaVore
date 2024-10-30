@@ -180,4 +180,29 @@
     FROM projdwrktemps
     WHERE pdwt_no = #{pdwtNo}
 </select>
+
+
+<select id="projectwrktemplistInfo" resultType="ProjectWorkTempVO">
+    SELECT pwt_no,
+           name,
+           content,
+           proj_temp_no,
+           job_no,
+           reg_date
+
+    FROM projwrktemps
+    WHERE proj_temp_no = #{projTempNo}
+</select>
+
+<select id="projectDwrktemplistInfo" resultType="ProjectDWorkTempVO">
+    SELECT pdwt_no,
+           name,
+           content,
+           pwt_no,
+           importance,
+           reg_date
+
+    FROM projdwrktemps
+    WHERE pwt_no = #{pwtNo}
+</select>
 </mapper>

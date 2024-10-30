@@ -43,8 +43,19 @@ public class SecurityController {
         if (user == null || !userDetailsService.authenticate(password, user.getPassword())) {
             return "redirect:/login?error=true";
         }
+        //이메일
         session.setAttribute("userEmail", user.getEmail());
+        //사원번호
         session.setAttribute("userEmpNo", user.getEmpNo());
+        //부서번호
+        session.setAttribute("userDeptNo", user.getDeptNo());
         return "redirect:/myPage";
     }
+
+	// 로그아웃 처리
+	@GetMapping("/logout")
+	public String logout(HttpSession session) {
+		session.invalidate(); // 세션 무효화
+		return "redirect:/login"; // 로그아웃 후 로그인 페이지로 리다이렉트
+	}
 }

@@ -3,38 +3,42 @@
 <mapper namespace="com.collavore.app.board.mapper.BodsMapper">
 
 	<select id="totalBoardCnt" resultType="int">
-		SELECT COUNT(post_no) AS totalCnt
+		SELECT COUNT(post_no) AS
+		totalCnt
 		FROM bods
 		WHERE board_no = #{boardNo}
 	</select>
 
-	<!-- 전체조회 boarㅇNo에 따라서 다른 게시판으로 이동  -->
-	<select id="selectBoardAll" resultType="BodsVO"> 
+	<!-- 전체조회 boarㅇNo에 따라서 다른 게시판으로 이동 -->
+	<select id="selectBoardAll" resultType="BodsVO">
 		SELECT post_no
 		, title
-		, board_no
+		,board_no
 		,(select name
-            from employees
-           where emp_no = writer) writerName
-		, content
+		from employees
+		where emp_no = writer) writerName
+		,content
 		, reg_date
 		, mod_date
 		FROM bods
 		where board_no = #{boardNo}
-		ORDER BY post_no
+		ORDER
+		BY post_no
 	</select>
 
 	<!-- 단건조회 -->
 	<select id="selectBodsInfo" resultType="BodsVO">
 		SELECT post_no
 		, title
-		, content
+		,
+		content
 		, board_no
 		, writer
 		, reg_date
 		, mod_date
 		FROM bods
-		WHERE post_no = #{postNo}
+		WHERE post_no =
+		#{postNo}
 	</select>
 
 	<!-- 게시글 등록 -->
@@ -70,21 +74,24 @@
 	<update id="updateBodsInfo" parameterType="BodsVO">
 		UPDATE bods
 		SET
-		title = #{title}
+		title =
+		#{title}
 		, content = #{content}
 		, board_no = #{boardNo}
-		, writer = #{writer}
+		, writer =
+		#{writer}
 		, mod_date = sysdate
 		WHERE post_no = #{postNo}
 	</update>
-	
+
 	<!-- 삭제 -->
 	<delete id="deleteBodsInfo" parameterType="BodsVO">
-		DELETE FROM bods  
-		WHERE post_no = #{postNo}
-	</delete> 
-	
-	
+		DELETE FROM bods
+		WHERE
+		post_no = #{postNo}
+	</delete>
+
+
 	<!-- 댓글 등록 -->
 	<insert id="insertBodsComtsInfo" parameterType="BodsComtsVO">
 		<selectKey keyProperty="cmtNo" resultType="Integer"
@@ -109,58 +116,89 @@
 		, #{writer}
 		)
 	</insert>
-	
+
 	<!-- 댓글 전체 조회 -->
-	<select id="selectBodsComtsAll" resultType="BodsComtsVO"> 
-	SELECT cmt_no
+	<select id="selectBodsComtsAll" resultType="BodsComtsVO">
+		SELECT cmt_no
 		,(select name
-            from employees
-           where emp_no = writer) writer
+		from employees
+		where emp_no = writer) writer
 		, content
-		, reg_date
+		,
+		reg_date
 		, post_no
 		FROM bodscomts
 		where post_no = #{postNo}
-		ORDER BY cmt_no DESC
+		ORDER BY
+		cmt_no DESC
 	</select>
-	
+
 	<!-- 댓글 수정 -->
 	<update id="updateBodsComtsInfo" parameterType="BodsComtsVO">
 		UPDATE bodscomts
-		SET   content = #{content}
+		SET content = #{content}
 		WHERE cmt_no = #{cmtNo}
 	</update>
-	
+
 	<!-- 댓글 삭제 -->
 	<delete id="delectBodsComtsInfo" parameterType="BodsComtsVO">
-		DELETE FROM bodscomts  
+		DELETE FROM
+		bodscomts
 		WHERE cmt_no = #{cmtNo}
-	</delete> 
-	
+	</delete>
+
 	<!-- 댓글 상세조회 -->
-	<select id="selectBodsComtsInfo" resultType="BodsComtsVO"> 
+	<select id="selectBodsComtsInfo" resultType="BodsComtsVO">
 		SELECT *
-		FROM bodscomts
+		FROM
+		bodscomts
 		where cmt_no = #{cmtNo}
 	</select>
-	
-	
+
+
 	<!-- 게시판 전체 조회 boardNo=1 이면 공지사항 2면 자유게시판 들어갈수록 제목은 마음대로 -->
-	<!-- 전체조회 boarㅇNo에 따라서 다른 게시판으로 이동  -->
-	<select id="selectBodsCfig" resultType="BodsVO"> 
-		SELECT post_no
-		, title
-		, board_no
-		,(select name
-            from employees
-           where emp_no = writer) writerName
-		, content
-		, reg_date
-		, mod_date
-		FROM bods
-		where board_no = #{boardNo}
-		ORDER BY post_no
+	<!-- 전체조회 boarㅇNo에 따라서 다른 게시판으로 이동 -->
+	<select id="selectgbodsCfig" resultType="BodsCfigVO">
+		select board_no
+		,name
+		,subject
+		,reg_date
+		from bodscfig
+		order by board_no
 	</select>
 	
+	<!-- 게시판 등록  -->
+	<insert id="insertBodsCfigInfo" parameterType="BodsCfigVO">
+		<selectKey keyProperty="boardNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(boardNo),0) + 1
+			FROM bodscfig
+		</selectKey>
+		INSERT INTO bodscfig
+		(
+		board_no
+		, name
+		, subject
+		, read_auth
+		, writer_auth
+		, comment_auth
+		, reg_date
+		)
+		VALUES
+		(
+		#{boardNo}
+		, #{name}
+		, #{subject}
+		, #{readAuth}
+		, #{writeAuth}
+		, #{commentAuth}
+		, sysdate
+		)
+	</insert>
 
+	<select id="selectBoardName" resultType="String">
+		SELECT name
+		FROM bodscfig
+		WHERE board_no = #{boardNo}
+	</select>
 </mapper>

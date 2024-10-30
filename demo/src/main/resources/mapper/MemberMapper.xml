@@ -259,8 +259,7 @@
 		, tel
 		, email
 		, address
-		,
-		work_type
+		, work_type
 		, info
 		, join_date
 		, leave_date
@@ -315,8 +314,6 @@
 		WHERE emp_no LIKE
 		CONCAT(#{today}, '%')
 	</select>
-
-
 
 
 	<!-- 모든 사원 목록 조회 (selectAllMembers) -->

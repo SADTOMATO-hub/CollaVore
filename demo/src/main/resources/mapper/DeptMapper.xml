@@ -15,38 +15,46 @@
 	</insert>
 
 	<!-- 부서 수정 -->
-	<update id="updateDept" parameterType="com.collavore.app.hrm.service.HrmVO">
+	<update id="updateDept"
+		parameterType="com.collavore.app.hrm.service.HrmVO">
 		UPDATE DEPARTMENTS
 		SET name = #{deptName}
+		WHERE dept_no =
+		#{deptNo}
+	</update>
+
+	<!-- 부서별 사원 목록 조회 -->
+	<select id="selectEmployeesByDept" parameterType="Integer"
+		resultType="com.collavore.app.hrm.service.HrmVO">
+		SELECT e.emp_no AS empNo,
+		e.name AS empName,
+		(SELECT name
+		FROM jobs WHERE job_no = e.job_no) AS jobName,
+		(SELECT name FROM
+		positions WHERE posi_no = e.posi_no) AS posiName
+		FROM employees e
+		WHERE
+		e.dept_no = #{deptNo}
+	</select>
+
+	<!-- 부서장 업데이트 -->
+	<update id="updateManager" parameterType="map">
+		UPDATE departments
+		SET
+		mgr_no = #{empNo}
 		WHERE dept_no = #{deptNo}
 	</update>
 
-<!-- 부서별 사원 목록 조회 -->
-    <select id="selectEmployeesByDept" parameterType="Integer" resultType="com.collavore.app.hrm.service.HrmVO">
-        SELECT e.emp_no AS empNo,
-               e.name AS empName,
-               (SELECT name FROM jobs WHERE job_no = e.job_no) AS jobName,
-               (SELECT name FROM positions WHERE posi_no = e.posi_no) AS posiName
-        FROM employees e
-        WHERE e.dept_no = #{deptNo}
-    </select>
-
-    <!-- 부서장 업데이트 -->
-    <update id="updateManager" parameterType="map">
-        UPDATE departments
-        SET mgr_no = #{empNo}
-        WHERE dept_no = #{deptNo}
-    </update>
-    
 	<!-- 부서 삭제 -->
 	<delete id="deleteDept" parameterType="Integer">
 		DELETE FROM DEPARTMENTS
 		WHERE dept_no = #{deptNo}
 	</delete>
 	<!-- DeptMapper.xml -->
-<select id="countEmployeesInDept" parameterType="int" resultType="int">
-    SELECT COUNT(*) FROM EMPLOYEES WHERE dept_no = #{deptNo}
-</select>
+	<select id="countEmployeesInDept" parameterType="int"
+		resultType="int">
+		SELECT COUNT(*) FROM EMPLOYEES WHERE dept_no = #{deptNo}
+	</select>
 
 	<!-- 부서 전체목록 -->
 	<select id="selectDeptList"
@@ -80,4 +88,31 @@
 		<result property="level" column="LEVEL" /> <!-- LEVEL 필드를 매핑 -->
 	</resultMap>
 
+	<!-- 부서장 및 부서조회 -->
+	<select id="getMgrList" resultType="HrmVO">
+		SELECT d.dept_no,
+		d.name AS deptName,
+		e.name AS mgrName,
+		e.emp_no AS mgrNo,
+		e.img,
+		(SELECT name FROM positions WHERE posi_no = e.posi_no) AS posiName,
+		d.parent_dept_no,
+		LEVEL
+		FROM departments d
+		LEFT JOIN employees e ON d.MGR_NO = e.EMP_NO
+		START WITH d.parent_dept_no = 0
+		CONNECT BY PRIOR d.dept_no = d.parent_dept_no
+		ORDER SIBLINGS BY d.dept_no
+	</select>
+
+	<select id="getMemberList" resultType="HrmVO">
+		SELECT e.name AS empName
+		, (SELECT name FROM positions WHERE posi_no = e.posi_no) AS posiName
+		, e.img
+		FROM employees e
+		WHERE e.DEPT_NO = #{deptNo}
+		<![CDATA[
+        	AND e.emp_no <> (SELECT mgr_no FROM departments WHERE dept_no = #{deptNo})
+		]]>
+	</select>
 </mapper>

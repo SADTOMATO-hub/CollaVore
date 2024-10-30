@@ -2,25 +2,85 @@
 	th:fragment="sidebar">
 
 	<ul id="sidebarnav" class="pt-4">
-		<li class="sidebar-item"><a
-			class="sidebar-link has-arrow waves-effect waves-dark"
-			href="javascript:void(0)" aria-expanded="false"> <i
-				class="mdi mdi-receipt"></i>
-				<span class="hide-menu"> 상위메뉴 </span></a>
+		<li class="sidebar-item">
+			<a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"> 
+				<i class="mdi mdi-receipt"></i>
+				<span class="hide-menu">마이페이지</span>
+			</a>
 			<ul aria-expanded="false" class="collapse first-level">
-				<li class="sidebar-item"><a href="form-basic.html"
-					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
-						class="hide-menu"> 하위메뉴1 </span></a></li>
-
-				<li class="sidebar-item"><a href="form-wizard.html"
-					class="sidebar-link"> <i class="mdi mdi-note-plus"></i> <span
-						class="hide-menu"> 하위메뉴2 </span></a></li>
-
-			</ul></li>
-		<li class="sidebar-item"><a
-			class="sidebar-link waves-effect waves-dark sidebar-link"
-			href="pages-buttons.html" aria-expanded="false"> <i
-				class="mdi mdi-relative-scale"></i> <span class="hide-menu">
-					단일메뉴</span></a></li>
+				<li class="sidebar-item">
+					<a th:href="@{/memberInfo}" class="sidebar-link"> 
+						<i class="mdi mdi-note-outline"></i> 
+						<span class="hide-menu">나의 기본 정보</span>
+					</a>
+				</li>
+				<li class="sidebar-item">
+					<a th:href="@{/deptMember}" class="sidebar-link"> 
+						<i class="mdi mdi-note-plus"></i> 
+						<span class="hide-menu">부서 정보</span>
+					</a>
+				</li>
+			</ul>
+		</li>
+		<li class="sidebar-item">
+			<a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"> 
+				<i class="mdi mdi-receipt"></i>
+				<span class="hide-menu">프로젝트 관리</span>
+			</a>
+			<ul aria-expanded="false" class="collapse first-level">
+				<li class="sidebar-item">
+					<a th:href="@{/project/projectlist}" class="sidebar-link"> 
+						<i class="mdi mdi-note-outline"></i> 
+						<span class="hide-menu">프로젝트현황</span>
+					</a>
+				</li>
+				<li class="sidebar-item">
+					<a th:href="@{/project/projectworklist}" class="sidebar-link"> 
+						<i class="mdi mdi-note-plus"></i> 
+						<span class="hide-menu">프로젝트 업무 관리</span>
+					</a>
+				</li>
+			</ul>
+		</li>
+		<li class="sidebar-item">
+			<a class="sidebar-link waves-effect waves-dark sidebar-link" th:href="@{/cal/schList}" aria-expanded="false"> 
+				<i class="mdi mdi-relative-scale"></i> 
+				<span class="hide-menu">일정관리</span>
+			</a>
+		</li>
+		<li class="sidebar-item">
+			<a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"> 
+				<i class="mdi mdi-receipt"></i>
+				<span class="hide-menu">전자결재관리</span>
+			</a>
+			<ul aria-expanded="false" class="collapse first-level">
+				<li class="sidebar-item">
+					<a th:href="@{/approvals/onProcess}" class="sidebar-link"> 
+						<i class="mdi mdi-note-outline"></i> 
+						<span class="hide-menu">진행중인결재</span>
+					</a>
+				</li>
+				<li class="sidebar-item">
+					<a th:href="@{/approvals/approvalList}" class="sidebar-link"> 
+						<i class="mdi mdi-note-plus"></i> 
+						<span class="hide-menu">문서함</span>
+					</a>
+				</li>
+			</ul>
+		</li>
+		<li class="sidebar-item">
+			<a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"> 
+				<i class="mdi mdi-receipt"></i>
+				<span class="hide-menu">게시판</span>
+			</a>
+			<ul aria-expanded="false" class="collapse first-level">
+			    <li th:each="board : ${boards}" class="sidebar-item">
+			        <a th:href="@{|/board/bodsList?board=${board.boardNo}|}" class="sidebar-link">
+			            <i class="mdi mdi-note-outline"></i>
+			            <span class="hide-menu" th:text="${board.name}"></span>
+			        </a>
+			    </li>
+			</ul>
+		</li>
 	</ul>
 </th:block>

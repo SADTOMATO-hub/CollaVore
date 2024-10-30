@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper
-	namespace="com.collavore.app.project.mapper.ProjectMapper">
+<mapper namespace="com.collavore.app.project.mapper.ProjectMapper">
 	<!-- 전체조회 -->
 	<select id="selectProjectAll" resultType="ProjectVO">
 		SELECT p.proj_no
@@ -169,13 +168,14 @@
 		, null as parent_no
 		, name
 		, 'proj' AS "table"
+        , null as "jobNo"
 		FROM proj
 		UNION
 		SELECT 'W' || pw_no
 		, 'P' || proj_no
 		, name
 		, 'projwrks' AS "table"
-
+        ,job_no as "jobNo"
 		FROM
 		projwrks
 		UNION
@@ -185,7 +185,7 @@
 		TO_CHAR(parent_pdw_no) END
 		, name
 		, 'projdwrks' AS "table"
-
+        ,null as "jobNo"
 		FROM
 		projdwrks
 		) tree
@@ -239,9 +239,11 @@
 		,reg_date
 		,is_status
 		,start_date
-		,req_date
 		,comp_date
 		,mgr_no
+		,importance
+		,commit_id
+		,pw_no
 		<!-- ,sort -->
 		)
 		VALUES(
@@ -252,9 +254,11 @@
 		,sysdate
 		,#{isStatus}
 		,#{startDate}
-		,#{reqDate}
 		,#{compDate}
 		,#{mgrNo}
+		,#{importance}
+		,#{commitId}
+		,#{pwNo}
 		<!-- ,#{sort} -->
 		)
 	</insert>
@@ -298,7 +302,7 @@
 				p.importance,
 				p.mgr_no,
 		        w.job_no
-		FROM projdwrks p JOIN projwrks w ON p.pdw_no = w.pw_no
+		FROM projdwrks p JOIN projwrks w ON p.pw_no = w.pw_no
 		WHERE pdw_no = #{pdwNo}
 	</select>
 
@@ -431,4 +435,23 @@
 	        , name
 	 	FROM employees
 	</select>
+	
+	<select id="deteilwrkerAll" resultType="ProjectVO">
+		SELECT emp_no
+        		,name
+        
+		FROM employees
+		WHERE job_no = #{jobNo}
+	</select>
+	
+	<!-- 프로젝트 상세 업무 진행상황 수정 -->
+	<update id="updateStatusProject" parameterType="ProjectVO">
+		UPDATE projdwrks
+
+		SET is_status = #{isStatus}
+
+		WHERE pdw_no = #{pdwNo}
+	</update>
+	
+	
 </mapper>

@@ -141,20 +141,24 @@ public class BodsServiceImpl implements BodsService {
 		return bodsMapper.selectBodsComtsInfo(bodsComtsVO);
 	}
 
-	@Override // 게시판 전체조회 
-	public List<BodsCfigVO> bodsCfig(BodsCfigVO bodsCfigVO) {
+	@Override //전체조회(게시판전체조회)
+	public List<BodsCfigVO> bodsListAll(BodsCfigVO bodsCfigVO) {
 		return bodsMapper.selectgbodsCfig(bodsCfigVO);
 	}
 
+	@Override //게시판 등록 boardNo로 구분 1번은 공지사항 2번 자유게시판 3번 관리자 마음대로 설정
+	public int insertBodsCfig(BodsCfigVO bodsCfigVO) {
+		int result = bodsMapper.insertBodsCfigInfo(bodsCfigVO);
+		return result == 1 ? bodsCfigVO.getBoardNo() : -1;
+	}
 
-		
 	
-	/*@Override // 상세조회
-	public BodsVO bodsInfo(BodsVO bodsVO) {
-		return bodsMapper.selectBodsInfo(bodsVO);
-	}*/
-
-
-
+	// 게시판이름 조회
+	@Override
+	public String boardNameSearch(int boardNo) {
+		return bodsMapper.selectBoardName(boardNo);
+	}
+	
+	
 	
 }
