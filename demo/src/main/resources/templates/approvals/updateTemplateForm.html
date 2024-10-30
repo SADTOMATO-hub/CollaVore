@@ -4,90 +4,233 @@
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
 
-	<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js"
-		charset="utf-8"></script>
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-md-15">
-				<div class="card">
-					<form action="updateTemp" class="form-horizontal" method="post"
-						name="updateForm" th:object="${apprInfo}">
-						<!-- 세큐리티 cors를 방지하는 기능  -->
+	<style>
+/* 페이지 기본 스타일 */
+.body-page-wrapper {
+	padding: 20px;
+	background-color: #f9f9f9;
+	align-items: center;
+}
+
+/* Breadcrumb 스타일 */
+.breadcrumb {
+	background-color: #ffffff;
+	padding: 10px 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	height: 70px;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	color: #333;
+	position: relative;
+}
+
+.breadcrumb h4 {
+	margin: 0;
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+}
+
+.breadcrumb-left {
+	display: flex; /* flexbox로 요소 정렬 */
+	flex-direction: column; /* 세로로 배치 */
+	justify-content: center; /* 세로 중앙 정렬 */
+}
+
+.breadcrumb-left h4 {
+	font-size: 22px;
+	font-weight: bold;
+	margin: 0; /* 기본 마진 제거 */
+	margin-top: 2px;
+}
+
+.breadcrumb-left p {
+	font-size: 14px;
+	color: #666;
+	margin-top: 2px;
+	margin-bottom: 0;
+}
+
+.breadcrumb-right span {
+	font-size: 14px;
+	color: #999;
+	white-space: nowrap;
+	position: relative;
+	top: -12px;
+}
+
+.card_memberInsert {
+	background-color: #ffffff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+}
+
+.insert-btn {
+	display: flex;
+	justify-content: flex-end; /* 오른쪽으로 정렬 */
+	margin-right: 20px; /* 필요에 따라 여백 조정 */
+}
+
+button {
+	padding: 5px 10px;
+	margin-left: 5px;
+	background-color: #9b8df6;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: background-color 0.3s ease;
+}
+
+/* 마우스 호버 시 효과 */
+button:hover {
+	background-color: #5a4bcf;
+}
+
+/* 추가적인 버튼 스타일링 */
+button:active {
+	background-color: #4839a9;
+}
+
+/* 에러 메시지 스타일 */
+.error {
+	border-color: red;
+}
+
+/* 부모 요소에 relative를 설정 */
+.form-group {
+	position: relative;
+}
+
+/* 아이콘을 입력 필드 옆으로 배치 */
+.error-icon {
+	color: red;
+	font-size: 24px;
+	display: inline-block;
+	position: absolute; /* 절대 위치 */
+	top: 50%; /* 입력 필드의 중간에 위치하도록 */
+	transform: translateY(-50%); /* 수직으로 중앙 정렬 */
+	right: -20px; /* 입력 필드의 오른쪽 끝에서 약간 떨어지게 */
+	z-index: 1; /* 겹치지 않도록 설정 */
+}
+
+.error-message {
+	color: red;
+	font-size: 12px;
+	margin-top: 5px;
+}
+
+/* 필수 입력값 누락 시 아이콘 */
+.required-field {
+	border: 2px solid red;
+}
+
+.field-icon {
+	color: red;
+	margin-left: 5px;
+}
+/*
+#content + iframe {
+	height : 500px !important;
+}
+*/
+</style>
+	<div class="body-page-wrapper">
+		<div class="purple-background-container">
+			<div class="breadcrumb">
+				<div class="breadcrumb-left">
+					<h4>전자결재 템플릿 수정</h4>
+					<p>전자결재 템플릿 수정 페이지 입니다.</p>
+				</div>
+				<div class="breadcrumb-right">
+					<span>템플릿 관리 > 전자결재 템플릿 수정</span>
+				</div>
+			</div>
+			<div class="card_memberInsert">
+				<div class="col-md-9">
+					<form th:action="@{/board/bodsUpdate}" method="post"
+						class="form-horizontal" enctype="multipart/form-data"
+						th:object="${apprInfo}" name="updateForm">
 						<input type="hidden" name="${_csrf.parameterName}"
 							value="${_csrf.token}" /> <input type="hidden"
 							th:field="*{eatNo}">
-						<div class="card-body">
-							<h4 class="card-title">템플릿 수정 페이지</h4>
-							<hr>
-							<div class="col-sm-5 form-group row">
-								<label for="title" class="control-label col-form-label">템플릿
-									제목</label>
-								<div class="col-sm-10">
-									<input type="text" class="form-control" id="title"
-										th:field="*{title}">
-								</div>
+						<div class="form-group row">
+							<label for="title"
+								class="col-sm-3 text-end control-label col-form-label">제목</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control" id="title" name="title"
+									th:field="*{title}" />
 							</div>
-							<div class="form-group row d-flex justify-content-center">
-								<div>
-									<textarea id="content" rows="2" style="resize: none;"
-										spellcheck="false" th:field="*{content}" readonly></textarea>
-								</div>
+						</div>
+						<div class="form-group row">
+							<label for="content"
+								class="col-sm-3 text-end control-label col-form-label">내용</label>
+							<div class="col-sm-9">
+								<textarea class="form-control" id="content" name="content"
+									th:field="*{content}"></textarea>
 							</div>
-							<div class="border-top">
-								<div class="card-body">
-									<button type="button" id="updateButton" class="btn btn-primary">수정
-										확인</button>
-								</div>
-							</div>
+						</div>
+						<div class="insert-btn">
+							<button type="button" id="updateButton" class="btn btn-primary">수정
+								확인</button>
 						</div>
 					</form>
 				</div>
 			</div>
 		</div>
 	</div>
-	<script>
-		// 네이버 스마트 에디터 2.0 적용
-		let oEditors = [];
-
-		function smartEditor() {
-			console.log("Naver SmartEditor");
-			nhn.husky.EZCreator.createInIFrame({
-				oAppRef : oEditors,
-				elPlaceHolder : "content",
-				sSkinURI : "/smarteditor/SmartEditor2Skin.html",
-				fCreator : "createSEditor2"
-			});
-		}
-
-		$(document).ready(function() {
-			smartEditor();
-
-			// UpdateButton 클릭 이벤트 핸들러 등록
-			$("#updateButton").on("click", function(event) {
-				submitPost(event);
-			});
-		});
-
-		function submitPost(event) {
-			event.preventDefault(); // 폼 제출 방지
-			oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
-			let title = document.getElementById("title").value;
-			let content = document.getElementById("content").value;
-
-			if (title === '' || title == null) {
-				alert("제목을 입력해주세요.");
-				document.getElementById("title").focus();
-			} else if (content == "" || content == null || content == '&nbsp;'
-					|| content == '<br>' || content == '<br/>'
-					|| content == '<p>&nbsp;</p>' || content == '<p></p>') {
-				alert("템플릿을 정해주세요.");
-				oEditors.getById["content"].exec("FOCUS"); //포커싱
-				return;
-			} else {
-				console.log(content);
-				// 검증 후 폼을 수동으로 제출
-				document.forms["updateForm"].submit(); // 또는 $(this).closest('form').submit(); 사용
-			}
-		}
-	</script>
 </div>
+<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js"
+	charset="utf-8"></script>
+<script>
+	// 네이버 스마트 에디터 2.0 적용
+	let oEditors = [];
+
+	function smartEditor() {
+		console.log("Naver SmartEditor");
+		nhn.husky.EZCreator.createInIFrame({
+			oAppRef : oEditors,
+			elPlaceHolder : "content",
+			sSkinURI : "/smarteditor/SmartEditor2Skin.html",
+			fCreator : "createSEditor2"
+		});
+	}
+
+	$(document).ready(function() {
+		smartEditor();
+
+		// UpdateButton 클릭 이벤트 핸들러 등록
+		$("#updateButton").on("click", function(event) {
+			submitPost(event);
+		});
+	});
+
+	function submitPost(event) {
+		event.preventDefault(); // 폼 제출 방지
+		oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
+		let title = document.getElementById("title").value;
+		let content = document.getElementById("content").value;
+
+		if (title === '' || title == null) {
+			alert("제목을 입력해주세요.");
+			document.getElementById("title").focus();
+		} else if (content == "" || content == null || content == '&nbsp;'
+				|| content == '<br>' || content == '<br/>'
+				|| content == '<p>&nbsp;</p>' || content == '<p></p>') {
+			alert("템플릿을 정해주세요.");
+			oEditors.getById["content"].exec("FOCUS"); //포커싱
+			return;
+		} else {
+			console.log(content);
+			// 검증 후 폼을 수동으로 제출
+			document.forms["updateForm"].submit(); // 또는 $(this).closest('form').submit(); 사용
+		}
+	}
+</script>

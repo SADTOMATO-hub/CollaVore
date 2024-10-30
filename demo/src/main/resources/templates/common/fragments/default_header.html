@@ -52,10 +52,6 @@
 							<span class="d-none d-md-block">프로젝트관리 <i class="fa fa-angle-down"></i></span>
 						</a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown_proj">
-							<li><a class="dropdown-item" th:href="@{/project/projecttemplist}">프로젝트 템플릿 관리</a></li>
-							<li><a class="dropdown-item" th:href="@{/project/projectwrktemplist}">업무 템플릿 관리</a></li>
-							<li><a class="dropdown-item" th:href="@{/project/projectDwrktemplist}">상세 업무 템플릿 관리</a></li>
-							<li><hr class="dropdown-divider" /></li>
 							<li><a class="dropdown-item" th:href="@{/project/projectlist}">프로젝트현황</a></li>
 							<li><a class="dropdown-item" th:href="@{/project/projectworklist}">프로젝트 업무 관리</a></li>
 							<li><hr class="dropdown-divider" /></li>
@@ -73,8 +69,8 @@
 							<span class="d-none d-md-block">전자결재관리 <i class="fa fa-angle-down"></i></span>
 						</a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown_appr">
-							<li><a class="dropdown-item" href="#">진행중인 전자결재</a></li>
-							<li><a class="dropdown-item" href="#">문서함</a></li>
+							<li><a class="dropdown-item" th:href="@{/approvals/myApprList/a1}">진행중인 전자결재</a></li>
+							<li><a class="dropdown-item" th:href="@{/approvals/approveList/all}">문서함</a></li>
 							<li><hr class="dropdown-divider" /></li>
 							<li><a class="dropdown-item" th:href="@{/approvals/tempList}">전자결재 템플릿 관리</a></li>
 						</ul>
