@@ -122,10 +122,9 @@ public class ApprovalsController {
 	}
 
 	//진행 중인 전자결재 목록
-	@GetMapping("/myApprList/{status}")
+	@GetMapping("/myApprList/")
 	public String myApprList(ApprovalsVO apprVO
 													,Model model
-													,@PathVariable("status") String approvalStatus
 												  ,HttpSession session) {
 		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
 		apprVO.setUserEmpNo(userEmpNo);
@@ -134,7 +133,7 @@ public class ApprovalsController {
 		return "approvals/onProcess";
 	} 
 	
-	//결재 해야할 전결 목록 조회
+	//문서함
 	@GetMapping("/approveList/{status}")
 	public String approveList(ApprovalsVO apprVO
 													,Model model

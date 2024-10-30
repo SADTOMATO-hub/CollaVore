@@ -1,6 +1,13 @@
 <input type="hidden" id="userId" value="">
 <th:block xmlns:th="https://www.thymeleaf.org/" th:fragment="sidebar">
 	<ul id="sidebarnav" class="pt-4">
+		<!-- -------------------------------기안하기----------------------------------------------- -->
+		<li class="sidebar-item"><a
+			class="sidebar-link waves-effect waves-dark"
+			th:href="@{/approvals/createApprForm}" aria-expanded="false"
+			id="createBtn"> <i class="mdi mdi-calendar-plus"></i> <span
+				class="hide-menu">기안하기</span>
+		</a></li>
 		<!-- ------------------------------------ 진행 중인 전자결재 ------------------------------------- -->
 		<li class="sidebar-item"><a
 			class="sidebar-link has-arrow waves-effect waves-dark"

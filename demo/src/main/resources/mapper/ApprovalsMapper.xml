@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.collavore.app.approvals.mapper.ApprovalsMapper">
+<mapper
+	namespace="com.collavore.app.approvals.mapper.ApprovalsMapper">
 
 	<!-- 템플릿 리스트 -->
 	<select id="tempList" resultType="ApprovalstempVO">
 		SELECT title
-			  ,content
-			  ,reg_date
-			  ,eat_no
+		,content
+		,reg_date
+		,eat_no
 		FROM approvalstemp
 		ORDER BY eat_no
 	</select>
@@ -60,7 +61,7 @@
 	<!-- -->
 
 	<!-- 전자결재를 생성하는 기능 -->
-		<!-- approvals테이블에 넣기 -->
+	<!-- approvals테이블에 넣기 -->
 	<insert id="createApprsEa" parameterType="ApprovalsVO">
 		<selectKey keyProperty="eaNo" resultType="Integer"
 			order="BEFORE">
@@ -86,7 +87,7 @@
 	</insert>
 	<!-- -->
 
-		<!-- approvers테이블에 넣기 -->
+	<!-- approvers테이블에 넣기 -->
 	<insert id="createApprsEar" parameterType="ApprovalsVO">
 		<selectKey keyProperty="earNo" resultType="Integer"
 			order="BEFORE">
@@ -105,107 +106,142 @@
 				,ea_no
 				,emp_no
 				,sort
-				,proc_date
 				)
 				VALUES (
 				FIND_APPROVERS_SEQ()
 				,#{approvers.eaNo}
 				,#{approvers.empNo}
 				,#{approvers.sort}
-				,sysdate
 				)
 			</if>
 		</foreach>
 		SELECT * FROM dual
 	</insert>
 	<!-- -->
-	
+
 	<!-- 나의 진행 중인 전자결재 목록 조회 -->
-	<select id="myApprList" parameterType="ApprovalsVO" resultType="ApprovalsVO">
-	   select  a.title
-      	      ,a.ea_no
-      	      ,e.name as "drafterName"
-      	      ,a.reg_date
-              ,a.status
-    from approvals a join employees e
-    on a.emp_no = e.emp_no
-    where a.emp_no = #{userEmpNo}
-    and a.status = #{status}
-	ORDER BY a.reg_date
-	</select>
-	<!--  -->
-	
-	<!-- //결재 해야할 전결 목록 조회 -->
-	<select id="approveList" parameterType="ApprovalsVO" resultType="ApprovalsVO">
-	SELECT 
-			a.title
-           ,e.name
-           ,a.reg_date
-           ,r.status
-    FROM approvals a JOIN employees e
-   		 ON a.emp_no = e.emp_no
-    JOIN approvers r
-  		 ON r.ea_no = a.ea_no
-    WHERE r.emp_no = #{userEmpNo}
-    AND r.status= #{status}
-    ORDER BY a.reg_date
-	</select>
-	<!--  -->
-	
-	<!-- 전자결재 상세 조회 -->
-	<select id="readApproval" parameterType="Integer" resultType="ApprovalsVO">
-		SELECT
-			   a.title
-			  ,a.content
-			  ,a.reg_date
-			  ,a.comp_date
-			  ,a.emp_no as "drafterEmpNo"
-			  ,e.name as "drafterName"
-			  ,a.status as "approvalStatus"
-		FROM approvals a LEFT JOIN employees e
-			ON a.emp_no = e.emp_no
-		WHERE a.ea_no = #{eaNo}
+	<select id="myApprList" parameterType="ApprovalsVO"
+		resultType="ApprovalsVO">
+		SELECT ea_no
+		,title
+		,status
+		,reg_date
+		<if test="compDate != null || compDate != ''">
+			,comp_date
+		</if>
+		FROM approvals
+		WHERE emp_no = #{userEmpNo}
+		<choose>
+			<when test="approvalStatus == 'a1'">
+				AND status = #{approvalStatus}
+			</when>
+			<when test="approvalStatus == 'a2'">
+				AND status = #{approvalStatus}
+			</when>
+			<otherwise>
+				AND status IN (#{approvalStatus}, a4')
+			</otherwise>
+		</choose>
 	</select>
 	<!-- -->
 
+	<!-- 문서함 -->
+	<select id="approveList" parameterType="ApprovalsVO"
+		resultType="ApprovalsVO">
+			SELECT *
+			FROM approvals a
+			INNER JOIN approvers ar ON a.ea_no = ar.ea_no
+		<choose>
+			<when test=" apprStatus == all ">
+				WHERE a.status IN ('a3','a4')
+				AND (a.emp_no = #{userEmpNo} OR ar.emp_no = #{userEmpNo})
+			</when>
+			<when test="apprStatus == userEmpNo">
+				WHERE a.status IN ('a3','a4')
+				AND (a.emp_no = #{userEmpNo})
+			</when>
+			<when test="apprStatus ==  userEmpNo">
+				WHERE a.status IN ('a3','a4')
+				 AND (ar.emp_no = #{userEmpNo})
+			</when>
+			<otherwise>
+				WHERE a.status IN ('a3','a4')
+				AND (a.emp_no = #{userEmpNo} OR ar.emp_no = #{userEmpNo})
+			</otherwise>
+		</choose>
+	</select>
+	<!-- -->
+
+	<!-- 전자결재 상세 조회 -->
+	<select id="readApproval" parameterType="Integer"
+		resultType="ApprovalsVO">
+		SELECT
+		a.title
+		,a.content
+		,a.reg_date
+		,a.comp_date
+		,a.emp_no as
+		"drafterEmpNo"
+		,e.name as "drafterName"
+		,a.status as "approvalStatus"
+		FROM approvals a LEFT JOIN employees e
+		ON a.emp_no = e.emp_no
+		WHERE
+		a.ea_no = #{eaNo}
+	</select>
+	<!-- -->
+
+	<!-- 결재하기 -->
+	<update id="updateApprStatus" statementType="CALLABLE">
+		{ CALL
+		appr_status_update(#{earNo, mode=IN}, #{apprStatus, mode=IN}) }
+	</update>
+	<!-- -->
+
 	<!-- 결재자 상세 조회 -->
-	<select id="readApprovers" parameterType="Integer" resultType="map">
-		 SELECT
-				r.status as "approverStatus"
-			   ,e.name as "approverName"
-			   ,e.emp_no as "approverEmpNo"
-			   ,p.name as "positionTitle"
-			   ,r.sort
+	<select id="readApprovers" parameterType="Integer"
+		resultType="map">
+		SELECT
+		r.status as "approverStatus"
+		,e.name as "approverName"
+		,e.emp_no as "approverEmpNo"
+		,p.name as "positionTitle"
+		,r.sort
 		FROM
-			approvals a JOIN approvers r
+		approvals a JOIN approvers r
 		ON a.ea_no = r.ea_no
-			JOIN employees e
-		ON r.emp_no = e.emp_no
-            JOIN positions P
-        ON e.posi_no = p.posi_no
-			WHERE a.ea_no = #{eaNo}
+		JOIN employees e
+		ON
+		r.emp_no = e.emp_no
+		JOIN positions P
+		ON e.posi_no = p.posi_no
+		WHERE
+		a.ea_no = #{eaNo}
 		ORDER BY r.sort
 	</select>
 	<!-- -->
 
 	<!-- 전자결재 삭제 -->
-	<select id="deleteApproval" statementType="CALLABLE" resultType="Integer">
-	  {call DELETE_EANO(#{eaNo}, #{resultCode, mode=OUT, jdbcType=INTEGER})}
+	<select id="deleteApproval" statementType="CALLABLE"
+		resultType="Integer">
+		{call DELETE_EANO(#{eaNo}, #{resultCode, mode=OUT,
+		jdbcType=INTEGER})}
 	</select>
 	<!-- -->
 
 	<!-- 인사 테이블 조회 -->
 	<select id="employees" resultType="HrmVO">
-		SELECT 
-				p.posi_no
-       		   ,e.name as "empName"
-       		   ,p.name as "posiName"
-       	       ,e.emp_no
-               ,d.name as "deptName"
-		FROM 
-			employees e JOIN positions p
-		ON e.posi_no = p.posi_no 
-			JOIN departments d
+		SELECT
+		p.posi_no
+		,e.name as
+		"empName"
+		,p.name as "posiName"
+		,e.emp_no
+		,d.name as "deptName"
+		FROM
+		employees e JOIN positions p
+		ON e.posi_no = p.posi_no
+		JOIN departments d
 		ON e.dept_no = d.dept_no
 		ORDER by p.posi_no
 	</select>

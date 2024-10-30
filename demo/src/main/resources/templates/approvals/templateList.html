@@ -1,34 +1,28 @@
-<!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org/"
+<div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
-<head>
-</head>
-<body>
-	<div class="page-wrapper">
-		<div class="container-fluid">
-			<div class="row">
-				<th:block th:each=" info : ${tempInfo}">
-					<div class="col-md-4 eatNo" th:data-no="${info.eatNo}">
-						<div class="card">
-							<div class="card-body">
-								<input type="hidden" value="info.eatNo">
-								<h4 class="card-title">[[${info.title}]]</h4>
-								<h6 class="card-title" style="text-align: right;">[[${#dates.format(info.regDate, 'yyyy-MM-dd')}]]</h6>
-							</div>
+	<div class="container-fluid">
+		<div class="row">
+			<th:block th:each=" info : ${tempInfo}">
+				<div class="col-md-4 eatNo" th:data-no="${info.eatNo}">
+					<div class="card">
+						<div class="card-body">
+							<input type="hidden" value="info.eatNo">
+							<h4 class="card-title">[[${info.title}]]</h4>
+							<h6 class="card-title" style="text-align: right;">[[${#dates.format(info.regDate,
+								'yyyy-MM-dd')}]]</h6>
 						</div>
 					</div>
-				</th:block>
-			</div>
+				</div>
+			</th:block>
 		</div>
 	</div>
-</body>
-<script>
-	$('.eatNo').on('click', function() {
-		let eatNo = event.currentTarget/*이벤트가 걸려 있는 타겟*/.dataset.no; // $('.col-md-4').children.eq(2).text();
-		let url = '/approvals/readTempInfo?eatNo=' + eatNo;
-		location.href = url
-	})
-</script>
-</html>
+	<script>
+		$('.eatNo').on('click', function() {
+			let eatNo = event.currentTarget/*이벤트가 걸려 있는 타겟*/.dataset.no; // $('.col-md-4').children.eq(2).text();
+			let url = '/approvals/readTempInfo?eatNo=' + eatNo;
+			location.href = url
+		})
+	</script>
+</div>
