@@ -70,17 +70,17 @@ public class MemberServiceImpl implements MemberService {
 	 */
 	@Override
 	public List<HrmVO> selectMemberAll(String page, String deptFilter, String jobFilter, String posiFilter,
-			String workTypeFilter) {
+			String workTypeFilter, String searchText) {
 		int currentPage = Integer.parseInt(page);
 		int offset = (currentPage - 1) * 15; // 한 페이지에 15명씩 표시
 
 		// 필터 조건과 페이지 번호를 사용하여 필터링된 사원 목록 조회
-		return memberMapper.selectFilteredMembers(offset, deptFilter, jobFilter, posiFilter, workTypeFilter);
+		return memberMapper.selectFilteredMembers(offset, deptFilter, jobFilter, posiFilter, workTypeFilter,searchText);
 	}
 
 	@Override
-	public int totalListCnt(String deptFilter, String jobFilter, String posiFilter, String workTypeFilter) {
-		return memberMapper.getTotalListCnt(deptFilter, jobFilter, posiFilter, workTypeFilter);
+	public int totalListCnt(String deptFilter, String jobFilter, String posiFilter, String workTypeFilter, String searchText) {
+		return memberMapper.getTotalListCnt(deptFilter, jobFilter, posiFilter, workTypeFilter, searchText);
 	}
 
 	@Override
