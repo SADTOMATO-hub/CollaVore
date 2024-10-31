@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -115,7 +116,7 @@ public class ApprovalsController {
 		if (apprVO.getEaNo() >= 0) {
 			int resultOfEar = approvalsService.insertApprsEar(apprVO); // 전자결재 //원래 없던 ea가 들어감
 			if (resultOfEar >= 0) {
-				return "redirect:/approvals/tempList";
+				return "redirect:/approvals/myApprList/a1";
 			}
 		}
 		return null;
@@ -154,6 +155,8 @@ public class ApprovalsController {
 		apprVO.setUserEmpNo(userEmpNo);
 		ApprovalsVO approvals = approvalsService.approvalsInfo(apprVO);
 		List<Map<String,Object>> approvers = approvalsService.approversInfo(apprVO);
+	//	System.err.println(approvers);
+		System.err.println(apprVO);
 		model.addAttribute("approvals", approvals);
 		model.addAttribute("approvers", approvers);
 		return "approvals/readApproval";
@@ -162,12 +165,14 @@ public class ApprovalsController {
 	//결재하기
 	@PostMapping("/updateAppr")
 	@ResponseBody
-	public String updateApprove (ApprovalsVO apprVO) {
+	public String updateApprove (@RequestBody ApprovalsVO apprVO) {
+		System.err.println(apprVO.getApproverStatus() + apprVO.getEarNo());
 		int updateApprStatus = approvalsService.updateApprStatus(apprVO);
 		if(updateApprStatus > 0) {
-			return "redirect:/approvals/tempList";
+			System.out.println(updateApprStatus);
+			return null;
 		}
-		return "redirect:/approvals/tempList";
+		return null;
 	}
 	
 	//전자결재 템플릿 내용만 호출하는 기능

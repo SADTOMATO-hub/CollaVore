@@ -37,6 +37,8 @@ public class ApprovalsVO {
 	private String approverStatus;
 	private String drafterName;
 	private Integer userEmpNo;
+	private Integer earNumber;
+	private Integer approverSort;
 	
 	//문서함 리스트 조건
 	private String listStatus;

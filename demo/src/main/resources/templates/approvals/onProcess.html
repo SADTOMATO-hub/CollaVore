@@ -14,16 +14,21 @@
 									<td>전자결재 제목</td>
 									<td>기안자</td>
 									<td>기안일</td>
+										<td> </td>
 								</tr>
 							</thead>
 							<tbody>
 								<th:block th:each=" myAppr, sts : ${myApprList}">
 									<tr
 										th:onclick="|location.href='@{/approvals/readApprInfo(eaNo=${myAppr.eaNo})}'|">
+										<td><input type="hidden" id="eaNo" th:value="${myAppr.eaNo}"></td>
 										<td>[[${sts.count}]]</td>
 										<td>[[${myAppr.title}]]</td>
 										<td>[[${myAppr.drafterName}]]</td>
 										<td>[[${#dates.format(myAppr.regDate, "yyyy년 MM월 dd일")}]]</td>
+										<th:block th:if="${session.userEmpNo == myAppr.drafterEmpNo && #strings.equals(myAppr.approvalStatus, 'a1')}"> 
+											<td><button type="button">삭제</button></td>										
+										</th:block>
 									</tr>
 								</th:block>
 							</tbody>

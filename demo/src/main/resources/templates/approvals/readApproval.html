@@ -37,11 +37,14 @@
 											<th:block th:each="appr : ${approvers}">
 												<th:block th:switch="${appr.approverStatus}">
 													<td>
+													<input type="hidden" name="approvers[0].empNo">
 													<th:block th:case="b1" id="approveOrdenine">
+															<input type="hidden" name="earNumber" th:value="${appr.earNumber}">
+															<input type="hidden" name="sort" th:value="${appr.approverSort}">
 															<button type="button" th:if="${session.userEmpNo == appr.approverEmpNo}"
-																class="approveBtn badge rounded-pill bg-danger" th:text="승인"></button>
+																class="approveBtn badge rounded-pill bg-danger" th:data-ear-no="${appr.earNumber}" th:value="b3" th:text="승인"></button>
 															<button type="button" th:if="${session.userEmpNo == appr.approverEmpNo}"	
-																class="approveBtn badge rounded-pill bg-warning" th:text="반려"></button>
+																class="approveBtn badge rounded-pill bg-warning" th:data-ear-no="${appr.earNumber}" th:value="b2" th:text="반려"></button>
 															<span th:unless="${session.userEmpNo == appr.approverEmpNo}">대기</span>
 													</th:block> 
 													<span th:case="b2">반려</span>
@@ -53,7 +56,6 @@
 										</tr>
 									</tfoot>
 								</table>
-								<input type="hidden" id="earNo" value="earNo">
 							</div>
 							<div class="card-body">
 								<span th:utext="${approvals.content}"></span>
@@ -65,20 +67,26 @@
 		</div>
 	</div>
 	<script>
-	var approve = $('.approveBtn').eq(0).text(); 
-	var denine = $('.approveBtn').eq(1).text(); 
-	var ear = $('#earNo').val();
+	var sort = $('input[name=sort]').val();
 		$(".approveBtn").on('click', function(event) {
+			var approveOrDenine = $(this).val();
+			const earNo = this.getAttribute('data-ear-no');
+			const buttonText = $(this).text();
 			$.ajax({
-				url : `/approvals/updateAppr`,
+				url : "/approvals/updateAppr",
 				type : 'POST',
+				contentType : "application/json",
+				data : JSON.stringify({ earNo : earNo, approverStatus :  approveOrDenine }),
 				success : function(response) {
-					if(response.approverStatus === 'b1'){
-						var approve = $('.approveBtn').eq(0).text();
+					if (confirm(`${buttonText} 하시겠습니까?`) == true) { //확인
+					 $(event.target).siblings('.approveBtn').remove(); 
+         	     	 $(event.target).replaceWith(`<span>${buttonText}</span>`); 
+					} else { //취소
+						return;
 					}
 				},
 				error : function(xhr, status, error) {
-					alert('수정 실패: ' + error);
+					alert('결재하지 못했습니다: ' + error);
 				}
 			});
 		});
