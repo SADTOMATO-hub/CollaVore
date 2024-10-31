@@ -6,194 +6,640 @@
 	<script src='../dist/js/cals/index.global.js'></script>
 	<script src='../dist/js/cals/fullCal.js'></script>
 	<link rel="stylesheet" href='../dist/css/cals/fullCal.css'>
+	<style>
+textarea {
+	width: 100%;
+	height: 6.25em;
+	border: none;
+	resize: none;
+}
+/* 페이지 기본 스타일 */
+.body-page-wrapper {
+	padding: 20px;
+	background-color: #f9f9f9;
+	align-items: center;
+}
 
-	<!-- 캘린더 -->
-	<div id="calendar"></div>
-	<!-- 캘린더 -->
+/* Breadcrumb 스타일 */
+.breadcrumb {
+	background-color: #ffffff;
+	padding: 10px 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	height: 70px;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	color: #333;
+	position: relative;
+}
+
+.breadcrumb h4 {
+	margin: 0;
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+}
+
+.breadcrumb-left {
+	display: flex; /* flexbox로 요소 정렬 */
+	flex-direction: column; /* 세로로 배치 */
+	justify-content: center; /* 세로 중앙 정렬 */
+}
+
+.breadcrumb-left h4 {
+	font-size: 22px;
+	font-weight: bold;
+	margin: 0; /* 기본 마진 제거 */
+	margin-top: 2px;
+}
+
+.breadcrumb-left p {
+	font-size: 14px;
+	color: #666;
+	margin-top: 2px;
+	margin-bottom: 0;
+}
+
+.breadcrumb-right span {
+	font-size: 14px;
+	color: #999;
+	white-space: nowrap;
+	position: relative;
+	top: -12px;
+}
+
+/* 카드 스타일 */
+.card_memberList {
+	background-color: #ffffff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+}
+
+/* 검색 기능을 위한 컨테이너 */
+.search-container {
+	display: flex;
+	justify-content: flex-end; /* 오른쪽 정렬 */
+	margin-bottom: 15px; /* 테이블과의 간격 */
+}
+
+/* 검색 입력 박스 스타일 */
+#searchBox {
+	padding: 8px;
+	font-size: 14px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	width: 200px;
+	margin-right: 10px;
+}
+
+/* 테이블 스타일 */
+.memberList_table {
+	width: 100%;
+	border-collapse: collapse;
+	font-size: 14px;
+	text-align: left;
+	margin-bottom: 5px;
+}
+
+.memberList_table thead th {
+	text-align: center;
+	font-weight: bold;
+	color: #555;
+	padding: 12px;
+	border-bottom: 2px solid #ddd;
+	font-weight: bold;
+}
+
+.memberList_table tbody td {
+	text-align: center;
+	font-size: 12px;
+	color: #666666;;
+	padding: 5px 20px;
+	border-bottom: 1px solid #ddd;
+	color: #333;
+	white-space: nowrap; /* 텍스트가 여러 줄로 나뉘지 않고 한 줄로 유지됩니다 */
+	overflow: hidden; /* 넘친 텍스트를 숨깁니다 */
+	text-overflow: ellipsis; /* 넘친 텍스트는 "..."으로 표시됩니다 */
+}
+
+.memberList_table tbody tr:hover {
+	background-color: #f9f9f9; /* 마우스 오버 시 행 배경색 변경 */
+}
+
+.form-select {
+	border: none;
+}
+
+.pagination-and-insert-wrapper {
+	display: flex;
+	justify-content: space-between; /* 페이지네이션과 등록 버튼을 좌우로 배치 */
+	align-items: center; /* 세로 중앙 정렬 */
+	width: 100%; /* 전체 너비 사용 */
+	padding: 10px;
+}
+
+.pagination-outer {
+	text-align: center; /* 페이지네이션을 중앙 정렬 */
+	flex-grow: 1;
+}
+
+.pagination {
+	font-family: 'Ubuntu', sans-serif;
+	display: inline-flex;
+	position: relative;
+	margin-top: 0;
+	margin-bottom: 0;
+}
+
+/* prev 또는 next 클래스를 가지지 않는 경우에만 배경 적용 */
+.pagination li a.page-link:not(.prev):not(.next) {
+	color: #333;
+	background-color: #e7e7e7; /* 배경 적용 */
+	font-size: 20px;
+	font-weight: 500;
+	line-height: 39px;
+	height: 40px;
+	width: 40px;
+	padding: 0;
+	margin: 0 5px;
+	border: none;
+	border-radius: 10px;
+	position: relative;
+	z-index: 1;
+	transition: all 0.3s ease 0s;
+}
+
+/* prev 또는 next 클래스를 가진 경우에만 적용할 스타일 (필요 시 추가) */
+.pagination li a.page-link.prev, .pagination li a.page-link.next {
+	background-color: transparent; /* 배경 투명 */
+	color: #333;
+	font-size: 20px;
+	font-weight: 500;
+	line-height: 39px;
+	height: 40px;
+	width: 40px;
+	padding: 0;
+	margin: 0 5px;
+	border: none;
+	position: relative;
+	z-index: 1;
+	transition: all 0.3s ease 0s;
+}
+
+/* prev 또는 next를 가지지 않는 .page-link에만 적용 */
+.pagination li a.page-link:not(.prev):not(.next):hover, .pagination li a.page-link:not(.prev):not(.next):focus,
+	.pagination li.active a.page-link:not(.prev):not(.next):hover,
+	.pagination li.active a.page-link:not(.prev):not(.next) {
+	color: #fff;
+	background: transparent;
+}
+
+.pagination li a.page-link:not(.prev):not(.next):before, .pagination li a.page-link:not(.prev):not(.next):after
+	{
+	content: '';
+	background: linear-gradient(to right, #706fd3 50%, transparent 50%);
+	height: 100%;
+	width: 100%;
+	border-radius: 50%;
+	opacity: 0;
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: -1;
+	transition: all 0.4s ease 0s;
+}
+
+.pagination li a.page-link:not(.prev):not(.next):after {
+	background: linear-gradient(to right, #474787 50%, transparent 50%);
+	transform: rotateY(180deg);
+	top: auto;
+	bottom: 0;
+}
+
+.pagination li a.page-link:not(.prev):not(.next):hover:before,
+	.pagination li a.page-link:not(.prev):not(.next):focus:before,
+	.pagination li.active a.page-link:not(.prev):not(.next):before,
+	.pagination li a.page-link:not(.prev):not(.next):hover:after,
+	.pagination li a.page-link:not(.prev):not(.next):focus:after,
+	.pagination li.active a.page-link:not(.prev):not(.next):after {
+	height: 85%;
+	opacity: 1;
+}
+
+@media only screen and (max-width: 480px) {
+	.pagination {
+		font-size: 0;
+		border: none;
+		display: inline-block;
+	}
+	.pagination li {
+		display: inline-block;
+		vertical-align: top;
+		margin: 0 0 10px;
+	}
+}
+
+button {
+	padding: 5px 10px;
+	background-color: #9b8df6;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: background-color 0.3s ease;
+}
+
+.insert-btn-container {
+	text-align: right; /* 등록 버튼을 오른쪽 정렬 */
+	padding-right: 10px;
+}
+
+/* 마우스 호버 시 효과 */
+button:hover {
+	background-color: #5a4bcf;
+}
+
+/* 추가적인 버튼 스타일링 */
+button:active {
+	background-color: #4839a9;
+}
+
+.none {
+	display: none;
+}
+</style>
+	<div class="body-page-wrapper">
+		<div class="purple-background-container">
+			<div class="breadcrumb">
+				<div class="breadcrumb-left">
+					<h4>일정관리</h4>
+					<p>일정관리 페이지 입니다.</p>
+				</div>
+				<div class="breadcrumb-right">
+					<span>일정관리 > 일정조회</span>
+				</div>
+			</div>
+
+			<div class="card_memberList" id="calendar">
+			</div>
+		</div>
+	</div>
+	
 
 
 
 	<!-- 일정 추가 모달 -->
 	<div id="addScheduleModal" class="modal">
 		<div class="modal-content">
-			<h2>일정 생성</h2>
-			<form id="scheduleForm">
-				<!-- 캘린더 선택 -->
-				<!-- HTML 코드 -->
-				<select id="calendarSelectBox">
-					<!-- 캘린더 옵션들이 동적으로 추가될 예정 -->
-				</select> <label for="title">일정 제목</label> <input type="text" id="title"
-					placeholder="내용 입력" required> <label for="startDate">시작</label>
-				<input type="date" id="startDate" required> <input
-					type="time" id="startTime" required>
-
-				<!-- 종일 체크박스 추가 -->
-				<label for="allDay">종일</label> <input type="checkbox" id="allDay">
-
-				<label for="endDate">종료</label> <input type="date" id="endDate"
-					required> <input type="time" id="endTime" required>
-
-
-
-				<!-- 알림 여부 -->
-				<label for="isAlarm">알림 설정</label> <input type="checkbox"
-					id="isAlarm">
-
-				<!-- 알림 설정 필드 (기본적으로 숨김 처리) -->
-				<div id="alarmFields" style="display: none;">
-					<label for="alarmFrequency">알림 빈도</label> <select
-						id="alarmFrequency">
-						<option value="daily">매일</option>
-						<option value="weekly">매주</option>
-						<option value="monthly">매달</option>
-					</select>
-
-					<!-- 매일 알림 -->
-					<div id="dailyRepeat" style="display: none;">
-						<label for="dailyInterval"></label> <input type="number"
-							id="dailyInterval" min="1" max="24" value="1">시 마다
+			<div class="modal-header">
+				<h2 class="modal-title" id="addScheduleModalLabel">일정 생성</h2>
+				<!-- <button type="button" class="btn-close" data-bs-dismiss="modal"
+					aria-label="Close"></button> -->
+			</div>
+			<div class="modal-body">
+				<form id="scheduleForm">
+					<!-- 캘린더 선택 -->
+					<div class="input-group">
+						<label class="input-group-text" for="calendarSelectBox">캘린더
+							선택</label> <select class="form-select" id="calendarSelectBox"
+							style="margin-top: 10px;">
+						</select>
 					</div>
-					<!-- 매주 알림 -->
-					<div id="weeklyRepeat" style="display: none;">
-						<label for="weeklyDays">알림 요일 선택</label>
-						<div id="weeklyDays">
-							<input type="checkbox" id="monday" name="weeklyDay" value="mon">
-							<label for="monday">월요일</label> <input type="checkbox"
-								id="tuesday" name="weeklyDay" value="tue"> <label
-								for="tuesday">화요일</label> <input type="checkbox" id="wednesday"
-								name="weeklyDay" value="wed"> <label for="wednesday">수요일</label>
-
-							<input type="checkbox" id="thursday" name="weeklyDay" value="thu">
-							<label for="thursday">목요일</label> <input type="checkbox"
-								id="friday" name="weeklyDay" value="fri"> <label
-								for="friday">금요일</label> <input type="checkbox" id="saturday"
-								name="weeklyDay" value="sat"> <label for="saturday">토요일</label>
-
-							<input type="checkbox" id="sunday" name="weeklyDay" value="sun">
-							<label for="sunday">일요일</label>
+					<div class="input-group">
+						<label class="input-group-text" for="title">일정 제목</label> <input
+							type="text" style="margin-top: 10px;" class="form-control"
+							id="title" name="title" placeholder="제목 입력" aria-label="title"
+							aria-describedby="basic-addon1">
+					</div>
+					<div class="input-group">
+						<label class="input-group-text" for="startDate">일정 시작일</label> <input
+							type="date" style="margin-top: 10px;" id="startDate"
+							class="form-control" required> <label
+							class="input-group-text" for="startTime">시간</label> <input
+							type="time" style="margin-top: 10px;" id="startTime"
+							class="form-control" required>
+					</div>
+					<div class="input-group"
+						style="display: flex; align-items: center;">
+						<label for="allDay" class="input-group-text col-form-label"
+							style="width: auto;">종일여부</label> <input type="checkbox"
+							class="btn-check" id="allDay" autocomplete="off"> <label
+							class="btn btn-outline-primary" for="allDay"
+							style="margin-top: 17px;">종일 알림</label>
+					</div>
+					<div class="input-group">
+						<label class="input-group-text" for="endDate">일정 종료일</label> <input
+							type="date" style="margin-top: 10px;" id="endDate"
+							class="form-control" required> <label
+							class="input-group-text" for="endTime">시간</label> <input
+							type="time" style="margin-top: 10px;" id="endTime"
+							class="form-control" required>
+					</div>
+					<!-- 알림 여부 -->
+					<div class="input-group"
+						style="display: flex; align-items: center;">
+						<label for="isAlarm" class="input-group-text col-form-label"
+							style="width: auto;">알림 설정</label> <input type="checkbox"
+							class="btn-check" id="isAlarm" autocomplete="off"> <label
+							class="btn btn-outline-primary" for="isAlarm"
+							style="margin-top: 17px;">알림 등록</label>
+					</div>
+					<!-- 알림 설정 필드 (기본적으로 숨김 처리) -->
+					<div id="alarmFields" style="display: none;">
+						<div class="input-group">
+							<label class="input-group-text" for="alarmFrequency">알림
+								빈도</label> <select class="form-select" id="alarmFrequency"
+								style="margin-top: 10px;">
+								<option value="daily">매일</option>
+								<option value="weekly">매주</option>
+								<option value="monthly">매달</option>
+							</select>
 						</div>
-
-						<label for="weeklyHour"></label> <input type="number"
-							id="weeklyHour" min="1" max="24" value="1">시 마다
+						<!-- 매일 알림 -->
+						<div id="dailyRepeat" style="display: none;">
+							<div class="input-group">
+								<input type="number" id="dailyInterval"
+									style="margin-top: 10px;" min="1" max="24" value="1"
+									class="form-control"> <label class="input-group-text"
+									for="dailyInterval">시 마다</label>
+							</div>
+						</div>
+						<!-- 매주 알림 -->
+						<div id="weeklyRepeat" style="display: none;">
+							<div class="input-group"
+								style="display: flex; align-items: center;">
+								<label class="input-group-text" for="weeklyDays">알림 요일
+									선택</label>
+							</div>
+							<div id="weeklyDays">
+								<div class="input-group"
+									style="display: flex; align-items: center;">
+									<label for="monday" class="input-group-text col-form-label"
+										style="width: auto;">월요일</label> <input type="checkbox"
+										class="btn-check" id="monday" name="weeklyDay"
+										autocomplete="off" value="mon"> <label
+										class="btn btn-outline-primary" for="monday"
+										style="margin-top: 17px;">선택</label>
+								</div>
+								<div class="input-group"
+									style="display: flex; align-items: center;">
+									<label for="tuesday" class="input-group-text col-form-label"
+										style="width: auto;">화요일</label> <input type="checkbox"
+										class="btn-check" id="tuesday" name="weeklyDay"
+										autocomplete="off" value="tue"> <label
+										class="btn btn-outline-primary" for="tuesday"
+										style="margin-top: 17px;">선택</label>
+								</div>
+								<div class="input-group"
+									style="display: flex; align-items: center;">
+									<label for="wednesday" class="input-group-text col-form-label"
+										style="width: auto;">수요일</label> <input type="checkbox"
+										class="btn-check" id="wednesday" name="weeklyDay"
+										autocomplete="off" value="wed"> <label
+										class="btn btn-outline-primary" for="wednesday"
+										style="margin-top: 17px;">선택</label>
+								</div>
+								<div class="input-group"
+									style="display: flex; align-items: center;">
+									<label for="thursday" class="input-group-text col-form-label"
+										style="width: auto;">목요일</label> <input type="checkbox"
+										class="btn-check" id="thursday" name="weeklyDay"
+										autocomplete="off" value="thu"> <label
+										class="btn btn-outline-primary" for="thursday"
+										style="margin-top: 17px;">선택</label>
+								</div>
+								<div class="input-group"
+									style="display: flex; align-items: center;">
+									<label for="friday" class="input-group-text col-form-label"
+										style="width: auto;">금요일</label> <input type="checkbox"
+										class="btn-check" id="friday" name="weeklyDay"
+										autocomplete="off" value="fri"> <label
+										class="btn btn-outline-primary" for="friday"
+										style="margin-top: 17px;">선택</label>
+								</div>
+								<div class="input-group"
+									style="display: flex; align-items: center;">
+									<label for="saturday" class="input-group-text col-form-label"
+										style="width: auto;">토요일</label> <input type="checkbox"
+										class="btn-check" id="saturday" name="weeklyDay"
+										autocomplete="off" value="sat"> <label
+										class="btn btn-outline-primary" for="saturday"
+										style="margin-top: 17px;">선택</label>
+								</div>
+								<div class="input-group"
+									style="display: flex; align-items: center;">
+									<label for="sunday" class="input-group-text col-form-label"
+										style="width: auto;">일요일</label> <input type="checkbox"
+										class="btn-check" id="sunday" name="weeklyDay"
+										autocomplete="off" value="sun"> <label
+										class="btn btn-outline-primary" for="sunday"
+										style="margin-top: 17px;">선택</label>
+								</div>
+								<div class="input-group">
+									<input type="number" id="weeklyHour" style="margin-top: 2px;"
+										min="1" max="24" value="1" class="form-control"> <label
+										class="input-group-text" for="weeklyHour">시 마다</label>
+								</div>
+							</div>
+						</div>
+						<!-- 매월 알림 -->
+						<div id="monthlyRepeat" style="display: none;">
+							<div class="input-group">
+								<input type="number" style="margin-top: 10px;" id="monthlyDay"
+									min="1" max="31" value="1" class="form-control"> <label
+									class="input-group-text" for="monthlyDay">일</label> <input
+									type="number" style="margin-top: 10px;" id="monthlyHour"
+									min="1" max="24" value="1" class="form-control"> <label
+									class="input-group-text" for="monthlyHour">시 마다</label>
+							</div>
+						</div>
 					</div>
-
-					<!-- 매월 알림 -->
-					<div id="monthlyRepeat" style="display: none;">
-						<label for="monthlyDay"></label> <input type="number"
-							id="monthlyDay" min="1" max="31" value="1">일 <label
-							for="monthlyHour"></label> <input type="number" id="monthlyHour"
-							min="1" max="24" value="1">시 마다
+					<div class="modal-buttons">
+						<button type="submit">저장</button>
+						<button type="button" id="addCancelBtn">취소</button>
 					</div>
-
-
-				</div>
-
-
-
-
-
-
-				<button type="submit">저장</button>
-				<button type="button" id="addCancelBtn">취소</button>
-			</form>
+				</form>
+			</div>
 		</div>
 	</div>
-
 	<!-- END  일정 추가 모달 -->
-
-
-
 
 
 	<!-- 일정 조회 모달 -->
 	<div id="viewScheduleModal" class="modal">
 		<div class="modal-content">
-			<h2>일정 조회</h2>
-			<form id="viewScheduleForm">
-				<!-- 캘린더 -->
-				<label for="viewCalendar">캘린더</label> <input type="text"
-					id="viewCalendar" readonly>
-
-				<!-- 일정 제목 -->
-				<label for="viewTitle">일정 제목</label> <input type="text"
-					id="viewTitle" readonly>
-
-				<!-- 시작 날짜와 시간 -->
-				<label for="viewStartDate">시작</label> <input type="date"
-					id="viewStartDate" readonly> <input type="time"
-					id="viewStartTime" readonly>
-
-				<!-- 종료 날짜와 시간 -->
-				<label for="viewEndDate">종료</label> <input type="date"
-					id="viewEndDate" readonly> <input type="time"
-					id="viewEndTime" readonly>
-
-				<!-- 알림 설정 체크박스 래퍼 -->
+			<div class="modal-header">
+				<h2 class="modal-title" id="viewScheduleModalLabel">일정 조회</h2>
+			</div>
+			<div class="modal-body">
+				<form id="viewScheduleForm">
+					<!-- 캘린더 선택 -->
+					<div class="input-group">
+						<label class="input-group-text" for="viewCalendar">캘린더 선택</label>
+						<input type="text" style="margin-top: 10px;" class="form-control"
+							id="viewCalendar" name="viewCalendar" aria-label="title"
+							aria-describedby="basic-addon1" readonly>
+					</div>
+					<div class="input-group">
+						<label class="input-group-text" for="viewTitle">일정 제목</label> <input
+							type="text" style="margin-top: 10px;" class="form-control"
+							id="viewTitle" name="viewTitle" aria-label="title"
+							aria-describedby="basic-addon1" readonly>
+					</div>
+					<div class="input-group">
+						<label class="input-group-text" for="viewStartDate">일정 시작일</label>
+						<input type="date" style="margin-top: 10px;" id="viewStartDate"
+							class="form-control" required> <label
+							class="input-group-text" for="viewStartTime">시간</label> <input
+							type="time" style="margin-top: 10px;" id="viewStartTime"
+							class="form-control" required>
+					</div>
+					<div class="input-group">
+						<label class="input-group-text" for="viewEndDate">일정 종료일</label> <input
+							type="date" style="margin-top: 10px;" id="viewEndDate"
+							class="form-control" required> <label
+							class="input-group-text" for="viewEndTime">시간</label> <input
+							type="time" style="margin-top: 10px;" id="viewEndTime"
+							class="form-control" required>
+					</div>
+					<!-- 알림 여부 -->
 					<div id="viewAlarmCheckboxWrapper" style="display: none;">
-					    <label for="viewAlarmUse">알림 설정</label>
-					    <input type="checkbox" id="viewAlarmUse"> 사용
-					</div>
-
-				<!-- 알림 설정 -->
-				<div id="viewAlarmSettings" style="display: none;">
-					<label for="viewAlarmType">알림 빈도</label> <select id="viewAlarmType"
-						disabled>
-						<option value="d1">매일</option>
-						<option value="d2">매주</option>
-						<option value="d3">매달</option>
-					</select>
-
-					<!-- 매일 설정 -->
-					<div id="viewDailySettings" style="display: none;">
-						<label for="viewDailyRepeat">매일</label> <input type="number"
-							id="viewDailyRepeat" placeholder="시간입력 1~24" readonly> 시 마다
-					</div>
-
-					<!-- 매주 설정 -->
-					<div id="viewWeeklySettings" style="display: none;">
-						<label>알림 요일 선택</label>
-						<div>
-							<label><input type="checkbox" class="weekly-checkbox"
-								value="mon" disabled> 월요일</label> <label><input
-								type="checkbox" class="weekly-checkbox" value="tue" disabled>
-								화요일</label> <label><input type="checkbox"
-								class="weekly-checkbox" value="wed" disabled> 수요일</label> <label><input
-								type="checkbox" class="weekly-checkbox" value="thu" disabled>
-								목요일</label> <label><input type="checkbox"
-								class="weekly-checkbox" value="fri" disabled> 금요일</label> <label><input
-								type="checkbox" class="weekly-checkbox" value="sat" disabled>
-								토요일</label> <label><input type="checkbox"
-								class="weekly-checkbox" value="sun" disabled> 일요일</label>
+						<div class="input-group"
+							style="display: flex; align-items: center;">
+							<label for="viewAlarmUse" class="input-group-text col-form-label"
+								style="width: auto;">알림 설정</label> <input type="checkbox"
+								class="btn-check" id="viewAlarmUse" autocomplete="off">
+							<label class="btn btn-outline-primary" for="viewAlarmUse"
+								style="margin-top: 17px;">알림 등록</label>
 						</div>
-						<label for="viewWeeklyRepeat">시간</label> <input type="number"
-							id="viewWeeklyRepeat" placeholder="시간입력 1~24" readonly> 시 마다
 					</div>
-
-					<!-- 매달 설정 -->
-					<div id="viewMonthlySettings" style="display: none;">
-						<label for="viewMonthlyDay">매달</label> <input type="number"
-							id="viewMonthlyDay" placeholder="일" readonly> 일 <label
-							for="viewMonthlyHour">시간</label> <input type="number"
-							id="viewMonthlyHour" placeholder="시간입력 1~24" readonly> 시 마다
+					<!-- 알림 설정 필드 (기본적으로 숨김 처리) -->
+					<div id="viewAlarmSettings" style="display: none;">
+						<div class="input-group">
+							<label class="input-group-text" for="viewAlarmType">알림 빈도</label>
+							<select class="form-select" id="viewAlarmType"
+								style="margin-top: 10px;">
+								<option value="d1">매일</option>
+								<option value="d2">매주</option>
+								<option value="d3">매달</option>
+							</select>
+						</div>
+						<!-- 매일 알림 -->
+						<div id="viewDailySettings" style="display: none;">
+							<div class="input-group">
+								<input type="number" id="viewDailyRepeat"
+									style="margin-top: 10px;" min="1" max="24" value="1"
+									class="form-control"> <label class="input-group-text"
+									for="viewDailyRepeat" style="width: auto;">시 마다</label>
+							</div>
+						</div>
+						<!-- 매주 알림 -->
+						<div id="viewWeeklySettings" style="display: none;">
+							<div class="input-group"
+								style="display: flex; align-items: center;">
+								<label class="input-group-text" for="weeklyDays"
+									style="width: auto;">알림 요일 선택</label>
+							</div>
+							<div id="weeklyDays">
+								<div class="input-group"
+									style="display: flex; align-items: center;">
+									<label for="monday" class="input-group-text col-form-label"
+										style="width: auto;">월요일</label> <input type="checkbox"
+										class="btn-check" id="monday" name="weeklyDay"
+										autocomplete="off" value="mon" disabled> <label
+										class="btn btn-outline-primary" for="monday"
+										style="margin-top: 17px;">선택</label>
+								</div>
+								<div class="input-group"
+									style="display: flex; align-items: center;">
+									<label for="tuesday" class="input-group-text col-form-label"
+										style="width: auto;">화요일</label> <input type="checkbox"
+										class="btn-check" id="tuesday" name="weeklyDay"
+										autocomplete="off" value="tue" disabled> <label
+										class="btn btn-outline-primary" for="tuesday"
+										style="margin-top: 17px;">선택</label>
+								</div>
+								<div class="input-group"
+									style="display: flex; align-items: center;">
+									<label for="wednesday" class="input-group-text col-form-label"
+										style="width: auto;">수요일</label> <input type="checkbox"
+										class="btn-check" id="wednesday" name="weeklyDay"
+										autocomplete="off" value="wed" disabled> <label
+										class="btn btn-outline-primary" for="wednesday"
+										style="margin-top: 17px;">선택</label>
+								</div>
+								<div class="input-group"
+									style="display: flex; align-items: center;">
+									<label for="thursday" class="input-group-text col-form-label"
+										style="width: auto;">목요일</label> <input type="checkbox"
+										class="btn-check" id="thursday" name="weeklyDay"
+										autocomplete="off" value="thu" disabled> <label
+										class="btn btn-outline-primary" for="thursday"
+										style="margin-top: 17px;">선택</label>
+								</div>
+								<div class="input-group"
+									style="display: flex; align-items: center;">
+									<label for="friday" class="input-group-text col-form-label"
+										style="width: auto;">금요일</label> <input type="checkbox"
+										class="btn-check" id="friday" name="weeklyDay"
+										autocomplete="off" value="fri" disabled> <label
+										class="btn btn-outline-primary" for="friday"
+										style="margin-top: 17px;">선택</label>
+								</div>
+								<div class="input-group"
+									style="display: flex; align-items: center;">
+									<label for="saturday" class="input-group-text col-form-label"
+										style="width: auto;">토요일</label> <input type="checkbox"
+										class="btn-check" id="saturday" name="weeklyDay"
+										autocomplete="off" value="sat" disabled> <label
+										class="btn btn-outline-primary" for="saturday"
+										style="margin-top: 17px;">선택</label>
+								</div>
+								<div class="input-group"
+									style="display: flex; align-items: center;">
+									<label for="sunday" class="input-group-text col-form-label"
+										style="width: auto;">일요일</label> <input type="checkbox"
+										class="btn-check" id="sunday" name="weeklyDay"
+										autocomplete="off" value="sun" disabled> <label
+										class="btn btn-outline-primary" for="sunday"
+										style="margin-top: 17px;">선택</label>
+								</div>
+								<div class="input-group">
+									<input type="number" id="viewWeeklyRepeat"
+										style="margin-top: 2px;" min="1" max="24" value="1"
+										class="form-control"> <label class="input-group-text"
+										for="viewWeeklyRepeat" style="width: auto;">시 마다</label>
+								</div>
+							</div>
+						</div>
+						<!-- 매월 알림 -->
+						<div id="viewMonthlySettings" style="display: none;">
+							<div class="input-group">
+								<input type="number" style="margin-top: 10px;"
+									id="viewMonthlyDay" min="1" max="31" value="1"
+									class="form-control"> <label class="input-group-text"
+									for="viewMonthlyDay" style="width: auto;">일</label> <input
+									type="number" style="margin-top: 10px;" id="viewMonthlyHour"
+									min="1" max="24" value="1" class="form-control"> <label
+									class="input-group-text" for="viewMonthlyHour"
+									style="width: auto;">시 마다</label>
+							</div>
+						</div>
 					</div>
-				</div>
-
-				<!-- 모달 버튼들 -->
-				<div class="modal-buttons">
-					<button type="button" id="viewScheduleEditBtn">수정</button>
-					<button type="button" id="viewScheduleDeleteBtn">삭제</button>
-					<button type="button" class="viewScheduleClose">취소</button>
-				</div>
-			</form>
+					<div class="modal-buttons">
+						<button type="button" id="viewScheduleEditBtn">수정</button>
+						<button type="button" id="viewScheduleDeleteBtn">삭제</button>
+						<button type="button" class="viewScheduleClose">취소</button>
+					</div>
+				</form>
+			</div>
 		</div>
 	</div>
-
-
-
-
-
-
-
-
-
+</div>
 </div>
