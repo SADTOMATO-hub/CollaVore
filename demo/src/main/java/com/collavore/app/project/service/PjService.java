@@ -92,5 +92,8 @@ public interface PjService {
 	public int projectdwrkDelete(int pdwNo);
 	// 업무리스트 
 	public List<ProjectVO> projectwrkList(int projNo);
+	
+	// 코멘트 삭제
+	public int projectcomtsDelete(int pdwcNo);
 
 }
