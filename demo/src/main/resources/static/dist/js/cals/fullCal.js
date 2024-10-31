@@ -361,10 +361,11 @@ document.addEventListener('DOMContentLoaded', function() {
 									headers: { 'Content-Type': 'application/json' },
 									body: JSON.stringify({ schNo: info.event.id })
 								})
-									.then(response => response.json())
+									.then(response => response.text())
 									.then(data => {
 
 										if (data.success) {
+											location.reload();
 											info.event.remove();  // FullCalendar에서 삭제
 											viewScheduleModal.style.display = 'none'; // 모달 닫기
 										} else {
@@ -619,14 +620,19 @@ document.addEventListener('DOMContentLoaded', function() {
 									if (data.success) {
 										alert('일정 등록에 성공했습니다.');
 										addScheduleModal.style.display = 'none'; // 모달 닫기
+										location.reload(); //화면엔 바로뜨는데 값같은거 바로 안들어가서 그냥 새로고침 
 										// FullCalendar에 새 일정 추가
-										calendar.addEvent({
-											id: data.schNo,  // 서버에서 반환된 일정 번호
-											title: schsData.title,
-											start: schsData.startDate,  // FullCalendar에서 사용할 시작 시간
-											end: schsData.endDate,      // FullCalendar에서 사용할 종료 시간
-											allDay: schsData.isAllDay   // 하루 종일 여부
-										});
+										//calendar.addEvent({
+											//id: data.schNo,  // 서버에서 반환된 일정 번호
+											//title: schsData.title,
+											//start: schsData.startDate,  // FullCalendar에서 사용할 시작 시간
+											//end: schsData.endDate,      // FullCalendar에서 사용할 종료 시간
+											//allDay: schsData.isAllDay,   // 하루 종일 여부
+											//color: data.color,
+										//});
+										// 추가된 이벤트가 전체 일정을 갱신하도록 이벤트 재로딩
+										calendar.refetchEvents();
+										calendar.unselect(); // FullCalendar의 선택 해제
 									} else {
 										console.log(data); // 데이터를 확인하기 위한 로그 출력
 										alert('일정 등록에 실패했습니다.');
@@ -634,9 +640,6 @@ document.addEventListener('DOMContentLoaded', function() {
 								})
 								.catch(error => console.error('Error:', error));
 						}
-						// 모달 닫기
-						addScheduleModal.style.display = 'none';
-						calendar.unselect();
 
 					};
 				}
@@ -856,13 +859,13 @@ document.addEventListener('DOMContentLoaded', function() {
 							modal.style.display = 'none'; // 모달 닫기
 						});
 					});
-						
-						document.querySelectorAll('input[type="radio"][name="color"]').forEach(radio => {
-						    radio.addEventListener('change', (event) => {
-						        // 이벤트가 발생할 때 실행할 코드
-						        document.querySelector("#selColor").value = event.target.value; 
-						    });
+
+					document.querySelectorAll('input[type="radio"][name="color"]').forEach(radio => {
+						radio.addEventListener('change', (event) => {
+							// 이벤트가 발생할 때 실행할 코드
+							document.querySelector("#selColor").value = event.target.value;
 						});
+					});
 					document.getElementById('editCalendarForm').onsubmit = function(e) {
 						e.preventDefault();
 
@@ -1082,6 +1085,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				if (data.success) {
 					const sharedCalendarList = document.getElementById('sharedCalendarList');
 					const newCalendarItem = document.createElement('li');
+					newCalendarItem.classList.add('sidebar-item', 'calendar-item-wrapper');
 					newCalendarItem.innerHTML = makeSidEvent(data.calInfo); // data로 전달
 					sharedCalendarList.appendChild(newCalendarItem);
 				} else {
@@ -1226,7 +1230,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ calNo: calNo })  // JSON 데이터로 전송
 			})
-				.then(response => response.json())
+				.then(response => response.text())
 				.then(data => {
 					if (data === "캘린더가 완전히 삭제되었습니다.") {
 						alert('캘린더가 영구적으로 삭제되었습니다.');
@@ -1327,115 +1331,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		fetchDataAndRender(); // 부서와 사원 목록 다시 로드
 	}
-
-
-
-
-
-	// 중복 체크용 Set 생성
-	//const selectedEditEmpNos = new Set();
-
-	// 수정 모달에서 부서 및 사원 목록 로드
-	/*function loadDeptAndEmpForEditModal() {
-		fetch("/cal/deptWithEmp")
-			.then(response => response.json())
-			.then(data => {
-				const deptListContainer = document.getElementById("editSharedCalendarDeptList");
-				const empSelectContainer = document.getElementById("editEmployeeContainer");
-				const participantList = document.getElementById("editSelectedParticipantsList");
-
-				deptListContainer.innerHTML = ''; // 부서 초기화
-				empSelectContainer.innerHTML = ''; // 사원 초기화
-				participantList.innerHTML = ''; // 참여자 초기화
-				selectedEditEmpNos.clear(); // 선택된 사원 초기화
-
-				const deptEmployeeMap = {};
-
-				data.forEach(item => {
-					const deptNo = item.DEPT_NO;
-					const deptName = item.DEPT_NAME;
-					const empNo = item.EMP_NO;
-					const empName = item.EMP_NAME;
-
-					if (!deptEmployeeMap[deptNo]) {
-						deptEmployeeMap[deptNo] = {
-							deptName: deptName,
-							employees: []
-						};
-					}
-					if (empNo) {
-						deptEmployeeMap[deptNo].employees.push({ empNo, empName });
-					}
-				});
-
-				// 부서 목록 추가
-				Object.keys(deptEmployeeMap).forEach(deptNo => {
-					const deptItem = document.createElement("li");
-					deptItem.classList.add("dept-item");
-					deptItem.textContent = deptEmployeeMap[deptNo].deptName;
-					deptItem.dataset.deptno = deptNo;
-
-					// 부서 클릭 시 사원 목록 표시
-					deptItem.onclick = function() {
-						empSelectContainer.innerHTML = ''; // 사원 초기화
-
-						const employeeListUl = document.createElement("ul");
-						employeeListUl.classList.add("employee-list");
-
-						deptEmployeeMap[deptNo].employees.forEach(employee => {
-							const empItem = document.createElement("li");
-							empItem.classList.add("emp-item");
-							empItem.dataset.empno = employee.empNo;
-
-							const empNameSpan = document.createElement("span");
-							empNameSpan.textContent = employee.empName;
-
-							const checkIcon = document.createElement("span");
-							checkIcon.classList.add("check-icon");
-							checkIcon.textContent = "✔️";
-							checkIcon.style.visibility = selectedEditEmpNos.has(employee.empNo) ? "visible" : "hidden";
-
-							empItem.appendChild(empNameSpan);
-							empItem.appendChild(checkIcon);
-
-							// 사원 선택 시 참여자 목록에 추가 또는 삭제
-							empItem.onclick = function() {
-								if (!selectedEditEmpNos.has(employee.empNo)) {
-									selectedEditEmpNos.add(employee.empNo);
-
-									const participant = document.createElement("li");
-									participant.textContent = employee.empName;
-									participant.dataset.empno = employee.empNo;
-
-									participant.onclick = function() {
-										selectedEditEmpNos.delete(employee.empNo);
-										participant.remove();
-
-										const currentEmpItem = document.querySelector(`[data-empno="${employee.empNo}"]`);
-										if (currentEmpItem) {
-											const currentCheckIcon = currentEmpItem.querySelector(".check-icon");
-											currentCheckIcon.style.visibility = "hidden";
-										}
-									};
-
-									participantList.appendChild(participant);
-									checkIcon.style.visibility = "visible";
-								} else {
-									console.log(`${employee.empName} 이미 선택됨`);
-								}
-							};
-
-							employeeListUl.appendChild(empItem);
-						});
-
-						empSelectContainer.appendChild(employeeListUl);
-					};
-
-					deptListContainer.appendChild(deptItem);
-				});
-			})
-			.catch(error => console.error("부서 및 사원 목록 불러오기 에러:", error));
-	}*/
 
 	//=============================test
 	// 중복 체크용 Set 생성
@@ -1604,21 +1499,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			console.log(`${employee.empName} 이미 선택됨`);
 		}
 	}
-
-
-
-
-	//=============================
-
-
-
-
-	//==================================
-
-
-
-	//-=========================================-
-
 
 	// 모달 열릴 때마다 사원 목록 초기화 및 로드
 	document.getElementById("editCalendarModal").addEventListener("show", function() {
