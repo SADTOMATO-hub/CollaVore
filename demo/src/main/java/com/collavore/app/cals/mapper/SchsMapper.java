@@ -58,8 +58,23 @@ public interface SchsMapper {
 	
 	
 
-	// 캘린더 수정
-	public int updateCalsInfo(SchsVO schsVO);
+//	// 캘린더 수정
+//	public int updateCalsInfo(SchsVO schsVO);
+	// 캘린더 기본 정보 업데이트
+    int updateCalendarDetails(@Param("calNo") int calNo, @Param("name") String name, @Param("color") String color);
+
+    // 기존 참여자 삭제
+    int deleteParticipantsByCalNo(@Param("calNo") int calNo);
+
+    // 새 참여자 추가
+    int addParticipant(Map<String, Object> params);
+	//캘린더 수정할때 저장된 기본값 불러오기 부서 사원 참여자 
+	public List<Map<String, Object>> getCalInfo(int calNo);
+	
+	
+	
+	
+	
 
 	// 캘린더삭제
 	// 휴지통 리스트
