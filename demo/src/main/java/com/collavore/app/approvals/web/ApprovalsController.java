@@ -132,6 +132,7 @@ public class ApprovalsController {
 		apprVO.setUserEmpNo(userEmpNo);
 		List<ApprovalsVO> apprList = approvalsService.myApprList(apprVO);
 		model.addAttribute("myApprList", apprList);
+		model.addAttribute("approvalStatus", approvalStatus);
 		return "approvals/onProcess";
 	} 
 	

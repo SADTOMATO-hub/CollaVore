@@ -10,18 +10,20 @@
 						<table class="table table-striped table-bordered">
 							<thead>
 								<tr>
-									<td></td>
+									<td>순번</td>
 									<td>전자결재 제목</td>
 									<td>기안자</td>
 									<td>기안일</td>
-										<td> </td>
+									<th:block th:if="${#strings.equals(approvalStatus, 'a1')}"> 
+											<td></td>										
+									</th:block>
 								</tr>
 							</thead>
 							<tbody>
 								<th:block th:each=" myAppr, sts : ${myApprList}">
 									<tr
 										th:onclick="|location.href='@{/approvals/readApprInfo(eaNo=${myAppr.eaNo})}'|">
-										<td><input type="hidden" id="eaNo" th:value="${myAppr.eaNo}"></td>
+										<input type="hidden" id="eaNo" th:value="${myAppr.eaNo}">
 										<td>[[${sts.count}]]</td>
 										<td>[[${myAppr.title}]]</td>
 										<td>[[${myAppr.drafterName}]]</td>
