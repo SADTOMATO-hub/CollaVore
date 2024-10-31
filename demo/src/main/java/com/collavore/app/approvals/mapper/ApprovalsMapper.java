@@ -33,6 +33,7 @@ public interface ApprovalsMapper {
 	//결재하기
 	public int updateApprStatus (ApprovalsVO approvalsVo);
 	//전자결재 수정
+
 	//전자결재 삭제
 	public void deleteApproval (ApprovalsVO approvalsVo);
 	//인사 테이블 조회
