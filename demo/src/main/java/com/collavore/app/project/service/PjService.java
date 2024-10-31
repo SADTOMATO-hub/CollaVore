@@ -16,7 +16,7 @@ public interface PjService {
 	// 프로젝트 단건조회
 	public ProjectVO projectInfo(int projNo); 
 	// 프로젝트 수정
-	public Map<String, Object> updateProject(ProjectVO proejctVO);
+	public int updateProject(ProjectVO proejctVO);
 	
 	// 프로젝트 폴더 리스트 
 	public List<ProjectFoldersVO> projectfolderList();
@@ -90,10 +90,19 @@ public interface PjService {
 	
 	// 상세업무 삭제
 	public int projectdwrkDelete(int pdwNo);
+	
 	// 업무리스트 
 	public List<ProjectVO> projectwrkList(int projNo);
 	
 	// 코멘트 삭제
 	public int projectcomtsDelete(int pdwcNo);
+	
+	// 프로젝트 폴더 생성
+	public int projectfolderinsert(ProjectVO projectVO);
+	
+	// 프로젝트 폴더 삭제
+	public int projectfolderDelete(int projNo);
+	// 프로젝트 폴더 단건 조회
+	public ProjectVO projectfolderInfo(int projNo);
 
 }

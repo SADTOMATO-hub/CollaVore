@@ -509,13 +509,20 @@ button:active {
 								<form id="editProjectForm">
 									<div>
 										<label for="nameProjDwrks" class="form-label">프로젝트 이름</label>
-										<input type="text" id="editProjName" name="name"
-											class="form-control" required>
+										<input
+									        type="text"
+									        class="form-control"
+									        name="name"
+									        id="editProjName"
+									        required
+									        oninput="validateInput(this)"
+									        placeholder="영어만 입력해주세요."
+									    >
 									</div>
 									<div>
-										<label class="form-label">프로젝트 내용</label> <input type="text"
-											id="editProjContent" name="content" class="form-control"
-											required>
+										<label class="form-label">프로젝트 내용</label> 
+										<input type="text"id="editProjContent" name="content" class="form-control" required>
+										
 									</div>
 									<div>
 
@@ -1608,6 +1615,14 @@ button:active {
 		        });
 		    }
 		});		
+		function validateInput(input) {
+		    const regex = /^[a-zA-Z0-9_ ]*$/; // 영어, 숫자, 언더바, 공백 허용하는 정규 표현식
+		    
+		    if (!regex.test(input.value)) {
+		        alert("영어, 숫자, 공백, 언더바만 입력할 수 있습니다.");
+		        input.value = input.value.replace(/[^a-zA-Z0-9_ ]/g, ''); // 유효하지 않은 문자 제거
+		    }
+		}
     </script>
 
 	<!-- 재귀 함수 정의 -->
