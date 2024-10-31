@@ -1,10 +1,268 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="EUC-KR">
-<title>Insert title here</title>
-</head>
-<body>
+<div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{common/layouts/default_layout}"
+	layout:fragment="Content">
+	<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js"
+		charset="utf-8"></script>
+	<div class="container-fluid">
+		<div class="row">
+		<div class="card">
+			<h4 class="card-title">기안자 : [[${approvals.drafterName}]]</h4>
+			<div class="col-md-15">
+					<div class="col-12">
+						<form th:action="@{/approvals/updateApprInfo}" method="post"
+							class="form-horizontal" enctype="multipart/form-data"
+							name="updateForm">
+							<!-- 세큐리티 cors를 방지하는 기능  -->
+							<input type="hidden" name="${_csrf.parameterName}"
+								value="${_csrf.token}" />
+							<div class="form-group row">
+								<label for="approvalTitle"> <input type="text"
+									id="approvalTitle" name="title" required
+									placeholder="전자결재 제목을 입력해주세요">
+								</label>
+								<div class="table-responsive">
+									<table id="apprerTable"
+										class="table table-striped table-bordered">
+										<thead>
+											<tr>
+												<td></td>
+												<!-- ------------------- -->
+												<td><button type="button" class="modalBtn" data-seq="1"
+														data-bs-target="#approversSelect" data-bs-toggle="modal">결재자
+														선택</button></td>
+												<!-- ------------------- -->
+												<td><button type="button" class="modalBtn" data-seq="2"
+														data-bs-target="#approversSelect" data-bs-toggle="modal">결재자
+														선택</button></td>
+												<!-- ------------------- -->
+												<td><button type="button" class="modalBtn" data-seq="3"
+														data-bs-target="#approversSelect" data-bs-toggle="modal">결재자
+														선택</button></td>
+												<!-- ------------------- -->
+												<td><button type="button" class="modalBtn" data-seq="4"
+														data-bs-target="#approversSelect" data-bs-toggle="modal">결재자
+														선택</button></td>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>이름</td>
+												<td><span></span></td>
+												<td><span></span></td>
+												<td><span></span></td>
+												<td><span></span></td>
+											</tr>
+											<tr>
+												<td>직함</td>
+												<td><span></span></td>
+												<td><span></span></td>
+												<td><span></span></td>
+												<td><span></span></td>
+											</tr>
+										</tbody>
+									</table>
+									
 
-</body>
-</html>
+									<input type="hidden" name="approvers[0].empNo" value="">
+									<input type="hidden" name="approvers[1].empNo" value="">
+									<input type="hidden" name="approvers[2].empNo" value="">
+									<input type="hidden" name="approvers[3].empNo" value="">
+
+									<input type="hidden" name="approvers[0].sort" value="1">
+									<input type="hidden" name="approvers[1].sort" value="2">
+									<input type="hidden" name="approvers[2].sort" value="3">
+									<input type="hidden" name="approvers[3].sort" value="4">
+
+									<input type="hidden" name="drafterEmpNo" value="">
+									
+									<input type="hidden" name="eaNo" th:value="${approvals.eaNo}">
+									
+									<div class="card-body">
+										<h4 class="card-title">전자결재 기안 페이지</h4>
+										<hr>
+										<div class="col-sm-6">
+											<select id="selectContent" class="form-select">
+												<option selected disabled>==템플릿 선택==</option>
+												<option th:each="temps : ${tempInfo}"
+													th:value="${temps.eatNo}">[[${temps.eatNo}]]/[[${temps.title}]]</option>
+											</select>
+										</div>
+										<!-- 선택한 option의 value를 eatNO로 저장하기 위한 태그 -->
+										<input type="hidden" id="eatNo" name="eatNo" />
+										<!------------------------------------------------->
+									</div>
+									<textarea name="content" id="content" rows="2"
+										style="resize: none;" spellcheck="false"></textarea>
+								</div>
+							</div>
+							<div class="border-top">
+								<div class="card-body text-center">
+									<button type="button" id="update" class="btn btn-primary">수정</button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- 모달 -->
+	<div class="modal fade" id="approversSelect" tabindex="-1"
+		aria-labelledby="approversModalLabel" aria-hidden="true">
+		<!-- 선택한 option의 seq를 저장하기 위한 태그 -->
+		<input type="hidden" id="seq">
+		<!-- --------------------------------- -->
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalLabel">결재자 선택</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form id="apprForm">
+						<div class="mb-3">
+							<label for="selectApprovers" class="form-label">결재자 선택</label>
+						</div>
+						<div class="mb-3">
+							<select id="selectApprovers" class="form-select">
+								<option selected disabled>==결재자 선택==</option>
+								<option th:each="appverInfo : ${employeesInfo}"
+									th:value="${appverInfo.empNo}">[[${appverInfo.empName}]]/[[${appverInfo.posiName}]]</option>
+							</select>
+						</div>
+						<button type="button" class="btn btn-primary" id="modalSubmit">결재자
+							선택</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- -----------------모달----------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+	<!-- ------------------------------------- -->
+<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js"
+	charset="utf-8"></script>
+<script>
+	const userEmpNo = '[[${session.userEmpNo}]]';
+	// SmartEditor 참조를 위한 배열
+	var oEditors = [];
+	function smartEditor() {
+		console.log("Naver SmartEditor");
+		nhn.husky.EZCreator.createInIFrame({
+			oAppRef : oEditors,
+			elPlaceHolder : "content",
+			sSkinURI : "/smarteditor/SmartEditor2Skin.html",
+			fCreator : "createSEditor2"
+		});
+	}
+
+//템플릿에 저장되어 있는 data 가지고 오기
+	$(document).ready(function() {
+		smartEditor();
+				// 템플릿 선택 시 내용 불러오기
+				$("#selectContent").on("change",
+						function(event) {
+							var selectedVal = $(this).val();
+							var eatNo = $("#eatNo").val(selectedVal);
+							$.ajax({
+								url : `/approvals/temp?eatNo=` + selectedVal,
+								type : 'GET',
+								success : function(response) {
+									oEditors.getById["content"].exec(
+											"UPDATE_CONTENTS_FIELD", []);
+									oEditors.getById["content"].exec("SET_IR",
+											[ response.content ]);
+									$('#content').val(response.content);
+								},
+								error : function(xhr, status, error) {
+									alert('데이터 호출 실패: ' + error);
+								}
+							});
+						});
+				// 버튼 클릭 시 폼 제출
+				$("#update").on("click", function(event) {
+					submitPost(event);
+				});
+			});
+//end of 템플릿에 저장되어 있는 data 가지고 오기
+
+<!-- 모달창 여닫는 script -->
+$(document).ready(
+		function() {
+			const modal = $("#apprModal");
+			const closeBtn = $(".close");
+			// 모달 열기 버튼 클릭 시 이벤트 처리
+			$('.modalBtn').on('click', function() {
+				        $('#seq').val( event.target.dataset.seq ); //결재자의 순번을 결정하는 기능, 
+						$("body").addClass("modal-open"); // 스크롤 막는 클래스 추가
+						modal.show();
+					});
+			// 모달 닫기 버튼 클릭 시 이벤트 처리
+			closeBtn.on("click", function() {
+				https: //hayleyun.tistory.com/entry/HTML-모달창Modal-만들기 5/9
+				modal.css("display", "none");
+				$("body").removeClass("modal-open"); // 스크롤 막는 클래스 제거
+			});
+			// 모달 영역 외부 클릭 시 모달 닫기
+			$(window).on("click", function(event) {
+				if (event.target === modal[0]) {
+					modal.css("display", "none");
+					$("body").removeClass("modal-open"); // 스크롤 막는 클래스 제거
+				}
+			});
+		});
+
+	//modal에서 선택한 결재자 정보를 부모 페이지에 넘기는 기능
+	  $(document).ready(function(){
+			$("#modalSubmit").on("click", function(e){
+				e.preventDefault();
+				var seq = $('#seq').val();
+				var selectedApprover = $("#selectApprovers option:checked").text();
+				var selectedApproversEmp = $("#selectApprovers option:checked").val();
+				var selectedApproversName = selectedApprover.split('/')[0];
+				var selectedApproversInfo = selectedApprover.split('/')[1];
+				var empNoListVal = $(`[name="approvers[${seq-1}].empNo"]`).val(selectedApproversEmp);
+				//var sortVal = $('[name=sort]').eq(seq-1).val(seq);
+				$('#apprerTable tbody tr').eq(0).children().eq(seq).find('span').html(selectedApproversName);
+				$('#apprerTable tbody tr').eq(1).children().eq(seq).find('span').html(selectedApproversInfo);					
+				$('#selectApprovers').prop('selectedIndex', 0);
+				$('#approversSelect').modal('hide');				
+			});
+		});
+	//
+//수정버튼을 누르면 form의 데이터를 전부 넘김
+	function submitPost(event) {
+	var drafterEmpNo = $('input[name=drafterEmpNo]').val(userEmpNo);	
+		event.preventDefault(); // 폼 제출 방지
+		oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
+		if ( 	content  == null
+				|| content == '' 
+				|| content == '&nbsp;'
+				|| content == '<br>' 
+				|| content == '<p>&nbsp;</p>'){
+			alert("템플릿을 정해주세요.");
+			oEditors.getById["content"].exec("FOCUS");
+			return;
+		}else{
+			console.log(content);
+			updateForm.submit(); // 폼 제출			
+		}
+	}
+</script>
+</div>

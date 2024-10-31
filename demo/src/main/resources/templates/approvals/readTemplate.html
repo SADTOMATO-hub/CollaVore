@@ -155,29 +155,31 @@ button:active {
 			</div>
 			<div class="card_memberInsert">
 				<div class="col-md-9">
-					<form class="form-horizontal" name="insertForm" method="post">
-						<div class="form-group row">
-							<label for="empName"
-								class="col-sm-3 text-end control-label col-form-label">템플릿
-								명</label>
-							<div class="col-sm-9">
-								<input type="text" class="form-control" id="title" name="title"
-									placeholder="이름" th:value="${tempInfo.title}" readonly />
-							</div>
+					<div class="form-group row">
+						<label for="empName"
+							class="col-sm-3 text-end control-label col-form-label">템플릿
+							명</label>
+						<div class="col-sm-9">
+							<input type="text" class="form-control" id="title" name="title"
+								placeholder="이름" th:value="${tempInfo.title}" readonly />
 						</div>
-						<div class="form-group row">
-							<label for="content"
-								class="col-sm-3 text-end control-label col-form-label">내용</label>
-							<div class="col-sm-9">
-								<div th:fragment="contents" th:utext="${tempInfo.content}"></div>
-							</div>
+					</div>
+					<div class="form-group row">
+						<label for="content"
+							class="col-sm-3 text-end control-label col-form-label">내용</label>
+						<div class="col-sm-9">
+							<div th:fragment="contents" th:utext="${tempInfo.content}"></div>
 						</div>
-						<!-- 등록 버튼 -->
-						<div class="insert-btn">
-							<button type="button" class="btn btn-danger" id="deleteButton" th:onclick="|location.href='@{/approvals/deleteTemp(eatNo=${tempInfo.eatNo})}'|">템플릿 삭제</button>
-							<button type="button" class="btn btn-warning" th:onclick="|location.href='@{/approvals/updateTempForm(eatNo=${tempInfo.eatNo})}'|">템플릿 수정</button>
-						</div>
-					</form>
+					</div>
+					<!-- 등록 버튼 -->
+					<div class="insert-btn">
+						<button type="button" class="btn btn-danger" id="deleteButton"
+							th:onclick="|location.href='@{/approvals/deleteTemp(eatNo=${tempInfo.eatNo})}'|">템플릿
+							삭제</button>
+						<button type="button" class="btn btn-warning"
+							th:onclick="|location.href='@{/approvals/updateTempForm(eatNo=${tempInfo.eatNo})}'|">템플릿
+							수정</button>
+					</div>
 				</div>
 			</div>
 		</div>

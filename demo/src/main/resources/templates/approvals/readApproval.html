@@ -2,8 +2,6 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
-	<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js"
-		charset="utf-8"></script>
 	<div class="container-fluid">
 		<div class="row">
 			<h4 class="card-title">기안자 : [[${approvals.drafterName}]]</h4>
@@ -60,6 +58,7 @@
 							<div class="card-body">
 								<span th:utext="${approvals.content}"></span>
 							</div>
+							<button type="button" id="updateBtn" th:onclick="|location.href='@{/approvals/updateApprInfoForm(eaNo=${approvals.eaNo})}'|">수정하기</button>
 						</div>
 					</div>
 				</div>
