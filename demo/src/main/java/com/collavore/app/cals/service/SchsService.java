@@ -52,7 +52,8 @@ public interface SchsService {
 	// 공유 캘린더 참여자 등록
 	public int insertCalShares(int calNo, List<Integer> members); // 참여자 정보를 저장하고 성공한 레코드 수를 반환
 	
-	
+	// 캘린더 조회
+	public SchsVO selectCalInfo(int calNo);
 	
 	
 	// 캘린더 수정

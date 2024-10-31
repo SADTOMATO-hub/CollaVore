@@ -856,14 +856,19 @@ document.addEventListener('DOMContentLoaded', function() {
 							modal.style.display = 'none'; // 모달 닫기
 						});
 					});
-
-
+						
+						document.querySelectorAll('input[type="radio"][name="color"]').forEach(radio => {
+						    radio.addEventListener('change', (event) => {
+						        // 이벤트가 발생할 때 실행할 코드
+						        document.querySelector("#selColor").value = event.target.value; 
+						    });
+						});
 					document.getElementById('editCalendarForm').onsubmit = function(e) {
 						e.preventDefault();
 
 						const calNo = document.getElementById('selectedCalNo').value;
 						const name = document.getElementById('editCalendarName').value;
-						const color = document.querySelector('input[name="color"]:checked').value;  // 선택된 색상 값 가져오기
+						const color = document.getElementById('selColor').value;  // 선택된 색상 값 가져오기
 
 						console.log("Selected color:", color);
 
@@ -1077,7 +1082,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				if (data.success) {
 					const sharedCalendarList = document.getElementById('sharedCalendarList');
 					const newCalendarItem = document.createElement('li');
-					newCalendarItem.innerHTML = makeSidEvent(data); // data로 전달
+					newCalendarItem.innerHTML = makeSidEvent(data.calInfo); // data로 전달
 					sharedCalendarList.appendChild(newCalendarItem);
 				} else {
 					console.log(data);

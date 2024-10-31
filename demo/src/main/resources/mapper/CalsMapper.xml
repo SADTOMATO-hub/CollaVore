@@ -352,8 +352,7 @@
 	<!-- 캘린더를 휴지통으로 이동 (isDelete = 'h1'로 업데이트하고 deleteDate 설정) -->
 	<update id="updateCalToTrash" parameterType="int">
 		UPDATE cals
-		SET
-		is_delete = 'h1', delete_date = SYSDATE
+		SET is_delete = 'h1', delete_date = SYSDATE
 		WHERE cal_no = #{calNo}
 	</update>
 
@@ -361,8 +360,7 @@
 	<!-- 캘린더를 복원 (isDelete = 'h2'로 업데이트하고 deleteDate를 NULL로 설정) -->
 	<update id="restoreCalFromTrash" parameterType="int">
 		UPDATE cals
-		SET
-		is_delete = 'h2', delete_date = NULL
+		SET is_delete = 'h2', delete_date = NULL
 		WHERE cal_no = #{calNo}
 	</update>
 
@@ -428,5 +426,12 @@
 		)}
 	</update>
 
+	<select id="selectCalInfo" resultType="SchsVO">
+		SELECT cal_no
+			, name
+			, color
+		FROM cals
+		WHERE cal_no = #{calNo}
+	</select>
 
 </mapper>

@@ -165,6 +165,12 @@ public class SchsServiceImpl implements SchsService {
     }
 
 
+	// 캘린더 조회
+	@Override
+	public SchsVO selectCalInfo(int calNo) {
+		return schsMapper.selectCalInfo(calNo);
+	}
+
 	// 캘린더 수정
 //	@Override
 //	public Map<String, Object> updateCals(SchsVO schsVO) {

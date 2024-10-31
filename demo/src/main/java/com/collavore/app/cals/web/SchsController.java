@@ -251,9 +251,11 @@ public class SchsController {
 			if (calNo > 0 && !members.isEmpty()) {
 				schsService.insertCalShares(calNo, members);
 			}
+			SchsVO calInfo = schsService.selectCalInfo(calNo);
 
 			result.put("success", true);
 			result.put("calNo", calNo);
+			result.put("calInfo", calInfo);
 		} catch (Exception e) {
 			result.put("success", false);
 			result.put("message", "캘린더 등록에 실패했습니다.");

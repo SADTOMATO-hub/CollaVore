@@ -71,7 +71,8 @@ public interface SchsMapper {
 	//캘린더 수정할때 저장된 기본값 불러오기 부서 사원 참여자 
 	public List<Map<String, Object>> getCalInfo(int calNo);
 	
-	
+	// 캘린더 정보 조회
+	public SchsVO selectCalInfo(int calNo);
 	
 	
 	
