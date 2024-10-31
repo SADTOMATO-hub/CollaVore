@@ -1,5 +1,8 @@
 package com.collavore.app.project.web;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -7,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +41,9 @@ import com.collavore.app.project.service.ProjectTempVO;
 import com.collavore.app.project.service.ProjectVO;
 import com.collavore.app.project.service.ProjectWorkTempVO;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-
+    
 @Controller
 @RequiredArgsConstructor
 public class ProjectController {
@@ -52,11 +57,13 @@ public class ProjectController {
 
 	// 프로젝트 리스트 출력
 	@GetMapping("project/projectlist")
-	public String projectList(Model model) {
+	public String projectList(Model model, HttpSession session) {
+		Integer empNo = (Integer) session.getAttribute("userEmpNo");
 		List<ProjectVO> list = pjService.projectList();
 		List<ProjectTempVO> templist = pjtempService.projecttempList();
 		List<ProjectVO> emplist = pjService.empList();
 
+		model.addAttribute("empNo", empNo);
 		model.addAttribute("projects", list);
 		model.addAttribute("templist", templist);
 		model.addAttribute("emp", emplist);
@@ -68,34 +75,33 @@ public class ProjectController {
 	@ResponseBody
 	public Map<String, Object> insertAjax(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
-		//System.err.println(projectVO);
-		
+		// System.err.println(projectVO);
+
 		pjService.projectinsert(projectVO);
-		
-		List<ProjectWorkTempVO> projwrklist =  pjtempService.projectwrktemplistInfo(projectVO.getProjTempNo());
-		  for (ProjectWorkTempVO user : projwrklist) {
-			  projectVO.setName(user.getName()); 
-			  projectVO.setContent(user.getContent()); 
-			  projectVO.setProjTempNo(user.getProjTempNo()); 
-			  projectVO.setJobNo(user.getJobNo()); 
-			  //System.err.println(projectVO);
-	          pjService.projectwrkinsert(projectVO);  
-			  List<ProjectDWorkTempVO> projdwrklist = pjtempService.projectDwrktemplistInfo(user.getPwtNo());
-			  for(ProjectDWorkTempVO dwrk : projdwrklist) {
-				  projectVO.setName(dwrk.getName());
-				  projectVO.setContent(dwrk.getContent());
-				  projectVO.setPwtNo(dwrk.getPwtNo());
-				  projectVO.setImportance(dwrk.getImportance());
-				  //System.err.println("-----------------------------------");
-				  //System.err.println(projectVO);
+
+		List<ProjectWorkTempVO> projwrklist = pjtempService.projectwrktemplistInfo(projectVO.getProjTempNo());
+		for (ProjectWorkTempVO user : projwrklist) {
+			projectVO.setName(user.getName());
+			projectVO.setContent(user.getContent());
+			projectVO.setProjTempNo(user.getProjTempNo());
+			projectVO.setJobNo(user.getJobNo());
+			// System.err.println(projectVO);
+			pjService.projectwrkinsert(projectVO);
+			List<ProjectDWorkTempVO> projdwrklist = pjtempService.projectDwrktemplistInfo(user.getPwtNo());
+			for (ProjectDWorkTempVO dwrk : projdwrklist) {
+				projectVO.setName(dwrk.getName());
+				projectVO.setContent(dwrk.getContent());
+				projectVO.setPwtNo(dwrk.getPwtNo());
+				projectVO.setImportance(dwrk.getImportance());
+				// System.err.println("-----------------------------------");
+				// System.err.println(projectVO);
 				pjService.projectdwrkinsert(projectVO);
-			  }
-	        }
-		
-		//pjService.projectwrkinsert(projectVO);
-		
-		
-		//pjService.projectdwrkinsert(projectVO);
+			}
+		}
+
+		// pjService.projectwrkinsert(projectVO);
+
+		// pjService.projectdwrkinsert(projectVO);
 
 		map.put("type", "postAjax");
 		map.put("data", projectVO);
@@ -129,10 +135,33 @@ public class ProjectController {
 	@DeleteMapping("project/projectdelete/{projNo}")
 	@ResponseBody
 	public String deleteProject(@PathVariable int projNo) {
+		
 		pjService.projectDelete(projNo);
+		List<ProjectVO> projectVOList = pjService.projectwrkList(projNo);
+		pjService.projectwrkDelete(projNo);
+		
+		for(ProjectVO info :  projectVOList) {
+			pjService.projectdwrkDelete(info.getPwNo());
+		}
 		return "삭제 완료";
 	}
+	
+	// 프로젝트 업무 삭제
+		@DeleteMapping("project/projectwrkdel/{pwNo}")
+		@ResponseBody
+		public String deletewrkProject(@PathVariable int pwNo) {
+			pjService.projectwrkDelete(pwNo);
+			return "삭제 완료";
+		}
 
+		// 프로젝트 상세 업무 삭제
+		@DeleteMapping("project/projectdwrkdel/{pdwNo}")
+		@ResponseBody
+		public String deletedwrkProject(@PathVariable int pdwNo) {
+			pjService.projectdwrkDelete(pdwNo);
+			return "삭제 완료";
+		}
+		
 	// 프로젝트 폴더 관리
 	@GetMapping("project/projectfilelist")
 	public String projectFileList(Model model) {
@@ -329,13 +358,31 @@ public class ProjectController {
 		return response;
 	}
 
+//	// 상세업무 코멘트 단건 리스트
+//	@GetMapping("/project/projecdwrkcomtstinfo/{pdwNo}")
+//	@ResponseBody
+//	public List<ProjectVO> projectDWrkComtInfo(@PathVariable int pdwNo) {
+//		return pjService.projectDWrkComtInfo(pdwNo);
+//	}
+//	
 	// 상세업무 코멘트 단건 리스트
 	@GetMapping("/project/projecdwrkcomtstinfo/{pdwNo}")
 	@ResponseBody
-	public List<ProjectVO> projectDWrkComtInfo(@PathVariable int pdwNo) {
-		return pjService.projectDWrkComtInfo(pdwNo);
-	}
+	public Map<String, Object> projectDWrkComtInfo(@PathVariable int pdwNo) {
+	    // 프로젝트 업무 코멘트 정보를 가져오는 메서드 호출
+	    List<ProjectVO> projectComments = pjService.projectDWrkComtInfo(pdwNo);
+	    
+	    ProjectVO projectManager = pjService.projectdwrkInfo(pdwNo);
+	    List<ProjectVO> selectmgrs = Collections.singletonList(projectManager);
 
+	    // 결과를 하나의 Map으로 결합하여 반환
+	    Map<String, Object> response = new HashMap<>();
+	    response.put("comments", projectComments);
+	    response.put("mgrs", selectmgrs);
+
+	    return response; // 결합된 정보를 반환
+	}
+	
 	// 상세업무 코멘트 생성
 	@PostMapping("project/projectdwrkcomtinsert")
 	@ResponseBody
@@ -380,4 +427,43 @@ public class ProjectController {
 		}
 		return response;
 	}
+
+	// 등록된 깃의 clone_url값을 받아와서 git 주소로 입력하기.
+	@PostMapping("/project/projGitUrlAdd")
+	@ResponseBody
+	public boolean addGitUrl(@RequestBody ProjectVO projectVO) {
+		pjService.addGitUrl(projectVO);
+		return true;
+	}
+
+	// 프로젝트 gitURL을 기준으로 내 로컬 경로에 클론하기
+	@PostMapping("/project/gitClone")
+	@ResponseBody
+	public String cloneRepository(@RequestBody ProjectVO projectVO) throws InterruptedException {
+		String cloneGitUrl = projectVO.getProjectGitUrl();
+		String localPath = projectVO.getCloneLocalPath();
+
+		try {
+			Process process = Runtime.getRuntime().exec(new String[] { "git", "clone", cloneGitUrl, localPath });
+			process.waitFor();
+
+			// 오류 로그 출력
+			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+			StringBuilder errorLog = new StringBuilder();
+			String line;
+			while ((line = reader.readLine()) != null) {
+				errorLog.append(line).append("\n");
+			}
+			if (errorLog.length() > 0) {
+				System.err.println("Git Clone Error: " + errorLog);
+				return "Failed to clone repository: " + errorLog.toString();
+			}
+
+			return "Repository cloned successfully!";
+		} catch (IOException e) {
+			e.printStackTrace();
+			return "Failed to clone repository: " + e.getMessage();
+		}
+	}
+
 }
