@@ -45,7 +45,7 @@ public class ProjectServiceImpl implements PjService{
 	}
 
     @Override
-    public Map<String, Object> updateProject(ProjectVO projectVO) {
+    public int updateProject(ProjectVO projectVO) {
         return projectMapper.updateProject(projectVO);
     }
     // 프로젝트 폴더 리스트
@@ -201,5 +201,20 @@ public class ProjectServiceImpl implements PjService{
 	@Override
 	public int projectcomtsDelete(int pdwcNo) {
 		return projectMapper.projectcomtsDelete(pdwcNo);
+	}
+
+	@Override
+	public int projectfolderinsert(ProjectVO projectVO) {
+		return projectMapper.ProjectfolderInsert(projectVO);
+	}
+
+	@Override
+	public int projectfolderDelete(int projNo) {
+		return projectMapper.ProjectfolderDelete(projNo);
+	}
+
+	@Override
+	public ProjectVO projectfolderInfo(int projNo) {
+		return projectMapper.projectfolderInfo(projNo); 
 	}
 }

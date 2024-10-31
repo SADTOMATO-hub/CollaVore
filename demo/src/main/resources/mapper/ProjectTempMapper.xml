@@ -103,19 +103,21 @@
 		SET name = #{name},
 			content = #{content},
 			proj_temp_no = #{projTempNo}, 
-			job_no = #{jobNo}
+			job_no = #{jobNo},
+			reg_date = sysdate
 
 		WHERE pwt_no = #{pwtNo}
 	</update>
 
 	<!-- 단건조회 -->
 	<select id="selectwrktempProject" resultType="ProjectWorkTempVO">
-		SELECT pwt_no,
-				name,
-				content,
-				proj_temp_no,
-				job_no
-		FROM projwrktemps
+		SELECT p.pwt_no,
+				p.name,
+				p.content,
+				p.proj_temp_no,
+				p.job_no,
+                j.name as jobName
+		FROM projwrktemps p JOIN jobs j ON p.job_no = j.job_no
 		WHERE pwt_no = #{pwtNo}
 	</select>
 	

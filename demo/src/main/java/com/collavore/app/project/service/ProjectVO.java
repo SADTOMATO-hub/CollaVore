@@ -70,4 +70,10 @@ public class ProjectVO {
 	private String gitToken; // 회원의 git 토큰
 	private String cloneLocalPath; // 클론받을 로컬경로
 	
+	// 프로젝트 폴더 관련
+	private Integer pfNo;
+	private Integer parentPfNo;
+	// 프로젝트 파일 관련
+	private Integer projFileNo;
+	
 }
