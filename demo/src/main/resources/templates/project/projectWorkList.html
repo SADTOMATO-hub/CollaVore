@@ -974,15 +974,17 @@
                                 
                                 const chatItem = isCurrentUser
                                     ? `
-                                        <li class="odd chat-item">
+                                        <li class="odd chat-item" data-id="${info.pdwcNo}">
                                             <div class="chat-content">
-                                                <button class="btn btn-link btn-sm text-decoration-none">
+                                                <button class="btn btn-link btn-sm text-decoration-none delete-chat-btn">
                                                     <i class="me-2 mdi mdi-delete"></i>
                                                 </button>
                                                 <div class="box bg-light-inverse">${info.content}</div>
                                                 <br />
                                             </div>
                                             <div class="chat-time">${formatDate(info.regDate)}</div>
+                                            
+                                            <input type="hidden" name="pdwcNo" value="${info.pdwcNo}">
                                         </li>`
                                     : `
                                         <li class="chat-item">
@@ -1281,6 +1283,26 @@
 		            }
 		        });
 		    });
+		});		
+		// 삭제 버튼 클릭 이벤트 리스너 추가
+		$(document).on('click', '.delete-chat-btn', function() {
+		    const chatItem = $(this).closest('.chat-item');
+		    //const pdwcNo = $(pdwcNumber).val();
+		    const pdwcNo = chatItem.find('input[name="pdwcNo"]').val();
+			//console.log(pdwcNo);
+		    if (confirm('이 메시지를 삭제하시겠습니까?')) {
+		        $.ajax({
+		            url: `/project/projectcomtsdel/${pdwcNo}`, // 삭제 요청을 보낼 엔드포인트
+		            method: 'DELETE',
+		            data: { pdwcNo: pdwcNo },
+		            success: function(response) {
+		                    chatItem.remove(); // DOM에서 채팅 아이템 삭제
+		            },
+		            error: function() {
+		                alert('메시지 삭제 중 오류가 발생했습니다.');
+		            }
+		        });
+		    }
 		});		
     </script>
 

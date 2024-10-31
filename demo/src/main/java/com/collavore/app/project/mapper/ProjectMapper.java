@@ -92,5 +92,8 @@ public interface ProjectMapper {
 	//프로젝트 업무 리스트
 	public List<ProjectVO> projwrkList(int projNo);
 	
+	// 상세업무 코멘트 삭제
+	public int projectcomtsDelete(int pdwcNo);
+	
 	
 }

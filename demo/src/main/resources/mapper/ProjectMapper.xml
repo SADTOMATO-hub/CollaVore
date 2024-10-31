@@ -489,4 +489,14 @@
 		FROM projwrks
 		WHERE proj_no = #{projNo}
 	</select>	
+	
+	<!-- 프로젝트 상세업무 코멘트 삭제-->
+	<delete id="projectcomtsDelete" parameterType="int">
+		delete 
+		FROM 
+	        projdwrkcomts
+		WHERE
+			pdwc_no = #{pdwcNo}
+	</delete>
+	
 </mapper>

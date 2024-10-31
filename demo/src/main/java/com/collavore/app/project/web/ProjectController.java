@@ -388,7 +388,7 @@ public class ProjectController {
 	@ResponseBody
 	public Map<String, Object> dwrkcomtinsertAjax(@RequestBody ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
-		System.err.println(projectVO);
+		//System.err.println(projectVO);
 		pjService.projectdwrkcomtinsert(projectVO);
 
 		// regDate를 포맷팅하여 응답에 추가
@@ -464,6 +464,14 @@ public class ProjectController {
 			e.printStackTrace();
 			return "Failed to clone repository: " + e.getMessage();
 		}
+	}
+	
+	// 프로젝트 상세업무 코멘트 삭제
+	@DeleteMapping("project/projectcomtsdel/{pdwcNo}")
+	@ResponseBody
+	public String deletedcomts(@PathVariable int pdwcNo) {
+		pjService.projectcomtsDelete(pdwcNo);
+		return "삭제 완료";
 	}
 
 }
