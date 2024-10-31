@@ -816,12 +816,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
 					// 연필 아이콘 클릭 이벤트 설정
 					const editIcon = newCalendarItem.querySelector('.edit-icon');
-					editIcon.addEventListener('click', function() {						
+					editIcon.addEventListener('click', function() {
 						const calendarItem = this.parentElement;
 						const selectedCalNo = calendarItem.querySelector('.calendar-item').getAttribute('data-calno');
 						const calendarName = calendarItem.querySelector('.cal_name').value;
 						const calendarIcon = calendarItem.querySelector('i');
 						const calendarColor = window.getComputedStyle(calendarIcon).color;
+
+						console.log("Current color in calendar (calendarColor):", calendarColor); // 확인용 로그
+
 
 						// 선택된 calNo 값을 hidden input에 설정
 						document.getElementById('selectedCalNo').value = selectedCalNo;
@@ -860,7 +863,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 						const calNo = document.getElementById('selectedCalNo').value;
 						const name = document.getElementById('editCalendarName').value;
-						const color = document.querySelector('input[name="color"]:checked').value;
+						const color = document.querySelector('input[name="color"]:checked').value;  // 선택된 색상 값 가져오기
+
+						console.log("Selected color:", color);
 
 						// 선택된 참여자 목록을 배열로 수집하고 "members"라는 키로 사용
 						const members = Array.from(document.getElementById('editSelectedParticipantsList').children)
@@ -873,9 +878,13 @@ document.addEventListener('DOMContentLoaded', function() {
 							method: 'POST',
 							headers: { 'Content-Type': 'application/json' },
 							body: JSON.stringify({ calNo: calNo, name: name, color: color, members: members })
+
 						})
+
 							.then(response => response.json())
 							.then(data => {
+								console.log("Payload data:", { calNo: calNo, name: name, color: color, members: members });
+
 								console.log(data);
 								if (data.result) {
 									alert('캘린더 수정이 성공적으로 완료되었습니다.');
@@ -1126,7 +1135,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			wasteCalendarList.innerHTML = '';  // 기존 리스트 초기화
 
 			data.forEach(calendar => {
-				const newTrashItem = document.createElement('li');				
+				const newTrashItem = document.createElement('li');
 				newTrashItem.classList.add('sidebar-item', 'trash-item', 'calendar-item-wrapper');
 				newTrashItem.setAttribute('data-calno', calendar.calNo);
 				newTrashItem.innerHTML = makeSidEvent(calendar);
@@ -1135,7 +1144,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				const editIcon = newTrashItem.querySelector('.edit-icon');
 				editIcon.addEventListener('click', function() {
 					const calendarItem = this.closest('.trash-item');
-					const selectedCalNo = calendarItem.getAttribute('data-calno');					
+					const selectedCalNo = calendarItem.getAttribute('data-calno');
 					const calendarName = calendarItem.querySelector('.cal_name').value;
 
 					// 모달창에 기존 값 설정
@@ -1254,9 +1263,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	//사이드바  캘린더 리스트 생성 뿌리기 
 	function makeSidEvent(calendar) {
 		let truncatedName = calendar.name.length > 8 ? calendar.name.substring(0, 8) + '...' : calendar.name;
-	
+
 		let tag =
-	    `
+			`
 	        <input type="hidden" class="cal_name" value="${calendar.name}" />
 	        <a href="javascript:void(0)" data-calno="${calendar.calNo}" class="sidebar-link calendar-item">
 	            <i class="mdi mdi-calendar-blank" style="color:${calendar.color};"></i> ${truncatedName}
@@ -1455,13 +1464,11 @@ document.addEventListener('DOMContentLoaded', function() {
 								Object.entries(participant).map(([key, value]) => [key.toLowerCase(), value])
 							);
 
-							// emp_name 필드로 접근
-							const empName = normalizedParticipant['emp_name'];
+
+							// emp_name과 empno 필드로 접근
+							const empName = normalizedParticipant['empname'];
 							const empNo = normalizedParticipant['empno'];
 
-							// 전체 객체와 empName 값 확인
-							console.log("Full participant object:", JSON.stringify(participant, null, 2));
-							console.log("Extracted empName:", empName);
 
 							// empName이 유효한 경우에만 추가
 							if (empName && empName.trim().length > 0) {
@@ -1484,14 +1491,11 @@ document.addEventListener('DOMContentLoaded', function() {
 									}
 								};
 
-								console.log("Adding participant to list:", empName);  // 추가 작업 확인 로그
 								participantList.appendChild(participantItem);  // 참여자 목록에 추가
 							} else {
-								console.warn("Participant without valid name:", participant);
+								console.warn("Participant without valid name:", normalizedParticipant);
 							}
 						});
-
-
 
 
 						// 부서 목록 추가
@@ -1520,7 +1524,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// 부서 및 사원 목록을 UI에 렌더링
 	function displayDeptEmployeeList(deptEmployeeMap, deptListContainer, empSelectContainer, participantList) {
-		// 부서 목록 표시 부분
 		console.log("Department Employee Map:", deptEmployeeMap); // 부서-사원 정보 확인 로그
 
 		Object.keys(deptEmployeeMap).forEach(deptNo => {
@@ -1561,29 +1564,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		checkIcon.textContent = "✔️";
 
 		// selectedEditEmpNos에 있는 사원이라면 체크 아이콘 표시
-		if (selectedEditEmpNos.has(employee.empNo)) {
-			checkIcon.style.visibility = "visible";
-
-			// 이미 선택된 사원이라면 모달 내 참여자 목록에도 추가
-			const participant = document.createElement("li");
-			participant.textContent = employee.empName;
-			participant.dataset.empno = employee.empNo;
-
-			participant.onclick = function() {
-				selectedEditEmpNos.delete(employee.empNo);
-				participant.remove();
-
-				const currentEmpItem = document.querySelector(`[data-empno="${employee.empNo}"]`);
-				if (currentEmpItem) {
-					const currentCheckIcon = currentEmpItem.querySelector(".check-icon");
-					currentCheckIcon.style.visibility = "hidden";
-				}
-			};
-
-			participantList.appendChild(participant);
-		} else {
-			checkIcon.style.visibility = "hidden";
-		}
+		checkIcon.style.visibility = selectedEditEmpNos.has(employee.empNo) ? "visible" : "hidden";
 
 		empItem.appendChild(empNameSpan);
 		empItem.appendChild(checkIcon);
@@ -1594,6 +1575,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		return empItem;
 	}
+
 
 	// 사원 선택 및 해제 처리 함수
 	function toggleEmployeeSelection(employee, empItem, checkIcon, participantList) {
@@ -1608,17 +1590,12 @@ document.addEventListener('DOMContentLoaded', function() {
 				selectedEditEmpNos.delete(employee.empNo);
 				participant.remove();
 
-				const currentEmpItem = document.querySelector(`[data-empno="${employee.empNo}"]`);
-				if (currentEmpItem) {
-					const currentCheckIcon = currentEmpItem.querySelector(".check-icon");
-					currentCheckIcon.style.display = "none";
-				}
+				// 사원 리스트에서 체크 아이콘 숨김
+				checkIcon.style.visibility = "hidden";
 			};
 
 			participantList.appendChild(participant);
-			checkIcon.style.display = "inline"; // display 사용
-			console.log("Check icon visibility:", checkIcon.style.display); // 가시성 확인 로그
-			console.log("Participant added:", employee.empName); // 참여자 추가 확인 로그
+			checkIcon.style.visibility = "visible"; // 체크 아이콘 표시
 		} else {
 			console.log(`${employee.empName} 이미 선택됨`);
 		}
