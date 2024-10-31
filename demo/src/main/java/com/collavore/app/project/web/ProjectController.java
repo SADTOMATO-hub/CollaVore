@@ -76,9 +76,11 @@ public class ProjectController {
 	public Map<String, Object> insertAjax(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
 		// System.err.println(projectVO);
-
+		
+		//프로젝트생성
 		pjService.projectinsert(projectVO);
-
+		
+		//템플릿 업무 리스트 출력
 		List<ProjectWorkTempVO> projwrklist = pjtempService.projectwrktemplistInfo(projectVO.getProjTempNo());
 		for (ProjectWorkTempVO user : projwrklist) {
 			projectVO.setName(user.getName());
@@ -121,7 +123,9 @@ public class ProjectController {
 	public Map<String, Object> updateProject(@RequestBody ProjectVO projectVO) {
 		Map<String, Object> response = new HashMap<>();
 		try {
+			//
 			pjService.updateProject(projectVO);
+
 			response.put("message", "수정 완료");
 			response.put("status", "success");
 		} catch (Exception e) {
@@ -416,7 +420,7 @@ public class ProjectController {
 	public Map<String, Object> updatestatusProject(@PathVariable String pdwNo, @RequestBody ProjectVO projectVO) {
 		Map<String, Object> response = new HashMap<>();
 		try {
-			System.err.println(projectVO);
+			//System.err.println(projectVO);
 			pjService.updatestatusProject(projectVO);
 			response.put("message", "수정 완료");
 			response.put("status", "success");
