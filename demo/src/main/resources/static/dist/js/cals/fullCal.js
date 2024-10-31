@@ -1451,11 +1451,52 @@ document.addEventListener('DOMContentLoaded', function() {
 					.then(response => response.json())
 					.then(selectedParticipants => {
 						console.log("Loaded participants:", selectedParticipants); // 로그 확인
-						// 데이터가 정상적으로 불러오는지 확인합니다.
-						// 선택된 참여자 empNo를 Set에 추가
+
+						// 선택된 참여자 empNo를 Set에 추가하고, UI에 표시
 						selectedParticipants.forEach(participant => {
-							selectedEditEmpNos.add(participant.empNo);
+							// 모든 키를 소문자로 변환하여 새로운 객체 생성
+							const normalizedParticipant = Object.fromEntries(
+								Object.entries(participant).map(([key, value]) => [key.toLowerCase(), value])
+							);
+
+							// emp_name 필드로 접근
+							const empName = normalizedParticipant['emp_name'];
+							const empNo = normalizedParticipant['empno'];
+
+							// 전체 객체와 empName 값 확인
+							console.log("Full participant object:", JSON.stringify(participant, null, 2));
+							console.log("Extracted empName:", empName);
+
+							// empName이 유효한 경우에만 추가
+							if (empName && empName.trim().length > 0) {
+								selectedEditEmpNos.add(empNo);
+
+								const participantItem = document.createElement("li");
+								participantItem.textContent = empName;
+								participantItem.dataset.empno = empNo;
+
+								participantItem.onclick = function() {
+									selectedEditEmpNos.delete(empNo);
+									participantItem.remove();
+
+									const currentEmpItem = document.querySelector(`[data-empno="${empNo}"]`);
+									if (currentEmpItem) {
+										const currentCheckIcon = currentEmpItem.querySelector(".check-icon");
+										if (currentCheckIcon) {
+											currentCheckIcon.style.visibility = "hidden";
+										}
+									}
+								};
+
+								console.log("Adding participant to list:", empName);  // 추가 작업 확인 로그
+								participantList.appendChild(participantItem);  // 참여자 목록에 추가
+							} else {
+								console.warn("Participant without valid name:", participant);
+							}
 						});
+
+
+
 
 						// 부서 목록 추가
 						const deptEmployeeMap = organizeDeptEmployeeMap(data); // 부서와 사원 데이터 조직화
@@ -1522,7 +1563,31 @@ document.addEventListener('DOMContentLoaded', function() {
 		const checkIcon = document.createElement("span");
 		checkIcon.classList.add("check-icon");
 		checkIcon.textContent = "✔️";
-		checkIcon.style.visibility = selectedEditEmpNos.has(employee.empNo) ? "visible" : "hidden";
+
+		// selectedEditEmpNos에 있는 사원이라면 체크 아이콘 표시
+		if (selectedEditEmpNos.has(employee.empNo)) {
+			checkIcon.style.visibility = "visible";
+
+			// 이미 선택된 사원이라면 모달 내 참여자 목록에도 추가
+			const participant = document.createElement("li");
+			participant.textContent = employee.empName;
+			participant.dataset.empno = employee.empNo;
+
+			participant.onclick = function() {
+				selectedEditEmpNos.delete(employee.empNo);
+				participant.remove();
+
+				const currentEmpItem = document.querySelector(`[data-empno="${employee.empNo}"]`);
+				if (currentEmpItem) {
+					const currentCheckIcon = currentEmpItem.querySelector(".check-icon");
+					currentCheckIcon.style.visibility = "hidden";
+				}
+			};
+
+			participantList.appendChild(participant);
+		} else {
+			checkIcon.style.visibility = "hidden";
+		}
 
 		empItem.appendChild(empNameSpan);
 		empItem.appendChild(checkIcon);
@@ -1550,16 +1615,20 @@ document.addEventListener('DOMContentLoaded', function() {
 				const currentEmpItem = document.querySelector(`[data-empno="${employee.empNo}"]`);
 				if (currentEmpItem) {
 					const currentCheckIcon = currentEmpItem.querySelector(".check-icon");
-					currentCheckIcon.style.visibility = "hidden";
+					currentCheckIcon.style.display = "none";
 				}
 			};
 
 			participantList.appendChild(participant);
-			checkIcon.style.visibility = "visible";
+			checkIcon.style.display = "inline"; // display 사용
+			console.log("Check icon visibility:", checkIcon.style.display); // 가시성 확인 로그
+			console.log("Participant added:", employee.empName); // 참여자 추가 확인 로그
 		} else {
 			console.log(`${employee.empName} 이미 선택됨`);
 		}
 	}
+
+
 
 
 	//=============================
