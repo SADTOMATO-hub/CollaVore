@@ -202,6 +202,7 @@
 				,e.name as "drafterName"
 				,a.status as "approverStatus"
 				,a.ea_no
+				,a.eat_no
 		FROM approvals a LEFT JOIN employees e
 		ON a.emp_no = e.emp_no
 		WHERE

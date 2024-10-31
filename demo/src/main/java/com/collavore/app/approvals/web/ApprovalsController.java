@@ -185,6 +185,7 @@ public class ApprovalsController {
 		List<ApprovalstempVO> tempInfo = approvalsService.apprTempList();
 		model.addAttribute("approvals", apprInfo);
 		model.addAttribute("approvers", approvers);
+		model.addAttribute("apprSize",approvers.size());
 		model.addAttribute("tempInfo", tempInfo);
 		model.addAttribute("employeesInfo", employeesInfo);
 		return "approvals/updateApproval";
@@ -195,8 +196,11 @@ public class ApprovalsController {
 	public String updateApprovalInfo (ApprovalsVO apprVO) {
 		//전자결재 업데이트
 		approvalsService.updateApproval(apprVO);
-		//
-		List<ApprovalsVO> apprList = approvalsService.approvalsList(apprVO.getEaNo());
+
+		// eaNo 기준으로 전자결재자 전체 삭제
+		
+		// 새로 받은 전자결재자 등록
+		List<ApprovalsVO> apprList = apprVO.getApprovers();
 		for (ApprovalsVO approvalVO : apprList) {
 			approvalVO.setEmpNo(approvalVO.getEmpNo());
 			approvalVO.setSort(approvalVO.getSort());
