@@ -806,6 +806,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				sharedCalendarList.innerHTML = '';  // 기존 목록 초기화
 				data.forEach(calendar => {
 					const newCalendarItem = document.createElement('li');
+					newCalendarItem.classList.add('sidebar-item', 'calendar-item-wrapper');
 					newCalendarItem.innerHTML = makeSidEvent(calendar); //html 양식 맨아래 함수로 지
 					sharedCalendarList.appendChild(newCalendarItem);
 
@@ -815,10 +816,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 					// 연필 아이콘 클릭 이벤트 설정
 					const editIcon = newCalendarItem.querySelector('.edit-icon');
-					editIcon.addEventListener('click', function() {
-						const calendarItem = this.closest('.calendar-item-wrapper');
+					editIcon.addEventListener('click', function() {						
+						const calendarItem = this.parentElement;
 						const selectedCalNo = calendarItem.querySelector('.calendar-item').getAttribute('data-calno');
-						const calendarName = calendarItem.querySelector('.calendar-item').textContent.trim();
+						const calendarName = calendarItem.querySelector('.cal_name').value;
 						const calendarIcon = calendarItem.querySelector('i');
 						const calendarColor = window.getComputedStyle(calendarIcon).color;
 
@@ -1125,8 +1126,8 @@ document.addEventListener('DOMContentLoaded', function() {
 			wasteCalendarList.innerHTML = '';  // 기존 리스트 초기화
 
 			data.forEach(calendar => {
-				const newTrashItem = document.createElement('li');
-				newTrashItem.classList.add('trash-item');
+				const newTrashItem = document.createElement('li');				
+				newTrashItem.classList.add('sidebar-item', 'trash-item', 'calendar-item-wrapper');
 				newTrashItem.setAttribute('data-calno', calendar.calNo);
 				newTrashItem.innerHTML = makeSidEvent(calendar);
 				wasteCalendarList.appendChild(newTrashItem);
@@ -1134,8 +1135,8 @@ document.addEventListener('DOMContentLoaded', function() {
 				const editIcon = newTrashItem.querySelector('.edit-icon');
 				editIcon.addEventListener('click', function() {
 					const calendarItem = this.closest('.trash-item');
-					const selectedCalNo = calendarItem.getAttribute('data-calno');
-					const calendarName = calendarItem.textContent.trim();
+					const selectedCalNo = calendarItem.getAttribute('data-calno');					
+					const calendarName = calendarItem.querySelector('.cal_name').value;
 
 					// 모달창에 기존 값 설정
 					document.getElementById('trashSelectedCalNo').value = selectedCalNo;
@@ -1149,13 +1150,6 @@ document.addEventListener('DOMContentLoaded', function() {
 				});
 
 			});
-
-
-
-
-
-
-
 
 		})
 		.catch(error => console.error('Error loading trash calendars:', error));
@@ -1259,16 +1253,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	//사이드바  캘린더 리스트 생성 뿌리기 
 	function makeSidEvent(calendar) {
+		let truncatedName = calendar.name.length > 8 ? calendar.name.substring(0, 8) + '...' : calendar.name;
+	
 		let tag =
-			`
-                        <div class="calendar-item-wrapper" style="display: flex; align-items: center;">
-                            <a href="javascript:void(0)" data-calno="${calendar.calNo}" class="calendar-item">
-                                <i class="mdi mdi-calendar-blank" style="color:${calendar.color};"></i> ${calendar.name}
-                            </a>
-                            <span class="edit-icon" style="margin-left: 10px;">
-                                <i class="mdi mdi-pencil" aria-hidden="true"></i>
-                            </span>
-                        </div>`;
+	    `
+	        <input type="hidden" class="cal_name" value="${calendar.name}" />
+	        <a href="javascript:void(0)" data-calno="${calendar.calNo}" class="sidebar-link calendar-item">
+	            <i class="mdi mdi-calendar-blank" style="color:${calendar.color};"></i> ${truncatedName}
+	        </a>
+	        <span class="hide-menu edit-icon" style="margin-left: 10px;">
+	            <i class="mdi mdi-pencil" aria-hidden="true"></i>
+	        </span>
+	    `;
 		return tag;
 	}
 

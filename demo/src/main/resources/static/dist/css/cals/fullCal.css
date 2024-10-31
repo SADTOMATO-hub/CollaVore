@@ -225,16 +225,6 @@ button.close:hover {
 }
 
 /* 리스트 항목 스타일 */
-.calendar-item-wrapper {
-    display: flex;
-    align-items: center;  /* 아이콘과 텍스트 수평 정렬 */
-    justify-content: space-between;  /* 아이콘과 텍스트 사이의 간격 균일하게 */
-    padding: 10px 15px;  /* 리스트 항목 패딩 추가 */
-    margin: 5px 0;  /* 리스트 항목 간의 간격 */
-    background-color:RGB323844;  /* 배경색 (어두운 색상) */
-    border-radius: 5px;  /* 항목을 둥글게 */
-    transition: background-color 0.3s ease;  /* 호버 시 부드러운 색상 전환 */
-}
 
 /* 마우스를 올렸을 때 배경색 변화 */
 .calendar-item-wrapper:hover {
@@ -286,7 +276,7 @@ button.close:hover {
 /* 기본적으로 연필 아이콘 숨기기 */
 .edit-icon {
     display: none; /* 아이콘 숨김 */
-    margin-left: 10px; /* 캘린더 이름과 연필 아이콘 사이의 여백 */
+    margin-left: 5px; /* 캘린더 이름과 연필 아이콘 사이의 여백 */
     cursor: pointer;
 }
 

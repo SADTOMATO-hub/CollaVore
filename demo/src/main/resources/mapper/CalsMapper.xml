@@ -221,14 +221,9 @@
 
 	<!-- 캘린더 일정 조회 -->
 	<select id="selectAllCal" resultType="SchsVO">
-		SELECT cs.cal_no,
-		c.name ||
-		' ' || CASE
-		WHEN c.cal_type = 'g1' THEN '(개인)'
-		WHEN
-		c.cal_type = 'g2'
-		THEN '(공유)'
-		ELSE '프로젝트' END AS name
+		SELECT cs.cal_no
+			, c.name
+		 	, c.color
 		FROM
 		calshares cs
 		INNER JOIN cals c ON
@@ -246,15 +241,9 @@
 		ORDER BY c.name </select> -->
 	<!-- -->
 	<select id="selectTeamCal" resultType="SchsVO">
-		SELECT cs.cal_no,
-		c.name ||
-		' ' ||
-		CASE
-		WHEN c.cal_type = 'g1' THEN '(개인)'
-		WHEN c.cal_type = 'g2'
-		THEN '(공유)'
-		ELSE '(프로젝트)'
-		END AS name
+		SELECT cs.cal_no
+			, c.name
+		 	, c.color
 		FROM calshares cs
 		INNER JOIN cals c
 		ON c.cal_no = cs.cal_no
