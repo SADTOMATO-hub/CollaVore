@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			return response.json();
 		})
 		.then(data => {
-			console.log("Fetched data:", data);
 			const rootDept = data.departments.find(dept => dept.parentDeptNo === 0);
 			const tree = buildDeptTree(data.departments, rootDept);
 			container.appendChild(tree);

@@ -52,11 +52,20 @@ public interface SchsService {
 	// 공유 캘린더 참여자 등록
 	public int insertCalShares(int calNo, List<Integer> members); // 참여자 정보를 저장하고 성공한 레코드 수를 반환
 	
-	
+	// 캘린더 조회
+	public SchsVO selectCalInfo(int calNo);
 	
 	
 	// 캘린더 수정
-	public Map<String, Object> updateCals(SchsVO schsVO);
+//	public Map<String, Object> updateCals(SchsVO schsVO);
+	
+	int updateCalendarWithParticipants(int calNo, String name, String color, List<Integer> empNos);
+	//캘린더 수정할때 저장된 기본값 불러오기 부서 사원 참여자 
+	public List<Map<String, Object>> getCalInfo(int calNo);
+	
+	
+	
+	
 
 	// 휴지통 리스트
 	// 조회

@@ -197,4 +197,9 @@ public class ProjectServiceImpl implements PjService{
 	public List<ProjectVO> projectwrkList(int projNo) {
 		return projectMapper.projwrkList(projNo);
 	}
+
+	@Override
+	public int projectcomtsDelete(int pdwcNo) {
+		return projectMapper.projectcomtsDelete(pdwcNo);
+	}
 }
