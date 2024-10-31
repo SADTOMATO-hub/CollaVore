@@ -2,26 +2,22 @@
 .body-page-wrapper {
 	padding: 20px;
 	background-color: #f9f9f9;
+	align-items: center;
 }
 
-/* 바디 영역 내 헤더 끝 */
+/* Breadcrumb 스타일 */
 .breadcrumb {
 	background-color: #ffffff;
-	padding: 5px 20px;
+	padding: 10px 20px;
 	border-radius: 10px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 	height: 70px;
-	display: flex;
-	justify-content: space-between; /* 좌우로 분리 */
+	justify-content: space-between;
 	align-items: center;
-	width: calc(100% - 40px);
-	max-width: 1000px;
-	margin: 20px;
+	margin-bottom: 20px;
 	color: #333;
 	position: relative;
-	display: flex; /* 상대적 위치 설정 */
 }
-
 .breadcrumb-left {
 	display: flex;
 	align-items: center;
@@ -74,12 +70,12 @@
 /* 개별 컨테이너 통일 */
 .card_posi, .card_jobs, .card_org {
 	background-color: #ffffff;
-	padding: 20px 20px; /* 상단과 하단 패딩을 0, 왼쪽과 오른쪽은 20px 유지 */
+	padding: 20px;
 	border-radius: 10px;
 	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-	width: calc(100% - 40px); /* 양옆 20px씩 마진을 주기 위해 너비 계산 */
-	max-width: 1000px; /* 최대 너비를 설정하여 너무 넓지 않게 유지 */
-	margin: 20px; /* 상단 20px, 양옆 20px, 하단 0px 마진 */
+	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
 }
 /* 개별 컨테이너 내 통일 */
 .inline-container {
@@ -90,6 +86,38 @@
 }
 /* 개별 컨테이너 통일 끝*/
 
+/*userInfo*/
+.card_userInfo h3 {
+	margin: 0;
+	font-size: 1.5rem;
+	color: #333;
+	font-weight: bold;
+}
+
+.card_userInfo p {
+	margin: 5px 0;
+	font-size: 14px;
+	color: #555;
+}
+
+.card_userInfo textarea {
+	width: 100%;
+	padding: 10px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	box-sizing: border-box;
+	font-size: 14px;
+	resize: none;
+	background-color: #f9f9f9;
+	margin-bottom: 10px;
+}
+
+.card_userInfo textarea:focus {
+	outline: none;
+	border-color: #007bff;
+	box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+/* card_userInfo 스타일 추가 */
 
 /* jobs 컨테이너 */
 .inline-jobs-container {
@@ -173,8 +201,6 @@
 	flex-direction: row;
 	gap: 20px;
 	position: relative;
-	max-width: 100%;
-	 flex-wrap: nowrap;
 }
 
 .line-container {
@@ -210,7 +236,6 @@
 	border: 1px solid #ddd;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 	margin-right: 25px;
-	flex-shrink: 0;
 }
 
 .wrap1:not(:has(+ol)) {
@@ -318,7 +343,28 @@
 
 /* dept 컨테이너 끝 */
 
-
+/* 툴팁 현재는 통일 수정예정 */
+.tooltip-text {
+	visibility: hidden;
+	background-color: #555;
+	color: #fff;
+	text-align: center;
+	border-radius: 5px;
+	padding: 5px 10px;
+	position: absolute;
+	z-index: 1;
+	bottom: 57%; /* 아이콘 아래에 뜨도록 */
+	left: 27%;
+	transform: translateX(-50%); /* 가운데 정렬 */
+	opacity: 0;
+	transition: opacity 0.3s;
+}
+/* 아이콘에 마우스를 올렸을 때 툴팁 표시 */
+.tooltip-icon:hover+.tooltip-text {
+	visibility: visible;
+	opacity: 1;
+}
+/* 툴팁 끝 */
 h4 {
 	margin: 0;
 }

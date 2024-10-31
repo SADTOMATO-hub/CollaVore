@@ -108,7 +108,12 @@
 	<select id="getMemberList" resultType="HrmVO">
 		SELECT e.name AS empName
 		, (SELECT name FROM positions WHERE posi_no = e.posi_no) AS posiName
+		, (SELECT name FROM jobs WHERE job_no = e.job_no) AS jobName
 		, e.img
+		, e.emp_no
+		, e.info
+		, e.tel
+		, e.email
 		FROM employees e
 		WHERE e.DEPT_NO = #{deptNo}
 		<![CDATA[
