@@ -29,13 +29,15 @@ public interface MemberMapper {
             @Param("deptFilter") String deptFilter, 
             @Param("jobFilter") String jobFilter, 
             @Param("posiFilter") String posiFilter, 
-            @Param("workTypeFilter") String workTypeFilter);
+            @Param("workTypeFilter") String workTypeFilter,
+            @Param("searchText") String searchText);
 	
 	// 필터링된 총 사원 수 조회
 	int getTotalListCnt(@Param("deptFilter") String deptFilter, 
             @Param("jobFilter") String jobFilter, 
             @Param("posiFilter") String posiFilter, 
-            @Param("workTypeFilter") String workTypeFilter);
+            @Param("workTypeFilter") String workTypeFilter,
+            @Param("searchText") String searchText);
 	
 	// 부서 목록 조회
     List<String> getDepartments();
