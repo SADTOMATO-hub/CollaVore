@@ -126,6 +126,8 @@
 			  ,a.title
      		  ,e.name as "drafterName"
    		 	  ,a.reg_date
+   		 	  ,a.emp_no as "drafterEmpNo"
+   		 	  ,a.status as "approvalStatus"
 		<if test="compDate != null || compDate != ''">
 			,a.comp_date
 		</if>
@@ -158,6 +160,8 @@
    		 		  	 ,a.reg_date
 				<if test="compDate != null || compDate != ''">
 					,a.comp_date
+					,a.emp_no as "drafterEmpNo"
+					,a.status as "approvalStatus"
 				</if>
 			FROM approvals a
 				INNER JOIN approvers ar 
@@ -212,8 +216,8 @@
 				,e.name as "approverName"
 				,e.emp_no as "approverEmpNo"
 				,p.name as "positionTitle"
-				,r.sort
-				,r.ear_no
+				,r.sort as "approverSort"
+				,r.ear_no as "earNumber"
 		FROM
 		approvals a JOIN approvers r
 		ON a.ea_no = r.ea_no
@@ -231,7 +235,8 @@
 	<!-- 결재하기 -->
 	<update id="updateApprStatus" statementType="CALLABLE">
 		{ CALL
-		appr_status_update(#{earNo, mode=IN}, #{approverStatus, mode=IN}) }
+		appr_status_update(#{earNo, mode=IN}, #{approverStatus, mode=IN}) 
+		}
 	</update>
 	<!-- -->
 	
