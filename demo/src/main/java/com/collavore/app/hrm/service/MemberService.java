@@ -60,11 +60,11 @@ public interface MemberService {
 	int deleteMember(Integer empNo);
 	
 	
-	
 	// 조직도 표시를 위한 모든 사원 조회
     List<HrmVO> getAllMembers();  // 사원 전체 조회 메서드
 
     // 사원 정보 조회 (부서, 직위 정보 포함)
     List<HrmVO> getMembersWithDeptAndPosition(); // 부서 및 직위 정보를 포함한 사원 조회
+
 
 }

@@ -1,8 +1,12 @@
+// 기존 직무 데이터를 저장할 배열
+let existingJobs = [];
+
 // 직무 데이터 로드
 function loadExistingJobs() {
     fetch('/jobs/getExistingJobs')
     .then(response => response.json())
     .then(data => {
+        existingJobs = data.map(item => item.jobName); // 기존 직무 이름을 저장
         const container = document.getElementById('jobsTable');
         container.innerHTML = ''; // 기존 데이터 초기화
         // 데이터를 이용해 직무 테이블 업데이트
@@ -29,6 +33,55 @@ function addJob() {
         <button onclick="removeJob(this)">X</button>
     `; 
     container.appendChild(div);
+}
+
+// 직무 저장 함수
+function saveJobs() {
+    const jobs = [];
+    const container = document.getElementById('jobsTable');
+
+    // 직무 데이터 수집
+    container.querySelectorAll('div').forEach(div => {
+        const input = div.querySelector('input');
+        const span = div.querySelector('span');
+        if (input && input.value.trim() !== '') {
+            // 새로 추가된 직무만 수집
+            if (!existingJobs.includes(input.value.trim())) {
+                jobs.push({ jobName: input.value.trim() });
+            }
+        } else if (span) {
+            // 기존 직무는 수집하지 않음
+            if (!existingJobs.includes(span.textContent.trim())) {
+                jobs.push({ jobName: span.textContent.trim() });
+            }
+        }
+    });
+
+    // 서버에 저장 요청
+    if (jobs.length > 0) {
+        fetch('/jobs/save', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(jobs),
+        })
+        .then(response => response.text()) // 응답을 JSON 대신 텍스트로 처리
+        .then(data => {
+            if (data === 'success') {
+                alert('직무가 성공적으로 저장되었습니다.');
+                loadExistingJobs(); // 저장 후 직무 목록 다시 로드
+            } else {
+                alert('저장에 실패했습니다.');
+            }
+        })
+        .catch(error => {
+            console.error('Error saving jobs:', error);
+            alert('저장 중 오류가 발생했습니다.');
+        });
+    } else {
+        alert('저장할 새로운 직무가 없습니다.');
+    }
 }
 
 // 직무 수정 함수 (span을 클릭했을 때 실행)

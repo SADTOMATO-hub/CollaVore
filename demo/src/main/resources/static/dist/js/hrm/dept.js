@@ -226,42 +226,53 @@ function addSubDept(parentDeptNo, li) {
 	const inputField = document.createElement('input');
 	inputField.type = 'text';
 	inputField.placeholder = '새 부서 이름 입력';
+	inputField.classList.add('new-dept-input'); // 새로 추가된 부서 식별을 위해 클래스 추가
+
 	li.appendChild(inputField);
 	inputField.focus();
 
 	// 현재 부서의 레벨을 가져와 하위 부서의 레벨을 자동 설정
 	const currentLevel = parseInt(li.querySelector('.wrap1').getAttribute('data-real-depth'), 10);
-	const newLevel = currentLevel + 1;
+	inputField.setAttribute('data-parent-dept-no', parentDeptNo);
+	inputField.setAttribute('data-new-level', currentLevel + 1);
 
+	// 엔터 키 입력 시도 저장을 위해 입력 필드를 focus out 상태로 설정
 	inputField.addEventListener('keydown', (event) => {
 		if (event.key === 'Enter') {
-			const deptName = inputField.value.trim();
-			if (deptName) {
-				modifiedDepartments.push({
-					deptName: deptName,
-					parentDeptNo: parentDeptNo,
-					level: newLevel,  // 새로 추가된 레벨 정보
-					action: 'add'
-				});
-				console.log("modifiedDepartments 배열에 추가됨:", modifiedDepartments); // 배열 확인용
-				//nputField.remove();
-			}
+			inputField.blur();
 		}
 	});
 }
 
 
+
 // 하위 부서 등록 저장 함수
 function saveDept() {
-	console.log("saveDept 함수가 호출되었습니다."); // 디버그용
-	console.log(modifiedDepartments);
+	// 새 부서 입력 필드에서 데이터를 가져옴
+	document.querySelectorAll('.new-dept-input').forEach(inputField => {
+		const deptName = inputField.value.trim();
+		const parentDeptNo = inputField.getAttribute('data-parent-dept-no');
+		const level = inputField.getAttribute('data-new-level');
+
+		if (deptName) {
+			// 새 부서 정보를 modifiedDepartments 배열에 추가
+			modifiedDepartments.push({
+				deptName: deptName,
+				parentDeptNo: parseInt(parentDeptNo, 10),
+				level: parseInt(level, 10),
+				action: 'add'
+			});
+		}
+	});
+
+	console.log("saveDept 함수가 호출되었습니다.");
+	console.log("서버로 전송할 데이터:", modifiedDepartments); // 서버 전송 전에 데이터 확인
+
 	// modifiedDepartments 배열에 데이터가 있는지 확인
 	if (modifiedDepartments.length === 0) {
 		alert('변경 사항이 없습니다.');
 		return;
 	}
-
-	console.log("서버로 전송할 데이터:", modifiedDepartments); // 서버 전송 전에 데이터 확인
 
 	// 배열 전송
 	fetch('/dept/save', {
@@ -281,7 +292,6 @@ function saveDept() {
 		})
 		.catch(error => console.error('Error saving departments:', error));
 }
-
 
 // 부서 삭제 함수
 function deleteDept(deptNo, li) {
