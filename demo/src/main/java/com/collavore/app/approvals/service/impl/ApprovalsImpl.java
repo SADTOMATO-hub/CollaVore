@@ -108,7 +108,21 @@ public class ApprovalsImpl implements ApprovalsService {
 	public List<Map<String,Object>> approversInfo(ApprovalsVO approvalsVo) {
 		return approvalsMapper.readApprovers(approvalsVo);
 	}
+	
 	// 전자결재 수정
+	@Override
+	public int updateApproval(ApprovalsVO approvalsVo) {
+		return approvalsMapper.updateApproval(approvalsVo);
+	}
+	@Override
+	public List<ApprovalsVO> approvalsList(int eaNo) {
+		return approvalsMapper.approvalsList(eaNo);
+	}
+	@Override
+	public int updateApprover(ApprovalsVO approvalsVo) {
+		return approvalsMapper.updateApprover(approvalsVo);
+	}
+	
 	// 전자결재 삭제
 	@Override
 	public void deleteApprovals(ApprovalsVO approvalsVo) {
