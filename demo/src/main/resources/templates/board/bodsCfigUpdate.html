@@ -4,32 +4,37 @@
 	layout:fragment="Content">
 
 	
-	<form th:action="@{/board/bodsUpdate}" method="post"
-		enctype="multipart/form-data" th:object="${bods}" name="updateForm">
+	<form th:action="@{/board/bodsCfigUpdate}" method="post"
+		enctype="multipart/form-data" th:object="${bodsCfig}" name="updateForm">
 		<input type="hidden" id="boardNo"	th:field="*{boardNo}">
 		<h3>게시판 수정 페이지</h3>
 		
 		<div>
-		     <label for="postNo">게시판 번호</label><input type="hidden" id="boardNo" >
+		   <input type="hidden" id="boardNo" >
 		</div>
 		
 	
 		<div>
-			<label for="title">제목</label> <input type="text" id="title"
-				th:field="*{title}">
+			<label for="name">게시판명</label> <input type="text" id="name"
+				th:field="*{name}">
 		</div>
 		<div>
-			<label for="content">내용</label>
-			<textarea id="content" th:field="*{content}"></textarea>
+			<label for="subject">말머리</label>
+			<input type="text" id="subject" th:field="*{subject}">
 		</div>
 		<div>
-			<label for="writer">작성자</label> <input type="text" id="writer" th:field="*{writer}" readonly="readonly">
+			<input type="hidden" id="writer" th:field="*{readAuth}">
+		</div>
+		<div>
+			<input type="hidden" id="writer" th:field="*{writeAuth}">
+		</div>
+		<div>
+			<input type="hidden" id="writer" th:field="*{commentAuth}">
 		</div>
 		
 		
-		
 		<div>
-			<button type="button" id="updateBtn" th:onclick='|location.href="@{/board/bodsList?boardNo=1}"|'>저장</button>
+			<button type="button" id="updateBtn" th:onclick='|location.href="@{/board/bodsCfig}"|'>저장</button>
 		</div>
 	</form>
 	<script>
@@ -45,7 +50,7 @@
 			// console.log("===================================");
 			// console.log(dataObj);
 			// return;
-			$.ajax("/board/bodsUpdate", {
+			$.ajax("/board/bodsCfigUpdate", {
 				type : 'post',  //method
 				//data : dataObj	// 객체 => QueryString
 				
@@ -81,7 +86,7 @@
 					//formObj["employeeId"] = "100";
 			});
 
-			return formObj;/* { "employeeId" : 100, "lastName" : "King", ...} */
+			return formObj; /*{ "employeeId" : 100, "lastName" : "King", ...} */ 
 		}
 	</script>
 </div>
