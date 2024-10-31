@@ -155,7 +155,7 @@ button:active {
 			</div>
 			<div class="card_memberInsert">
 				<div class="col-md-9">
-					<form th:action="@{/board/bodsUpdate}" method="post" class="form-horizontal"  enctype="multipart/form-data" th:object="${bods}" name="updateForm">
+					<form method="post" class="form-horizontal"  enctype="multipart/form-data" th:object="${bods}" name="updateForm">
 						<input type="hidden" id="boardNo"	th:field="*{boardNo}">
 						<input type="hidden" id="writer" th:field="*{writer}">
 						<input type="hidden" id="postNo"  th:field="*{postNo}">
@@ -174,13 +174,14 @@ button:active {
 							</div>
 						</div>
 						<div class="insert-btn">
-							<button class="btn btn-primary" id="updateBtn" th:onclick='|location.href="@{/board/bodsList?boardNo=1}"|' type="button">저장</button>
+							<button class="btn btn-primary" id="updateBtn" type="button">저장</button>
 						</div>
 					</form>
 				</div>
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
 	<script>
 		// 네이버 스마트 에디터 2.0 적용
 		let oEditors = [];
@@ -204,20 +205,12 @@ button:active {
 		});
 
 		function updateAjax(event){
-			// 1) 보낼 데이터 가져오기
-			// alert('작성일자가 입력되지 않았습니다.');
-			// console.log("===================================");
+			event.preventDefault(); // 폼 제출 방지
+			oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
+			
 			let dataObj = getFormData();
-			// console.log(dataObj);
-			// 2) AJAX
-			// console.log("===================================");
-			// console.log(dataObj);
-			// return;
 			$.ajax("/board/bodsUpdate", {
 				type : 'post',  //method
-				//data : dataObj	// 객체 => QueryString
-				
-				//JOSN : @RequestBody
 				contentType : 'application/json',
 				data:JSON.stringify(dataObj)
 			})
@@ -236,21 +229,13 @@ button:active {
 
 		function getFormData(){
 			let formAry = $('form[name="updateForm"]').serializeArray();
-			/*
-			[ { name : "employeeId", value : "100"},
-				{ name : "lastName",  value : "King"},
-				 ... ]
-			*/
-
 			let formObj = {};
 			$.each(formAry, function(idx, tag){
-					// tag) { name : "employeeId", value : "100"}
 					formObj[tag.name] = tag.value;
-					//formObj["employeeId"] = "100";
 			});
 
-			return formObj;/* { "employeeId" : 100, "lastName" : "King", ...} */
+			return formObj;
 		}
 	</script>
-	<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
+	
 </div>
