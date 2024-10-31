@@ -3,35 +3,190 @@
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
 
-	
-	<form th:action="@{/board/bodsUpdate}" method="post"
-		enctype="multipart/form-data" th:object="${bods}" name="updateForm">
-		<input type="hidden" id="boardNo"	th:field="*{boardNo}">
-		<h3>게시판 수정 페이지</h3>
-		
-		<div>
-		     <label for="postNo">게시판 번호</label><input type="hidden" id="boardNo" >
+	<style>
+/* 페이지 기본 스타일 */
+.body-page-wrapper {
+	padding: 20px;
+	background-color: #f9f9f9;
+	align-items: center;
+}
+
+/* Breadcrumb 스타일 */
+.breadcrumb {
+	background-color: #ffffff;
+	padding: 10px 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	height: 70px;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	color: #333;
+	position: relative;
+}
+
+.breadcrumb h4 {
+	margin: 0;
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+}
+
+.breadcrumb-left {
+	display: flex; /* flexbox로 요소 정렬 */
+	flex-direction: column; /* 세로로 배치 */
+	justify-content: center; /* 세로 중앙 정렬 */
+}
+
+.breadcrumb-left h4 {
+	font-size: 22px;
+	font-weight: bold;
+	margin: 0; /* 기본 마진 제거 */
+	margin-top: 2px;
+}
+
+.breadcrumb-left p {
+	font-size: 14px;
+	color: #666;
+	margin-top: 2px;
+	margin-bottom: 0;
+}
+
+.breadcrumb-right span {
+	font-size: 14px;
+	color: #999;
+	white-space: nowrap;
+	position: relative;
+	top: -12px;
+}
+
+.card_memberInsert {
+	background-color: #ffffff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+}
+
+.insert-btn {
+	display: flex;
+	justify-content: flex-end; /* 오른쪽으로 정렬 */
+	margin-right: 20px; /* 필요에 따라 여백 조정 */
+}
+
+button {
+	padding: 5px 10px;
+	margin-left: 5px;
+	background-color: #9b8df6;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: background-color 0.3s ease;
+}
+
+/* 마우스 호버 시 효과 */
+button:hover {
+	background-color: #5a4bcf;
+}
+
+/* 추가적인 버튼 스타일링 */
+button:active {
+	background-color: #4839a9;
+}
+
+/* 에러 메시지 스타일 */
+.error {
+	border-color: red;
+}
+
+/* 부모 요소에 relative를 설정 */
+.form-group {
+	position: relative;
+}
+
+/* 아이콘을 입력 필드 옆으로 배치 */
+.error-icon {
+	color: red;
+	font-size: 24px;
+	display: inline-block;
+	position: absolute; /* 절대 위치 */
+	top: 50%; /* 입력 필드의 중간에 위치하도록 */
+	transform: translateY(-50%); /* 수직으로 중앙 정렬 */
+	right: -20px; /* 입력 필드의 오른쪽 끝에서 약간 떨어지게 */
+	z-index: 1; /* 겹치지 않도록 설정 */
+}
+
+.error-message {
+	color: red;
+	font-size: 12px;
+	margin-top: 5px;
+}
+
+/* 필수 입력값 누락 시 아이콘 */
+.required-field {
+	border: 2px solid red;
+}
+
+.field-icon {
+	color: red;
+	margin-left: 5px;
+}
+/*
+#content + iframe {
+	height : 500px !important;
+}
+*/
+</style>
+	<div class="body-page-wrapper">
+		<div class="purple-background-container">
+			<div class="breadcrumb">
+				<div class="breadcrumb-left">
+					<h4>게시판 수정</h4>
+					<p>게시판 수정 페이지 입니다.</p>
+				</div>
+				<div class="breadcrumb-right">
+					<span>게시판 > 게시판 수정</span>
+				</div>
+			</div>
+			<div class="card_memberInsert">
+				<div class="col-md-9">
+					<form th:action="@{/board/bodsCfigUpdate}" method="post"
+						enctype="multipart/form-data" th:object="${bodsCfig}"
+						name="updateForm">
+						<input type="hidden" id="boardNo" th:field="*{boardNo}"> <input
+							type="hidden" id="writer" th:field="*{readAuth}"> <input
+							type="hidden" id="writer" th:field="*{writeAuth}"> <input
+							type="hidden" id="writer" th:field="*{commentAuth}">
+
+						<div class="form-group row">
+							<label for="name"
+								class="col-sm-3 text-end control-label col-form-label">게시판명</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control" id="name" name="name"
+									th:field="*{name}" />
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="subject"
+								class="col-sm-3 text-end control-label col-form-label">말머리</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control" id="subject"
+									name="subject" th:field="*{subject}" />
+							</div>
+						</div>
+						<div class="insert-btn">
+							<button type="button" id="updateBtn" class="btn btn-primary"
+								th:onclick='|location.href="@{/board/bodsCfig}"|'>저장</button>
+						</div>
+					</form>
+				</div>
+			</div>
 		</div>
-		
-	
-		<div>
-			<label for="title">제목</label> <input type="text" id="title"
-				th:field="*{title}">
-		</div>
-		<div>
-			<label for="content">내용</label>
-			<textarea id="content" th:field="*{content}"></textarea>
-		</div>
-		<div>
-			<label for="writer">작성자</label> <input type="text" id="writer" th:field="*{writer}" readonly="readonly">
-		</div>
-		
-		
-		
-		<div>
-			<button type="button" id="updateBtn" th:onclick='|location.href="@{/board/bodsList?boardNo=1}"|'>저장</button>
-		</div>
-	</form>
+	</div>
 	<script>
 		$('#updateBtn').on('click', updateAjax);
 
@@ -45,7 +200,7 @@
 			// console.log("===================================");
 			// console.log(dataObj);
 			// return;
-			$.ajax("/board/bodsUpdate", {
+			$.ajax("/board/bodsCfigUpdate", {
 				type : 'post',  //method
 				//data : dataObj	// 객체 => QueryString
 				
@@ -81,7 +236,7 @@
 					//formObj["employeeId"] = "100";
 			});
 
-			return formObj;/* { "employeeId" : 100, "lastName" : "King", ...} */
+			return formObj; /*{ "employeeId" : 100, "lastName" : "King", ...} */ 
 		}
 	</script>
 </div>

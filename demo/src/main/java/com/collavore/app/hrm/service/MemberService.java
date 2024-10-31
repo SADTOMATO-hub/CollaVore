@@ -22,10 +22,10 @@ public interface MemberService {
 	// 사원 전체 조회
 	// List<HrmVO> selectMemberAll(String page);
 	// 필터링에 맞는 전체 목록 카운트
-    int totalListCnt(String deptFilter, String jobFilter, String posiFilter, String workTypeFilter); 
-    
+    int totalListCnt(String deptFilter, String jobFilter, String posiFilter, String workTypeFilter, String searchText);
+
     // 필터링 및 페이지네이션 기능을 포함한 사원 목록 조회
-    List<HrmVO> selectMemberAll(String page, String deptFilter, String jobFilter, String posiFilter, String workTypeFilter);
+    List<HrmVO> selectMemberAll(String page, String deptFilter, String jobFilter, String posiFilter, String workTypeFilter, String searchText);
     
     // 부서, 직무, 직위 목록 추출 메서드
     List<String> getDepartmentsFromHrmVO();  // 부서 목록 추출

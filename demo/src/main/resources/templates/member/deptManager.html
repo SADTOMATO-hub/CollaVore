@@ -9,7 +9,7 @@
 				<div class="breadcrumb-left">
 					<h4>조직관리</h4>
 					<nav>
-						<a href="#position-section">직위관리</a> | <a href="#job-section">직무관리</a>
+						<a href="#position-section"> 직위관리</a> | <a href="#job-section">직무관리</a>
 						| <a href="#org-section">조직관리</a>
 					</nav>
 				</div>
@@ -18,14 +18,11 @@
 				</div>
 			</div>
 
-			──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+			<!-- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
 
 			<div class="card_posi" id="position-section">
 				<div class="inline-container">
-					<h4>
-						직위 관리 <i class="fas fa-question-circle tooltip-icon"></i>
-						<div class="tooltip-text">직위 관리에 대한 안내</div>
-					</h4>
+					<h4>직위 관리</h4>
 					<button onclick="addLevel()">
 						<i class="fas fa-plus"></i>
 					</button>
@@ -43,22 +40,17 @@
 				</div>
 			</div>
 
-			──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+			<!-- ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── -->
 
 			<div class="card_jobs" id="job-section">
 				<div class="inline-container">
-					<h4>
-						직무 관리 <i class="fas fa-question-circle tooltip-icon"></i>
-						<div class="tooltip-text">직무 관리에 대한 안내</div>
-					</h4>
+					<h4> 직무 관리 </h4>
 					<button onclick="addJob()">
 						<i class="fas fa-plus"></i>
 					</button>
 				</div>
 
-				<div class="inline-jobs-container" id="jobsTable">
-					직무들이 여기에 동적으로 추가됩니다
-				</div>
+				<div class="inline-jobs-container" id="jobsTable"></div>
 
 				<div class="button-container">
 					<button onclick="saveJobs()">저장</button>
@@ -71,11 +63,7 @@
 
 			<div class="card_org" id="org-section">
 				<div class="inline-container">
-					<h4>
-						조직 관리 <i class="fas fa-question-circle tooltip-icon"></i>
-						<div class="tooltip-text">조직 관리에 대한 안내</div>
-					</h4>
-
+					<h4> 조직 관리 </h4>
 				</div>
 
 				<ol id="orgMap" class="org_map"></ol>
@@ -117,6 +105,6 @@
 </div>
 
 <link rel="stylesheet" href="/dist/css/hrm/hrm.css">
- <script src="/dist/js/hrm/posi.js"></script>
+<script src="/dist/js/hrm/posi.js"></script>
 <script src="/dist/js/hrm/jobs.js"></script> 
 <script src="/dist/js/hrm/dept.js"></script>

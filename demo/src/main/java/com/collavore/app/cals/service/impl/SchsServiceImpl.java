@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.collavore.app.cals.mapper.SchsMapper;
 import com.collavore.app.cals.service.CalsVO;
@@ -164,23 +165,62 @@ public class SchsServiceImpl implements SchsService {
     }
 
 
-	// 캘린더 수정
+	// 캘린더 조회
 	@Override
-	public Map<String, Object> updateCals(SchsVO schsVO) {
-		Map<String, Object> resultMap = new HashMap<>();
-		try {
-			int updatedRows = schsMapper.updateCalsInfo(schsVO); // 매퍼 호출
-
-			if (updatedRows > 0) {
-				resultMap.put("result", true);
-			} else {
-				resultMap.put("result", false);
-			}
-		} catch (Exception e) {
-			resultMap.put("result", false);
-		}
-		return resultMap;
+	public SchsVO selectCalInfo(int calNo) {
+		return schsMapper.selectCalInfo(calNo);
 	}
+
+	// 캘린더 수정
+//	@Override
+//	public Map<String, Object> updateCals(SchsVO schsVO) {
+//		Map<String, Object> resultMap = new HashMap<>();
+//		try {
+//			int updatedRows = schsMapper.updateCalsInfo(schsVO); // 매퍼 호출
+//
+//			if (updatedRows > 0) {
+//				resultMap.put("result", true);
+//			} else {
+//				resultMap.put("result", false);
+//			}
+//		} catch (Exception e) {
+//			resultMap.put("result", false);
+//		}
+//		return resultMap;
+//	}
+    @Override
+    @Transactional
+    public int updateCalendarWithParticipants(int calNo, String name, String color, List<Integer> empNos) {
+        // 캘린더 기본 정보 업데이트
+        int updateCount = schsMapper.updateCalendarDetails(calNo, name, color);
+
+        // 기존 참여자 삭제
+        schsMapper.deleteParticipantsByCalNo(calNo);
+
+        // 새 참여자 추가
+        int addCount = 0;
+        for (Integer empNo : empNos) {
+            Map<String, Object> params = new HashMap<>();
+            params.put("calNo", calNo);
+            params.put("empNo", empNo);
+            addCount += schsMapper.addParticipant(params);
+        }
+
+        return updateCount + addCount; // 총 성공한 업데이트 및 추가 작업의 수 반환
+    }
+	//캘린더 수정할때 저장된 기본값 불러오기 부서 사원 참여자 
+	@Override
+	public List<Map<String, Object>> getCalInfo(int calNo) {
+	    return schsMapper.getCalInfo(calNo);
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 
 	// 공유캘린더 조회 (is_delete가 'h2'인 항목만)
 	@Override

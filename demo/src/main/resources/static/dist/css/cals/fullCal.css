@@ -1,10 +1,5 @@
 /* 페이지 전체 스타일 */
 /* 캘린더 컨테이너 */
-#calendar {
-    max-width: 1500px;
-    margin: 0 auto;
-}
-
 /* 캘린더 헤더 정렬 */
 .fc-header-toolbar {
     display: flex;
@@ -73,7 +68,6 @@
     width: 40%;
     border-radius: 8px; /* 모서리 둥글게 */
     box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.3); /* 그림자 */
-    font-family: 'Arial', sans-serif;
     animation: fadeIn 0.3s ease-in-out; /* 모달 애니메이션 */
 }
 
@@ -225,16 +219,6 @@ button.close:hover {
 }
 
 /* 리스트 항목 스타일 */
-.calendar-item-wrapper {
-    display: flex;
-    align-items: center;  /* 아이콘과 텍스트 수평 정렬 */
-    justify-content: space-between;  /* 아이콘과 텍스트 사이의 간격 균일하게 */
-    padding: 10px 15px;  /* 리스트 항목 패딩 추가 */
-    margin: 5px 0;  /* 리스트 항목 간의 간격 */
-    background-color:RGB323844;  /* 배경색 (어두운 색상) */
-    border-radius: 5px;  /* 항목을 둥글게 */
-    transition: background-color 0.3s ease;  /* 호버 시 부드러운 색상 전환 */
-}
 
 /* 마우스를 올렸을 때 배경색 변화 */
 .calendar-item-wrapper:hover {
@@ -286,7 +270,7 @@ button.close:hover {
 /* 기본적으로 연필 아이콘 숨기기 */
 .edit-icon {
     display: none; /* 아이콘 숨김 */
-    margin-left: 10px; /* 캘린더 이름과 연필 아이콘 사이의 여백 */
+    margin-left: 5px; /* 캘린더 이름과 연필 아이콘 사이의 여백 */
     cursor: pointer;
 }
 
@@ -322,14 +306,12 @@ button.close:hover {
 /* 개별 필드 간격 조정 */
 #alarmFields label {
     display: inline-block;
-    margin-right: 10px;
     margin-top: 10px;
 }
 
 #alarmFields input[type="number"],
 #alarmFields select {
     width: 100px;
-    margin-right: 10px;
     margin-top: 10px;
 }
 
@@ -341,12 +323,9 @@ button.close:hover {
 }
 
 #weeklyDays label {
-    margin-right: 10px;
-    margin-bottom: 10px;
 }
 
 #weeklyDays input[type="checkbox"] {
-    margin-right: 5px;
 }
 
 /* 알림 빈도와 시간 간격 필드 배치 */
@@ -378,7 +357,6 @@ button.close:hover {
 }
 
 #weeklyDays label {
-    margin-left: 5px; /* 체크박스와 레이블 간의 간격 */
 }
 
 #weeklyDays input[type="checkbox"] {
@@ -388,7 +366,13 @@ button.close:hover {
 
 
 
-
+/* 사이드바 토글시 표시 */
+.active-filter {
+    background-color: #2a3a4b; /* 기존 색상보다 어두운 회색 계열 */
+    color: #d1d5db; /* 부드러운 글자 색 */
+    border-radius: 4px;
+    padding: 4px;
+}
 
 
 

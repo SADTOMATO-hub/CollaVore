@@ -345,10 +345,18 @@ button:active {
 				<div class="modal-body">
 					<form id="projectForm">
 						<div class="mb-3">
-							<label for="projName" class="form-label">프로젝트 이름</label> <input
-								type="text" class="form-control" name="name" id="projName"
-								required>
+							<label for="projName" class="form-label">프로젝트 이름</label>     
+							    <input
+							        type="text"
+							        class="form-control"
+							        name="name"
+							        id="projName"
+							        required
+							        oninput="validateInput(this)"
+							        placeholder="영어만 입력해주세요."
+							    >
 						</div>
+						
 						<div class="mb-3">
 							<label for="projContent" class="form-label">프로젝트 개요</label>
 							<textarea class="form-control" name="content" id="projContent"
@@ -764,4 +772,12 @@ function selectDirectory(cloneUrl) {
       .then(data => console.log(data))
       .catch(error => console.error('Error:', error));
   }
+function validateInput(input) {
+    const regex = /^[a-zA-Z_]*$/; // 영어와 언더바만 허용하는 정규 표현식
+    
+    if (!regex.test(input.value)) {
+        alert("영어만 입력할 수 있습니다.");
+        input.value = input.value.replace(/[^a-zA-Z_]/g, ''); // 유효하지 않은 문자 제거
+    }
+}
 </script>
