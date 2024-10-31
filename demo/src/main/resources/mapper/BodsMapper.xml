@@ -74,12 +74,10 @@
 	<update id="updateBodsInfo" parameterType="BodsVO">
 		UPDATE bods
 		SET
-		title =
-		#{title}
+		title = #{title}
 		, content = #{content}
 		, board_no = #{boardNo}
-		, writer =
-		#{writer}
+		, writer = #{writer}
 		, mod_date = sysdate
 		WHERE post_no = #{postNo}
 	</update>
@@ -227,6 +225,20 @@ where board_no = #{boardNo}
 		DELETE FROM bodscfig
 		WHERE board_no = #{boardNo}
 	</delete>
+	
+	<!-- 게시판 수정 -->
+	<update id="updateBodsCfigInfo" parameterType="BodsCfigVO">
+		UPDATE bodscfig
+		SET
+		board_no = #{boardNo}
+        ,name = #{name}
+        ,subject = #{subject}
+        ,read_auth = #{readAuth}
+        ,write_auth = #{writeAuth}
+        ,comment_auth = #{commentAuth}
+        ,mod_date =sysdate	
+		WHERE board_no = #{boardNo}
+	</update>
 
 
 

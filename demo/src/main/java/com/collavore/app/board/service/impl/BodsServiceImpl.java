@@ -196,7 +196,7 @@ public class BodsServiceImpl implements BodsService {
 	// 게시판 삭제
 	@Override
 	public int deleteBodsCfig(int bodsCfigVO) {
-		return bodsMapper.deleteBodsInfo(bodsCfigVO);
+		return bodsMapper.deleteBodsCfigInfo(bodsCfigVO);
 	}
 	
 	

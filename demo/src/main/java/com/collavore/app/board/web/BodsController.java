@@ -119,7 +119,7 @@ public class BodsController {
 	public String bodsDelete(@RequestParam Integer postNo, @RequestParam Integer boardNo) {
 		bodsService.deleteBods(postNo);
 
-		return "redirect:bodsList?boardNo=" + boardNo;
+		return "redirect:bodsList?boardNo=" + boardNo; 
 	}
 
 	// 댓글등록 - 페이지 : URI - boardInsert / RETURN - board/boardInsert
@@ -224,7 +224,7 @@ public class BodsController {
 	public String bodsCfigUpdateForm(BodsCfigVO bodsCfigVO, Model model) {
 		BodsCfigVO findVO = bodsService.bodsCfigInfo(bodsCfigVO);
 		model.addAttribute("bodsCfig", findVO);
-		return "board/bodsCfigUpdate";
+		return "/board/bodsCfigUpdate";
 	}
 
 	// 수정 - 처리 : URI - boardUpdate / PARAMETER - BoardVO(JSON)
@@ -241,7 +241,7 @@ public class BodsController {
 	public String bodsCfigDelete(@RequestParam Integer boardNo) {
 		bodsService.deleteBodsCfig(boardNo);
 
-		return "redirect:bodsCfigInfo?boardNo=" + boardNo;
+		return "redirect:/board/bodsCfig";
 	}
 	
 	

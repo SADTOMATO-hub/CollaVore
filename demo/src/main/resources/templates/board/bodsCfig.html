@@ -289,7 +289,7 @@ button:active {
 					</thead>
 					<tbody>
 						<th:block th:each="info : ${bodsCfigList}">
-							<tr>
+							<tr th:data-boardno="${info.boardNo}">
 								<td>[[${info.boardNo}]]</td>
 								<td>[[${info.name}]]</td>
 								<td>[[${info.subject}]]</td>
@@ -360,8 +360,8 @@ button:active {
 		$('tbody > tr').on('click', function(event) {
 			console.log(event.currentTarget);
 			let trTag = event.currentTarget;
-			let boardNo = $(trTag).data('boardNo');
-			let url = `/board/bodsCfigInfo?boardNo=1`;
+			let boardNo = $(trTag).data('boardno');
+			let url = `/board/bodsCfigInfo?boardNo=${boardNo}`;
 			location.href = url;
 		});
 

@@ -54,12 +54,6 @@ public interface BodsService {
 	// 게시판 삭제
 	public int deleteBodsCfig(int bodsCfigVO);
 	
-	// 게시판 상세조회
-	// public 
-
-	// 전체조회
-	// public List<BodsVO> bodsAll();
-	
 	// 게시판이름 조회
 	public String boardNameSearch(int boardNo);
 
