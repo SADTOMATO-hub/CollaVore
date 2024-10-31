@@ -242,7 +242,10 @@ public class SchsController {
 			// 참여자 목록 추출 및 본인 empNo 추가
 			List<Integer> members = ((List<?>) requestData.get("members")).stream()
 					.map(e -> Integer.parseInt(e.toString())).collect(Collectors.toList());
-			members.add(empNo); // 본인 사원 번호 추가
+			// 현재 사용자가 이미 포함되어 있는지 확인한 후, 없는 경우에만 추가
+			if (!members.contains(empNo)) {
+			    members.add(empNo);
+			}
 
 			// 참여자 정보 저장
 			if (calNo > 0 && !members.isEmpty()) {
@@ -259,19 +262,93 @@ public class SchsController {
 	}
 
 	// 캘린더 수정
+//	@PostMapping("/cal/calUpdate")
+//	@ResponseBody
+//	public Map<String, Object> updateCal(@RequestBody SchsVO schsVO) {
+//		Map<String, Object> resultMap = schsService.updateCals(schsVO);
+//
+//		if (resultMap.get("result").equals(true)) {
+//			resultMap.put("message", "캘린더가 성공적으로 수정되었습니다.");
+//		} else {
+//			resultMap.put("message", "캘린더 수정에 실패했습니다.");
+//		}
+//
+//		return resultMap;
+//	}
+	// 캘린더 수정
 	@PostMapping("/cal/calUpdate")
 	@ResponseBody
-	public Map<String, Object> updateCal(@RequestBody SchsVO schsVO) {
-		Map<String, Object> resultMap = schsService.updateCals(schsVO);
+	public Map<String, Object> updateCalendarWithParticipants(@RequestBody Map<String, Object> requestData, HttpSession session) {
+	    Map<String, Object> response = new HashMap<>();
+	    
+	    try {
+	        // calNo가 String으로 전달되었다면 Integer로 변환
+	        int calNo;
+	        if (requestData.get("calNo") instanceof String) {
+	            calNo = Integer.parseInt((String) requestData.get("calNo"));
+	        } else {
+	            calNo = (int) requestData.get("calNo");
+	        }
 
-		if (resultMap.get("result").equals(true)) {
-			resultMap.put("message", "캘린더가 성공적으로 수정되었습니다.");
-		} else {
-			resultMap.put("message", "캘린더 수정에 실패했습니다.");
-		}
+	        String name = (String) requestData.getOrDefault("name", "");
+	        String color = (String) requestData.getOrDefault("color", "");
 
-		return resultMap;
+	        Integer empNo = (Integer) session.getAttribute("userEmpNo");
+	        if (empNo == null) {
+	            throw new IllegalArgumentException("User not logged in or empNo missing from session.");
+	        }
+	        System.out.println("Current user empNo: " + empNo);
+
+	        List<?> membersRaw = (List<?>) requestData.get("members");
+	        if (membersRaw == null || membersRaw.isEmpty()) {
+	            throw new IllegalArgumentException("Members list is missing or empty in request data.");
+	        }
+
+	        List<Integer> members = membersRaw.stream()
+	                .map(e -> {
+	                    if (e instanceof String) {
+	                        return Integer.parseInt((String) e);
+	                    } else if (e instanceof Integer) {
+	                        return (Integer) e;
+	                    } else {
+	                        throw new IllegalArgumentException("Unexpected data type in members list: " + e.getClass());
+	                    }
+	                })
+	                .collect(Collectors.toList());
+
+	        System.out.println("Processed members list: " + members);
+
+	        if (!members.contains(empNo)) {
+	            members.add(empNo);
+	        }
+
+	        int result = schsService.updateCalendarWithParticipants(calNo, name, color, members);
+	        response.put("result", result > 0);
+	        response.put("message", result > 0 ? "Calendar update successful" : "No updates were made");
+
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        response.put("result", false);
+	        response.put("message", "Error updating calendar: " + e.getMessage());
+	    }
+	    
+	    return response;
 	}
+	@GetMapping("/cal/getCalDeptEmpInfo")
+	 @ResponseBody
+	    public List<Map<String, Object>> getCalDeptEmpInfo(@RequestParam int calNo) {
+	        // SchsService에서 지정된 calNo에 해당하는 참여자 목록을 가져옵니다.
+	        return schsService.getCalInfo(calNo);
+	    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 	// 캘린더 휴지통으로 이동
 	@PostMapping("/cal/calTrash")
@@ -328,6 +405,22 @@ public class SchsController {
 	public List<Map<String, Object>> getDeptWithEmployees() {
 		return schsService.getDeptWithEmp();
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 //	@GetMapping("/cal/deptList")
 //	@ResponseBody

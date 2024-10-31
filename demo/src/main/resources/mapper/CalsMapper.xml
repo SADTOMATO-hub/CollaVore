@@ -239,32 +239,25 @@
 		c.cal_type = 'g1' THEN 1 ELSE 9999 END, c.name
 	</select>
 
-	<!-- 공유캘린더 리스트 
-	<select id="selectTeamCal" resultType="SchsVO">
-		SELECT cs.cal_no,
-		c.name ||
-		' ' || CASE
-		WHEN c.cal_type = 'g1' THEN '(개인)'
-		WHEN c.cal_type = 'g2'
-		THEN '(공유)'
-		ELSE '프로젝트' END AS name
-		FROM calshares cs
-		INNER JOIN cals c ON c.cal_no = cs.cal_no
-		WHERE cs.emp_no = #{empNo}
-		AND c.cal_type = 'g2'
-		ORDER BY c.name
-	</select>-->
+	<!-- 공유캘린더 리스트 <select id="selectTeamCal" resultType="SchsVO"> SELECT cs.cal_no, 
+		c.name || ' ' || CASE WHEN c.cal_type = 'g1' THEN '(개인)' WHEN c.cal_type 
+		= 'g2' THEN '(공유)' ELSE '프로젝트' END AS name FROM calshares cs INNER JOIN cals 
+		c ON c.cal_no = cs.cal_no WHERE cs.emp_no = #{empNo} AND c.cal_type = 'g2' 
+		ORDER BY c.name </select> -->
 	<!-- -->
 	<select id="selectTeamCal" resultType="SchsVO">
 		SELECT cs.cal_no,
-		c.name || ' ' ||
+		c.name ||
+		' ' ||
 		CASE
 		WHEN c.cal_type = 'g1' THEN '(개인)'
-		WHEN c.cal_type = 'g2' THEN '(공유)'
+		WHEN c.cal_type = 'g2'
+		THEN '(공유)'
 		ELSE '(프로젝트)'
 		END AS name
 		FROM calshares cs
-		INNER JOIN cals c ON c.cal_no = cs.cal_no
+		INNER JOIN cals c
+		ON c.cal_no = cs.cal_no
 		WHERE cs.emp_no = #{empNo}
 		AND c.cal_type = 'g2'
 		ORDER BY c.name
@@ -318,7 +311,7 @@
 	</insert>
 
 
-	<!-- 캘린더 정보를 calNo로 가져오는 쿼리 -->
+	<!-- 캘린더 정보 수정
 	<update id="updateCalsInfo" parameterType="SchsVO">
 		UPDATE cals
 		SET
@@ -326,7 +319,45 @@
 		#{name},
 		color = #{color}
 		WHERE cal_no = #{calNo}
-	</update>
+	</update> -->
+	<!-- 캘린더 기본 정보 업데이트 -->
+    <update id="updateCalendarDetails">
+        UPDATE cals
+        SET name = #{name},
+            color = #{color}
+        WHERE cal_no = #{calNo}
+    </update>
+
+    <!-- 기존 참여자 삭제 -->
+    <delete id="deleteParticipantsByCalNo">
+        DELETE FROM calshares WHERE cal_no = #{calNo}
+    </delete>
+
+    <!-- 새 참여자 추가 -->
+    <insert id="addParticipant" parameterType="map">
+        <selectKey keyProperty="csNo" resultType="Integer" order="BEFORE">
+            SELECT NVL(MAX(cs_no), 0) + 1 FROM calshares
+        </selectKey>
+        INSERT INTO calshares (cs_no, cal_no, emp_no, reg_date)
+        VALUES (#{csNo}, #{calNo}, #{empNo}, SYSDATE)
+    </insert>
+	
+	<!-- 공유 캘린더의 상세 정보(사원리스트를 가져옴 -->
+	 <!-- 특정 캘린더의 공유자 목록 조회 -->
+    <select id="getCalInfo" resultType="map" parameterType="int">
+        SELECT 
+            cs.emp_no AS empNo, 
+            e.name AS empName
+        FROM 
+            calshares cs
+            JOIN employees e ON cs.emp_no = e.emp_no
+        WHERE 
+            cs.cal_no = #{calNo}
+    </select>
+
+
+
+
 
 
 	<!-- 캘린더를 휴지통으로 이동 (isDelete = 'h1'로 업데이트하고 deleteDate 설정) -->

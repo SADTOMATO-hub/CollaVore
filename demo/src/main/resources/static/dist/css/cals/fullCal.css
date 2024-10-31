@@ -388,7 +388,13 @@ button.close:hover {
 
 
 
-
+/* 사이드바 토글시 표시 */
+.active-filter {
+    background-color: #2a3a4b; /* 기존 색상보다 어두운 회색 계열 */
+    color: #d1d5db; /* 부드러운 글자 색 */
+    border-radius: 4px;
+    padding: 4px;
+}
 
 
 
