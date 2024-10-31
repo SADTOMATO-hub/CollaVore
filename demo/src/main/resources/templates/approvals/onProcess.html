@@ -280,11 +280,14 @@ button:active {
 				<table class="table table-hover">
 					<thead>
 						<tr>
-							<td></td>
-							<td>전자결재 제목</td>
-							<td>기안자</td>
-							<td>기안일</td>
-							<td></td>
+							<th></th>
+							<th>순번</th>
+							<th>전자결재명</th>
+							<th>기안자</th>
+							<th>기안일</th>
+							<th:block th:if="${#strings.equals(approvalStatus, 'a1')}"> 
+									<th></th>										
+							</th:block>
 						</tr>
 					</thead>
 					<tbody>
@@ -299,7 +302,7 @@ button:active {
 								<td>[[${#dates.format(myAppr.regDate, "yyyy년 MM월 dd일")}]]</td>
 								<th:block
 									th:if="${session.userEmpNo == myAppr.drafterEmpNo && #strings.equals(myAppr.approvalStatus, 'a1')}">
-									<td><button type="button">삭제</button></td>
+									<td><button type="button" class="btn btn-danger">삭제</button></td>
 								</th:block>
 							</tr>
 						</th:block>
