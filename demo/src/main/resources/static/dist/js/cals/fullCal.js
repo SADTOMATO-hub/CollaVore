@@ -880,12 +880,11 @@ document.addEventListener('DOMContentLoaded', function() {
 							body: JSON.stringify({ calNo: calNo, name: name, color: color, members: members })
 
 						})
-
 							.then(response => response.json())
 							.then(data => {
 								console.log("Payload data:", { calNo: calNo, name: name, color: color, members: members });
 
-								console.log(data);
+								console.log(color);
 								if (data.result) {
 									alert('캘린더 수정이 성공적으로 완료되었습니다.');
 									location.reload();  // 새로고침하여 변경 사항 반영
