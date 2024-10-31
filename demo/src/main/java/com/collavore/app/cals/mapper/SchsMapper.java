@@ -85,9 +85,27 @@ public interface SchsMapper {
 
 	public int restoreCalFromTrash(int calNo); // 캘린더 복원 (isDelete를 'h2'로 업데이트)
 
-	public int permanentlyDeleteCal(int calNo); // 캘린더 완전 삭제 (휴지통에 있는 캘린더 삭제)
-
+//	public int permanentlyDeleteCal(int calNo); // 캘린더 완전 삭제 (휴지통에 있는 캘린더 삭제)
 	
+	//----- 캘린더 완전삭제 -----
+	// 일정관리 조회
+    List<Integer> getSchedulesByCalNo(int calNo);
+
+    // 일정알림관리 조회
+    List<Integer> getAlarmsByScheduleNo(int schNo);
+
+    // 일정알림 삭제
+    int deleteAlarm(int alarmNo);
+
+    // 일정 삭제
+    int deleteSchedule(int schNo);
+
+    // 캘린더 공유관리 삭제
+    int deleteCalShares(int calNo);
+
+    // 캘린더 삭제
+    int deleteCalendar(int calNo);
+  //-----end 캘린더 완전삭제 -----
 	
 	
 	// 새로 등록된 사원에 내캘린더 생성

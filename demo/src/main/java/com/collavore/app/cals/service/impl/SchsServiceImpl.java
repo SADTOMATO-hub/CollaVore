@@ -123,6 +123,27 @@ public class SchsServiceImpl implements SchsService {
 	public int deleteSchs(int schsNO) {
 		return schsMapper.deleteSchsInfo(schsNO);
 	}
+	
+	  @Override
+	    @Transactional
+	    public int deleteSchedule(int schNo) {
+	        // 1. 일정 번호로 알림 정보 조회 및 삭제
+	        List<Integer> alarmNoList = schsMapper.getAlarmsByScheduleNo(schNo);
+	        
+	        if (alarmNoList != null && !alarmNoList.isEmpty()) {
+	            for (int alarmNo : alarmNoList) {
+	            	schsMapper.deleteAlarm(alarmNo);
+	            }
+	        }
+
+	        // 2. 일정 정보 삭제
+	        return schsMapper.deleteSchedule(schNo);
+	    }
+    
+
+	
+	
+	
 
 	// =====================캘린더 사이드바=====================
 	// 일정생성창 캘린더 전체조회
@@ -242,10 +263,10 @@ public class SchsServiceImpl implements SchsService {
 	}
 
 	// 캘린더 완전 삭제
-	@Override
-	public int permanentlyDel(int calNo) {
-		return schsMapper.permanentlyDeleteCal(calNo);
-	}
+//	@Override
+//	public int permanentlyDel(int calNo) {
+//		return schsMapper.permanentlyDeleteCal(calNo);
+//	}
 
 	@Override
 	public List<Map<String, Object>> getDeptWithEmp() {
@@ -281,4 +302,30 @@ public class SchsServiceImpl implements SchsService {
 	        return 0;  // 예외 발생 시 기본값 반환
 	    }
 	}
+	
+	@Override
+    @Transactional
+    public int permanentlyDel(int calNo) {
+        // 1. 일정관리 조회
+        List<Integer> schNoList = schsMapper.getSchedulesByCalNo(calNo);
+
+        // 2. 일정이 있다면 일정번호로 일정알림관리 조회 및 삭제
+        for (int schNo : schNoList) {
+            List<Integer> alarmNoList = schsMapper.getAlarmsByScheduleNo(schNo);
+
+            // 일정알림 삭제
+            for (int alarmNo : alarmNoList) {
+            	schsMapper.deleteAlarm(alarmNo);
+            }
+
+            // 일정관리 삭제
+            schsMapper.deleteSchedule(schNo);
+        }
+
+        // 3. 캘린더 공유관리 삭제
+        schsMapper.deleteCalShares(calNo);
+
+        // 4. 캘린더 관리에서 캘린더 삭제
+        return schsMapper.deleteCalendar(calNo);
+    }
 }

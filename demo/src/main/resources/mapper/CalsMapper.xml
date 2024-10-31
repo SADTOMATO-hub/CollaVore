@@ -131,12 +131,13 @@
 		= 'h2'
 	</select>
 
+	<!--일정삭제 일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭 -->
+	<!-- 일정알림관리 조회 -->
+	
+	<!--일정삭제 일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭일정삭 -->
 
-	<delete id="deleteSchsInfo" parameterType="int">
-		DELETE FROM schs
-		WHERE
-		sch_no = #{schNo}
-	</delete>
+
+
 
 	<update id="updateSchsInfo" parameterType="SchsVO">
 		UPDATE schs
@@ -222,16 +223,19 @@
 	<!-- 캘린더 일정 조회 -->
 	<select id="selectAllCal" resultType="SchsVO">
 		SELECT cs.cal_no
-			, c.name
-		 	, c.color
+		, c.name
+		,
+		c.color
 		FROM
 		calshares cs
 		INNER JOIN cals c ON
 		c.cal_no = cs.cal_no
-		WHERE cs.emp_no =
+		WHERE
+		cs.emp_no =
 		#{empNo}
 		ORDER BY CASE WHEN
-		c.cal_type = 'g1' THEN 1 ELSE 9999 END, c.name
+		c.cal_type = 'g1' THEN 1 ELSE
+		9999 END, c.name
 	</select>
 
 	<!-- 공유캘린더 리스트 <select id="selectTeamCal" resultType="SchsVO"> SELECT cs.cal_no, 
@@ -242,13 +246,16 @@
 	<!-- -->
 	<select id="selectTeamCal" resultType="SchsVO">
 		SELECT cs.cal_no
-			, c.name
-		 	, c.color
+		, c.name
+		,
+		c.color
 		FROM calshares cs
 		INNER JOIN cals c
 		ON c.cal_no = cs.cal_no
-		WHERE cs.emp_no = #{empNo}
+		WHERE
+		cs.emp_no = #{empNo}
 		AND c.cal_type = 'g2'
+		AND c.is_delete = 'h2' 
 		ORDER BY c.name
 	</select>
 
@@ -266,14 +273,16 @@
 		, cal_type
 		, reg_date
 		, is_delete
-		, delete_date
+		,
+		delete_date
 		, color
 		) VALUES (
 		#{calNo}
 		, #{name}
 		, #{calType}
 		, SYSDATE
-		, #{isDelete}
+		,
+		#{isDelete}
 		, NULL
 		, #{color}
 		)
@@ -300,49 +309,46 @@
 	</insert>
 
 
-	<!-- 캘린더 정보 수정
-	<update id="updateCalsInfo" parameterType="SchsVO">
-		UPDATE cals
-		SET
-		name =
-		#{name},
-		color = #{color}
-		WHERE cal_no = #{calNo}
-	</update> -->
+	<!-- 캘린더 정보 수정 <update id="updateCalsInfo" parameterType="SchsVO"> UPDATE 
+		cals SET name = #{name}, color = #{color} WHERE cal_no = #{calNo} </update> -->
 	<!-- 캘린더 기본 정보 업데이트 -->
-    <update id="updateCalendarDetails">
-        UPDATE cals
-        SET name = #{name},
-            color = #{color}
-        WHERE cal_no = #{calNo}
-    </update>
+	<update id="updateCalendarDetails">
+		UPDATE cals
+		SET name = #{name},
+		color = #{color}
+		WHERE
+		cal_no = #{calNo}
+	</update>
 
-    <!-- 기존 참여자 삭제 -->
-    <delete id="deleteParticipantsByCalNo">
-        DELETE FROM calshares WHERE cal_no = #{calNo}
-    </delete>
+	<!-- 기존 참여자 삭제 -->
+	<delete id="deleteParticipantsByCalNo">
+		DELETE FROM calshares WHERE cal_no = #{calNo}
+	</delete>
 
-    <!-- 새 참여자 추가 -->
-    <insert id="addParticipant" parameterType="map">
-        <selectKey keyProperty="csNo" resultType="Integer" order="BEFORE">
-            SELECT NVL(MAX(cs_no), 0) + 1 FROM calshares
-        </selectKey>
-        INSERT INTO calshares (cs_no, cal_no, emp_no, reg_date)
-        VALUES (#{csNo}, #{calNo}, #{empNo}, SYSDATE)
-    </insert>
-	
+	<!-- 새 참여자 추가 -->
+	<insert id="addParticipant" parameterType="map">
+		<selectKey keyProperty="csNo" resultType="Integer"
+			order="BEFORE">
+			SELECT NVL(MAX(cs_no), 0) + 1 FROM calshares
+		</selectKey>
+		INSERT INTO calshares (cs_no, cal_no, emp_no, reg_date)
+		VALUES
+		(#{csNo}, #{calNo}, #{empNo}, SYSDATE)
+	</insert>
+
 	<!-- 공유 캘린더의 상세 정보(사원리스트를 가져옴 -->
-	 <!-- 특정 캘린더의 공유자 목록 조회 -->
-    <select id="getCalInfo" resultType="map" parameterType="int">
-        SELECT 
-            cs.emp_no AS empNo, 
-            e.name AS empName
-        FROM 
-            calshares cs
-            JOIN employees e ON cs.emp_no = e.emp_no
-        WHERE 
-            cs.cal_no = #{calNo}
-    </select>
+	<!-- 특정 캘린더의 공유자 목록 조회 -->
+	<select id="getCalInfo" resultType="map" parameterType="int">
+		SELECT
+		cs.emp_no AS empNo,
+		e.name AS empName
+		FROM
+		calshares cs
+		JOIN employees e
+		ON cs.emp_no = e.emp_no
+		WHERE
+		cs.cal_no = #{calNo}
+	</select>
 
 
 
@@ -352,7 +358,8 @@
 	<!-- 캘린더를 휴지통으로 이동 (isDelete = 'h1'로 업데이트하고 deleteDate 설정) -->
 	<update id="updateCalToTrash" parameterType="int">
 		UPDATE cals
-		SET is_delete = 'h1', delete_date = SYSDATE
+		SET
+		is_delete = 'h1', delete_date = SYSDATE
 		WHERE cal_no = #{calNo}
 	</update>
 
@@ -360,7 +367,8 @@
 	<!-- 캘린더를 복원 (isDelete = 'h2'로 업데이트하고 deleteDate를 NULL로 설정) -->
 	<update id="restoreCalFromTrash" parameterType="int">
 		UPDATE cals
-		SET is_delete = 'h2', delete_date = NULL
+		SET
+		is_delete = 'h2', delete_date = NULL
 		WHERE cal_no = #{calNo}
 	</update>
 
@@ -378,7 +386,7 @@
 
 
 
-	<!-- 캘린더 완전 삭제 -->
+	<!-- 캘린더 완전 삭제1 -->
 	<delete id="permanentlyDeleteCal" parameterType="int">
 		DELETE FROM cals
 		WHERE cal_no = #{calNo} AND is_delete = 'h1'  <!-- 휴지통에 있는 
@@ -386,6 +394,43 @@
 	</delete>
 
 
+	<!-- 캘린더 완전 삭제2 -->
+	<!-- 일정관리 조회 -->
+	<select id="getSchedulesByCalNo" parameterType="int"
+		resultType="int">
+		SELECT sch_no FROM schs WHERE cal_no = #{calNo}
+	</select>
+
+	<!-- 일정알림관리 조회 -->
+	<select id="getAlarmsByScheduleNo" parameterType="int"
+		resultType="int">
+		SELECT sa_no FROM schalarms WHERE sch_no = #{schNo}
+	</select>
+
+	<!-- 일정알림 삭제 -->
+	<delete id="deleteAlarm" parameterType="int">
+		DELETE FROM schalarms
+		WHERE sa_no = #{alarmNo}
+	</delete>
+
+	<!-- 일정 삭제 -->
+	<delete id="deleteSchedule" parameterType="int">
+		DELETE FROM schs WHERE
+		sch_no = #{schNo}
+	</delete>
+
+	<!-- 캘린더 공유관리 삭제 -->
+	<delete id="deleteCalShares" parameterType="int">
+		DELETE FROM calshares
+		WHERE cal_no = #{calNo}
+	</delete>
+
+	<!-- 캘린더 삭제 -->
+	<delete id="deleteCalendar" parameterType="int">
+		DELETE FROM cals WHERE
+		cal_no = #{calNo}
+	</delete>
+	<!-- end 캘린더 완전 삭제2 -->
 
 
 
@@ -428,8 +473,8 @@
 
 	<select id="selectCalInfo" resultType="SchsVO">
 		SELECT cal_no
-			, name
-			, color
+		, name
+		, color
 		FROM cals
 		WHERE cal_no = #{calNo}
 	</select>

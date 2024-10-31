@@ -1,5 +1,6 @@
 package com.collavore.app.cals.web;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -178,18 +179,29 @@ public class SchsController {
 	}
 
 	// 삭제
+//	@PostMapping("/sch/schDelete")
+//	@ResponseBody
+//	public Map<String, Object> deleteSchs(@RequestBody Map<String, Integer> request) {
+//		Map<String, Object> result = new HashMap<>();
+//		try {
+//			schsService.deleteSchs(request.get("schNo"));
+//			result.put("success", true);
+//		} catch (Exception e) {
+//			result.put("success", false);
+//		}
+//		return result;
+//	}
+	// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제
 	@PostMapping("/sch/schDelete")
-	@ResponseBody
-	public Map<String, Object> deleteSchs(@RequestBody Map<String, Integer> request) {
-		Map<String, Object> result = new HashMap<>();
-		try {
-			schsService.deleteSchs(request.get("schNo"));
-			result.put("success", true);
-		} catch (Exception e) {
-			result.put("success", false);
-		}
-		return result;
-	}
+    @ResponseBody
+    public String deleteSchedule(@RequestBody Map<String, Integer> params) {
+        int schNo = params.get("schNo");
+        int result = schsService.deleteSchedule(schNo);
+        System.out.println("213213211132132133333333333333333333333333333333333333333333333");
+        System.out.println(result);
+        System.out.println("213213211132132133333333333333333333333333333333333333333333333");
+        return result > 0 ? "일정이 삭제되었습니다." : "일정 삭제에 실패했습니다.";
+    }
 //==============================END 일정관리 ===============================
 
 //	// 내캘린더 뿌려주
@@ -365,7 +377,7 @@ public class SchsController {
 		}
 		return response;
 	}
-
+	// 휴지통에있는 캘린더 복원 
 	@PostMapping("/cal/calRestore")
 	@ResponseBody
 	public Map<String, Object> calRestore(@RequestBody Map<String, String> params) {
@@ -389,14 +401,24 @@ public class SchsController {
 	public List<SchsVO> trashList() {
 		return schsService.trashList(); // 휴지통에 있는 캘린더 목록 조회
 	}
-
+//	// 완전삭제1
+//	@PostMapping("/cal/calDel")
+//	@ResponseBody
+//	public String permanentlyDelete(@RequestBody Map<String, Integer> params) {
+//		int calNo = params.get("calNo");
+//		int result = schsService.permanentlyDel(calNo);
+//		return result > 0 ? "캘린더가 완전히 삭제되었습니다." : "캘린더 삭제에 실패했습니다.";
+//	}
+	// 완전삭제 요청2
 	@PostMapping("/cal/calDel")
 	@ResponseBody
-	public String permanentlyDelete(@RequestBody Map<String, Integer> params) {
-		int calNo = params.get("calNo");
-		int result = schsService.permanentlyDel(calNo);
-		return result > 0 ? "캘린더가 완전히 삭제되었습니다." : "캘린더 삭제에 실패했습니다.";
+	public String permanentlyDel(@RequestBody Map<String, Integer> params) {
+	    int calNo = params.get("calNo");
+	    int result = schsService.permanentlyDel(calNo);  // 서비스 메서드 이름과 일치시킴
+	    return result > 0 ? "캘린더가 완전히 삭제되었습니다." : "캘린더 삭제에 실패했습니다.";
 	}
+	
+	
 
 	@GetMapping("/cal/deptWithEmp")
 	@ResponseBody
