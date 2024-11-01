@@ -531,13 +531,30 @@
 	</delete>     
 	 <!-- 프로젝트 폴더 단건 조회-->
 		<select id="projectfolderInfo" resultType="ProjectVO">
+		 select pf_no
+                , proj_no
+        
+        from projfolders
+        where proj_no =#{projNo}
+	</select>	
+	 <!-- 프로젝트 폴더 내 파일 조회-->
+		<select id="projectfileInfo" resultType="ProjectVO">
 		SELECT 
 				proj_file_no
 				, pf_no
 				, name
         	  
-		FROM projfiles
-		WHERE pf_no = #{pfNo}
-	</select>	
-	
+		FROM 
+			projfiles
+		WHERE 
+			pf_no = #{pfNo}
+	</select>		
+     <!-- 프로젝트 파일 삭제-->
+	<delete id="ProjectfileDelete" parameterType="int">
+		delete 
+		FROM 
+	        projfiles
+		WHERE 
+		 	pf_no = #{pfNo}
+	</delete> 	
 </mapper>
