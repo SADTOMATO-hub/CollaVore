@@ -1,11 +1,15 @@
 package com.collavore.app.cals.service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
 public interface SchsService {
 	// 조회
 	public List<SchsVO> SchsList(int empNo);
+	// 풀캘린더에서 이벤트드롭으로 날짜시간값만 바꾸기
+	//public int updateEventTime(Integer schNo, String startDate, String endDate);
+	public int updateEventTime(Integer schNo, String startDate, String endDate);
 
 	// 단건조회
 	public SchsVO SchsInfo(SchsVO schsVO);
@@ -85,5 +89,6 @@ public interface SchsService {
 
 	// 새로 등록된 사원에 내캘린더 생성
 	public int addNewMyCal(int empNo);
+	
 
 }

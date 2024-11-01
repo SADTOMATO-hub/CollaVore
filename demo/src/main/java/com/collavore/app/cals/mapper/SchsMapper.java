@@ -1,5 +1,6 @@
 package com.collavore.app.cals.mapper;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -11,6 +12,9 @@ public interface SchsMapper {
 
 	// 전체 일정 조회
 	public List<SchsVO> selectSchsAll(int empNo);
+	// 풀캘린더에서 이벤트드롭으로 날짜시간값만 바꾸기
+	int updateEventTime(@Param("schNo") Integer schNo, @Param("startDate") String startDate, @Param("endDate") String endDate);
+	
 
 	// 등록
 	public int insertSchsInfo(SchsVO schsVO);

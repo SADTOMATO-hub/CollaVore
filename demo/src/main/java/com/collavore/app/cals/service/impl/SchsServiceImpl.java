@@ -1,5 +1,6 @@
 package com.collavore.app.cals.service.impl;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,17 @@ public class SchsServiceImpl implements SchsService {
 	public List<SchsVO> SchsList(int empNo) {
 		return schsMapper.selectSchsAll(empNo);
 	}
+	 // 풀캘린더에서 이벤트 드롭으로 날짜 시간값만 바꾸기
+	@Override
+    public int updateEventTime(Integer schNo, String startDate, String endDate) {
+        try {
+            return schsMapper.updateEventTime(schNo, startDate, endDate);
+        } catch (Exception e) {
+            System.err.println("Error in SchsServiceImpl.updateEventTime: " + e.getMessage());
+            e.printStackTrace();
+            return 0;
+        }
+    }
 
 	// 단건조회
 	@Override
@@ -328,4 +340,5 @@ public class SchsServiceImpl implements SchsService {
         // 4. 캘린더 관리에서 캘린더 삭제
         return schsMapper.deleteCalendar(calNo);
     }
+	
 }
