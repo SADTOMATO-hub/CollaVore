@@ -95,48 +95,48 @@ document.addEventListener('DOMContentLoaded', function() {
 
 				// 서버로 업데이트된 일정 데이터 전송
 				eventDrop: function(info) {
-					// 이동 후의 시작일과 종료일을 Oracle에서 이해할 수 있는 'YYYY-MM-DD HH:MM:SS' 형식으로 변환
-					var formatDateTime = (date) => {
-						const d = new Date(date);
-						const year = d.getFullYear();
-						const month = String(d.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
-						const day = String(d.getDate()).padStart(2, '0');
-						const hours = String(d.getHours()).padStart(2, '0');
-						const minutes = String(d.getMinutes()).padStart(2, '0');
-						const seconds = String(d.getSeconds()).padStart(2, '0');
-						return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-					};
+    // 이동 후의 시작일과 종료일을 Oracle에서 이해할 수 있는 'YYYY-MM-DD HH:MM:SS' 형식으로 변환
+    var formatDateTime = (date) => {
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+        const day = String(d.getDate()).padStart(2, '0');
+        const hours = String(d.getHours()).padStart(2, '0');
+        const minutes = String(d.getMinutes()).padStart(2, '0');
+        const seconds = String(d.getSeconds()).padStart(2, '0');
+        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    };
 
-					var updatedEvent = {
-						schNo: info.event.id,  // schNo로 전달
-						startDate: formatDateTime(info.event.start),
-						endDate: info.event.end ? formatDateTime(info.event.end) : formatDateTime(info.event.start) // 종료일이 없으면 시작일과 동일하게 설정
-					};
+    var updatedEvent = {
+        schNo: info.event.id,  // schNo로 전달
+        startDate: formatDateTime(info.event.start),
+        endDate: info.event.end ? formatDateTime(info.event.end) : formatDateTime(info.event.start) // 종료일이 없으면 시작일과 동일하게 설정
+    };
 
-					// 서버로 업데이트된 일정 데이터 전송
-					fetch('/sch/updateTime', {
-						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						body: JSON.stringify(updatedEvent)
-					})
-						.then(response => response.text()) // 텍스트 형식으로 응답 받기
-						.then(data => {
-							console.log(data); // 여기서 응답을 출력
-							if (data === "success") {S
-								alert('일정이 성공적으로 업데이트되었습니다.');
-							} else {
-								alert('일정 업데이트에 실패했습니다.');
-								info.revert(); // 서버 응답이 실패한 경우 일정 위치 복구
-							}
-						})
-						.catch(error => {
-							console.error('Error updating event:', error);
-							alert('일정 업데이트 중 오류가 발생했습니다.');
-							info.revert(); // 오류 발생 시 일정 위치 복구
-						});
-				},
+    // 서버로 업데이트된 일정 데이터 전송
+    fetch('/sch/updateTime', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(updatedEvent)
+    })
+        .then(response => response.text()) // 텍스트 형식으로 응답 받기
+        .then(data => {
+            console.log(data); // 여기서 응답을 출력
+            if (data === "success") {
+                alert('일정이 성공적으로 업데이트되었습니다.');
+            } else {
+                alert('일정 업데이트에 실패했습니다.');
+                info.revert(); // 서버 응답이 실패한 경우 일정 위치 복구
+            }
+        })
+        .catch(error => {
+            console.error('Error updating event:', error);
+            alert('일정 업데이트 중 오류가 발생했습니다.');
+            info.revert(); // 오류 발생 시 일정 위치 복구
+        });
+},
 
 				//events 안에서 캘린더 리스트 출력 출력할것들 여기 안에서 해결하
 				events: sList, //풀캘린더 리스트
