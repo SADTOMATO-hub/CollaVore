@@ -39,10 +39,10 @@
 	</select>
 	<!--풀캘린더에서 드롭으로 날짜 시간만 변경하기 -->
 	<update id="updateEventTime">
-        UPDATE schs
-        SET start_date = #{startDate},
-            end_date = #{endDate}
-        WHERE sch_no = #{schNo}
+     UPDATE schs
+    SET start_date = TO_TIMESTAMP(#{startDate}, 'YYYY-MM-DD HH24:MI:SS'),
+        end_date = TO_TIMESTAMP(#{endDate}, 'YYYY-MM-DD HH24:MI:SS')
+    WHERE sch_no = #{schNo}
     </update>
 	
 	<!-- 단건 일정 조회 -->
