@@ -460,7 +460,7 @@ button.close:hover {
 
 .employee-list {
     width: 40%;
-     max-height: 400px; /* 적절한 높이 설정 */
+     max-height: 500px; /* 적절한 높이 설정 */
     overflow-y: auto;
     background-color: #f9f9f9;
     padding: 5px 0;
