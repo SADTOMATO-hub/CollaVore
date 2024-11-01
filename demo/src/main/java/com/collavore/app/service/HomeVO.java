@@ -25,4 +25,20 @@ public class HomeVO {
 	private String appStatus;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date appDate;
+	
+	// 사원관련
+	private Integer empNo;
+	
+	// 조직관련
+	private String deptNo;
+	private String deptName;
+	
+	// 직위관련
+	private String posiName;
+	private String posiGrade;
+	
+	// 메뉴권한관련
+	private Integer authNo;
+	private Integer menuNo;
+	private String menuValue;
 }

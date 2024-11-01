@@ -49,5 +49,86 @@
 			WHERE ROWNUM <= 5
 		]]>
 	</select>
-
+    
+    <select id="selectEmpList" resultType="HomeVO">
+		SELECT
+			p.posi_no
+			, e.name AS empName
+			, p.name AS posiName
+			, e.emp_no
+			, d.name AS deptName
+		FROM employees e 
+			JOIN positions p ON e.posi_no = p.posi_no
+			JOIN departments d ON e.dept_no = d.dept_no
+		ORDER by p.posi_no
+    </select>
+    
+    <select id="selectDeptList" resultType="HomeVO">
+		SELECT dept_no
+			, name AS deptName
+		FROM departments
+		WHERE parent_dept_no > 0
+    </select>
+    
+    
+    <select id="empAuthList" resultType="HomeVO">
+		SELECT
+			p.posi_no
+			, e.name AS empName
+			, p.name AS posiName
+			, e.emp_no
+			, d.name AS deptName
+		FROM employees e 
+			JOIN positions p ON e.posi_no = p.posi_no
+			JOIN departments d ON e.dept_no = d.dept_no
+		WHERE e.emp_no NOT IN (SELECT ma.emp_no FROM menusauth ma JOIN menus m ON ma.menu_no = m.menu_no WHERE m.menu_value = #{menuValue})
+			AND d.dept_no = #{deptNo}
+		ORDER by p.posi_no
+    </select>
+	
+	<select id="selectAuthEmpList" resultType="HomeVO">
+		SELECT auth_no 
+			, e.emp_no
+		    , e.name AS empName
+		    , p.name AS posiName
+		    , d.name AS deptName
+		FROM menusauth ma
+		    JOIN menus m ON ma.menu_no = m.menu_no
+		    JOIN employees e ON ma.emp_no = e.emp_no
+		    JOIN positions p ON e.posi_no = p.posi_no
+		    JOIN departments d ON e.dept_no = d.dept_no
+		WHERE m.menu_value = #{menuValue}
+	</select>
+	
+	<select id="selectAuthEmpInfo" resultType="HomeVO">
+		SELECT auth_no 
+			, ma.emp_no
+		    , e.name AS empName
+		    , p.name AS posiName
+		    , d.name AS deptName
+		FROM menusauth ma
+		    JOIN menus m ON ma.menu_no = m.menu_no
+		    JOIN employees e ON ma.emp_no = e.emp_no
+		    JOIN positions p ON e.posi_no = p.posi_no
+		    JOIN departments d ON e.dept_no = d.dept_no
+		WHERE m.menu_value = #{menuValue}
+			AND ma.emp_no = #{empNo}
+	</select>
+	
+	<insert id="insertMenuAuthEmp" parameterType="HomeVO">
+		<selectKey keyProperty="menuNo,authNo" resultType="HomeVO"
+			order="BEFORE">
+				SELECT menu_no
+				    , (SELECT COALESCE(MAX(auth_no) + 1, 1) FROM menusauth) AS auth_no
+				FROM menus
+				WHERE menu_value = #{menuValue}
+		</selectKey>
+		INSERT INTO menusauth(auth_no, emp_no, menu_no)
+		VALUES(#{authNo}, #{empNo}, #{menuNo})
+	</insert>
+	
+	<delete id="deleteMenuAuth" parameterType="int">
+		DELETE FROM menusauth
+		WHERE auth_no = #{authNo}
+	</delete>
 </mapper>

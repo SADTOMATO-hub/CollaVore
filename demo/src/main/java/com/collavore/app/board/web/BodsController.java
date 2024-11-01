@@ -12,14 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.collavore.app.approvals.service.ApprovalsService;
 import com.collavore.app.board.service.BodsCfigVO;
 import com.collavore.app.board.service.BodsComtsVO;
 import com.collavore.app.board.service.BodsService;
 import com.collavore.app.board.service.BodsVO;
 import com.collavore.app.common.service.PageDTO;
-import com.collavore.app.security.service.EmpVO;
-import com.collavore.app.security.service.impl.UserDetailsService;
+import com.collavore.app.service.HomeService;
+import com.collavore.app.service.HomeVO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -28,12 +27,12 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class BodsController {
 	private final BodsService bodsService;
-	private final UserDetailsService userDetailsService;
+	private final HomeService homeService;
 
 
 	@ModelAttribute
 	public void addAttributes(BodsCfigVO bodsCfigVO, Model model, HttpSession session) {
-		List<EmpVO> employeesInfo = userDetailsService.empList();
+		List<HomeVO> employeesInfo = homeService.empList();
 		model.addAttribute("employees", employeesInfo);
 		
 		String userAdmin = (String) session.getAttribute("userAdmin");

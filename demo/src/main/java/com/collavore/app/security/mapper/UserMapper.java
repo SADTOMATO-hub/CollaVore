@@ -12,6 +12,4 @@ public interface UserMapper {
     public UserVO findByEmail(String email);
     public List<String> findRolesByEmail(String email); // 역할 조회 메서드 추가
     public List<String> myMenuAuth(int empNo); // 메뉴권한조회하기
-    
-    public List<EmpVO> selectEmpList(); // 회원조회
 }

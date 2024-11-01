@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.collavore.app.approvals.service.ApprovalsService;
 import com.collavore.app.common.service.FileUtill;
 import com.collavore.app.project.service.PjService;
 import com.collavore.app.project.service.PjTempService;
@@ -41,8 +40,8 @@ import com.collavore.app.project.service.ProjectFoldersVO;
 import com.collavore.app.project.service.ProjectTempVO;
 import com.collavore.app.project.service.ProjectVO;
 import com.collavore.app.project.service.ProjectWorkTempVO;
-import com.collavore.app.security.service.EmpVO;
-import com.collavore.app.security.service.impl.UserDetailsService;
+import com.collavore.app.service.HomeService;
+import com.collavore.app.service.HomeVO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -52,12 +51,12 @@ import lombok.RequiredArgsConstructor;
 public class ProjectController {
 	private final PjService pjService;
 	private final PjTempService pjtempService;
-	private final UserDetailsService userDetailsService;
+	private final HomeService homeService;
 
 
 	@ModelAttribute
 	public void addAttributes(Model model, HttpSession session) {
-		List<EmpVO> employeesInfo = userDetailsService.empList();
+		List<HomeVO> employeesInfo = homeService.empList();
 		model.addAttribute("employees", employeesInfo);
 		
 		String userAdmin = (String) session.getAttribute("userAdmin");

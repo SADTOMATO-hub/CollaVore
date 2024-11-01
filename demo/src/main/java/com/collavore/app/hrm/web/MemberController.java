@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.collavore.app.approvals.service.ApprovalsService;
 import com.collavore.app.cals.service.SchsService;
 import com.collavore.app.common.service.PageDTO;
 import com.collavore.app.hrm.service.DeptService;
@@ -32,8 +30,8 @@ import com.collavore.app.hrm.service.HrmVO;
 import com.collavore.app.hrm.service.JobService;
 import com.collavore.app.hrm.service.MemberService;
 import com.collavore.app.hrm.service.PosiService;
-import com.collavore.app.security.service.EmpVO;
-import com.collavore.app.security.service.impl.UserDetailsService;
+import com.collavore.app.service.HomeService;
+import com.collavore.app.service.HomeVO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -48,13 +46,13 @@ public class MemberController {
 	private final JobService jobService;
 	private final PosiService posiService;
 	private final SchsService schsService;
-	private final UserDetailsService userDetailsService;
+	private final HomeService homeService;
 	@Value("${file.upload.path}") // 메모리에 올라가 있는 변수값을 가져오기 때문에 표현이 다름아아아아아
 	private String uploadPath;
 
 	@ModelAttribute
 	public void addAttributes(Model model, HttpSession session) {
-		List<EmpVO> employeesInfo = userDetailsService.empList();
+		List<HomeVO> employeesInfo = homeService.empList();
 		model.addAttribute("employees", employeesInfo);
 		
 		String userAdmin = (String) session.getAttribute("userAdmin");

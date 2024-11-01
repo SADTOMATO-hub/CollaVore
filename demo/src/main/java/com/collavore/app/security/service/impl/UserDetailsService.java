@@ -42,10 +42,4 @@ public class UserDetailsService implements org.springframework.security.core.use
     public List<String> myMenuAuth(int empNo) {
     	return userMapper.myMenuAuth(empNo);
     }
-    
-    // 부서조회
-    // 사원조회
-    public List<EmpVO> empList(){
-    	return userMapper.selectEmpList();
-    }
 }

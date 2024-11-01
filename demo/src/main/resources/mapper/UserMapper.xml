@@ -38,18 +38,4 @@
     		INNER JOIN menus m ON ma.menu_no = m.menu_no
     	WHERE emp_no = #{empNo}
     </select>
-    
-    <select id="selectEmpList" resultType="EmpVO">
-    	
-		SELECT
-			p.posi_no
-			, e.name AS empName
-			, p.name AS posiName
-			, e.emp_no
-			, d.name AS deptName
-		FROM employees e 
-			JOIN positions p ON e.posi_no = p.posi_no
-			JOIN departments d ON e.dept_no = d.dept_no
-		ORDER by p.posi_no
-    </select>
 </mapper>

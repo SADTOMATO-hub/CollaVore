@@ -176,15 +176,15 @@
 					<!-- Tab Navigation -->
 					<ul class="nav nav-tabs" id="menuManagerTabs" role="tablist">
 						<li class="nav-item" role="presentation"><a
-							class="nav-link active" id="hr-tab" data-bs-toggle="tab"
-							href="#hr" role="tab" aria-controls="hr" aria-selected="true">인사관리</a>
+							class="nav-link active" id="hrm-tab" data-bs-toggle="tab"
+							href="#hrm" role="tab" aria-controls="hrm" aria-selected="true">인사관리</a>
 						</li>
 						<li class="nav-item" role="presentation"><a class="nav-link"
 							id="project-tab" data-bs-toggle="tab" href="#project" role="tab"
 							aria-controls="project" aria-selected="false">프로젝트관리</a></li>
 						<li class="nav-item" role="presentation"><a class="nav-link"
-							id="schedule-tab" data-bs-toggle="tab" href="#schedule"
-							role="tab" aria-controls="schedule" aria-selected="false">일정관리</a>
+							id="calendar-tab" data-bs-toggle="tab" href="#calendar"
+							role="tab" aria-controls="calendar" aria-selected="false">일정관리</a>
 						</li>
 						<li class="nav-item" role="presentation"><a class="nav-link"
 							id="approval-tab" data-bs-toggle="tab" href="#approval"
@@ -196,32 +196,47 @@
 					</ul>
 
 
-					<!-- Employee Select Box -->
-						<div class="form-group row m-2">
-							<label for="employeeSelect"
-								class="col-sm-3 text-center control-label col-form-label">사원 조회</label>
-							<div class="col-sm-9">
-								<select id="employeeSelect" class="form-select">
-									<option th:each="employee : ${employees}" th:value="${employee.empNo}" th:text="${employee.empName}">사원을 선택하세요</option>
-								</select>
-							</div>
+					<!-- Department and Employee Select Boxes -->
+					<div class="form-group row m-2">
+						<label for="departmentSelect"
+							class="col-sm-3 text-center control-label col-form-label">부서
+							선택</label>
+						<div class="col-sm-9">
+							<select id="departmentSelect" class="form-select">
+								<option value="">부서를 선택하세요</option>
+								<!-- 부서 목록은 서버에서 동적으로 추가 -->
+							</select>
 						</div>
+					</div>
+					<div class="form-group row m-2">
+						<label for="employeeSelect"
+							class="col-sm-3 text-center control-label col-form-label">사원
+							조회</label>
+						<div class="col-sm-9">
+							<select id="employeeSelect" class="form-select">
+								<option value="">사원을 선택하세요</option>
+								<!-- 선택된 부서와 메뉴 탭에 맞는 사원 목록이 동적으로 추가 -->
+							</select>
+						</div>
+					</div>
+
 
 
 					<!-- Tab Contents -->
 					<div class="tab-content mt-3" id="menuManagerTabContent">
-						<div class="tab-pane fade show active" id="hr" role="tabpanel"
-							aria-labelledby="hr-tab">
+						<div class="tab-pane fade show active" id="hrm" role="tabpanel"
+							aria-labelledby="hrm-tab">
 							<h6>인사관리 권한 목록</h6>
 							<table class="table">
 								<thead>
 									<tr>
 										<th>사원명</th>
 										<th>부서</th>
-										<th>삭제</th>
+										<th>직위</th>
+										<th></th>
 									</tr>
 								</thead>
-								<tbody id="employeeList-hr"></tbody>
+								<tbody id="employeeList-hrm"></tbody>
 							</table>
 						</div>
 						<div class="tab-pane fade" id="project" role="tabpanel"
@@ -232,24 +247,26 @@
 									<tr>
 										<th>사원명</th>
 										<th>부서</th>
-										<th>삭제</th>
+										<th>직위</th>
+										<th></th>
 									</tr>
 								</thead>
 								<tbody id="employeeList-project"></tbody>
 							</table>
 						</div>
-						<div class="tab-pane fade" id="schedule" role="tabpanel"
-							aria-labelledby="schedule-tab">
+						<div class="tab-pane fade" id="calendar" role="tabpanel"
+							aria-labelledby="calendar-tab">
 							<h6>일정관리 권한 목록</h6>
 							<table class="table">
 								<thead>
 									<tr>
 										<th>사원명</th>
 										<th>부서</th>
-										<th>삭제</th>
+										<th>직위</th>
+										<th></th>
 									</tr>
 								</thead>
-								<tbody id="employeeList-schedule"></tbody>
+								<tbody id="employeeList-calendar"></tbody>
 							</table>
 						</div>
 						<div class="tab-pane fade" id="approval" role="tabpanel"
@@ -260,7 +277,8 @@
 									<tr>
 										<th>사원명</th>
 										<th>부서</th>
-										<th>삭제</th>
+										<th>직위</th>
+										<th></th>
 									</tr>
 								</thead>
 								<tbody id="employeeList-approval"></tbody>
@@ -274,7 +292,8 @@
 									<tr>
 										<th>사원명</th>
 										<th>부서</th>
-										<th>삭제</th>
+										<th>직위</th>
+										<th></th>
 									</tr>
 								</thead>
 								<tbody id="employeeList-board"></tbody>
@@ -286,36 +305,182 @@
 		</div>
 	</div>
 	<script>
-document.getElementById('employeeSelect').addEventListener('change', function () {
-    const employeeId = this.value;
-    const employeeName = this.options[this.selectedIndex].text;
-    const activeTab = document.querySelector('.nav-tabs .active').id.replace('-tab', '');
+		// 초기 로드 시 부서 목록 가져오기
+		window.onload = function() {
+		    deptList();
+		    
+		 	// 최초 한번 실행
+			authEmpList('hrm'); 
+			
+			//각 탭 클릭 시 이벤트 설정
+			document.querySelectorAll('.nav-link').forEach(tab => {
+			    tab.addEventListener('click', function () {
+			        const selectTab = this.id.replace('-tab', ''); // 클릭된 탭의 ID에서 'tab'을 제외한 부분만 사용
+			        authEmpList(selectTab); // 해당 탭에 맞는 데이터를 가져오는 함수 호출
+			    });
+			});
 
-    if (employeeId) {
-        const employeeListId = `employeeList-${activeTab}`;
+		};
 
-        // Check if employee is already added in the selected tab
-        if (!document.querySelector(`#${employeeListId} #employeeRow-${employeeId}`)) {
-            const row = document.createElement('tr');
-            row.id = `employeeRow-${employeeId}`;
-            row.innerHTML = `
-                <td>${employeeName}</td>
-                <td>부서 이름</td> <!-- Replace with actual department data if available -->
-                <td><button class="btn btn-danger btn-sm" onclick="removeEmployee('${employeeId}', '${employeeListId}')">삭제</button></td>
-            `;
-            document.getElementById(employeeListId).appendChild(row);
-        }
-    }
-});
+		function deptList() {
+		    fetch('/menuDeptList') // 부서 목록을 가져오는 서버 엔드포인트
+		        .then(response => response.json())
+		        .then(departments => {
+		            const departmentSelect = document.getElementById('departmentSelect');
+		            departmentSelect.innerHTML = '<option value="">부서를 선택하세요</option>';
+		            departments.forEach(department => {
+		                const option = document.createElement('option');
+		                option.value = department.deptNo;
+		                option.textContent = department.deptName;
+		                departmentSelect.appendChild(option);
+		            });
+		        })
+		        .catch(error => console.error('부서 목록 가져오기 오류:', error));
+		}
+		
+		// 부서 선택 시 이벤트 설정
+		document.getElementById('departmentSelect').addEventListener('change', function() {
+		    const deptNo = this.value;
+		    const selectTab = document.querySelector('.nav-tabs .active').id.replace('-tab', ''); // 현재 선택된 탭
+		    if (deptNo) {
+		    	deptEmpList(deptNo, selectTab);
+		    } else {
+		        document.getElementById('employeeSelect').innerHTML = '<option value="">사원을 선택하세요</option>';
+		    }
+		});
+		
+		// 특정 부서 및 메뉴 권한이 없는 사원 목록을 가져와 employeeSelect에 표시하는 함수
+		function deptEmpList(deptNo, tabName) {
+		    let url = `/empList?deptNo=${deptNo}&menuValue=${tabName}`; // 부서별로 권한이 없는 사원 목록을 가져오는 API
 
-// Function to remove employee from the specific permission list
-function removeEmployee(employeeId, listId) {
-    const row = document.querySelector(`#${listId} #employeeRow-${employeeId}`);
-    if (row) {
-        row.remove();
-    }
-}
+		    fetch(url)
+		        .then(response => response.json())
+		        .then(employees => {
+		            const employeeSelect = document.getElementById('employeeSelect');
+		            employeeSelect.innerHTML = '<option value="">사원을 선택하세요</option>'; // 기존 옵션 초기화
 
-</script>
+		            employees.forEach(employee => {
+		                const option = document.createElement('option');
+		                option.value = employee.empNo;
+		                option.textContent = employee.empName;
+		                employeeSelect.appendChild(option);
+		            });
+		        })
+		        .catch(error => console.error('사원 목록 가져오기 오류:', error));
+		}
+		
+		
+		// 특정 탭에 권한이 없는 사원 목록을 가져와 employeeSelect에 표시하는 함수
+		function searchEmpList(tabName) {
+		    let url = `/empList?menuValue=${tabName}`; // 권한이 없는 사원 목록을 가져오는 API
+	
+		    fetch(url)
+		        .then(response => response.json())
+		        .then(employees => {
+		            const employeeSelect = document.getElementById('employeeSelect');
+		            employeeSelect.innerHTML = '<option value="">사원을 선택하세요</option>'; // 기존 옵션 초기화
+	
+		            employees.forEach(employee => {
+		                const option = document.createElement('option');
+		                option.value = employee.empNo;
+		                option.textContent = employee.empName;
+		                employeeSelect.appendChild(option);
+		            });
+		        })
+		        .catch(error => console.error('사원 목록 가져오기 오류:', error));
+		}
+		
+		// 탭별 데이터를 가져오는 함수
+		function authEmpList(tabName) {
+	        searchEmpList(tabName); // 해당 탭의 권한 없는 사원 목록 로드
+		    let targetUrl = '/hasMenuAuth?menuValue=' + tabName;
+		    fetch(targetUrl)
+		        .then(response => response.json())
+		        .then(data => {
+		            makeTrTag(data, tabName); // 데이터를 받아 해당 탭에 표시하는 함수 호출
+		        })
+		        .catch(error => console.error('데이터 가져오기 오류:', error));
+		}
+	
+		// employeeSelect에서 선택한 사원을 현재 활성화된 탭에 추가하는 함수
+		document.getElementById('employeeSelect').addEventListener('change', function () {
+		    const empNo = this.value;
+		    const employeeName = this.options[this.selectedIndex].text;
+		    const selectTab = document.querySelector('.nav-tabs .active').id.replace('-tab', '');
+	
+		    if (empNo) {
+		        // 서버에 선택한 사원과 탭 데이터를 전송하여 권한 추가 요청
+		        let saveUrl = '/giveMenuAuth'; // 서버에서 권한을 추가하는 엔드포인트
+		        let data = {
+		            empNo: empNo,
+		            menuValue: selectTab
+		        };
+	
+		        fetch(saveUrl, {
+		            method: 'POST',
+		            headers: {
+		                'Content-Type': 'application/json'
+		            },
+		            body: JSON.stringify(data)
+		        })
+		        .then(response => response.json())
+		        .then(result => {
+	                makeTrTag([{
+	                    empNo: result.empNo,
+	                    empName: result.empName,
+	                    deptName: result.deptName,  // 서버에서 반환된 부서 이름
+	                    posiName: result.posiName   // 서버에서 반환된 직위 이름
+	                }], selectTab);
+		        })
+		        .catch(error => console.error('서버 요청 오류:', error));
+		    }
+		});
+	
+		// 데이터를 해당 탭에 표시하는 함수
+		function makeTrTag(data, tabName) {
+		    const employeeListId = `employeeList-${tabName}`; // 해당 탭의 테이블 ID
+		    const employeeList = document.getElementById(employeeListId);
+	
+		    data.forEach(employee => {
+		        if (!document.querySelector(`#${employeeListId} #employeeRow-${employee.empNo}`)) {
+		            const row = document.createElement('tr');
+		            row.id = `employeeRow-${employee.authNo}`;
+		            row.innerHTML = `
+		                <td>${employee.empName}</td>
+		                <td>${employee.deptName}</td>
+		                <td>${employee.posiName}</td>
+		                <td><button class="btn btn-danger btn-sm" onclick="removeEmployee('${employee.authNo}', '${employeeListId}')">삭제</button></td>
+		            `;
+		            employeeList.appendChild(row);
+		        }
+		    });
+			let deptNo = $('#departmentSelect').val();
+			deptEmpList(deptNo, tabName)
+		}
+		
+		// 특정 권한 목록에서 사원 삭제하는 함수
+		function removeEmployee(authNo, listId) {
+			console.log('asfasfas')
+		    let deleteUrl = `/removeMenuAuth/${authNo}`; // authNo를 이용하여 서버에 삭제 요청
+
+		    fetch(deleteUrl, {
+		        method: 'DELETE',
+		    })
+		    .then(response => response.json())
+		    .then(result => {
+		        if (result) {
+		            // 삭제 성공 시 해당 행을 DOM에서 제거
+		            const row = document.querySelector(`#${listId} #employeeRow-${authNo}`);
+		            if (row) {
+		                row.remove();
+		            }
+		        } else {
+		            console.error('권한 삭제 실패:', result.message);
+		        }
+		    })
+		    .catch(error => console.error('서버 요청 오류:', error));
+		}
+
+	</script>
 
 </th:block>
