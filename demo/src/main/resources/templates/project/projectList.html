@@ -423,9 +423,16 @@ button:active {
 					<form id="editProjectForm">
 						<input type="hidden" name="projNo" id="editProjNo">
 						<div class="mb-3">
-							<label for="editProjName" class="form-label">프로젝트 이름</label> <input
-								type="text" class="form-control" name="name" id="editProjName"
-								required>
+							<label for="editProjName" class="form-label">프로젝트 이름</label> 
+								<input
+							        type="text"
+							        class="form-control"
+							        name="name"
+							        id="editProjName"
+							        required
+							        oninput="validateInput(this)"
+							        placeholder="영어만 입력해주세요."
+							    >
 						</div>
 						<div class="mb-3">
 							<label for="editProjContent" class="form-label">프로젝트 개요</label>
@@ -485,6 +492,7 @@ $(document).ready(function() {
             data: $(this).serialize(), 
             success: function(response) {
                 const newProject = response.data; 
+                const jobName = response.jobName; 
                 function formatDate(dateString) {
                     const date = new Date(dateString);
                     const year = date.getFullYear();
@@ -495,6 +503,9 @@ $(document).ready(function() {
                 
                 let statusClass;
                 let statusText;
+                console.log(newProject);
+                console.log(response);
+                
                 switch (newProject.status) {
                     case 'j1':
                         statusClass = 'bg-secondary';
@@ -516,12 +527,13 @@ $(document).ready(function() {
                         <td>
                         <span class="badge rounded-pill ${statusClass}">${statusText}</span>
                     	</td>
-                        <td>${formatDate(newProject.startDate)}</td>
+                        <td>${formatDate(newProject.startDate)}</td>	
                         <td>${formatDate(newProject.endDate)}</td>
-                        <td>${newProject.pmgrNo}</td>
+                        <td>${jobName}</td>
                         <td>
                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
                         <button type="button" class="btn btn-danger text-white delete-btn" data-proj-no="${newProject.projNo}">삭제</button>
+                        <button type="button" class="btn btn-success text-white" th:onclick="selectDirectory('${newProject.projectGitUrl}')">내려받기</button>
                         </td>                            
                     </tr>
                 `);
@@ -615,12 +627,14 @@ $('#editProjectForm').on('submit', function(e) {
 
             // 상태에 따라 배지 결정
             const status = $('#editProjStatus').val();
+            const projectStatus = response.status2; // 프로젝트 상태를 적절한 필드에서 가져오기
+            console.log(projectStatus);
             let statusBadge = '';
-            if (status === 'j1') {
+            if (projectStatus === 'j1') {
                 statusBadge = `<span class="badge rounded-pill bg-secondary">진행전</span>`;
-            } else if (status === 'j2') {
+            } else if (projectStatus === 'j2') {
                 statusBadge = `<span class="badge rounded-pill bg-info">진행중</span>`;
-            } else if (status === 'j3') {
+            } else if (projectStatus === 'j3') {
                 statusBadge = `<span class="badge rounded-pill bg-success">완료</span>`;
             }
 
@@ -630,31 +644,26 @@ $('#editProjectForm').on('submit', function(e) {
                 const year = date.getFullYear();
                 const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 1을 더함
                 const day = String(date.getDate()).padStart(2, '0');
-                return `${year}년${month}월${day}일`;
+                return `${year}년 ${month}월 ${day}일`;
             };
 
-            const updatedRow = `
-                <tr>
-                    <th scope="row">${projNo}</th>
-                    <td>${$('#editProjName').val()}</td>
-                    <td>${statusBadge}</td>
-                    <td>${formatDate($('#editProjStartDate').val())}</td>
-                    <td>${formatDate($('#editProjEndDate').val())}</td>
-                    <td>${$('#editProjManager').val()}</td>
-                    <td>
-                        <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
-                        <button type="button" class="btn btn-danger text-white delete-btn" data-proj-no="${projNo}">삭제</button>
-                    </td>
-                </tr>
-            `;
-            $(`tr:has(th:contains(${projNo}))`).replaceWith(updatedRow);
+            // 기존 행 업데이트
+            const row = $(`button[data-proj-no="${projNo}"]`).closest('tr');
+            row.find('td:nth-child(2)').text($('#editProjName').val());
+            row.find('td:nth-child(3)').html(statusBadge); // HTML로 배지 추가
+            row.find('td:nth-child(4)').text(formatDate($('#editProjStartDate').val()));
+            row.find('td:nth-child(5)').text(formatDate($('#editProjEndDate').val()));
+            row.find('td:nth-child(6)').text(response.jobName);
+            
+           
             $('#editProjectModal').modal('hide'); // 수정 모달 닫기
         },
         error: function(xhr, status, error) {
-            alert('프로젝트 수정에 실패했습니다: ' + error);
+            console.error('Error:', error);
         }
     });
 });
+
 
 $(document).ready(function() {
     // 템플릿 사용 여부에 따라 선택 박스 노출/숨김
@@ -773,11 +782,11 @@ function selectDirectory(cloneUrl) {
       .catch(error => console.error('Error:', error));
   }
 function validateInput(input) {
-    const regex = /^[a-zA-Z_]*$/; // 영어와 언더바만 허용하는 정규 표현식
+    const regex = /^[a-zA-Z0-9_ ]*$/; // 영어, 숫자, 언더바, 공백 허용하는 정규 표현식
     
     if (!regex.test(input.value)) {
-        alert("영어만 입력할 수 있습니다.");
-        input.value = input.value.replace(/[^a-zA-Z_]/g, ''); // 유효하지 않은 문자 제거
+        alert("영어, 숫자, 공백, 언더바만 입력할 수 있습니다.");
+        input.value = input.value.replace(/[^a-zA-Z0-9_ ]/g, ''); // 유효하지 않은 문자 제거
     }
 }
 </script>

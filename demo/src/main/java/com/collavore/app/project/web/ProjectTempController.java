@@ -110,15 +110,16 @@ public class ProjectTempController {
 	        Map<String, Object> response = new HashMap<>();
 	        
 	        int generatedId = pjtempService.projectwrktempinsert(projectworktempVO);
-	
-	        //System.err.println("pk값: " + generatedId);
-	        //System.err.println("템플릿번호: " + projTempNo);
+	        ProjectWorkTempVO job =  pjtempService.projectwrktempInfo(projectworktempVO.getPwtNo()); 
+	        //System.err.println(projectworktempVO);
+	        //System.err.println(job.getJobName());
 	        
 	        response.put("pwtNo", projectworktempVO.getPwtNo());
 	        response.put("name", projectworktempVO.getName());
 	        response.put("content", projectworktempVO.getContent());
 	        response.put("projTempNo", generatedId);
 	        response.put("jobType", projectworktempVO.getJobNo());
+	        response.put("jobName", job.getJobName());
 	        
 	        //System.err.println(response);
 	        return response;
@@ -138,7 +139,7 @@ public class ProjectTempController {
 		    return pjtempService.projectwrktempInfo(pwtNo); 
 		}	
 		
-		// 프로젝트 수정 요청 처리
+		// 프로젝트 업무 수정 요청 처리
 		@PostMapping("/projectwrktempupdate/{pwtNo}")
 		@ResponseBody
 		public Map<String, Object> updatewrktempProject(@PathVariable int pwtNo, @RequestBody ProjectWorkTempVO projectworkTempVO) {
@@ -146,7 +147,11 @@ public class ProjectTempController {
 		    try {
 		    	projectworkTempVO.setPwtNo(pwtNo); 
 		        pjtempService.projectwrktempUpdate(projectworkTempVO);
-
+		        
+		        ProjectWorkTempVO job =  pjtempService.projectwrktempInfo(projectworkTempVO.getPwtNo()); 
+		        response.put("jobName", job.getJobName());
+		        
+		        //System.err.println(job.getJobName());
 		        response.put("message", "수정 완료");
 		        response.put("status", "success");
 		    } catch (Exception e) {
@@ -179,8 +184,8 @@ public class ProjectTempController {
 	        
 	        int getPwtNo = projectDworktempVO.getPwtNo();
 	        // 응답 데이터 설정
-	        System.err.println(projectDworktempVO);
-	        System.err.println(getPwtNo);
+	        //System.err.println(projectDworktempVO);
+	        //System.err.println(getPwtNo);
 	        
 	        response.put("pdwtNo", projectDworktempVO.getPdwtNo());
 	        response.put("name", projectDworktempVO.getName());
@@ -213,6 +218,10 @@ public class ProjectTempController {
 			    System.err.println(projectDworktempVO);
 			    try {
 			    	pjtempService.projectdwrktempUpdate(projectDworktempVO);
+			    	System.err.println(projectDworktempVO);
+			    	System.err.println(projectDworktempVO.getImportance());
+			    	
+			    	response.put("importance", projectDworktempVO.getImportance());
 			        response.put("message", "수정 완료");
 			        response.put("status", "success");
 			    } catch (Exception e) {

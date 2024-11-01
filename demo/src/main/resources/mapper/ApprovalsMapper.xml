@@ -201,6 +201,8 @@
 				,a.emp_no as "drafterEmpNo"
 				,e.name as "drafterName"
 				,a.status as "approverStatus"
+				,a.ea_no
+				,a.eat_no
 		FROM approvals a LEFT JOIN employees e
 		ON a.emp_no = e.emp_no
 		WHERE
@@ -239,6 +241,26 @@
 		}
 	</update>
 	<!-- -->
+	
+	<!-- 전결수정 -->
+	<update id="updateApproval" parameterType="ApprovalsVO">
+		update approvals
+		set content = #{content}
+			,title = #{title}
+		WHERE ea_no = #{eaNo}
+	</update>
+	<select id="approvalsList" parameterType="Integer">
+		select *
+		from approvers
+		where ea_no = #{eaNo}
+	</select>
+	<update id="updateApprover">
+		UPDATE approvers
+		set  emp_no = #{empNo}
+  	 	 	,sort = #{sort}
+		where ea_no = #{eaNo}
+	</update>
+	
 	
 	<!-- 전자결재 삭제 -->
 	<select id="deleteApproval" statementType="CALLABLE"

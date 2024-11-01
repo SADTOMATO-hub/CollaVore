@@ -2,55 +2,211 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
-	<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js"
-		charset="utf-8"></script>
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="card">
-					<form action="createAppr" method="post" class="form-horizontal"
-						name="insertForm">
-						<!-- 세큐리티 cors를 방지하는 기능  -->
+	<style>
+/* 페이지 기본 스타일 */
+.body-page-wrapper {
+	padding: 20px;
+	background-color: #f9f9f9;
+	align-items: center;
+}
+
+/* Breadcrumb 스타일 */
+.breadcrumb {
+	background-color: #ffffff;
+	padding: 10px 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	height: 70px;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 20px;
+	color: #333;
+	position: relative;
+}
+
+.breadcrumb h4 {
+	margin: 0;
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+}
+
+.breadcrumb-left {
+	display: flex; /* flexbox로 요소 정렬 */
+	flex-direction: column; /* 세로로 배치 */
+	justify-content: center; /* 세로 중앙 정렬 */
+}
+
+.breadcrumb-left h4 {
+	font-size: 22px;
+	font-weight: bold;
+	margin: 0; /* 기본 마진 제거 */
+	margin-top: 2px;
+}
+
+.breadcrumb-left p {
+	font-size: 14px;
+	color: #666;
+	margin-top: 2px;
+	margin-bottom: 0;
+}
+
+.breadcrumb-right span {
+	font-size: 14px;
+	color: #999;
+	white-space: nowrap;
+	position: relative;
+	top: -12px;
+}
+
+.card_memberInsert {
+	background-color: #ffffff;
+	padding: 20px;
+	border-radius: 10px;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	margin-bottom: 20px;
+	display: flex;
+	flex-direction: column;
+}
+
+.insert-btn {
+	display: flex;
+	justify-content: flex-end; /* 오른쪽으로 정렬 */
+	margin-right: 20px; /* 필요에 따라 여백 조정 */
+}
+
+button {
+	padding: 5px 10px;
+	margin-left: 5px;
+	background-color: #9b8df6;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	font-size: 14px;
+	transition: background-color 0.3s ease;
+}
+
+/* 마우스 호버 시 효과 */
+button:hover {
+	background-color: #5a4bcf;
+}
+
+/* 추가적인 버튼 스타일링 */
+button:active {
+	background-color: #4839a9;
+}
+
+/* 에러 메시지 스타일 */
+.error {
+	border-color: red;
+}
+
+/* 부모 요소에 relative를 설정 */
+.form-group {
+	position: relative;
+}
+
+/* 아이콘을 입력 필드 옆으로 배치 */
+.error-icon {
+	color: red;
+	font-size: 24px;
+	display: inline-block;
+	position: absolute; /* 절대 위치 */
+	top: 50%; /* 입력 필드의 중간에 위치하도록 */
+	transform: translateY(-50%); /* 수직으로 중앙 정렬 */
+	right: -20px; /* 입력 필드의 오른쪽 끝에서 약간 떨어지게 */
+	z-index: 1; /* 겹치지 않도록 설정 */
+}
+
+.error-message {
+	color: red;
+	font-size: 12px;
+	margin-top: 5px;
+}
+
+/* 필수 입력값 누락 시 아이콘 */
+.required-field {
+	border: 2px solid red;
+}
+
+.field-icon {
+	color: red;
+	margin-left: 5px;
+}
+/*
+#content + iframe {
+	height : 500px !important;
+}
+*/
+</style>
+	<div class="body-page-wrapper">
+		<div class="purple-background-container">
+			<div class="breadcrumb">
+				<div class="breadcrumb-left">
+					<h4>전자결재 기안</h4>
+					<p>전자결재 기안 페이지 입니다.</p>
+				</div>
+				<div class="breadcrumb-right">
+					<span>전자결재관리 > 전자결재 기안</span>
+				</div>
+			</div>
+			<div class="card_memberInsert">
+				<div class="col-md-9">
+					<form class="form-horizontal" name="insertForm" action="createAppr"
+						method="post">
 						<input type="hidden" name="${_csrf.parameterName}"
-							value="${_csrf.token}" />
+							value="${_csrf.token}" /> <input type="hidden"
+							name="drafterEmpNo" value="">
+
 						<div class="form-group row">
-							<label for="approvalTitle"> <input type="text"
-								id="approvalTitle" name="title" required
-								placeholder="전자결재 제목을 입력해주세요">
-							</label>
-							<div class="table-responsive">
+							<label for="title"
+								class="col-sm-3 text-end control-label col-form-label">제목</label>
+							<div class="col-sm-9">
+								<input type="text" class="form-control" id="approvalTitle"
+									name="title" placeholder="전자결재 제목을 입력해주세요" />
+							</div>
+						</div>
+						<div class="form-group row table-responsive">
+							<label for="apprerTable"
+								class="col-sm-3 text-end control-label col-form-label">결재자</label>
+							<div class="col-sm-9">
 								<table id="apprerTable"
 									class="table table-striped table-bordered">
 									<thead>
 										<tr>
 											<td></td>
 											<!-- ------------------- -->
-											<td><button type="button" class="modalBtn" data-seq="1"
-													data-bs-target="#approversSelect" data-bs-toggle="modal">결재자
-													선택</button></td>
+											<td style="text-align: center;">
+												<button type="button" class="btn btn-warning modalBtn" data-seq="1"
+													data-bs-target="#approversSelect" data-bs-toggle="modal">선택</button>
+											</td>
 											<!-- ------------------- -->
-											<td><button type="button" class="modalBtn" data-seq="2"
-													data-bs-target="#approversSelect" data-bs-toggle="modal">결재자
-													선택</button></td>
+											<td style="text-align: center;">
+												<button type="button" class="btn btn-warning modalBtn" data-seq="2"
+													data-bs-target="#approversSelect" data-bs-toggle="modal">선택</button>
+											</td>
 											<!-- ------------------- -->
-											<td><button type="button" class="modalBtn" data-seq="3"
-													data-bs-target="#approversSelect" data-bs-toggle="modal">결재자
-													선택</button></td>
+											<td style="text-align: center;">
+												<button type="button" class="btn btn-warning modalBtn" data-seq="3"
+													data-bs-target="#approversSelect" data-bs-toggle="modal">선택</button>
+											</td>
 											<!-- ------------------- -->
-											<td><button type="button" class="modalBtn" data-seq="4"
-													data-bs-target="#approversSelect" data-bs-toggle="modal">결재자
-													선택</button></td>
+											<td style="text-align: center;">
+												<button type="button" class="btn btn-warning modalBtn" data-seq="4"
+													data-bs-target="#approversSelect" data-bs-toggle="modal">선택</button>
+											</td>
 										</tr>
 									</thead>
 									<tbody>
-										<tr>
+										<tr style="text-align: center;">
 											<td>이름</td>
 											<td><span></span></td>
 											<td><span></span></td>
 											<td><span></span></td>
 											<td><span></span></td>
 										</tr>
-										<tr>
+										<tr style="text-align: center;">
 											<td>직함</td>
 											<td><span></span></td>
 											<td><span></span></td>
@@ -69,39 +225,40 @@
 								<input type="hidden" name="approvers[1].sort" value="2">
 								<input type="hidden" name="approvers[2].sort" value="3">
 								<input type="hidden" name="approvers[3].sort" value="4">
-
-								<input type="hidden" name="drafterEmpNo" value="">
-
 							</div>
-							<div class="card-body">
-								<h4 class="card-title">전자결재 기안 페이지</h4>
-								<hr>
-								<div class="col-sm-6">
+						</div>
+						<div class="form-group row">
+							<label for="selectContent"
+								class="col-sm-3 text-end control-label col-form-label">템플릿 선택</label>
+							<div class="col-sm-9">
 									<select id="selectContent" class="form-select">
 										<option selected disabled>==템플릿 선택==</option>
 										<option th:each="temps : ${tempInfo}"
 											th:value="${temps.eatNo}">[[${temps.eatNo}]]/[[${temps.title}]]</option>
 									</select>
-								</div>
-								<!-- 선택한 option의 value를 eatNO로 저장하기 위한 태그 -->
 								<input type="hidden" id="eatNo" name="eatNo" />
-								<!------------------------------------------------->
-							</div>
-							<div>
-								<textarea name="content" id="content" rows="2"
-									style="resize: none;" spellcheck="false"></textarea>
 							</div>
 						</div>
-						<div class="border-top">
-							<div class="card-body text-center">
-								<button type="button" id="createButton" class="btn btn-primary">기안</button>
+						<div class="form-group row">
+							<label for="content"
+								class="col-sm-3 text-end control-label col-form-label">내용</label>
+							<div class="col-sm-9">
+								<textarea class="form-control" id="content" name="content"></textarea>
 							</div>
+						</div>
+						<!-- 등록 버튼 -->
+						<div class="insert-btn">
+							<button type="button" id="createButton" class="btn btn-primary">기안</button>
 						</div>
 					</form>
 				</div>
 			</div>
 		</div>
 	</div>
+
+
+	<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js"
+		charset="utf-8"></script>
 	<!-- ------------------------------------- -->
 	<!-- ------------------------------------- -->
 	<!-- ------------------------------------- -->

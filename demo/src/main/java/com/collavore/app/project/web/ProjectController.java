@@ -75,10 +75,13 @@ public class ProjectController {
 	@ResponseBody
 	public Map<String, Object> insertAjax(ProjectVO projectVO) {
 		Map<String, Object> map = new HashMap<>();
-		// System.err.println(projectVO);
-
+		
+		
+		//프로젝트생성
+		System.err.println(projectVO.getIsTemplate());
 		pjService.projectinsert(projectVO);
-
+		if("i2".equals(projectVO.getIsTemplate())) {
+		//템플릿 업무 리스트 출력
 		List<ProjectWorkTempVO> projwrklist = pjtempService.projectwrktemplistInfo(projectVO.getProjTempNo());
 		for (ProjectWorkTempVO user : projwrklist) {
 			projectVO.setName(user.getName());
@@ -86,7 +89,9 @@ public class ProjectController {
 			projectVO.setProjTempNo(user.getProjTempNo());
 			projectVO.setJobNo(user.getJobNo());
 			// System.err.println(projectVO);
+			// 업무 생성 
 			pjService.projectwrkinsert(projectVO);
+			// 상세업무 리스트 출력
 			List<ProjectDWorkTempVO> projdwrklist = pjtempService.projectDwrktemplistInfo(user.getPwtNo());
 			for (ProjectDWorkTempVO dwrk : projdwrklist) {
 				projectVO.setName(dwrk.getName());
@@ -95,14 +100,19 @@ public class ProjectController {
 				projectVO.setImportance(dwrk.getImportance());
 				// System.err.println("-----------------------------------");
 				// System.err.println(projectVO);
+				// 상세업무 생성
 				pjService.projectdwrkinsert(projectVO);
+				}
 			}
 		}
-
+		//System.err.println(projectVO);
+		pjService.projectfolderinsert(projectVO);
+		ProjectVO job = pjService.projectInfo(projectVO.getProjNo());
 		// pjService.projectwrkinsert(projectVO);
 
 		// pjService.projectdwrkinsert(projectVO);
-
+		System.err.println(job.getJobName());	
+		map.put("jobName", job.getJobName());
 		map.put("type", "postAjax");
 		map.put("data", projectVO);
 		return map;
@@ -121,10 +131,19 @@ public class ProjectController {
 	public Map<String, Object> updateProject(@RequestBody ProjectVO projectVO) {
 		Map<String, Object> response = new HashMap<>();
 		try {
+			//
 			pjService.updateProject(projectVO);
+			//System.err.println(projectVO);
+			
+			ProjectVO job = pjService.projectInfo(projectVO.getProjNo());
+			System.err.println(projectVO.getStatus());
+			
+			response.put("status2", projectVO.getStatus());
+			response.put("jobName", job.getJobName());
 			response.put("message", "수정 완료");
 			response.put("status", "success");
 		} catch (Exception e) {
+			e.printStackTrace(); // 예외의 상세 정보를 출력
 			response.put("message", "수정 실패: " + e.getMessage());
 			response.put("status", "error");
 		}
@@ -139,10 +158,11 @@ public class ProjectController {
 		pjService.projectDelete(projNo);
 		List<ProjectVO> projectVOList = pjService.projectwrkList(projNo);
 		pjService.projectwrkDelete(projNo);
-		
 		for(ProjectVO info :  projectVOList) {
 			pjService.projectdwrkDelete(info.getPwNo());
 		}
+		ProjectVO projfolderinfo = pjService.projectfolderInfo(projNo);
+		pjService.projectfolderDelete(projNo);	
 		return "삭제 완료";
 	}
 	
@@ -346,7 +366,7 @@ public class ProjectController {
 	public Map<String, Object> updatedwrkProject(@RequestBody ProjectVO projectVO) {
 		Map<String, Object> response = new HashMap<>();
 		try {
-			System.err.println(projectVO);
+			//System.err.println(projectVO);
 			pjService.updatedwrkProject(projectVO);
 			response.put("message", "수정 완료");
 			response.put("status", "success");
@@ -416,7 +436,7 @@ public class ProjectController {
 	public Map<String, Object> updatestatusProject(@PathVariable String pdwNo, @RequestBody ProjectVO projectVO) {
 		Map<String, Object> response = new HashMap<>();
 		try {
-			System.err.println(projectVO);
+			//System.err.println(projectVO);
 			pjService.updatestatusProject(projectVO);
 			response.put("message", "수정 완료");
 			response.put("status", "success");

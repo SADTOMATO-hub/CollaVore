@@ -35,4 +35,6 @@ public interface DeptService {
     // 부서사원조회
     public List<HrmVO> getMemberList(Integer deptNo);
 
+
+
 }

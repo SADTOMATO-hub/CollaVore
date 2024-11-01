@@ -29,7 +29,8 @@
 				p.proj_temp_no,
 				p.project_git_url,
 				p.p_mgr_no,
-		        e.job_no
+		        e.job_no,
+		        e.name as  jobName
 		        
 		FROM proj p JOIN employees e On p.p_mgr_no = e.emp_no
 		        
@@ -65,7 +66,7 @@
 		)
 	</insert>
 	<!-- 수정 -->
-	<update id="updateProject">
+	<update id="updateProject" parameterType="ProjectVO"> 
 		UPDATE proj
 
 		SET
@@ -307,7 +308,7 @@
 	</select>
 
 	<!-- 프로젝트 업무 수정 -->
-	<update id="updatewrkProject">
+	<update id="updatewrkProject" parameterType="ProjectVO">
 		UPDATE projwrks
 
 		SET
@@ -498,5 +499,45 @@
 		WHERE
 			pdwc_no = #{pdwcNo}
 	</delete>
+	
+	<!-- 프로젝트 폴더 생성-->
+	<insert id="ProjectfolderInsert" parameterType="ProjectVO">
+		<selectKey keyProperty="pfNo" resultType="Integer" order="BEFORE">
+			SELECT NVL(MAX(pf_no), 9)+1 FROM projfolders
+		</selectKey>
+       INSERT INTO projfolders (
+                                pf_no
+                                , name
+                                ,pw_no
+                                , reg_date
+                                ,parent_pf_no
+                                ,proj_no)
+                   values(
+                           #{pfNo}
+                           ,#{name}
+                           ,1
+                           ,sysdate
+                           ,1
+                           ,#{projNo}
+                   )
+     </insert>
+     <!-- 프로젝트 폴더 삭제-->
+	<delete id="ProjectfolderDelete" parameterType="int">
+		delete 
+		FROM 
+	        projfolders
+		WHERE
+			proj_no = #{projNo}
+	</delete>     
+	 <!-- 프로젝트 폴더 단건 조회-->
+		<select id="projectfolderInfo" resultType="ProjectVO">
+		SELECT 
+				proj_file_no
+				, pf_no
+				, name
+        	  
+		FROM projfiles
+		WHERE pf_no = #{pfNo}
+	</select>	
 	
 </mapper>

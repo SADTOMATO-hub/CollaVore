@@ -32,7 +32,12 @@ public interface ApprovalsMapper {
 	public List<Map<String,Object>> readApprovers (ApprovalsVO approvalsVo);
 	//결재하기
 	public int updateApprStatus (ApprovalsVO approvalsVo);
-	//전자결재 수정
+		//전자결재 수정
+	public int updateApproval (ApprovalsVO approvalsVo);
+		//결재자 리스트
+	public List <ApprovalsVO> approvalsList (int eaNo);
+		//결재자 수정
+	public int updateApprover (ApprovalsVO approvalsVo);
 	//전자결재 삭제
 	public void deleteApproval (ApprovalsVO approvalsVo);
 	//인사 테이블 조회

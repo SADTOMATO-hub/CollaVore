@@ -132,6 +132,7 @@ public class ApprovalsController {
 		apprVO.setUserEmpNo(userEmpNo);
 		List<ApprovalsVO> apprList = approvalsService.myApprList(apprVO);
 		model.addAttribute("myApprList", apprList);
+		model.addAttribute("approvalStatus", approvalStatus);
 		return "approvals/onProcess";
 	} 
 	
@@ -173,6 +174,39 @@ public class ApprovalsController {
 			return null;
 		}
 		return null;
+	}
+	
+	//전결 업데이트 폼
+	@GetMapping("/updateApprInfoForm")
+	public String updateApprovalInfoForm (ApprovalsVO apprVO, Model model) {
+		List<Map<String,Object>> employeesInfo = approvalsService.employeesInfo();
+		ApprovalsVO apprInfo = approvalsService.approvalsInfo(apprVO);
+		List<Map<String,Object>> approvers = approvalsService.approversInfo(apprVO);
+		List<ApprovalstempVO> tempInfo = approvalsService.apprTempList();
+		model.addAttribute("approvals", apprInfo);
+		model.addAttribute("approvers", approvers);
+		model.addAttribute("apprSize",approvers.size());
+		model.addAttribute("tempInfo", tempInfo);
+		model.addAttribute("employeesInfo", employeesInfo);
+		return "approvals/updateApproval";
+	}
+	
+	//전결 업데이트 데이터 받는 고
+	@PostMapping("/updateApprInfo")
+	public String updateApprovalInfo (ApprovalsVO apprVO) {
+		//전자결재 업데이트
+		approvalsService.updateApproval(apprVO);
+
+		// eaNo 기준으로 전자결재자 전체 삭제
+		
+		// 새로 받은 전자결재자 등록
+		List<ApprovalsVO> apprList = apprVO.getApprovers();
+		for (ApprovalsVO approvalVO : apprList) {
+			approvalVO.setEmpNo(approvalVO.getEmpNo());
+			approvalVO.setSort(approvalVO.getSort());
+			approvalsService.updateApprover(approvalVO);
+		}
+		return "redirect:/approvals/myApprList/a1";
 	}
 	
 	//전자결재 템플릿 내용만 호출하는 기능

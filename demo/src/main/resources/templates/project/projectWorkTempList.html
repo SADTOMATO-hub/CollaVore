@@ -458,7 +458,7 @@ $('#createTemplateForm').on('submit', function(event) {
                     <td>${response.name}</td>
                     <td>${response.content}</td>
                     <td>${response.projTempNo}</td>
-                    <td>${response.jobNo}</td>
+                    <td>${response.jobName}</td>
                     <td>${formatCurrentDate()}</td>
                     <td>
                         <button type="button" class="btn btn-warning edit-btn" data-bs-toggle="modal" data-bs-target="#editTemplateModal" data-proj-temp-no="${response.pwtNo}">수정</button>
@@ -522,12 +522,19 @@ $(document).on('click', '.edit-btn', function() {
         }
     });
 });
-
+function getCurrentDate() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}년 ${month}월 ${day}일`;
+}
 //수정 처리 AJAX
 $(document).on('submit', '#editTemplateForm', function(event) {
     event.preventDefault();
 
     const pwtNo = $('#editPwtNo').val();
+    
     const updatedData = {
         projTempNo: $('#editSelectProjTempNo').val(),
         name: $('#editInputTemplateName').val(),
@@ -541,12 +548,14 @@ $(document).on('submit', '#editTemplateForm', function(event) {
         contentType: 'application/json',
         data: JSON.stringify(updatedData),
         success: function(response) {
+        	console.log();
             if (response.status === 'success') {
                 const row = $(`button[data-proj-temp-no="${pwtNo}"]`).closest('tr');
                 row.find('td:nth-child(2)').text(updatedData.name);
                 row.find('td:nth-child(3)').text(updatedData.content);
-                row.find('td:nth-child(5)').text(updatedData.jobNo);
-
+                row.find('td:nth-child(5)').text(response.jobName);
+                row.find('td:nth-child(6)').text(currentDate); // 등록일 업데이트
+                
                 alert('프로젝트가 성공적으로 수정되었습니다!');
                 $('#editTemplateModal').modal('hide');
             } else {

@@ -17,7 +17,7 @@ public interface ProjectMapper {
 	// 프로젝트 삭제
 	public int projectDelete(int projNo);
 	// 프로젝트 수정
-	public Map<String, Object> updateProject(ProjectVO projectVO);
+	public int updateProject(ProjectVO projectVO);
 	// 프로젝트 단건조회
 	public ProjectVO selectProjectById(int projNo);
 	
@@ -94,6 +94,14 @@ public interface ProjectMapper {
 	
 	// 상세업무 코멘트 삭제
 	public int projectcomtsDelete(int pdwcNo);
+	
+	// 프로젝트 폴더 생성
+	public int ProjectfolderInsert(ProjectVO projectVO);
+	
+	// 프로젝트 폴더 삭제
+	public int ProjectfolderDelete(int projNo);
+	// 프로젝트 폴더 단건 조회
+	public ProjectVO projectfolderInfo(int projNo);
 	
 	
 }

@@ -155,7 +155,7 @@ button:active {
 			</div>
 			<div class="card_memberInsert">
 				<div class="col-md-9">
-					<form th:action="@{/board/bodsUpdate}" method="post"
+					<form th:action="@{/approvals/updateTemp}" method="post"
 						class="form-horizontal" enctype="multipart/form-data"
 						th:object="${apprInfo}" name="updateForm">
 						<input type="hidden" name="${_csrf.parameterName}"
@@ -188,7 +188,8 @@ button:active {
 	</div>
 </div>
 <script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js"
-	charset="utf-8"></script>
+	charset="utf-8">
+	</script>
 <script>
 	// 네이버 스마트 에디터 2.0 적용
 	let oEditors = [];
