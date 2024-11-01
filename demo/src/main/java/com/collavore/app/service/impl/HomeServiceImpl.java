@@ -22,8 +22,8 @@ public class HomeServiceImpl implements HomeService {
 
 	// 게시판조회
 	@Override
-	public List<HomeVO> selBoardList() {
-		return homeMapper.selectBoardList();
+	public List<HomeVO> selBoardList(int userGrade) {
+		return homeMapper.selectBoardList(userGrade);
 	}
 
 	// 공지사항게시글 조회

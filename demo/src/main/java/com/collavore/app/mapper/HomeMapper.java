@@ -6,7 +6,7 @@ import com.collavore.app.service.HomeVO;
 
 public interface HomeMapper {
 	//게시판조회
-	public List<HomeVO> selectBoardList();
+	public List<HomeVO> selectBoardList(int userGrade);
 	
 	// 공지사항게시글조회
 	public List<HomeVO> selectNoticeList();

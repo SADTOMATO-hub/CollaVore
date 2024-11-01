@@ -67,4 +67,7 @@ public interface BodsMapper {
 	
 	// 게시판 이름 조회
 	public String selectBoardName(int boardNo);
+	
+	// 직위 조회
+	public List<BodsCfigVO> selectPosiList();
 }

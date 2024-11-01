@@ -198,6 +198,12 @@ public class BodsServiceImpl implements BodsService {
 	public int deleteBodsCfig(int bodsCfigVO) {
 		return bodsMapper.deleteBodsCfigInfo(bodsCfigVO);
 	}
+
+	// 직위 조회
+	@Override
+	public List<BodsCfigVO> selPosiList() {
+		return bodsMapper.selectPosiList();
+	}
 	
 	
 	

@@ -16,13 +16,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.collavore.app.approvals.service.ApprovalsService;
 import com.collavore.app.project.service.PjService;
 import com.collavore.app.project.service.PjTempService;
 import com.collavore.app.project.service.ProjectDWorkTempVO;
 import com.collavore.app.project.service.ProjectTempVO;
 import com.collavore.app.project.service.ProjectVO;
 import com.collavore.app.project.service.ProjectWorkTempVO;
+import com.collavore.app.security.service.EmpVO;
+import com.collavore.app.security.service.impl.UserDetailsService;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -31,9 +35,20 @@ import lombok.RequiredArgsConstructor;
 public class ProjectTempController {
 	private final PjService pjService;
     private final PjTempService pjtempService;
+	private final UserDetailsService userDetailsService;
 
     @ModelAttribute
-    public void addAttributes(Model model) {
+    public void addAttributes(Model model, HttpSession session) {
+		List<EmpVO> employeesInfo = userDetailsService.empList();
+		model.addAttribute("employees", employeesInfo);
+		
+		String userAdmin = (String) session.getAttribute("userAdmin");
+		model.addAttribute("userAdmin", userAdmin);
+
+		@SuppressWarnings("unchecked")
+		List<String> menuAuth = (List<String>) session.getAttribute("menuAuth");
+		model.addAttribute("menuAuth", menuAuth);
+		
         model.addAttribute("sidemenu", "project_sidebar");
     }
 

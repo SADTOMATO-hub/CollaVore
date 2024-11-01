@@ -6,6 +6,7 @@
 		SELECT board_no
 			, name
 		FROM bodscfig
+		WHERE read_auth >= #{userGrade}
 		ORDER BY board_no
 	</select>
 	

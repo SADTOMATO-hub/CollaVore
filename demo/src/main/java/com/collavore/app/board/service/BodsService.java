@@ -57,4 +57,6 @@ public interface BodsService {
 	// 게시판이름 조회
 	public String boardNameSearch(int boardNo);
 
+	// 직위 조회
+	public List<BodsCfigVO> selPosiList();
 }

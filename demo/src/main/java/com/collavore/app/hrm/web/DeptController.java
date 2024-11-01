@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,28 +17,39 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.collavore.app.approvals.service.ApprovalsService;
 import com.collavore.app.hrm.service.DeptService;
 import com.collavore.app.hrm.service.HrmVO;
 import com.collavore.app.hrm.service.MemberService;
 import com.collavore.app.hrm.service.PosiService;
+import com.collavore.app.security.service.EmpVO;
+import com.collavore.app.security.service.impl.UserDetailsService;
+
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 public class DeptController {
 
 	private final DeptService deptService;
 	private final MemberService memberService;
 	private final PosiService posiService;
+	private final UserDetailsService userDetailsService;
 	private static final Logger logger = LoggerFactory.getLogger(DeptController.class);
 
-	@Autowired
-	public DeptController(DeptService deptService, MemberService memberService, PosiService posiService) {
-		this.deptService = deptService;
-		this.memberService = memberService;
-		this.posiService = posiService;
-	}
-
 	@ModelAttribute
-	public void addAttributes(Model model) {
+	public void addAttributes(Model model, HttpSession session) {
+		List<EmpVO> employeesInfo = userDetailsService.empList();
+		model.addAttribute("employees", employeesInfo);
+		
+		String userAdmin = (String) session.getAttribute("userAdmin");
+		model.addAttribute("userAdmin", userAdmin);
+
+		@SuppressWarnings("unchecked")
+		List<String> menuAuth = (List<String>) session.getAttribute("menuAuth");
+		model.addAttribute("menuAuth", menuAuth);
+		
 		model.addAttribute("sidemenu", "member_sidebar");
 	}
 

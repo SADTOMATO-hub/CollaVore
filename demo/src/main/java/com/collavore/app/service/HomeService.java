@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface HomeService {
 	// 게시판조회
-	public List<HomeVO> selBoardList();
+	public List<HomeVO> selBoardList(int userGrade);
 	
 	// 공지사항게시글조회
 	public List<HomeVO> selNoticeList();

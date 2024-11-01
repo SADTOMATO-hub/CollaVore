@@ -17,22 +17,31 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.collavore.app.approvals.service.ApprovalsService;
 import com.collavore.app.approvals.service.ApprovalsVO;
 import com.collavore.app.approvals.service.ApprovalstempVO;
+import com.collavore.app.security.service.EmpVO;
+import com.collavore.app.security.service.impl.UserDetailsService;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/approvals")
+@RequiredArgsConstructor
 public class ApprovalsController {
-	private ApprovalsService approvalsService;
+	private final ApprovalsService approvalsService;
+	private final UserDetailsService userDetailsService;
 
-	@Autowired
-	ApprovalsController(ApprovalsService approvalsService) {
-		this.approvalsService = approvalsService;
-	}
-
-	
 	@ModelAttribute
-	public void addAttributes(Model model) {
+	public void addAttributes(Model model, HttpSession session) {
+		String userAdmin = (String) session.getAttribute("userAdmin");
+		model.addAttribute("userAdmin", userAdmin);
+
+		@SuppressWarnings("unchecked")
+		List<String> menuAuth = (List<String>) session.getAttribute("menuAuth");
+		model.addAttribute("menuAuth", menuAuth);
+
+		List<EmpVO> employeesInfo = userDetailsService.empList();
+		model.addAttribute("employees", employeesInfo);
+		
 		model.addAttribute("sidemenu", "approvals_sidebar");
 	}
 

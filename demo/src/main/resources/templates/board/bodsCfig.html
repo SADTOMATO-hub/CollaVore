@@ -323,29 +323,39 @@ button:active {
 						method="post">
 						<input type="hidden" id="boardNo" name="boardNo"
 							th:value="${param.boardNo}">
-						<div class="mb-3">
-							<label for="name" class="form-label">게시판이름</label> <input
-								type="text" class="form-control" name="name" placeholder="게시판이름">
+						<div class="input-group mb-3">
+							<label for="name" class="input-group-text">게시판이름</label> 
+							<input type="text" class="form-control" name="name" placeholder="게시판이름">
 						</div>
-						<div class="mb-3">
-							<label for="subject" class="form-label">말머리</label> <input
-								type="text" class="form-control" name="subject"
+						<div class="input-group mb-3">
+							<label for="subject" class="input-group-text">말머리</label> 
+							<input type="text" class="form-control" name="subject"
 								placeholder="말머리">
 						</div>
-						<div class="mb-3">
-							<label for="readAuth" class="form-label">읽기권한</label> <input
-								type="text" class="form-control" name="readAuth"
-								placeholder="읽기권한">
+						<div class="input-group mb-3">
+							<label for="readAuth" class="input-group-text">읽기권한</label> 
+							<select class="form-select" name="readAuth">
+							    <th:block th:each="position : ${posiList}">
+							        <option th:value="${position.posiGrade}" th:text="${position.posiName}"></option>
+							    </th:block>
+							</select>
 						</div>
-						<div class="mb-3">
-							<label for="writeAuth" class="form-label">쓰기권한</label> <input
-								type="text" class="form-control" name="writeAuth"
-								placeholder="쓰기권한">
+						<div class="input-group mb-3">
+							<label for="writeAuth" class="input-group-text">쓰기권한</label>
+							<select class="form-select" name="writeAuth">
+							    <th:block th:each="position : ${posiList}">
+							        <option th:value="${position.posiGrade}" th:text="${position.posiName}"></option>
+							    </th:block>
+							</select>
 						</div>
-						<div class="mb-3">
-							<label for="commentAuth" class="form-label">댓글권한</label> <input
-								type="text" class="form-control" name="commentAuth"
-								placeholder="댓글권한">
+						<div class="input-group mb-3">
+							<label for="commentAuth" class="input-group-text">댓글권한</label> 
+							
+							<select class="form-select" name="commentAuth">
+							    <th:block th:each="position : ${posiList}">
+							        <option th:value="${position.posiGrade}" th:text="${position.posiName}"></option>
+							    </th:block>
+							</select>
 						</div>
 						<div class="insert-btn">
 								<button type="button" class="btn btn-primary" id="btninsert">게시판등록</button>

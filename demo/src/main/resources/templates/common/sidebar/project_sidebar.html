@@ -1,11 +1,36 @@
 <th:block xmlns:th="https://www.thymeleaf.org/" th:fragment="sidebar">
 
 	<ul id="sidebarnav" class="pt-4">
+
 		<li class="sidebar-item"><a
 			class="sidebar-link has-arrow waves-effect waves-dark"
 			href="javascript:void(0)" aria-expanded="false"> <i
-				class="mdi mdi-receipt"></i> <span class="hide-menu"> 
-					템플릿 관리</span></a>
+				class="mdi mdi-chart-bar"></i> <span class="hide-menu"> 프로젝트
+					관리</span></a>
+			<ul aria-expanded="false" class="collapse first-level">
+				<li class="sidebar-item"><a href="projectlist"
+					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
+						class="hide-menu"> 프로젝트현황 </span></a></li>
+
+				<li class="sidebar-item"><a href="projectworklist"
+					class="sidebar-link"> <i class="mdi mdi-note-plus"></i> <span
+						class="hide-menu"> 프로젝트 업무 관리 </span></a></li>
+
+			</ul></li>
+		<li class="sidebar-item"><a
+			class="sidebar-link waves-effect waves-dark sidebar-link" href=""
+			aria-expanded="false"> <i class="mdi mdi-relative-scale"></i> <span
+				class="hide-menu"> 소스관리</span></a>
+				</li>
+		<li class="sidebar-item"><a
+			class="sidebar-link waves-effect waves-dark sidebar-link"
+			href="projectfilelist" aria-expanded="false"> <i
+				class="mdi mdi-relative-scale"></i> <span class="hide-menu">
+					프로젝트 파일</span></a></li>
+		<li class="sidebar-item" th:if="${menuAuth.contains('project')}"><a
+			class="sidebar-link has-arrow waves-effect waves-dark"
+			href="javascript:void(0)" aria-expanded="false"> <i
+				class="mdi mdi-receipt"></i> <span class="hide-menu"> 템플릿 관리</span></a>
 			<ul aria-expanded="false" class="collapse first-level">
 				<li class="sidebar-item"><a href="projecttemplist"
 					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
@@ -18,29 +43,5 @@
 					class="sidebar-link"> <i class="mdi mdi-note-plus"></i> <span
 						class="hide-menu"> 상세 업무 템플릿 관리 </span></a></li>
 			</ul></li>
-		<li class="sidebar-item">
-		<a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"> 
-		<i class="mdi mdi-chart-bar"></i> 
-		<span class="hide-menu"> 프로젝트 관리</span></a>
-			<ul aria-expanded="false" class="collapse first-level">
-				<li class="sidebar-item"><a href="projectlist"
-					class="sidebar-link"> <i class="mdi mdi-note-outline"></i> <span
-						class="hide-menu"> 프로젝트현황 </span></a></li>
-
-				<li class="sidebar-item"><a href="projectworklist"
-					class="sidebar-link"> <i class="mdi mdi-note-plus"></i> <span
-						class="hide-menu"> 프로젝트 업무 관리 </span></a></li>
-
-			</ul></li>
-		<li class="sidebar-item"><a
-			class="sidebar-link waves-effect waves-dark sidebar-link"
-			href="" aria-expanded="false"> <i
-				class="mdi mdi-relative-scale"></i> <span class="hide-menu">
-					소스관리</span></a></li>
-		<li class="sidebar-item"><a
-			class="sidebar-link waves-effect waves-dark sidebar-link"
-			href="projectfilelist" aria-expanded="false"> <i
-				class="mdi mdi-relative-scale"></i> <span class="hide-menu">
-					프로젝트 파일</span></a></li>
 	</ul>
 </th:block>

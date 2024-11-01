@@ -162,6 +162,7 @@
 		,subject
 		,reg_date
 		from bodscfig
+		WHERE read_auth >= #{posiGrade}
 		order by board_no
 	</select>
 
@@ -240,6 +241,12 @@ where board_no = #{boardNo}
 		WHERE board_no = #{boardNo}
 	</update>
 
+	<select id="selectPosiList" resultType="BodsCfigVO">
+		SELECT name AS posiName
+		    , grade AS posiGrade
+		FROM positions
+		ORDER BY grade DESC
+	</select>
 
 
 </mapper>
