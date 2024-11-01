@@ -91,763 +91,774 @@ document.addEventListener('DOMContentLoaded', function() {
 				editable: true,
 				dayMaxEvents: true,
 
-				
+
+
+				// 서버로 업데이트된 일정 데이터 전송
+				eventDrop: function(info) {
+					// 이동 후의 시작일과 종료일을 Oracle에서 이해할 수 있는 'YYYY-MM-DD HH:MM:SS' 형식으로 변환
+					var formatDateTime = (date) => {
+						const d = new Date(date);
+						const year = d.getFullYear();
+						const month = String(d.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+						const day = String(d.getDate()).padStart(2, '0');
+						const hours = String(d.getHours()).padStart(2, '0');
+						const minutes = String(d.getMinutes()).padStart(2, '0');
+						const seconds = String(d.getSeconds()).padStart(2, '0');
+						return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+					};
+
+					var updatedEvent = {
+						schNo: info.event.id,  // schNo로 전달
+						startDate: formatDateTime(info.event.start),
+						endDate: info.event.end ? formatDateTime(info.event.end) : formatDateTime(info.event.start) // 종료일이 없으면 시작일과 동일하게 설정
+					};
 
 					// 서버로 업데이트된 일정 데이터 전송
-					eventDrop: function(info) {
-						// 이동 후의 시작일과 종료일을 ISO 문자열로 변환
-						var updatedEvent = {
-							schNo: info.event.id,  // schNo로 전달
-							startDate: info.event.start.toISOString(),
-							endDate: info.event.end ? info.event.end.toISOString() : info.event.start.toISOString() // 종료일이 없으면 시작일과 동일하게 설정
-						};
-
-						// 서버로 업데이트된 일정 데이터 전송
-						fetch('/sch/updateTime', {
-							method: 'POST',
-							headers: {
-								'Content-Type': 'application/json'
-							},
-							body: JSON.stringify(updatedEvent)
+					fetch('/sch/updateTime', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(updatedEvent)
+					})
+						.then(response => response.text()) // 텍스트 형식으로 응답 받기
+						.then(data => {
+							console.log(data); // 여기서 응답을 출력
+							if (data === "success") {S
+								alert('일정이 성공적으로 업데이트되었습니다.');
+							} else {
+								alert('일정 업데이트에 실패했습니다.');
+								info.revert(); // 서버 응답이 실패한 경우 일정 위치 복구
+							}
 						})
-							.then(response => response.json())
-							.then(data => {
-								if (data.success) {
-									alert('일정이 성공적으로 업데이트되었습니다.');
-									console.log(data);
+						.catch(error => {
+							console.error('Error updating event:', error);
+							alert('일정 업데이트 중 오류가 발생했습니다.');
+							info.revert(); // 오류 발생 시 일정 위치 복구
+						});
+				},
+
+				//events 안에서 캘린더 리스트 출력 출력할것들 여기 안에서 해결하
+				events: sList, //풀캘린더 리스트
+
+
+
+				//============================================== 단건조회 ============================================
+				eventClick: function(info) {
+
+					var eventId = info.event.id;
+
+					fetch(`/sch/schInfo?schNo=${eventId}`)
+						.then(response => response.json())
+						.then(data => {
+							if (data.success) {
+								var eventData = data.data;
+
+								console.log(eventData.calType);
+								resetFieldsToReadonly();
+
+								// 기본 일정 정보 표시
+								var viewScheduleModal = document.getElementById('viewScheduleModal');
+								document.getElementById('viewCalendar').value =
+									eventData.calType === 'g1' ? '내 캘린더' :
+										eventData.calType === 'g2' ? eventData.name :
+											eventData.calType === 'g3' ? '프로젝트 캘린더' : '알 수 없음';
+								document.getElementById('viewTitle').value = eventData.title || '';
+								document.getElementById('viewStartDate').value = eventData.startDate ? eventData.startDate.split('T')[0] : '';
+								document.getElementById('viewStartTime').value = eventData.startDate ? eventData.startDate.split('T')[1].substring(0, 5) : '';
+								document.getElementById('viewEndDate').value = eventData.endDate ? eventData.endDate.split('T')[0] : '';
+								document.getElementById('viewEndTime').value = eventData.endDate ? eventData.endDate.split('T')[1].substring(0, 5) : '';
+
+								// 시작일과 종료일을 Date 객체로 변환
+								var startDate = new Date(eventData.startDate);
+								var endDate = new Date(eventData.endDate);
+
+								// 날짜와 시간을 원하는 형식으로 설정
+								document.getElementById('viewStartDate').value = startDate.toISOString().split('T')[0];
+								document.getElementById('viewStartTime').value = startDate.toTimeString().substring(0, 5);
+								document.getElementById('viewEndDate').value = endDate.toISOString().split('T')[0];
+								document.getElementById('viewEndTime').value = endDate.toTimeString().substring(0, 5);
+
+
+
+								// 알림 설정
+								var alarmSettings = document.getElementById('viewAlarmSettings');
+								var alarmTypeInput = document.getElementById('viewAlarmType');
+								var dailySettings = document.getElementById('viewDailySettings');
+								var weeklySettings = document.getElementById('viewWeeklySettings');
+								var monthlySettings = document.getElementById('viewMonthlySettings');
+
+								if (eventData.isAlarm === 'f1') {
+									alarmSettings.style.display = 'block';
+									alarmTypeInput.value = eventData.alarmType;
+
+									if (eventData.alarmType === 'd1') {
+										dailySettings.style.display = 'block';
+										weeklySettings.style.display = 'none';
+										monthlySettings.style.display = 'none';
+										document.getElementById('viewDailyRepeat').value = eventData.alarmTime || '';
+									} else if (eventData.alarmType === 'd2') {
+										dailySettings.style.display = 'none';
+										weeklySettings.style.display = 'block';
+										monthlySettings.style.display = 'none';
+										document.querySelectorAll('.weekly-checkbox').forEach((checkbox) => {
+											checkbox.checked = eventData.alarmYoil.includes(checkbox.value);
+											document.getElementById('viewWeeklyRepeat').value = eventData.alarmTime || '';
+										});
+									} else if (eventData.alarmType === 'd3') {
+										dailySettings.style.display = 'none';
+										weeklySettings.style.display = 'none';
+										monthlySettings.style.display = 'block';
+										document.getElementById('viewMonthlyDay').value = eventData.alarmDay || '';
+										document.getElementById('viewMonthlyHour').value = eventData.alarmTime || '';
+									}
 								} else {
-									alert('일정 업데이트에 실패했습니다.');
-									info.revert(); // 서버 응답이 실패한 경우 일정 위치 복구
+									alarmSettings.style.display = 'none';
 								}
-							})
-							.catch(error => {
-								console.error('Error updating event:', error);
-								alert('일정 업데이트 중 오류가 발생했습니다.');
-								info.revert(); // 오류 발생 시 일정 위치 복구
-							});
-					},
-
-					//events 안에서 캘린더 리스트 출력 출력할것들 여기 안에서 해결하
-					events: sList, //풀캘린더 리스트
 
 
 
-						//============================================== 단건조회 ============================================
-						eventClick: function(info) {
+								// 체크박스 초기 설정 및 숨기기
+								var alarmCheckboxWrapper = document.getElementById('viewAlarmCheckboxWrapper');
+								var alarmCheckbox = document.getElementById('viewAlarmUse');
 
-							var eventId = info.event.id;
+								console.log('alarmCheckboxWrapper:', alarmCheckboxWrapper); // null 이 아니어야 함
+								console.log('alarmCheckbox:', alarmCheckbox); // null 이 아니어야 함
 
-							fetch(`/sch/schInfo?schNo=${eventId}`)
-								.then(response => response.json())
-								.then(data => {
-									if (data.success) {
-										var eventData = data.data;
+								if (alarmCheckboxWrapper && alarmCheckbox) {
+									// 요소가 존재할 때만 속성 설정
+									alarmCheckboxWrapper.style.display = 'none';  // 처음에는 숨김
+									alarmCheckbox.checked = (eventData.isAlarm === 'f1');
+								} else {
+									console.error('알림 설정 체크박스를 찾을 수 없습니다.');
+								}
 
-										console.log(eventData.calType);
-										resetFieldsToReadonly();
+								// 모달 표시
+								viewScheduleModal.style.display = 'block';
 
-										// 기본 일정 정보 표시
-										var viewScheduleModal = document.getElementById('viewScheduleModal');
-										document.getElementById('viewCalendar').value =
-											eventData.calType === 'g1' ? '내 캘린더' :
-												eventData.calType === 'g2' ? eventData.name :
-													eventData.calType === 'g3' ? '프로젝트 캘린더' : '알 수 없음';
-										document.getElementById('viewTitle').value = eventData.title || '';
-										document.getElementById('viewStartDate').value = eventData.startDate ? eventData.startDate.split('T')[0] : '';
-										document.getElementById('viewStartTime').value = eventData.startDate ? eventData.startDate.split('T')[1].substring(0, 5) : '';
-										document.getElementById('viewEndDate').value = eventData.endDate ? eventData.endDate.split('T')[0] : '';
-										document.getElementById('viewEndTime').value = eventData.endDate ? eventData.endDate.split('T')[1].substring(0, 5) : '';
+								// 모달 닫을 때 필드 초기화
+								document.getElementById('viewScheduleModal').querySelector('.viewScheduleClose').addEventListener('click', function() {
+									var viewScheduleModal = document.getElementById('viewScheduleModal');
+									viewScheduleModal.style.display = 'none';
+									resetFieldsToReadonly(); // 필드를 읽기 전용으로 초기화
+								});
 
-										// 시작일과 종료일을 Date 객체로 변환
-										var startDate = new Date(eventData.startDate);
-										var endDate = new Date(eventData.endDate);
+								//==================================== 수정 ====================================
+								document.getElementById('viewScheduleEditBtn').onclick = function() {
+									// 수정 가능하게 설정
+									document.getElementById('viewTitle').readOnly = false;
+									document.getElementById('viewStartDate').readOnly = false;
+									document.getElementById('viewStartTime').readOnly = false;
+									document.getElementById('viewEndDate').readOnly = false;
+									document.getElementById('viewEndTime').readOnly = false;
 
-										// 날짜와 시간을 원하는 형식으로 설정
-										document.getElementById('viewStartDate').value = startDate.toISOString().split('T')[0];
-										document.getElementById('viewStartTime').value = startDate.toTimeString().substring(0, 5);
-										document.getElementById('viewEndDate').value = endDate.toISOString().split('T')[0];
-										document.getElementById('viewEndTime').value = endDate.toTimeString().substring(0, 5);
+									// 알림 체크박스와 알림 빈도 필드 활성화
+									var alarmCheckboxWrapper = document.getElementById('viewAlarmCheckboxWrapper');
+									var alarmCheckbox = document.getElementById('viewAlarmUse');
+									alarmCheckboxWrapper.style.display = 'block';
+									alarmCheckbox.disabled = false;
 
+									var alarmTypeInput = document.getElementById('viewAlarmType');
+									alarmTypeInput.disabled = false;
 
+									// 알림 타입 변경 시 세부 필드 활성화 함수
+									function updateAlarmSettings(reset = false) {
+										if (reset) {
+											resetAlarmFields(); // 알림 타입 변경 시만 초기화
+										}
 
-										// 알림 설정
-										var alarmSettings = document.getElementById('viewAlarmSettings');
-										var alarmTypeInput = document.getElementById('viewAlarmType');
 										var dailySettings = document.getElementById('viewDailySettings');
 										var weeklySettings = document.getElementById('viewWeeklySettings');
 										var monthlySettings = document.getElementById('viewMonthlySettings');
+										var alarmTypeInput = document.getElementById('viewAlarmType');
 
-										if (eventData.isAlarm === 'f1') {
-											alarmSettings.style.display = 'block';
-											alarmTypeInput.value = eventData.alarmType;
 
-											if (eventData.alarmType === 'd1') {
+										if (alarmCheckbox.checked) {
+											document.getElementById('viewAlarmSettings').style.display = 'block';
+
+											if (alarmTypeInput.value === 'd1') {
 												dailySettings.style.display = 'block';
 												weeklySettings.style.display = 'none';
 												monthlySettings.style.display = 'none';
-												document.getElementById('viewDailyRepeat').value = eventData.alarmTime || '';
-											} else if (eventData.alarmType === 'd2') {
+												document.getElementById('viewDailyRepeat').readOnly = false;
+											} else if (alarmTypeInput.value === 'd2') {
 												dailySettings.style.display = 'none';
 												weeklySettings.style.display = 'block';
 												monthlySettings.style.display = 'none';
-												document.querySelectorAll('.weekly-checkbox').forEach((checkbox) => {
-													checkbox.checked = eventData.alarmYoil.includes(checkbox.value);
-													document.getElementById('viewWeeklyRepeat').value = eventData.alarmTime || '';
-												});
-											} else if (eventData.alarmType === 'd3') {
+												document.querySelectorAll('.weekly-checkbox').forEach(cb => cb.disabled = false);
+												document.getElementById('viewWeeklyRepeat').readOnly = false;
+											} else if (alarmTypeInput.value === 'd3') {
 												dailySettings.style.display = 'none';
 												weeklySettings.style.display = 'none';
 												monthlySettings.style.display = 'block';
-												document.getElementById('viewMonthlyDay').value = eventData.alarmDay || '';
-												document.getElementById('viewMonthlyHour').value = eventData.alarmTime || '';
+												document.getElementById('viewMonthlyDay').readOnly = false;
+												document.getElementById('viewMonthlyHour').readOnly = false;
 											}
 										} else {
-											alarmSettings.style.display = 'none';
+
+											document.getElementById('viewAlarmSettings').style.display = 'none';
 										}
+									}
+
+									// 초기 설정 및 이벤트 설정
+									updateAlarmSettings();
+									alarmCheckbox.addEventListener('change', updateAlarmSettings);
+									alarmTypeInput.addEventListener('change', updateAlarmSettings);
 
 
 
-										// 체크박스 초기 설정 및 숨기기
-										var alarmCheckboxWrapper = document.getElementById('viewAlarmCheckboxWrapper');
-										var alarmCheckbox = document.getElementById('viewAlarmUse');
 
-										console.log('alarmCheckboxWrapper:', alarmCheckboxWrapper); // null 이 아니어야 함
-										console.log('alarmCheckbox:', alarmCheckbox); // null 이 아니어야 함
 
-										if (alarmCheckboxWrapper && alarmCheckbox) {
-											// 요소가 존재할 때만 속성 설정
-											alarmCheckboxWrapper.style.display = 'none';  // 처음에는 숨김
-											alarmCheckbox.checked = (eventData.isAlarm === 'f1');
-										} else {
-											console.error('알림 설정 체크박스를 찾을 수 없습니다.');
-										}
 
-										// 모달 표시
-										viewScheduleModal.style.display = 'block';
+									// 저장 버튼으로 변경
+									this.textContent = '저장';
 
-										// 모달 닫을 때 필드 초기화
-										document.getElementById('viewScheduleModal').querySelector('.viewScheduleClose').addEventListener('click', function() {
-											var viewScheduleModal = document.getElementById('viewScheduleModal');
-											viewScheduleModal.style.display = 'none';
-											resetFieldsToReadonly(); // 필드를 읽기 전용으로 초기화
+									// 취소 버튼 설정
+									document.querySelector('.viewScheduleClose').onclick = function() {
+										// 모달 닫기
+										viewScheduleModal.style.display = 'none';
+
+										// 버튼 텍스트를 다시 "수정"으로 설정
+										document.getElementById('viewScheduleEditBtn').textContent = '수정';
+									};
+									//======================= 24이상 금지==========================
+									// 숫자 입력 필드에서 24 이상 입력되지 않도록 제한하는 함수
+									function enforceMaxValue(inputField) {
+										inputField.addEventListener('input', function() {
+											var value = parseInt(this.value, 10);
+											if (value > 24) {
+												this.value = 24;  // 24를 초과하면 24로 다시 설정
+											} else if (value < 1) {
+												this.value = 1;  // 1 미만이면 1로 설정
+											}
 										});
-
-										//==================================== 수정 ====================================
-										document.getElementById('viewScheduleEditBtn').onclick = function() {
-											// 수정 가능하게 설정
-											document.getElementById('viewTitle').readOnly = false;
-											document.getElementById('viewStartDate').readOnly = false;
-											document.getElementById('viewStartTime').readOnly = false;
-											document.getElementById('viewEndDate').readOnly = false;
-											document.getElementById('viewEndTime').readOnly = false;
-
-											// 알림 체크박스와 알림 빈도 필드 활성화
-											var alarmCheckboxWrapper = document.getElementById('viewAlarmCheckboxWrapper');
-											var alarmCheckbox = document.getElementById('viewAlarmUse');
-											alarmCheckboxWrapper.style.display = 'block';
-											alarmCheckbox.disabled = false;
-
-											var alarmTypeInput = document.getElementById('viewAlarmType');
-											alarmTypeInput.disabled = false;
-
-											// 알림 타입 변경 시 세부 필드 활성화 함수
-											function updateAlarmSettings(reset = false) {
-												if (reset) {
-													resetAlarmFields(); // 알림 타입 변경 시만 초기화
-												}
-
-												var dailySettings = document.getElementById('viewDailySettings');
-												var weeklySettings = document.getElementById('viewWeeklySettings');
-												var monthlySettings = document.getElementById('viewMonthlySettings');
-												var alarmTypeInput = document.getElementById('viewAlarmType');
+									}
 
 
-												if (alarmCheckbox.checked) {
-													document.getElementById('viewAlarmSettings').style.display = 'block';
+									// 수정 모드에서 사용되는 필드에 24 제한 적용
+									enforceMaxValue(document.getElementById('viewDailyRepeat'));
+									enforceMaxValue(document.getElementById('viewWeeklyRepeat'));
+									enforceMaxValue(document.getElementById('viewMonthlyHour'));
+									//======================end 24이상 금지===============================
+									//======================= 월에 상관없이 1~31 제한 ===========================
+									// 특정 입력 필드에서 1~31 범위로만 제한하는 함수
+									function enforceDayRange(dayInputField) {
+										if (!dayInputField) {
+											console.warn("dayInputField is not found.");
+											return;
+										}
 
-													if (alarmTypeInput.value === 'd1') {
-														dailySettings.style.display = 'block';
-														weeklySettings.style.display = 'none';
-														monthlySettings.style.display = 'none';
-														document.getElementById('viewDailyRepeat').readOnly = false;
-													} else if (alarmTypeInput.value === 'd2') {
-														dailySettings.style.display = 'none';
-														weeklySettings.style.display = 'block';
-														monthlySettings.style.display = 'none';
-														document.querySelectorAll('.weekly-checkbox').forEach(cb => cb.disabled = false);
-														document.getElementById('viewWeeklyRepeat').readOnly = false;
-													} else if (alarmTypeInput.value === 'd3') {
-														dailySettings.style.display = 'none';
-														weeklySettings.style.display = 'none';
-														monthlySettings.style.display = 'block';
-														document.getElementById('viewMonthlyDay').readOnly = false;
-														document.getElementById('viewMonthlyHour').readOnly = false;
-													}
-												} else {
+										dayInputField.addEventListener('input', function() {
+											let dayValue = parseInt(this.value, 10);
 
-													document.getElementById('viewAlarmSettings').style.display = 'none';
-												}
+											if (dayValue > 31) {
+												this.value = 31;  // 31을 초과하면 31로 다시 설정
+											} else if (dayValue < 1) {
+												this.value = 1;  // 1 미만이면 1로 설정
 											}
+										});
+									}
 
-											// 초기 설정 및 이벤트 설정
-											updateAlarmSettings();
-											alarmCheckbox.addEventListener('change', updateAlarmSettings);
-											alarmTypeInput.addEventListener('change', updateAlarmSettings);
+									// 필드가 존재할 경우에만 1~31 제한 함수 적용
+									const dayInputField = document.getElementById('viewMonthlyDay');
+									if (dayInputField) {
+										enforceDayRange(dayInputField);
+									} else {
+										console.warn("dayInputField is not found.");
+									}
+									//======================= end 월에 상관없이 1~31 제한 ===========================
 
-
-
-
-
-
-											// 저장 버튼으로 변경
-											this.textContent = '저장';
-
-											// 취소 버튼 설정
-											document.querySelector('.viewScheduleClose').onclick = function() {
-												// 모달 닫기
-												viewScheduleModal.style.display = 'none';
-
-												// 버튼 텍스트를 다시 "수정"으로 설정
-												document.getElementById('viewScheduleEditBtn').textContent = '수정';
-											};
-											//======================= 24이상 금지==========================
-											// 숫자 입력 필드에서 24 이상 입력되지 않도록 제한하는 함수
-											function enforceMaxValue(inputField) {
-												inputField.addEventListener('input', function() {
-													var value = parseInt(this.value, 10);
-													if (value > 24) {
-														this.value = 24;  // 24를 초과하면 24로 다시 설정
-													} else if (value < 1) {
-														this.value = 1;  // 1 미만이면 1로 설정
-													}
-												});
-											}
+									this.onclick = function() {
 
 
-											// 수정 모드에서 사용되는 필드에 24 제한 적용
-											enforceMaxValue(document.getElementById('viewDailyRepeat'));
-											enforceMaxValue(document.getElementById('viewWeeklyRepeat'));
-											enforceMaxValue(document.getElementById('viewMonthlyHour'));
-											//======================end 24이상 금지===============================
-											//======================= 월에 상관없이 1~31 제한 ===========================
-											// 특정 입력 필드에서 1~31 범위로만 제한하는 함수
-											function enforceDayRange(dayInputField) {
-												if (!dayInputField) {
-													console.warn("dayInputField is not found.");
+
+										// 예외 처리 추가
+										if (alarmCheckbox.checked) {
+											if (alarmTypeInput.value === 'd1') { // 매일 알림 예외 처리
+												const dailyRepeat = document.getElementById('viewDailyRepeat').value;
+												if (!dailyRepeat || dailyRepeat < 1 || dailyRepeat > 24) {
+													alert("매일 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
 													return;
 												}
+											} else if (alarmTypeInput.value === 'd2') { // 매주 알림 예외 처리
+												const weeklyRepeat = document.getElementById('viewWeeklyRepeat').value;
+												const selectedDays = Array.from(document.querySelectorAll('.weekly-checkbox:checked')).map(cb => cb.value);
 
-												dayInputField.addEventListener('input', function() {
-													let dayValue = parseInt(this.value, 10);
-
-													if (dayValue > 31) {
-														this.value = 31;  // 31을 초과하면 31로 다시 설정
-													} else if (dayValue < 1) {
-														this.value = 1;  // 1 미만이면 1로 설정
-													}
-												});
-											}
-
-											// 필드가 존재할 경우에만 1~31 제한 함수 적용
-											const dayInputField = document.getElementById('viewMonthlyDay');
-											if (dayInputField) {
-												enforceDayRange(dayInputField);
-											} else {
-												console.warn("dayInputField is not found.");
-											}
-											//======================= end 월에 상관없이 1~31 제한 ===========================
-
-											this.onclick = function() {
-
-
-
-												// 예외 처리 추가
-												if (alarmCheckbox.checked) {
-													if (alarmTypeInput.value === 'd1') { // 매일 알림 예외 처리
-														const dailyRepeat = document.getElementById('viewDailyRepeat').value;
-														if (!dailyRepeat || dailyRepeat < 1 || dailyRepeat > 24) {
-															alert("매일 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
-															return;
-														}
-													} else if (alarmTypeInput.value === 'd2') { // 매주 알림 예외 처리
-														const weeklyRepeat = document.getElementById('viewWeeklyRepeat').value;
-														const selectedDays = Array.from(document.querySelectorAll('.weekly-checkbox:checked')).map(cb => cb.value);
-
-														if (selectedDays.length === 0) {
-															alert("매주 알림의 요일을 선택해주세요.");
-															return;
-														}
-														if (!weeklyRepeat || weeklyRepeat < 1 || weeklyRepeat > 24) {
-															alert("매주 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
-															return;
-														}
-													} else if (alarmTypeInput.value === 'd3') { // 매달 알림 예외 처리
-														const monthlyDay = document.getElementById('viewMonthlyDay').value;
-														const monthlyHour = document.getElementById('viewMonthlyHour').value;
-
-														if (!monthlyDay || monthlyDay < 1 || monthlyDay > 31) {
-															alert("매달 알림의 '일' 설정을 1~31 사이의 숫자로 입력해주세요.");
-															return;
-														}
-														if (!monthlyHour || monthlyHour < 1 || monthlyHour > 24) {
-															alert("매달 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
-															return;
-														}
-													}
+												if (selectedDays.length === 0) {
+													alert("매주 알림의 요일을 선택해주세요.");
+													return;
 												}
-
-
-
-
-
-												let alarmTime = null;
-												const alarmType = alarmTypeInput.value;
-
-												// alarmType에 따른 alarmTime 설정
-												if (alarmType === 'd1') {
-													alarmTime = document.getElementById('viewDailyRepeat').value;
-												} else if (alarmType === 'd2') {
-													alarmTime = document.getElementById('viewWeeklyRepeat').value;
-												} else if (alarmType === 'd3') {
-													alarmTime = document.getElementById('viewMonthlyHour').value;
+												if (!weeklyRepeat || weeklyRepeat < 1 || weeklyRepeat > 24) {
+													alert("매주 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
+													return;
 												}
+											} else if (alarmTypeInput.value === 'd3') { // 매달 알림 예외 처리
+												const monthlyDay = document.getElementById('viewMonthlyDay').value;
+												const monthlyHour = document.getElementById('viewMonthlyHour').value;
 
-												// 요일 체크박스 처리
-												const weeklyDaysArray = [];
-												document.querySelectorAll('.weekly-checkbox').forEach((checkbox) => {
-													if (checkbox.checked) {
-														weeklyDaysArray.push(checkbox.value);
-													}
-												});
-												const weeklyDays = weeklyDaysArray.length > 0 ? weeklyDaysArray.join(',') : null;
-
-												const updatedData = {
-													schNo: eventId,
-													title: document.getElementById('viewTitle').value,
-													startDate: document.getElementById('viewStartDate').value + 'T' + document.getElementById('viewStartTime').value,
-													endDate: document.getElementById('viewEndDate').value + 'T' + document.getElementById('viewEndTime').value,
-													calNo: eventData.calNo,
-													alarmType: alarmType,
-													alarmYoil: weeklyDays, // d2일 때 요일이 들어가도록
-													alarmDay: alarmType === 'd3' ? document.getElementById('viewMonthlyDay').value : null, // d3일 때만 날짜가 들어가도록
-													alarmTime: alarmTime,
-													isAlarm: alarmCheckbox.checked ? 'f1' : 'f2'
-												};
-
-												console.log("Updated Data:", updatedData); // 여기서 `monthlyDay`와 `weeklyDays` 값을 확인
+												if (!monthlyDay || monthlyDay < 1 || monthlyDay > 31) {
+													alert("매달 알림의 '일' 설정을 1~31 사이의 숫자로 입력해주세요.");
+													return;
+												}
+												if (!monthlyHour || monthlyHour < 1 || monthlyHour > 24) {
+													alert("매달 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
+													return;
+												}
+											}
+										}
 
 
 
 
-												// 서버에 업데이트된 데이터 전송
-												fetch("/sch/schUpdate", {
-													method: 'POST',
-													headers: {
-														'Content-Type': 'application/json'
-													},
-													body: JSON.stringify(updatedData)
-												})
-													.then(response => response.json())
-													.then(data => {
-														if (data.success) {
-															alert('일정이 성공적으로 수정되었습니다.');
-															console.log(updatedData);
 
-															// UI 초기화
-															document.getElementById('viewTitle').readOnly = true;
-															document.getElementById('viewStartDate').readOnly = true;
-															document.getElementById('viewStartTime').readOnly = true;
-															document.getElementById('viewEndDate').readOnly = true;
-															document.getElementById('viewEndTime').readOnly = true;
-															alarmTypeInput.disabled = true;
-															document.getElementById('viewScheduleEditBtn').textContent = '수정';
-															document.getElementById('viewScheduleModal').style.display = 'none'; // 모달 닫기
+										let alarmTime = null;
+										const alarmType = alarmTypeInput.value;
 
-															location.reload();
-														} else {
-															alert('일정 수정에 실패했습니다.');
-														}
-													})
-													.catch(error => {
-														console.log(updatedData);
+										// alarmType에 따른 alarmTime 설정
+										if (alarmType === 'd1') {
+											alarmTime = document.getElementById('viewDailyRepeat').value;
+										} else if (alarmType === 'd2') {
+											alarmTime = document.getElementById('viewWeeklyRepeat').value;
+										} else if (alarmType === 'd3') {
+											alarmTime = document.getElementById('viewMonthlyHour').value;
+										}
 
-														console.error('Error updating schedule:', error);
-														alert('일정 수정 중 오류가 발생했습니다.');
-													});
-											};
+										// 요일 체크박스 처리
+										const weeklyDaysArray = [];
+										document.querySelectorAll('.weekly-checkbox').forEach((checkbox) => {
+											if (checkbox.checked) {
+												weeklyDaysArray.push(checkbox.value);
+											}
+										});
+										const weeklyDays = weeklyDaysArray.length > 0 ? weeklyDaysArray.join(',') : null;
+
+										const updatedData = {
+											schNo: eventId,
+											title: document.getElementById('viewTitle').value,
+											startDate: document.getElementById('viewStartDate').value + 'T' + document.getElementById('viewStartTime').value,
+											endDate: document.getElementById('viewEndDate').value + 'T' + document.getElementById('viewEndTime').value,
+											calNo: eventData.calNo,
+											alarmType: alarmType,
+											alarmYoil: weeklyDays, // d2일 때 요일이 들어가도록
+											alarmDay: alarmType === 'd3' ? document.getElementById('viewMonthlyDay').value : null, // d3일 때만 날짜가 들어가도록
+											alarmTime: alarmTime,
+											isAlarm: alarmCheckbox.checked ? 'f1' : 'f2'
 										};
-										//====================================END 수정 ====================================
-									} else {
-										alert('일정 상세 정보를 불러올 수 없습니다.');
-									}
-								})
-								.catch(error => {
-									console.error('Error fetching event details:', error);
-									alert('일정 조회 중 오류가 발생했습니다.');
-								});
+
+										console.log("Updated Data:", updatedData); // 여기서 `monthlyDay`와 `weeklyDays` 값을 확인
 
 
 
-							//====================================END 수정 ====================================
 
-							// 삭제 버튼 클릭 시 이벤트
-							var viewScheduleDeleteBtn = document.getElementById('viewScheduleDeleteBtn');
-							if (viewScheduleDeleteBtn) {
-								viewScheduleDeleteBtn.onclick = function() {
-									if (confirm('정말로 이 일정을 삭제하시겠습니까?')) {
-										console.log("Deleting schNo:", info.event.id);
-										fetch('/sch/schDelete', {  // 삭제 API 호출
+										// 서버에 업데이트된 데이터 전송
+										fetch("/sch/schUpdate", {
 											method: 'POST',
-											headers: { 'Content-Type': 'application/json' },
-											body: JSON.stringify({ schNo: info.event.id })
+											headers: {
+												'Content-Type': 'application/json'
+											},
+											body: JSON.stringify(updatedData)
 										})
-											.then(response => response.json()) // JSON으로 파싱
+											.then(response => response.json())
 											.then(data => {
-												alert(data.message); // 서버에서 받은 메시지 표시
 												if (data.success) {
+													alert('일정이 성공적으로 수정되었습니다.');
+													console.log(updatedData);
+
+													// UI 초기화
+													document.getElementById('viewTitle').readOnly = true;
+													document.getElementById('viewStartDate').readOnly = true;
+													document.getElementById('viewStartTime').readOnly = true;
+													document.getElementById('viewEndDate').readOnly = true;
+													document.getElementById('viewEndTime').readOnly = true;
+													alarmTypeInput.disabled = true;
+													document.getElementById('viewScheduleEditBtn').textContent = '수정';
+													document.getElementById('viewScheduleModal').style.display = 'none'; // 모달 닫기
+
 													location.reload();
-													info.event.remove();  // FullCalendar에서 삭제
-													viewScheduleModal.style.display = 'none'; // 모달 닫기
+												} else {
+													alert('일정 수정에 실패했습니다.');
 												}
 											})
-											.catch(error => console.error('Error:', error));
-									}
+											.catch(error => {
+												console.log(updatedData);
+
+												console.error('Error updating schedule:', error);
+												alert('일정 수정 중 오류가 발생했습니다.');
+											});
+									};
 								};
+								//====================================END 수정 ====================================
 							} else {
-								console.error('삭제 버튼을 찾을 수 없습니다.');
+								alert('일정 상세 정보를 불러올 수 없습니다.');
 							}
-
-						},
-					//============END 단건조회 ============
-
-					//============ 일정생성 ============
-					//캘린더 안에서 일정생성 API 안에서 일정생성 일어나는것들 모두 여기서 처리 
-					select: function(arg) {
-						// 일정 추가 모달 창 열기
-						var addScheduleModal = document.getElementById('addScheduleModal');
-						addScheduleModal.style.display = 'block';
-
-
-
-						// 일정 추가 모달 닫기 버튼 설정
-						var addCancelBtn = document.getElementById('addCancelBtn');
-						addCancelBtn.addEventListener('click', function() {
-							addScheduleModal.style.display = 'none';
+						})
+						.catch(error => {
+							console.error('Error fetching event details:', error);
+							alert('일정 조회 중 오류가 발생했습니다.');
 						});
 
 
 
+					//====================================END 수정 ====================================
 
-						//캘린더 선택에서  공유캘린더 리스트 일정생성 모달창으로 가져오기//
-						// 공유캘린더 리스트를 동적으로 가져와서 업데이트
-						fetch('/cal/calAllList')
-							.then(response => response.json())
-							.then(data => {
-								console.log('Received data:', data); // 데이터를 확인하기 위한 로그 출력
-
-								calendarSelectBox.innerHTML = ''; // 기존 리스트 초기화
-								// 옵션을 동적으로 추가
-								data.forEach(function(calendar) {
-									var option = document.createElement('option');
-									option.value = calendar.calNo;
-									option.text = calendar.name;
-									calendarSelectBox.appendChild(option);
-								});
-							})
-							.catch(error => console.error('Error:', error));
-
-
-
-						// 현재 시간을 로컬 시간으로 가져오기
-						var now = new Date();
-						var hours = now.getHours().toString().padStart(2, '0'); // 2자리로 맞추기
-						var minutes = now.getMinutes().toString().padStart(2, '0'); // 2자리로 맞추기
-						var currentTime = hours + ':' + minutes; // HH:MM 형식으로
-
-						// 시작 시간과 종료 시간에 현재 시간 설정
-						document.getElementById('startDate').value = arg.startStr;
-						document.getElementById('startTime').value = currentTime;
-						document.getElementById('endDate').value = arg.endStr || arg.startStr;
-						document.getElementById('endTime').value = currentTime;
-
-
-
-
-
-
-						// 알림 빈도 처리
-						var alarmFrequency = document.getElementById('alarmFrequency').value;
-						var alarmData = null;
-
-						if (isAlarm) {
-							alarmData = {
-								frequency: alarmFrequency,
-								interval: document.getElementById(alarmFrequency + 'Interval')?.value || null, // 일/주/달 마다 설정
-								selectedDays: getSelectedDays(), // 매주일 경우 선택된 요일들
-							};
-						}
-
-						// 선택된 요일들 반환 (매주 알림 설정 시)
-						function getSelectedDays() {
-							var selectedDays = [];
-							document.querySelectorAll('input[name="weeklyDay"]:checked').forEach(function(checkbox) {
-								selectedDays.push(checkbox.value);
-							});
-							return selectedDays;
-						}
-
-
-
-
-						// 알림 체크박스 선택 시 알림 필드 보이기
-						document.getElementById('isAlarm').addEventListener('change', function() {
-							var alarmFields = document.getElementById('alarmFields');
-							var alarmFrequency = document.getElementById('alarmFrequency').value;
-
-							if (this.checked) {
-								alarmFields.style.display = 'block'; // 알림 필드 전체 표시
-								showAlarmFields(alarmFrequency); // 현재 선택된 알림 빈도에 맞는 필드 표시
-							} else {
-								alarmFields.style.display = 'none'; // 알림 필드 전체 숨김
-								hideAllAlarmFields(); // 알림 빈도 필드도 숨김
-							}
-						});
-
-						// 알림 빈도 선택에 따라 필드 표시
-						document.getElementById('alarmFrequency').addEventListener('change', function() {
-							var frequency = this.value;
-							showAlarmFields(frequency); // 빈도에 따라 필드 표시
-						});
-
-						function showAlarmFields(frequency) {
-							hideAllAlarmFields(); // 먼저 모든 알림 필드를 숨김
-
-							// 선택된 빈도에 맞는 필드만 표시
-							if (frequency === 'daily') {
-								document.getElementById('dailyRepeat').style.display = 'block';
-							} else if (frequency === 'weekly') {
-								document.getElementById('weeklyRepeat').style.display = 'block';
-							} else if (frequency === 'monthly') {
-								document.getElementById('monthlyRepeat').style.display = 'block';
-							}
-						}
-
-						function hideAllAlarmFields() {
-							document.getElementById('dailyRepeat').style.display = 'none';
-							document.getElementById('weeklyRepeat').style.display = 'none';
-							document.getElementById('monthlyRepeat').style.display = 'none';
-						}
-
-
-
-						//========================== 특정 입력 필드에서 24를 초과하면 24로 제한하는 함수
-						function enforceMaxValue(inputField) {
-							inputField.addEventListener('input', function() {
-								var value = parseInt(this.value, 10);
-								if (value > 24) {
-									this.value = 24;  // 24를 초과하면 24로 다시 설정
-								} else if (value < 1) {
-									this.value = 1;  // 1 미만이면 1로 설정
-								}
-							});
-						}
-
-						// weeklyHour와 monthlyHour 필드에 대해 24를 초과하지 않도록 제한
-						var dailyIntervalInput = document.getElementById('dailyInterval');
-						var weeklyHourInput = document.getElementById('weeklyHour');
-						var monthlyHourInput = document.getElementById('monthlyHour');
-
-						enforceMaxValue(dailyIntervalInput);
-						enforceMaxValue(weeklyHourInput);
-						enforceMaxValue(monthlyHourInput);
-						//=============================== END 특정 입력 필드에서 24를 초과하면 24로 제한하는 함수	
-						//======================= 월에 상관없이 1~31 제한 (일정 생성) ===========================
-						// 특정 입력 필드에서 1~31 범위로만 제한하는 함수
-						function enforceDayRange(dayInputField) {
-							if (!dayInputField) {
-								console.warn("dayInputField is not found.");
-								return;
-							}
-
-							dayInputField.addEventListener('input', function() {
-								let dayValue = parseInt(this.value, 10);
-
-								if (dayValue > 31) {
-									this.value = 31;  // 31을 초과하면 31로 다시 설정
-								} else if (dayValue < 1) {
-									this.value = 1;  // 1 미만이면 1로 설정
-								}
-							});
-						}
-
-						// 일정 생성 모달의 월별 일 제한 적용
-						const addMonthlyDayInput = document.getElementById('addMonthlyDay');
-						if (addMonthlyDayInput) {
-							enforceDayRange(addMonthlyDayInput);
-						} else {
-							console.warn("addMonthlyDay input field is not found.");
-						}
-						//======================= end 월에 상관없이 1~31 제한 ===========================	
-
-
-
-
-
-						// 종일 체크 여부
-						var isAllDay = document.getElementById('allDay').checked;
-						if (isAllDay) {
-							endTime = '23:59:59'; // 자정까지
-						}
-
-
-
-
-
-
-
-						//							일정양식      제출
-						document.getElementById('scheduleForm').onsubmit = function(e) {
-							e.preventDefault();
-
-							// 제목 필드 확인
-							var title = document.getElementById('title').value;
-							if (!title.trim()) {  // 제목이 비어있을 경우
-								alert('일정 제목을 입력해주세요.');
-								return;  // 함수를 종료하여 제출을 막음
-							}
-
-							// 알림 설정 여부 (f1: 사용, f2: 미사용)
-							var isAlarm = document.getElementById('isAlarm').checked ? 'f1' : 'f2';
-							console.log("isAlarm 값:", isAlarm);  // 'f1' 또는 'f2'인지 확인
-
-							// 알림 빈도 및 기타 설정
-							var alarmFrequency = document.getElementById('alarmFrequency').value;
-							var alarmInterval = document.getElementById(alarmFrequency + 'Interval')?.value || null;
-							var selectedDays = getSelectedDays();
-
-							// 알림 타입 변환 (d1: 매일, d2: 매주, d3: 매달)
-							var alarmType = null;
-							if (isAlarm === 'f1') {
-								if (alarmFrequency === 'daily') {
-									alarmType = 'd1';
-								} else if (alarmFrequency === 'weekly') {
-									alarmType = 'd2';
-								} else if (alarmFrequency === 'monthly') {
-									alarmType = 'd3';
-								}
-							}
-
-							// 예외 처리 추가
-							if (isAlarm === 'f1') {
-								if (alarmType === 'd1') { // 매일 알림 예외 처리
-									const dailyRepeat = document.getElementById('dailyInterval').value;
-									if (!dailyRepeat || dailyRepeat < 1 || dailyRepeat > 24) {
-										alert("매일 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
-										return;
-									}
-								} else if (alarmType === 'd2') { // 매주 알림 예외 처리
-									const weeklyRepeat = document.getElementById('weeklyHour').value;
-									const selectedDays = Array.from(document.querySelectorAll('.weekly-checkbox:checked')).map(cb => cb.value);
-
-									if (selectedDays.length === 0) {
-										alert("매주 알림의 요일을 선택해주세요.");
-										return;
-									}
-									if (!weeklyRepeat || weeklyRepeat < 1 || weeklyRepeat > 24) {
-										alert("매주 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
-										return;
-									}
-								} else if (alarmType === 'd3') { // 매달 알림 예외 처리
-									const monthlyDay = document.getElementById('monthlyDay').value;
-									const monthlyHour = document.getElementById('monthlyHour').value;
-
-									if (!monthlyDay || monthlyDay < 1 || monthlyDay > 31) {
-										alert("매달 알림의 '일' 설정을 1~31 사이의 숫자로 입력해주세요.");
-										return;
-									}
-									if (!monthlyHour || monthlyHour < 1 || monthlyHour > 24) {
-										alert("매달 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
-										return;
-									}
-								}
-							}
-
-							// alarm_time 설정 (d1, d2, d3 각각의 경우에 대해 설정)
-							// alarm_day 및 alarm_time 설정
-							var alarmDay = null; // 일수 
-							var alarmTime = null; // 시간 
-							var alarmYoil = null; // 요일 
-							if (alarmType === 'd1') {
-								alarmTime = document.getElementById('dailyInterval')?.value || null; // d1 (매일)일 경우 시간 설정
-							} else if (alarmType === 'd2') {
-								alarmYoil = selectedDays.length > 0 ? selectedDays.join(",") : null; // d2 (매주)일 경우 요일 설정 (쉼표로 구분된 문자열)
-								alarmTime = document.getElementById('weeklyHour')?.value || null; // d2 (매주)일 경우 시간 설정
-							} else if (alarmType === 'd3') {
-								alarmDay = document.getElementById('monthlyDay')?.value || null;  // d3 (매달)일 경우 일자 설정
-								alarmTime = document.getElementById('monthlyHour')?.value || null; // d3 (매달)일 경우 시간 설정
-							}
-
-
-							var calNo = document.getElementById('calendarSelectBox').value;
-							var title = document.getElementById('title').value;
-							var startDate = document.getElementById('startDate').value;
-							var startTime = document.getElementById('startTime').value;
-							var endDate = document.getElementById('endDate').value;
-							var endTime = document.getElementById('endTime').value;
-
-							// 시작일과 종료일에 시간을 추가하여 하나의 datetime으로 변환
-							var startDateTime = new Date(startDate + 'T' + startTime).toISOString(); // ISO 형식으로 변환
-							var endDateTime = new Date(endDate + 'T' + endTime).toISOString(); // ISO 형식으로 변환
-
-							// schsData 변수 초기화 및 데이터 설정
-							var schsData = {
-								title: title,
-								startDate: startDateTime,
-								endDate: endDateTime,
-								calNo: calNo,  // 선택된 캘린더 번호
-								isAllDay: isAllDay,
-								isAlarm: isAlarm,
-								alarmType: alarmType,
-								alarmInterval: isAlarm === 'f1' ? alarmInterval : null,
-								alarmYoil: alarmYoil, // d2 (매주)일 경우 요일 정보
-								alarmDay: alarmDay,
-								alarmTime: alarmTime // d1, d2, d3 모두에서 설정된 alarmTime
-							};
-
-
-
-							console.log(schsData); // 데이터를 확인하기 위한 로그 출력
-
-							if (title) {
-								fetch('/sch/schInsert', {  // 등록 API 호출
+					// 삭제 버튼 클릭 시 이벤트
+					var viewScheduleDeleteBtn = document.getElementById('viewScheduleDeleteBtn');
+					if (viewScheduleDeleteBtn) {
+						viewScheduleDeleteBtn.onclick = function() {
+							if (confirm('정말로 이 일정을 삭제하시겠습니까?')) {
+								console.log("Deleting schNo:", info.event.id);
+								fetch('/sch/schDelete', {  // 삭제 API 호출
 									method: 'POST',
 									headers: { 'Content-Type': 'application/json' },
-									body: JSON.stringify(schsData)
+									body: JSON.stringify({ schNo: info.event.id })
 								})
-									.then(response => response.json())
+									.then(response => response.json()) // JSON으로 파싱
 									.then(data => {
-										console.log(data); // 데이터를 확인하기 위한 로그 출력
-										console.log("isAlarm 값:", isAlarm);  // 'f1' 또는 'f2'인지 확인
-
+										alert(data.message); // 서버에서 받은 메시지 표시
 										if (data.success) {
-											alert('일정 등록에 성공했습니다.');
-											addScheduleModal.style.display = 'none'; // 모달 닫기
-											location.reload(); //화면엔 바로뜨는데 값같은거 바로 안들어가서 그냥 새로고침 
-											// 추가된 이벤트가 전체 일정을 갱신하도록 이벤트 재로딩
-											calendar.refetchEvents();
-											calendar.unselect(); // FullCalendar의 선택 해제
-										} else {
-											console.log(data); // 데이터를 확인하기 위한 로그 출력
-											alert('일정 등록에 실패했습니다.');
+											location.reload();
+											info.event.remove();  // FullCalendar에서 삭제
+											viewScheduleModal.style.display = 'none'; // 모달 닫기
 										}
 									})
 									.catch(error => console.error('Error:', error));
 							}
+						};
+					} else {
+						console.error('삭제 버튼을 찾을 수 없습니다.');
+					}
 
+				},
+				//============END 단건조회 ============
+
+				//============ 일정생성 ============
+				//캘린더 안에서 일정생성 API 안에서 일정생성 일어나는것들 모두 여기서 처리 
+				select: function(arg) {
+					// 일정 추가 모달 창 열기
+					var addScheduleModal = document.getElementById('addScheduleModal');
+					addScheduleModal.style.display = 'block';
+
+
+
+					// 일정 추가 모달 닫기 버튼 설정
+					var addCancelBtn = document.getElementById('addCancelBtn');
+					addCancelBtn.addEventListener('click', function() {
+						addScheduleModal.style.display = 'none';
+					});
+
+
+
+
+					//캘린더 선택에서  공유캘린더 리스트 일정생성 모달창으로 가져오기//
+					// 공유캘린더 리스트를 동적으로 가져와서 업데이트
+					fetch('/cal/calAllList')
+						.then(response => response.json())
+						.then(data => {
+							console.log('Received data:', data); // 데이터를 확인하기 위한 로그 출력
+
+							calendarSelectBox.innerHTML = ''; // 기존 리스트 초기화
+							// 옵션을 동적으로 추가
+							data.forEach(function(calendar) {
+								var option = document.createElement('option');
+								option.value = calendar.calNo;
+								option.text = calendar.name;
+								calendarSelectBox.appendChild(option);
+							});
+						})
+						.catch(error => console.error('Error:', error));
+
+
+
+					// 현재 시간을 로컬 시간으로 가져오기
+					var now = new Date();
+					var hours = now.getHours().toString().padStart(2, '0'); // 2자리로 맞추기
+					var minutes = now.getMinutes().toString().padStart(2, '0'); // 2자리로 맞추기
+					var currentTime = hours + ':' + minutes; // HH:MM 형식으로
+
+					// 시작 시간과 종료 시간에 현재 시간 설정
+					document.getElementById('startDate').value = arg.startStr;
+					document.getElementById('startTime').value = currentTime;
+					document.getElementById('endDate').value = arg.endStr || arg.startStr;
+					document.getElementById('endTime').value = currentTime;
+
+
+
+
+
+
+					// 알림 빈도 처리
+					var alarmFrequency = document.getElementById('alarmFrequency').value;
+					var alarmData = null;
+
+					if (isAlarm) {
+						alarmData = {
+							frequency: alarmFrequency,
+							interval: document.getElementById(alarmFrequency + 'Interval')?.value || null, // 일/주/달 마다 설정
+							selectedDays: getSelectedDays(), // 매주일 경우 선택된 요일들
 						};
 					}
-					//============END 일정생성 ============
-				});
+
+					// 선택된 요일들 반환 (매주 알림 설정 시)
+					function getSelectedDays() {
+						var selectedDays = [];
+						document.querySelectorAll('input[name="weeklyDay"]:checked').forEach(function(checkbox) {
+							selectedDays.push(checkbox.value);
+						});
+						return selectedDays;
+					}
+
+
+
+
+					// 알림 체크박스 선택 시 알림 필드 보이기
+					document.getElementById('isAlarm').addEventListener('change', function() {
+						var alarmFields = document.getElementById('alarmFields');
+						var alarmFrequency = document.getElementById('alarmFrequency').value;
+
+						if (this.checked) {
+							alarmFields.style.display = 'block'; // 알림 필드 전체 표시
+							showAlarmFields(alarmFrequency); // 현재 선택된 알림 빈도에 맞는 필드 표시
+						} else {
+							alarmFields.style.display = 'none'; // 알림 필드 전체 숨김
+							hideAllAlarmFields(); // 알림 빈도 필드도 숨김
+						}
+					});
+
+					// 알림 빈도 선택에 따라 필드 표시
+					document.getElementById('alarmFrequency').addEventListener('change', function() {
+						var frequency = this.value;
+						showAlarmFields(frequency); // 빈도에 따라 필드 표시
+					});
+
+					function showAlarmFields(frequency) {
+						hideAllAlarmFields(); // 먼저 모든 알림 필드를 숨김
+
+						// 선택된 빈도에 맞는 필드만 표시
+						if (frequency === 'daily') {
+							document.getElementById('dailyRepeat').style.display = 'block';
+						} else if (frequency === 'weekly') {
+							document.getElementById('weeklyRepeat').style.display = 'block';
+						} else if (frequency === 'monthly') {
+							document.getElementById('monthlyRepeat').style.display = 'block';
+						}
+					}
+
+					function hideAllAlarmFields() {
+						document.getElementById('dailyRepeat').style.display = 'none';
+						document.getElementById('weeklyRepeat').style.display = 'none';
+						document.getElementById('monthlyRepeat').style.display = 'none';
+					}
+
+
+
+					//========================== 특정 입력 필드에서 24를 초과하면 24로 제한하는 함수
+					function enforceMaxValue(inputField) {
+						inputField.addEventListener('input', function() {
+							var value = parseInt(this.value, 10);
+							if (value > 24) {
+								this.value = 24;  // 24를 초과하면 24로 다시 설정
+							} else if (value < 1) {
+								this.value = 1;  // 1 미만이면 1로 설정
+							}
+						});
+					}
+
+					// weeklyHour와 monthlyHour 필드에 대해 24를 초과하지 않도록 제한
+					var dailyIntervalInput = document.getElementById('dailyInterval');
+					var weeklyHourInput = document.getElementById('weeklyHour');
+					var monthlyHourInput = document.getElementById('monthlyHour');
+
+					enforceMaxValue(dailyIntervalInput);
+					enforceMaxValue(weeklyHourInput);
+					enforceMaxValue(monthlyHourInput);
+					//=============================== END 특정 입력 필드에서 24를 초과하면 24로 제한하는 함수	
+					//======================= 월에 상관없이 1~31 제한 (일정 생성) ===========================
+					// 특정 입력 필드에서 1~31 범위로만 제한하는 함수
+					function enforceDayRange(dayInputField) {
+						if (!dayInputField) {
+							console.warn("dayInputField is not found.");
+							return;
+						}
+
+						dayInputField.addEventListener('input', function() {
+							let dayValue = parseInt(this.value, 10);
+
+							if (dayValue > 31) {
+								this.value = 31;  // 31을 초과하면 31로 다시 설정
+							} else if (dayValue < 1) {
+								this.value = 1;  // 1 미만이면 1로 설정
+							}
+						});
+					}
+
+					// 일정 생성 모달의 월별 일 제한 적용
+					const addMonthlyDayInput = document.getElementById('addMonthlyDay');
+					if (addMonthlyDayInput) {
+						enforceDayRange(addMonthlyDayInput);
+					} else {
+						console.warn("addMonthlyDay input field is not found.");
+					}
+					//======================= end 월에 상관없이 1~31 제한 ===========================	
+
+
+
+
+
+					// 종일 체크 여부
+					var isAllDay = document.getElementById('allDay').checked;
+					if (isAllDay) {
+						endTime = '23:59:59'; // 자정까지
+					}
+
+
+
+
+
+
+
+					//							일정양식      제출
+					document.getElementById('scheduleForm').onsubmit = function(e) {
+						e.preventDefault();
+
+						// 제목 필드 확인
+						var title = document.getElementById('title').value;
+						if (!title.trim()) {  // 제목이 비어있을 경우
+							alert('일정 제목을 입력해주세요.');
+							return;  // 함수를 종료하여 제출을 막음
+						}
+
+						// 알림 설정 여부 (f1: 사용, f2: 미사용)
+						var isAlarm = document.getElementById('isAlarm').checked ? 'f1' : 'f2';
+						console.log("isAlarm 값:", isAlarm);  // 'f1' 또는 'f2'인지 확인
+
+						// 알림 빈도 및 기타 설정
+						var alarmFrequency = document.getElementById('alarmFrequency').value;
+						var alarmInterval = document.getElementById(alarmFrequency + 'Interval')?.value || null;
+						var selectedDays = getSelectedDays();
+
+						// 알림 타입 변환 (d1: 매일, d2: 매주, d3: 매달)
+						var alarmType = null;
+						if (isAlarm === 'f1') {
+							if (alarmFrequency === 'daily') {
+								alarmType = 'd1';
+							} else if (alarmFrequency === 'weekly') {
+								alarmType = 'd2';
+							} else if (alarmFrequency === 'monthly') {
+								alarmType = 'd3';
+							}
+						}
+
+						// 예외 처리 추가
+						if (isAlarm === 'f1') {
+							if (alarmType === 'd1') { // 매일 알림 예외 처리
+								const dailyRepeat = document.getElementById('dailyInterval').value;
+								if (!dailyRepeat || dailyRepeat < 1 || dailyRepeat > 24) {
+									alert("매일 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
+									return;
+								}
+							} else if (alarmType === 'd2') { // 매주 알림 예외 처리
+								const weeklyRepeat = document.getElementById('weeklyHour').value;
+								const selectedDays = Array.from(document.querySelectorAll('.weekly-checkbox:checked')).map(cb => cb.value);
+
+								if (selectedDays.length === 0) {
+									alert("매주 알림의 요일을 선택해주세요.");
+									return;
+								}
+								if (!weeklyRepeat || weeklyRepeat < 1 || weeklyRepeat > 24) {
+									alert("매주 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
+									return;
+								}
+							} else if (alarmType === 'd3') { // 매달 알림 예외 처리
+								const monthlyDay = document.getElementById('monthlyDay').value;
+								const monthlyHour = document.getElementById('monthlyHour').value;
+
+								if (!monthlyDay || monthlyDay < 1 || monthlyDay > 31) {
+									alert("매달 알림의 '일' 설정을 1~31 사이의 숫자로 입력해주세요.");
+									return;
+								}
+								if (!monthlyHour || monthlyHour < 1 || monthlyHour > 24) {
+									alert("매달 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
+									return;
+								}
+							}
+						}
+
+						// alarm_time 설정 (d1, d2, d3 각각의 경우에 대해 설정)
+						// alarm_day 및 alarm_time 설정
+						var alarmDay = null; // 일수 
+						var alarmTime = null; // 시간 
+						var alarmYoil = null; // 요일 
+						if (alarmType === 'd1') {
+							alarmTime = document.getElementById('dailyInterval')?.value || null; // d1 (매일)일 경우 시간 설정
+						} else if (alarmType === 'd2') {
+							alarmYoil = selectedDays.length > 0 ? selectedDays.join(",") : null; // d2 (매주)일 경우 요일 설정 (쉼표로 구분된 문자열)
+							alarmTime = document.getElementById('weeklyHour')?.value || null; // d2 (매주)일 경우 시간 설정
+						} else if (alarmType === 'd3') {
+							alarmDay = document.getElementById('monthlyDay')?.value || null;  // d3 (매달)일 경우 일자 설정
+							alarmTime = document.getElementById('monthlyHour')?.value || null; // d3 (매달)일 경우 시간 설정
+						}
+
+
+						var calNo = document.getElementById('calendarSelectBox').value;
+						var title = document.getElementById('title').value;
+						var startDate = document.getElementById('startDate').value;
+						var startTime = document.getElementById('startTime').value;
+						var endDate = document.getElementById('endDate').value;
+						var endTime = document.getElementById('endTime').value;
+
+						// 시작일과 종료일에 시간을 추가하여 하나의 datetime으로 변환
+						var startDateTime = new Date(startDate + 'T' + startTime).toISOString(); // ISO 형식으로 변환
+						var endDateTime = new Date(endDate + 'T' + endTime).toISOString(); // ISO 형식으로 변환
+
+						// schsData 변수 초기화 및 데이터 설정
+						var schsData = {
+							title: title,
+							startDate: startDateTime,
+							endDate: endDateTime,
+							calNo: calNo,  // 선택된 캘린더 번호
+							isAllDay: isAllDay,
+							isAlarm: isAlarm,
+							alarmType: alarmType,
+							alarmInterval: isAlarm === 'f1' ? alarmInterval : null,
+							alarmYoil: alarmYoil, // d2 (매주)일 경우 요일 정보
+							alarmDay: alarmDay,
+							alarmTime: alarmTime // d1, d2, d3 모두에서 설정된 alarmTime
+						};
+
+
+
+						console.log(schsData); // 데이터를 확인하기 위한 로그 출력
+
+						if (title) {
+							fetch('/sch/schInsert', {  // 등록 API 호출
+								method: 'POST',
+								headers: { 'Content-Type': 'application/json' },
+								body: JSON.stringify(schsData)
+							})
+								.then(response => response.json())
+								.then(data => {
+									console.log(data); // 데이터를 확인하기 위한 로그 출력
+									console.log("isAlarm 값:", isAlarm);  // 'f1' 또는 'f2'인지 확인
+
+									if (data.success) {
+										alert('일정 등록에 성공했습니다.');
+										addScheduleModal.style.display = 'none'; // 모달 닫기
+										location.reload(); //화면엔 바로뜨는데 값같은거 바로 안들어가서 그냥 새로고침 
+										// 추가된 이벤트가 전체 일정을 갱신하도록 이벤트 재로딩
+										calendar.refetchEvents();
+										calendar.unselect(); // FullCalendar의 선택 해제
+									} else {
+										console.log(data); // 데이터를 확인하기 위한 로그 출력
+										alert('일정 등록에 실패했습니다.');
+									}
+								})
+								.catch(error => console.error('Error:', error));
+						}
+
+					};
+				}
+				//============END 일정생성 ============
+			});
 			//=====================사이드바 내캘리더 선택시 리스트 뿌리기 =========================
 			document.getElementById('personalCalendar').onclick = function() {
 				fetchSoloCalendarEvents();

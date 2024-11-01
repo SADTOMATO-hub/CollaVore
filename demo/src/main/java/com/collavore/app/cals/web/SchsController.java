@@ -76,11 +76,8 @@ public class SchsController {
 		Integer empNo = (Integer) session.getAttribute("userEmpNo");
 		return schsService.SchsList(empNo);
 	}
-
 	@PostMapping("/sch/updateTime")
-	public ResponseEntity<Map<String, String>> updateEventTime(@RequestBody Map<String, Object> payload) {
-	    Map<String, String> response = new HashMap<>();
-	    
+	public ResponseEntity<String> updateEventTime(@RequestBody Map<String, Object> payload) {
 	    try {
 	        // schNo를 String으로 받고 Integer로 변환
 	        Integer schNo = Integer.parseInt(payload.get("schNo").toString());
@@ -89,30 +86,23 @@ public class SchsController {
 
 	        // 필수 값 확인
 	        if (schNo == null || startDate == null || endDate == null) {
-	            response.put("status", "failure");
-	            response.put("message", "Missing required fields (schNo, startDate, or endDate)");
-	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("failure: Missing required fields (schNo, startDate, or endDate)");
 	        }
 
 	        // 업데이트 요청
 	        int updatedRows = schsService.updateEventTime(schNo, startDate, endDate);
 
 	        if (updatedRows > 0) {
-	            response.put("status", "success");
+	            return ResponseEntity.ok("success");
 	        } else {
-	            response.put("status", "failure");
-	            response.put("message", "No rows were updated");
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failure: No rows were updated");
 	        }
-
-	        return ResponseEntity.ok(response);
 
 	    } catch (Exception e) {
 	        System.err.println("Error in updateEventTime: " + e.getMessage());
 	        e.printStackTrace();
 
-	        response.put("status", "error");
-	        response.put("message", "An error occurred while updating the event time.");
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error: An error occurred while updating the event time.");
 	    }
 	}
 
