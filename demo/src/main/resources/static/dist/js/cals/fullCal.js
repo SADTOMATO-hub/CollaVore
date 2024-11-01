@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
+ 
 	//============ 캘린더 전체조회 ============     
 	fetch('/sch/schList', {
 		method: "POST",
@@ -95,48 +95,48 @@ document.addEventListener('DOMContentLoaded', function() {
 
 				// 서버로 업데이트된 일정 데이터 전송
 				eventDrop: function(info) {
-    // 이동 후의 시작일과 종료일을 Oracle에서 이해할 수 있는 'YYYY-MM-DD HH:MM:SS' 형식으로 변환
-    var formatDateTime = (date) => {
-        const d = new Date(date);
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
-        const day = String(d.getDate()).padStart(2, '0');
-        const hours = String(d.getHours()).padStart(2, '0');
-        const minutes = String(d.getMinutes()).padStart(2, '0');
-        const seconds = String(d.getSeconds()).padStart(2, '0');
-        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    };
+					// 이동 후의 시작일과 종료일을 Oracle에서 이해할 수 있는 'YYYY-MM-DD HH:MM:SS' 형식으로 변환
+					var formatDateTime = (date) => {
+						const d = new Date(date);
+						const year = d.getFullYear();
+						const month = String(d.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+						const day = String(d.getDate()).padStart(2, '0');
+						const hours = String(d.getHours()).padStart(2, '0');
+						const minutes = String(d.getMinutes()).padStart(2, '0');
+						const seconds = String(d.getSeconds()).padStart(2, '0');
+						return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+					};
 
-    var updatedEvent = {
-        schNo: info.event.id,  // schNo로 전달
-        startDate: formatDateTime(info.event.start),
-        endDate: info.event.end ? formatDateTime(info.event.end) : formatDateTime(info.event.start) // 종료일이 없으면 시작일과 동일하게 설정
-    };
+					var updatedEvent = {
+						schNo: info.event.id,  // schNo로 전달
+						startDate: formatDateTime(info.event.start),
+						endDate: info.event.end ? formatDateTime(info.event.end) : formatDateTime(info.event.start) // 종료일이 없으면 시작일과 동일하게 설정
+					};
 
-    // 서버로 업데이트된 일정 데이터 전송
-    fetch('/sch/updateTime', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(updatedEvent)
-    })
-        .then(response => response.text()) // 텍스트 형식으로 응답 받기
-        .then(data => {
-            console.log(data); // 여기서 응답을 출력
-            if (data === "success") {
-                alert('일정이 성공적으로 업데이트되었습니다.');
-            } else {
-                alert('일정 업데이트에 실패했습니다.');
-                info.revert(); // 서버 응답이 실패한 경우 일정 위치 복구
-            }
-        })
-        .catch(error => {
-            console.error('Error updating event:', error);
-            alert('일정 업데이트 중 오류가 발생했습니다.');
-            info.revert(); // 오류 발생 시 일정 위치 복구
-        });
-},
+					// 서버로 업데이트된 일정 데이터 전송
+					fetch('/sch/updateTime', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(updatedEvent)
+					})
+						.then(response => response.text()) // 텍스트 형식으로 응답 받기
+						.then(data => {
+							console.log(data); // 여기서 응답을 출력
+							if (data === "success") {
+								alert('일정이 성공적으로 업데이트되었습니다.');
+							} else {
+								alert('일정 업데이트에 실패했습니다.');
+								info.revert(); // 서버 응답이 실패한 경우 일정 위치 복구
+							}
+						})
+						.catch(error => {
+							console.error('Error updating event:', error);
+							alert('일정 업데이트 중 오류가 발생했습니다.');
+							info.revert(); // 오류 발생 시 일정 위치 복구
+						});
+				},
 
 				//events 안에서 캘린더 리스트 출력 출력할것들 여기 안에서 해결하
 				events: sList, //풀캘린더 리스트
@@ -251,6 +251,9 @@ document.addEventListener('DOMContentLoaded', function() {
 									document.getElementById('viewStartTime').readOnly = false;
 									document.getElementById('viewEndDate').readOnly = false;
 									document.getElementById('viewEndTime').readOnly = false;
+
+
+
 
 									// 알림 체크박스와 알림 빈도 필드 활성화
 									var alarmCheckboxWrapper = document.getElementById('viewAlarmCheckboxWrapper');
@@ -370,6 +373,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 									this.onclick = function() {
 
+										var title = document.getElementById('viewTitle').value.trim();
+										if (!title) {
+											alert("일정 제목을 입력해 주세요.");
+											return;
+										}
+
 
 
 										// 예외 처리 추가
@@ -423,14 +432,21 @@ document.addEventListener('DOMContentLoaded', function() {
 											alarmTime = document.getElementById('viewMonthlyHour').value;
 										}
 
-										// 요일 체크박스 처리
-										const weeklyDaysArray = [];
-										document.querySelectorAll('.weekly-checkbox').forEach((checkbox) => {
-											if (checkbox.checked) {
-												weeklyDaysArray.push(checkbox.value);
-											}
-										});
-										const weeklyDays = weeklyDaysArray.length > 0 ? weeklyDaysArray.join(',') : null;
+										// 체크된 요일만 배열에 추가하고 중복 제거
+										function updateWeeklyDays() {
+											const weeklyDaysArray = [];
+											document.querySelectorAll('.weekly-checkbox').forEach((checkbox) => {
+												if (checkbox.checked) {
+													weeklyDaysArray.push(checkbox.value);
+												}
+											});
+											return [...new Set(weeklyDaysArray)].join(',') || null; // 중복 제거하고 콤마로 구분된 문자열 반환
+										}
+										// 저장 클릭 시 호출되는 함수
+										const weeklyDays = updateWeeklyDays(); // 체크된 요일 업데이트
+
+
+
 
 										const updatedData = {
 											schNo: eventId,
@@ -474,7 +490,7 @@ document.addEventListener('DOMContentLoaded', function() {
 													document.getElementById('viewScheduleEditBtn').textContent = '수정';
 													document.getElementById('viewScheduleModal').style.display = 'none'; // 모달 닫기
 
-													location.reload();
+													//location.reload();
 												} else {
 													alert('일정 수정에 실패했습니다.');
 												}
@@ -533,9 +549,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
 				//============ 일정생성 ============
 				//캘린더 안에서 일정생성 API 안에서 일정생성 일어나는것들 모두 여기서 처리 
+				//캘린더 안에서 일정생성 API 안에서 일정생성 일어나는것들 모두 여기서 처리 
 				select: function(arg) {
 					// 일정 추가 모달 창 열기
 					var addScheduleModal = document.getElementById('addScheduleModal');
+					// 제목 및 날짜/시간 입력 필드 초기화
+					document.getElementById('title').value = '';
+					document.getElementById('startDate').value = '';
+					document.getElementById('startTime').value = '';
+					document.getElementById('endDate').value = '';
+					document.getElementById('endTime').value = '';
+
+					// 선택된 캘린더 초기화
+					document.getElementById('calendarSelectBox').selectedIndex = 0;
+
+					// 알림 설정 초기화
+					document.getElementById('isAlarm').checked = false;
+					document.getElementById('alarmFrequency').value = 'none'; // 기본값으로 'none' 선택
+					document.getElementById('alarmFields').style.display = 'none'; // 알림 필드 숨기기
+					hideAllAlarmFields(); // 알림 빈도 필드도 숨김
+
+					// 요일 선택 초기화
+					document.querySelectorAll('input[name="weeklyDay"]').forEach(checkbox => checkbox.checked = false);
+
+					// 일/주/월 설정 필드 초기화
+					document.getElementById('dailyInterval').value = '';
+					document.getElementById('weeklyHour').value = '';
+					document.getElementById('monthlyDay').value = '';
+					document.getElementById('monthlyHour').value = '';
 					addScheduleModal.style.display = 'block';
 
 
@@ -545,6 +586,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					addCancelBtn.addEventListener('click', function() {
 						addScheduleModal.style.display = 'none';
 					});
+
 
 
 
@@ -1132,15 +1174,58 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 	//============ END 사이드바 리스트===========
-	//============ 사이드바 내 캘린더 생성 ===========
+	//============ 사이드바 공유  캘린더 생성 ===========
 	// 공유 캘린더 모달 열기/닫기
+	// 공유 캘린더 모달 열기
 	document.getElementById('addSharedCalendarBtn').onclick = function() {
+		// 입력 필드 초기화
+		document.getElementById('sharedCalendarName').value = ''; // 캘린더 이름 초기화
+		const colorInputs = document.querySelectorAll('input[name="color"]');
+		colorInputs.forEach(input => input.checked = false); // 색상 선택 초기화
+
+		// 선택된 참여자 목록 초기화
+		document.getElementById('selectedParticipantsList').innerHTML = '';
+
+		// 선택된 사원 Set 초기화
+		selectedEmpNos.clear();
+
+		// 사원 목록의 모든 체크 표시 숨기기
+		const allCheckIcons = document.querySelectorAll(".check-icon");
+		allCheckIcons.forEach(icon => icon.style.visibility = "hidden");
+
+		// 사원 목록 초기화
+		const employeeContainer = document.getElementById("employeeContainer");
+		employeeContainer.innerHTML = ''; // 사원 목록을 비웁니다.
+
+
 		document.getElementById('sharedCalendarModal').style.display = 'block';
 	};
+
+	// 공유 캘린더 모달 닫기 및 초기화
 	document.getElementById('cancelSharedCalendar').onclick = function() {
+		// 모달 숨기기
 		document.getElementById('sharedCalendarModal').style.display = 'none';
+		// 입력 필드 초기화
+		document.getElementById('sharedCalendarName').value = ''; // 캘린더 이름 초기화
+		const colorInputs = document.querySelectorAll('input[name="color"]');
+		colorInputs.forEach(input => input.checked = false); // 색상 선택 초기화
+
+		// 선택된 참여자 목록 초기화
+		document.getElementById('selectedParticipantsList').innerHTML = '';
+
+		// 선택된 사원 Set 초기화
+		selectedEmpNos.clear();
+
+		// 사원 목록의 모든 체크 표시 숨기기
+		const allCheckIcons = document.querySelectorAll(".check-icon");
+		allCheckIcons.forEach(icon => icon.style.visibility = "hidden");
+
+		// 사원 목록 초기화
+		const employeeContainer = document.getElementById("employeeContainer");
+		employeeContainer.innerHTML = ''; // 사원 목록을 비웁니다.
 
 	};
+
 
 
 
@@ -1150,7 +1235,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// 페이지 로드 시 부서와 사원 데이터를 한 번에 가져오기
 
-	fetch("/cal/deptWithEmp")
+	fetch("/cal/								")
 		.then(response => response.json())
 		.then(data => {
 
@@ -1270,14 +1355,29 @@ document.addEventListener('DOMContentLoaded', function() {
 	document.getElementById('sharedCalendarForm').onsubmit = function(e) {
 		e.preventDefault();
 
+
+
+
+
 		// 입력받은 캘린더 정보 가져오기
-		const sharedCalendarName = document.getElementById('sharedCalendarName').value;
-		const selectedColor = document.querySelector('input[name="color"]:checked').value;
+		const sharedCalendarName = document.getElementById('sharedCalendarName').value.trim();
+		const selectedColor = document.querySelector('input[name="color"]:checked') ? document.querySelector('input[name="color"]:checked').value : null;
 		const members = Array.from(document.getElementById('selectedParticipantsList').children)
-			.map(li => li.getAttribute('data-empno'));  // 참여자 목록을 배열로 추출
-		console.log(members);
-		if (!sharedCalendarName || !selectedColor || members.length === 0) {
-			alert('캘린더 이름, 색상, 공유 대상을 선택해주세요.');
+			.map(li => li.getAttribute('data-empno'));
+
+		// 예외 처리: 필수 입력 확인
+		if (!sharedCalendarName) {
+			alert('캘린더 이름을 입력해주세요.');
+			return;
+		}
+
+		if (!selectedColor) {
+			alert('캘린더 색상을 선택해주세요.');
+			return;
+		}
+
+		if (members.length === 0) {
+			alert('캘린더 참여자를 선택해주세요.');
 			return;
 		}
 
@@ -1297,11 +1397,14 @@ document.addEventListener('DOMContentLoaded', function() {
 			.then(data => {
 
 				if (data.success) {
+					alert('캘린더가 생성되었습니다.');
 					const sharedCalendarList = document.getElementById('sharedCalendarList');
 					const newCalendarItem = document.createElement('li');
 					newCalendarItem.classList.add('sidebar-item', 'calendar-item-wrapper');
 					newCalendarItem.innerHTML = makeSidEvent(data.calInfo); // data로 전달
 					sharedCalendarList.appendChild(newCalendarItem);
+
+
 				} else {
 					console.log(data);
 					alert('캘린더 추가에 실패했습니다: ' + data.message);
@@ -1315,6 +1418,8 @@ document.addEventListener('DOMContentLoaded', function() {
 		// 모달 닫기
 		document.getElementById('sharedCalendarModal').style.display = 'none';
 	};
+
+
 
 
 	//============END 사이드바 공유 캘린더 생성 ===========
@@ -1719,4 +1824,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		loadDeptAndEmpForEditModal();
 	});
 });
+
+
+
+
+
+
 //================================END 함수모음====================================
