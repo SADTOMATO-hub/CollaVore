@@ -80,6 +80,8 @@ public class ProjectController {
 		//프로젝트생성
 		System.err.println(projectVO.getIsTemplate());
 		pjService.projectinsert(projectVO);
+		String prjname = projectVO.getName();
+		pjService.projectfolderinsert(projectVO);
 		if("i2".equals(projectVO.getIsTemplate())) {
 		//템플릿 업무 리스트 출력
 		List<ProjectWorkTempVO> projwrklist = pjtempService.projectwrktemplistInfo(projectVO.getProjTempNo());
@@ -106,13 +108,14 @@ public class ProjectController {
 			}
 		}
 		//System.err.println(projectVO);
-		pjService.projectfolderinsert(projectVO);
+		
 		ProjectVO job = pjService.projectInfo(projectVO.getProjNo());
 		// pjService.projectwrkinsert(projectVO);
 
 		// pjService.projectdwrkinsert(projectVO);
 		System.err.println(job.getJobName());	
 		map.put("jobName", job.getJobName());
+		map.put("name", prjname);
 		map.put("type", "postAjax");
 		map.put("data", projectVO);
 		return map;
@@ -162,6 +165,11 @@ public class ProjectController {
 			pjService.projectdwrkDelete(info.getPwNo());
 		}
 		ProjectVO projfolderinfo = pjService.projectfolderInfo(projNo);
+		List<ProjectVO> projectfileList = pjService.projfileinfo(projfolderinfo.getPfNo());
+		
+		for(ProjectVO fileinfo: projectfileList) {
+			pjService.projfiledel(fileinfo.getPfNo());
+		}
 		pjService.projectfolderDelete(projNo);	
 		return "삭제 완료";
 	}

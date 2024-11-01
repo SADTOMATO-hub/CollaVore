@@ -217,4 +217,14 @@ public class ProjectServiceImpl implements PjService{
 	public ProjectVO projectfolderInfo(int projNo) {
 		return projectMapper.projectfolderInfo(projNo); 
 	}
+
+	@Override
+	public List<ProjectVO> projfileinfo(Integer pfNo) {
+		return projectMapper.projectfileInfo(pfNo); 
+	}
+
+	@Override
+	public int projfiledel(Integer pfNo) {
+		return projectMapper.ProjectfileDelete(pfNo); 
+	}
 }
