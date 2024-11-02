@@ -64,7 +64,7 @@ public class MemberController {
 		model.addAttribute("sidemenu", "member_sidebar");
 	}
 
-	// 로그인 후 메인 페이지로 이동
+	/*// 로그인 후 메인 페이지로 이동
 	@GetMapping("/main")
 	public String mainPage(HttpSession session) {
 		Integer empNo = (Integer) session.getAttribute("userEmpNo");
@@ -72,7 +72,7 @@ public class MemberController {
 			return "redirect:/login";
 		}
 		return "redirect:/memberInfo?empNo=" + empNo;
-	}
+	}*/
 
 	// 마이페이지로 이동
 	@GetMapping("/myPage")
@@ -90,10 +90,10 @@ public class MemberController {
 		// 세션에서 사번을 문자열로 가져옴
 		Integer empNo = (Integer) session.getAttribute("userEmpNo");
 
-		// 로그인되어 있지 않다면 로그인 페이지로 이동
+		/*// 로그인되어 있지 않다면 로그인 페이지로 이동
 		if (empNo == null) {
 			return "redirect:/login";
-		}
+		}*/
 
 		// HrmVO 객체에 사번 설정
 		HrmVO hrmVO = new HrmVO();
@@ -203,48 +203,6 @@ public class MemberController {
 
 	// 관리자 영역
 	// ────────────────────────────────────────────────────────────────────────────────────────────────────
-	/*
-	 * @GetMapping("/memberList") public String selectMemberAll(HrmVO hrmVO, Model
-	 * model,
-	 * 
-	 * @RequestParam(value = "deptFilter", required = false) String deptFilter,
-	 * 
-	 * @RequestParam(value = "jobFilter", required = false) String jobFilter,
-	 * 
-	 * @RequestParam(value = "posiFilter", required = false) String posiFilter,
-	 * 
-	 * @RequestParam(value = "workTypeFilter", required = false) String
-	 * workTypeFilter) { // 필터 값이 null일 경우 빈 문자열로 초기화 deptFilter = deptFilter ==
-	 * null ? "" : deptFilter; jobFilter = jobFilter == null ? "" : jobFilter;
-	 * posiFilter = posiFilter == null ? "" : posiFilter; workTypeFilter =
-	 * workTypeFilter == null ? "" : workTypeFilter;
-	 * 
-	 * // 페이지 정보 설정 String page = hrmVO.getPage() == null ? "1" : hrmVO.getPage();
-	 * 
-	 * // 필터 조건을 기반으로 총 사원 수 조회 int totalCnt =
-	 * memberService.totalListCnt(deptFilter, jobFilter, posiFilter,
-	 * workTypeFilter);
-	 * 
-	 * // 페이지네이션 객체 생성 (한 페이지에 15개 항목 표시) PageDTO pageing = new PageDTO(page, 15,
-	 * totalCnt); model.addAttribute("pageing", pageing);
-	 * 
-	 * // 필터 조건 및 페이지를 사용하여 사원 목록 조회 List<HrmVO> memberList =
-	 * memberService.selectMemberAll(page, deptFilter, jobFilter, posiFilter,
-	 * workTypeFilter); model.addAttribute("members", memberList);
-	 * 
-	 * // 필터 값도 모델에 추가 (필터 유지) model.addAttribute("deptFilter", deptFilter);
-	 * model.addAttribute("jobFilter", jobFilter); model.addAttribute("posiFilter",
-	 * posiFilter); model.addAttribute("workTypeFilter", workTypeFilter);
-	 * 
-	 * // 필터링을 위한 부서, 직무, 직위 목록 전달 model.addAttribute("departments",
-	 * memberService.getDepartmentsFromHrmVO()); model.addAttribute("jobs",
-	 * memberService.getJobsFromHrmVO()); model.addAttribute("positions",
-	 * memberService.getPositionsFromHrmVO()); model.addAttribute("workType",
-	 * memberService.getworkTypeFromHrmVO());
-	 * 
-	 * return "member/memberList"; // 뷰 파일 반환 }
-	 */
-
 	@GetMapping("/memberList")
 	public String selectMemberAll(
 	    HrmVO hrmVO,

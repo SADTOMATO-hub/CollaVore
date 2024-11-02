@@ -1,12 +1,5 @@
 <th:block xmlns:th="https://www.thymeleaf.org/" th:fragment="sidebar">
 
-	<ul id="sidebarnav" class="pt-4">
-		<li class="sidebar-item"><a
-			class="sidebar-link has-arrow waves-effect waves-dark"
-			href="javascript:void(0)" aria-expanded="false"> <i
-				class="mdi mdi-account"></i> <span class="hide-menu"> 마이페이지 </span>
-		</a>
-
 			<ul aria-expanded="false" class="collapse first-level">
 				<li class="sidebar-item"
 					th:classappend="${isMemberInfoPage} ? 'active' : ''"><a
@@ -39,13 +32,6 @@
 						class="mdi mdi-account-settings-variant"></i> <span
 						class="hide-menu"> 사원관리 </span>
 				</a></li>
-
-				<!-- <li class="sidebar-item" th:onclick="|location.href='@{/memberInsert}'|">
-            	<a class="sidebar-link"> 
-            	<i class="mdi mdi-account-settings-variant"></i> 
-            	<span class="hide-menu"> 사원관리 </span>
-            	</a>
-            </li> -->
 			</ul></li>
 	</ul>
 </th:block>

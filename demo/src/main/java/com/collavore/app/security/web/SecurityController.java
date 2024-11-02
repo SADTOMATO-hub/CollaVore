@@ -33,5 +33,4 @@ public class SecurityController {
     public String loginPage() {
         return "login";
     }
-
 }
