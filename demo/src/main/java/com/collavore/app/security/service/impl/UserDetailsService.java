@@ -9,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.collavore.app.security.mapper.UserMapper;
-import com.collavore.app.security.service.EmpVO;
 import com.collavore.app.security.service.LoginUserVO;
 import com.collavore.app.security.service.UserVO;
 

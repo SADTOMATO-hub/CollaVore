@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.collavore.app.security.service.EmpVO;
 import com.collavore.app.security.service.UserVO;
 
 @Mapper
