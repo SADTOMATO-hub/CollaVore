@@ -49,6 +49,9 @@ public class SecurityController {
         session.setAttribute("userEmpNo", user.getEmpNo());
         //부서번호
         session.setAttribute("userDeptNo", user.getDeptNo());
+        // 관리자 여부 저장
+        session.setAttribute("isAdmin", user.getIsAdmin());    
+
         return "redirect:/myPage";
     }
 

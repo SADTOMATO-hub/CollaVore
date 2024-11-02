@@ -25,6 +25,7 @@ public class HrmVO {
    private Date regDate;         // 등록일
    private String gitToken;      // 개별토큰
    private String img;           // 이미지
+   private String isAdmin;       // 권한
    
    private Integer deptNo;       // 부서번호
    private String deptName;      // 부서명

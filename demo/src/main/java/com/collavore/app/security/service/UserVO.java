@@ -13,4 +13,6 @@ public class UserVO {
     private List<String> roleNames = new ArrayList<>(); // 역할 목록을 List로 변경 및 초기화
     private String img;
     private Integer deptNo;
+    private String isAdmin;
+    
 }

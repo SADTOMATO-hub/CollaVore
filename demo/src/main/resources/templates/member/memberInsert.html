@@ -161,9 +161,9 @@ button:active {
 							<div class="col-sm-9">
 								<div class="image-preview mb-3">
 									<img id="imgPreview"
-     th:src="${member != null and member.img != null ? '/assets/images/users/' + member.img : '/assets/images/users/default.png'}"
-     alt="이미지 미리보기"
-     style="display: block; max-width: 200px; max-height: 200px;" />
+										th:src="${member != null and member.img != null ? '/assets/images/users/' + member.img : '/assets/images/users/default.png'}"
+										alt="이미지 미리보기"
+										style="display: block; max-width: 200px; max-height: 200px;" />
 								</div>
 								<!-- 파일 업로드 input -->
 								<input type="file" class="form-control" id="files" name="files"
@@ -330,14 +330,29 @@ button:active {
 									style="display: none;">&#9888;</span>
 							</div>
 						</div>
+
+
+						<div class="form-group row align-items-center">
+							<label for="info"
+								class="col-sm-3 text-end control-label col-form-label">권한</label>
+							<div class="col-md-9 d-flex align-items-center">
+								<div class="form-check form-check-inline">
+									<input type="radio" class="form-check-input" id="isAdminNo"
+										name="isAdmin" value="N" required checked /> <label
+										class="form-check-label mb-0" for="isAdminNo">일반 사원</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input type="radio" class="form-check-input" id="isAdminYes"
+										name="isAdmin" value="Y" required /> <label
+										class="form-check-label mb-0" for="isAdminYes">관리자</label>
+								</div>
+							</div>
+						</div>
 					</div>
 
 
 					<div class="insert-btn">
-						<!-- 등록 버튼 -->
 						<button type="submit" class="btn btn-primary" id="submitBtn">등록</button>
-
-						<!-- 취소 버튼 -->
 						<button type="button" class="btn btn-secondary"
 							onclick="goToListPage()">취소</button>
 					</div>
