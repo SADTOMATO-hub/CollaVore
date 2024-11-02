@@ -29,6 +29,7 @@
 		employees ON calshares.emp_no = employees.emp_no
 		LEFT JOIN departments
 		ON employees.dept_no = departments.dept_no
+		WHERE schs.cal_no IN (SELECT cal_no FROM calshares WHERE emp_no = #{empNo})
 		GROUP BY
 		schs.sch_no,
 		schs.title, schs.start_date, schs.end_date, schs.cal_no, cals.name,
@@ -36,6 +37,14 @@
 		ORDER BY
 		schs.sch_no
 	</select>
+	<!--풀캘린더에서 드롭으로 날짜 시간만 변경하기 -->
+	<update id="updateEventTime">
+     UPDATE schs
+    SET start_date = TO_TIMESTAMP(#{startDate}, 'YYYY-MM-DD HH24:MI:SS'),
+        end_date = TO_TIMESTAMP(#{endDate}, 'YYYY-MM-DD HH24:MI:SS')
+    WHERE sch_no = #{schNo}
+    </update>
+	
 	<!-- 단건 일정 조회 -->
 	<select id="selectSchsInfo" parameterType="SchsVO"
 		resultType="SchsVO">
@@ -222,21 +231,18 @@
 
 	<!-- 캘린더 일정 조회 -->
 	<select id="selectAllCal" resultType="SchsVO">
-		SELECT cs.cal_no
-		, c.name
-		,
-		c.color
-		FROM
-		calshares cs
-		INNER JOIN cals c ON
-		c.cal_no = cs.cal_no
-		WHERE
-		cs.emp_no =
-		#{empNo}
-		ORDER BY CASE WHEN
-		c.cal_type = 'g1' THEN 1 ELSE
-		9999 END, c.name
-	</select>
+    SELECT cs.cal_no
+           , c.name
+           , c.color
+    FROM
+        calshares cs
+    INNER JOIN cals c ON c.cal_no = cs.cal_no
+    WHERE cs.emp_no = #{empNo}
+      		AND c.is_delete = 'h2'
+    ORDER BY CASE WHEN
+        c.cal_type = 'g1' THEN 1 ELSE
+        9999 END, c.name
+</select>
 
 	<!-- 공유캘린더 리스트 <select id="selectTeamCal" resultType="SchsVO"> SELECT cs.cal_no, 
 		c.name || ' ' || CASE WHEN c.cal_type = 'g1' THEN '(개인)' WHEN c.cal_type 

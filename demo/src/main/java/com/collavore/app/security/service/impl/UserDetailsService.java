@@ -1,5 +1,7 @@
 package com.collavore.app.security.service.impl;
 
+import java.util.List;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -7,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.collavore.app.security.mapper.UserMapper;
+import com.collavore.app.security.service.EmpVO;
 import com.collavore.app.security.service.LoginUserVO;
 import com.collavore.app.security.service.UserVO;
 
@@ -34,5 +37,9 @@ public class UserDetailsService implements org.springframework.security.core.use
 
     public UserVO findByEmail(String email) {
         return userMapper.findByEmail(email);
+    }
+    
+    public List<String> myMenuAuth(int empNo) {
+    	return userMapper.myMenuAuth(empNo);
     }
 }

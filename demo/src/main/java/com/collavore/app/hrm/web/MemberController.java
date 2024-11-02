@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,11 +30,15 @@ import com.collavore.app.hrm.service.HrmVO;
 import com.collavore.app.hrm.service.JobService;
 import com.collavore.app.hrm.service.MemberService;
 import com.collavore.app.hrm.service.PosiService;
+import com.collavore.app.service.HomeService;
+import com.collavore.app.service.HomeVO;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 public class MemberController {
 
 	private final MemberService memberService;
@@ -43,27 +46,22 @@ public class MemberController {
 	private final JobService jobService;
 	private final PosiService posiService;
 	private final SchsService schsService;
-	@Value("${file.upload.path}") // 메모리에 올라가 있는 변수값을 가져오기 때문에 표현이 다름
+	private final HomeService homeService;
+	@Value("${file.upload.path}") // 메모리에 올라가 있는 변수값을 가져오기 때문에 표현이 다름아아아아아
 	private String uploadPath;
-
-	@Autowired
-	public MemberController(MemberService memberService, DeptService deptService, JobService jobService,
-			PosiService posiService, SchsService schsService) {
-		this.memberService = memberService;
-		this.deptService = deptService;
-		this.jobService = jobService;
-		this.posiService = posiService;
-		this.schsService = schsService;
-	}
 
 	@ModelAttribute
 	public void addAttributes(Model model, HttpSession session) {
-	    model.addAttribute("sidemenu", "member_sidebar");
+		List<HomeVO> employeesInfo = homeService.empList();
+		model.addAttribute("employees", employeesInfo);
+		
+		String userAdmin = (String) session.getAttribute("userAdmin");
+		model.addAttribute("userAdmin", userAdmin);
 
-	    // 세션에서 isAdmin 값을 가져와 모델에 추가
-	    String isAdmin = (String) session.getAttribute("isAdmin");
-	    model.addAttribute("isAdmin", isAdmin);
-	    
+		@SuppressWarnings("unchecked")
+		List<String> menuAuth = (List<String>) session.getAttribute("menuAuth");
+		model.addAttribute("menuAuth", menuAuth);
+		model.addAttribute("sidemenu", "member_sidebar");
 	}
 
 	/*// 로그인 후 메인 페이지로 이동

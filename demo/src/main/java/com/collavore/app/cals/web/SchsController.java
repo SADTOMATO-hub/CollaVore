@@ -1,14 +1,12 @@
 package com.collavore.app.cals.web;
 
-import java.io.Console;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,22 +19,31 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.collavore.app.cals.service.SchsService;
 import com.collavore.app.cals.service.SchsVO;
+import com.collavore.app.service.HomeService;
+import com.collavore.app.service.HomeVO;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Controller // @Controller 대신 @RestController 사용
+@RequiredArgsConstructor
 public class SchsController {
 	private final SchsService schsService;
+	private final HomeService homeService;
 
-	// 생성자 주입
-	@Autowired
-	public SchsController(SchsService schsService) {
-		this.schsService = schsService;
-	}
-
-	// 사이드바
+		// 사이드바
 	@ModelAttribute
-	public void addAttributes(Model model) {
+	public void addAttributes(Model model, HttpSession session) {
+		List<HomeVO> employeesInfo = homeService.empList();
+		model.addAttribute("employees", employeesInfo);
+
+		String userAdmin = (String) session.getAttribute("userAdmin");
+		model.addAttribute("userAdmin", userAdmin);
+
+		@SuppressWarnings("unchecked")
+		List<String> menuAuth = (List<String>) session.getAttribute("menuAuth");
+		model.addAttribute("menuAuth", menuAuth);
+		
 		model.addAttribute("sidemenu", "calendar_sidebar");
 	}
 
@@ -75,6 +82,37 @@ public class SchsController {
 		Integer empNo = (Integer) session.getAttribute("userEmpNo");
 		return schsService.SchsList(empNo);
 	}
+	@PostMapping("/sch/updateTime")
+	public ResponseEntity<String> updateEventTime(@RequestBody Map<String, Object> payload) {
+	    try {
+	        // schNo를 String으로 받고 Integer로 변환
+	        Integer schNo = Integer.parseInt(payload.get("schNo").toString());
+	        String startDate = payload.get("startDate").toString();
+	        String endDate = payload.get("endDate").toString();
+
+	        // 필수 값 확인
+	        if (schNo == null || startDate == null || endDate == null) {
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("failure: Missing required fields (schNo, startDate, or endDate)");
+	        }
+
+	        // 업데이트 요청
+	        int updatedRows = schsService.updateEventTime(schNo, startDate, endDate);
+
+	        if (updatedRows > 0) {
+	            return ResponseEntity.ok("success");
+	        } else {
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("failure: No rows were updated");
+	        }
+
+	    } catch (Exception e) {
+	        System.err.println("Error in updateEventTime: " + e.getMessage());
+	        e.printStackTrace();
+
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("error: An error occurred while updating the event time.");
+	    }
+	}
+
+		
 
 	// 단건 조회 API
 	@GetMapping("/sch/schInfo")
@@ -191,17 +229,24 @@ public class SchsController {
 //		}
 //		return result;
 //	}
-	// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제
+	// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제// 삭제//
+	// 삭제// 삭제
 	@PostMapping("/sch/schDelete")
-    @ResponseBody
-    public String deleteSchedule(@RequestBody Map<String, Integer> params) {
-        int schNo = params.get("schNo");
-        int result = schsService.deleteSchedule(schNo);
-        System.out.println("213213211132132133333333333333333333333333333333333333333333333");
-        System.out.println(result);
-        System.out.println("213213211132132133333333333333333333333333333333333333333333333");
-        return result > 0 ? "일정이 삭제되었습니다." : "일정 삭제에 실패했습니다.";
-    }
+	@ResponseBody
+	public Map<String, Object> deleteSchedule(@RequestBody Map<String, Integer> params) {
+		int schNo = params.get("schNo");
+		int result = schsService.deleteSchedule(schNo);
+
+		Map<String, Object> response = new HashMap<>();
+		response.put("success", result > 0);
+		response.put("message", result > 0 ? "일정이 삭제되었습니다." : "일정 삭제에 실패했습니다.");
+
+		System.out.println("213213211132132133333333333333333333333333333333333333333333333");
+		System.out.println(result);
+		System.out.println("213213211132132133333333333333333333333333333333333333333333333");
+
+		return response;
+	}
 //==============================END 일정관리 ===============================
 
 //	// 내캘린더 뿌려주
@@ -377,7 +422,8 @@ public class SchsController {
 		}
 		return response;
 	}
-	// 휴지통에있는 캘린더 복원 
+
+	// 휴지통에있는 캘린더 복원
 	@PostMapping("/cal/calRestore")
 	@ResponseBody
 	public Map<String, Object> calRestore(@RequestBody Map<String, String> params) {
@@ -401,6 +447,7 @@ public class SchsController {
 	public List<SchsVO> trashList() {
 		return schsService.trashList(); // 휴지통에 있는 캘린더 목록 조회
 	}
+
 //	// 완전삭제1
 //	@PostMapping("/cal/calDel")
 //	@ResponseBody
@@ -413,12 +460,10 @@ public class SchsController {
 	@PostMapping("/cal/calDel")
 	@ResponseBody
 	public String permanentlyDel(@RequestBody Map<String, Integer> params) {
-	    int calNo = params.get("calNo");
-	    int result = schsService.permanentlyDel(calNo);  // 서비스 메서드 이름과 일치시킴
-	    return result > 0 ? "캘린더가 완전히 삭제되었습니다." : "캘린더 삭제에 실패했습니다.";
+		int calNo = params.get("calNo");
+		int result = schsService.permanentlyDel(calNo); // 서비스 메서드 이름과 일치시킴
+		return result > 0 ? "캘린더가 완전히 삭제되었습니다." : "캘린더 삭제에 실패했습니다.";
 	}
-	
-	
 
 	@GetMapping("/cal/deptWithEmp")
 	@ResponseBody

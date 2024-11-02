@@ -40,6 +40,8 @@ import com.collavore.app.project.service.ProjectFoldersVO;
 import com.collavore.app.project.service.ProjectTempVO;
 import com.collavore.app.project.service.ProjectVO;
 import com.collavore.app.project.service.ProjectWorkTempVO;
+import com.collavore.app.service.HomeService;
+import com.collavore.app.service.HomeVO;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -49,9 +51,21 @@ import lombok.RequiredArgsConstructor;
 public class ProjectController {
 	private final PjService pjService;
 	private final PjTempService pjtempService;
+	private final HomeService homeService;
+
 
 	@ModelAttribute
-	public void addAttributes(Model model) {
+	public void addAttributes(Model model, HttpSession session) {
+		List<HomeVO> employeesInfo = homeService.empList();
+		model.addAttribute("employees", employeesInfo);
+		
+		String userAdmin = (String) session.getAttribute("userAdmin");
+		model.addAttribute("userAdmin", userAdmin);
+
+		@SuppressWarnings("unchecked")
+		List<String> menuAuth = (List<String>) session.getAttribute("menuAuth");
+		model.addAttribute("menuAuth", menuAuth);
+		
 		model.addAttribute("sidemenu", "project_sidebar");
 	}
 
@@ -80,6 +94,8 @@ public class ProjectController {
 		//프로젝트생성
 		System.err.println(projectVO.getIsTemplate());
 		pjService.projectinsert(projectVO);
+		String prjname = projectVO.getName();
+		pjService.projectfolderinsert(projectVO);
 		if("i2".equals(projectVO.getIsTemplate())) {
 		//템플릿 업무 리스트 출력
 		List<ProjectWorkTempVO> projwrklist = pjtempService.projectwrktemplistInfo(projectVO.getProjTempNo());
@@ -106,13 +122,14 @@ public class ProjectController {
 			}
 		}
 		//System.err.println(projectVO);
-		pjService.projectfolderinsert(projectVO);
+		
 		ProjectVO job = pjService.projectInfo(projectVO.getProjNo());
 		// pjService.projectwrkinsert(projectVO);
 
 		// pjService.projectdwrkinsert(projectVO);
 		System.err.println(job.getJobName());	
 		map.put("jobName", job.getJobName());
+		map.put("name", prjname);
 		map.put("type", "postAjax");
 		map.put("data", projectVO);
 		return map;
@@ -162,6 +179,11 @@ public class ProjectController {
 			pjService.projectdwrkDelete(info.getPwNo());
 		}
 		ProjectVO projfolderinfo = pjService.projectfolderInfo(projNo);
+		List<ProjectVO> projectfileList = pjService.projfileinfo(projfolderinfo.getPfNo());
+		
+		for(ProjectVO fileinfo: projectfileList) {
+			pjService.projfiledel(fileinfo.getPfNo());
+		}
 		pjService.projectfolderDelete(projNo);	
 		return "삭제 완료";
 	}

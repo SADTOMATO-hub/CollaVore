@@ -33,32 +33,4 @@ public class SecurityController {
     public String loginPage() {
         return "login";
     }
-
-    @PostMapping("/login")
-    public String login(@RequestParam String email, 
-                        @RequestParam String password, 
-                        HttpSession session) {
-        UserVO user = userDetailsService.findByEmail(email);
-    	
-        if (user == null || !userDetailsService.authenticate(password, user.getPassword())) {
-            return "redirect:/login?error=true";
-        }
-        //이메일
-        session.setAttribute("userEmail", user.getEmail());
-        //사원번호
-        session.setAttribute("userEmpNo", user.getEmpNo());
-        //부서번호
-        session.setAttribute("userDeptNo", user.getDeptNo());
-        // 관리자 여부 저장
-        session.setAttribute("isAdmin", user.getIsAdmin());    
-
-        return "redirect:/myPage";
-    }
-
-	// 로그아웃 처리
-	@GetMapping("/logout")
-	public String logout(HttpSession session) {
-		session.invalidate(); // 세션 무효화
-		return "redirect:/login"; // 로그아웃 후 로그인 페이지로 리다이렉트
-	}
 }

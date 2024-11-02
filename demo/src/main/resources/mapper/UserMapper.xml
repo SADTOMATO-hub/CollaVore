@@ -8,7 +8,9 @@
             e.password,
             e.name,
             e.img,
-            e.dept_no
+            e.dept_no,
+            (SELECT grade FROM positions WHERE e.posi_no = posi_no) AS posiGrade,
+            e.is_admin
         FROM 
             employees e
         LEFT JOIN 
@@ -28,5 +30,12 @@
             employees e ON er.emp_no = e.emp_no
         WHERE 
             e.email = #{email}
+    </select>
+    
+    <select id="myMenuAuth" resultType="String">
+    	SELECT m.menu_value AS menuAuth
+    	FROM menusauth ma
+    		INNER JOIN menus m ON ma.menu_no = m.menu_no
+    	WHERE emp_no = #{empNo}
     </select>
 </mapper>

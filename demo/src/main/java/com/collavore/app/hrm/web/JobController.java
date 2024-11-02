@@ -13,16 +13,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.collavore.app.hrm.service.HrmVO;
 import com.collavore.app.hrm.service.JobService;
+import com.collavore.app.hrm.service.PosiService;
+
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 public class JobController {
-	private JobService jobService;
-
-	@Autowired
-	JobController(JobService jobService) {
-		this.jobService = jobService;
-	}
-
+	private final JobService jobService;
 	
 	@PostMapping("/jobs/save")
 	@ResponseBody

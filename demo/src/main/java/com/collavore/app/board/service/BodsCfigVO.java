@@ -14,4 +14,8 @@ public class BodsCfigVO {
 	private Integer commentAuth; //게시글 댓글 권한
 	private Date regDate; //등록일 
 	private Date modDate; //수정일 
+	
+	private Integer posiNo; // 직위번호
+	private String posiName; // 직위명
+	private Integer posiGrade; // 직위등급
 }

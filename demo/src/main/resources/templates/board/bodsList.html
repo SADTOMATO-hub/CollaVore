@@ -298,7 +298,6 @@ button:active {
 						</th:block>
 					</tbody>
 				</table>
-
 				<div class="pagination-and-insert-wrapper">
 					<div class="pagination-outer">
 						<nav aria-label="Page navigation example">
@@ -325,7 +324,7 @@ button:active {
 						</nav>
 					</div>
 					<!-- 등록 버튼 -->
-					<div class="insert-btn-container">
+					<div class="insert-btn-container" th:if="${bodsCfig.writeAuth} >= ${userGrade}">
 						<button type="button" class="btn btn-primary"
 							th:onclick='|location.href="@{/board/bodsInsert(boardNo=${param.boardNo})}"|'>글쓰기</button>
 					</div>

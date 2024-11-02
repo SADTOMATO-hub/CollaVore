@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +21,10 @@ import com.collavore.app.project.service.ProjectDWorkTempVO;
 import com.collavore.app.project.service.ProjectTempVO;
 import com.collavore.app.project.service.ProjectVO;
 import com.collavore.app.project.service.ProjectWorkTempVO;
+import com.collavore.app.service.HomeService;
+import com.collavore.app.service.HomeVO;
 
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -31,9 +33,20 @@ import lombok.RequiredArgsConstructor;
 public class ProjectTempController {
 	private final PjService pjService;
     private final PjTempService pjtempService;
+	private final HomeService homeService;
 
     @ModelAttribute
-    public void addAttributes(Model model) {
+    public void addAttributes(Model model, HttpSession session) {
+		List<HomeVO> employeesInfo = homeService.empList();
+		model.addAttribute("employees", employeesInfo);
+		
+		String userAdmin = (String) session.getAttribute("userAdmin");
+		model.addAttribute("userAdmin", userAdmin);
+
+		@SuppressWarnings("unchecked")
+		List<String> menuAuth = (List<String>) session.getAttribute("menuAuth");
+		model.addAttribute("menuAuth", menuAuth);
+		
         model.addAttribute("sidemenu", "project_sidebar");
     }
 

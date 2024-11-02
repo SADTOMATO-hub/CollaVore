@@ -1,6 +1,7 @@
 package com.collavore.app.security.config;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -74,7 +75,13 @@ public class SpringSecurityConfig {
                 session.setAttribute("userEmpNo", userVO.getEmpNo());
                 session.setAttribute("userDeptNo", userVO.getDeptNo());
                 session.setAttribute("userImg", userVO.getImg());
-
+                session.setAttribute("userGrade", userVO.getPosiGrade());
+                session.setAttribute("userAdmin", userVO.getIsAdmin());
+                
+                List<String> menuAuth = userDetailsService.myMenuAuth(userVO.getEmpNo());
+                
+                session.setAttribute("menuAuth", menuAuth);
+                
                 response.sendRedirect("/dashboard");
             }
         };

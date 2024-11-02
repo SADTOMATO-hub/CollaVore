@@ -100,8 +100,15 @@ public interface ProjectMapper {
 	
 	// 프로젝트 폴더 삭제
 	public int ProjectfolderDelete(int projNo);
+	
 	// 프로젝트 폴더 단건 조회
 	public ProjectVO projectfolderInfo(int projNo);
+	
+	// 프로젝트 파일 리스트 조회 
+	public List<ProjectVO> projectfileInfo(Integer pfNo);
+	
+	// 프로젝트 파일 삭제
+	public int ProjectfileDelete(Integer pfNo);
 	
 	
 }

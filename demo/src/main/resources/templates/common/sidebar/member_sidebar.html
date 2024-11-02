@@ -1,41 +1,37 @@
 <th:block xmlns:th="https://www.thymeleaf.org/" th:fragment="sidebar">
 
-    <ul id="sidebarnav" class="pt-4">
-        <li class="sidebar-item">
-            <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
-                <i class="mdi mdi-account"></i> <span class="hide-menu"> 마이페이지 </span>
-            </a>
-            <ul aria-expanded="false" class="collapse first-level">
-                <li class="sidebar-item" th:classappend="${isMemberInfoPage} ? 'active' : ''">
-                    <a th:href="@{/memberInfo}" class="sidebar-link">
-                        <i class="mdi mdi-account-card-details"></i> <span class="hide-menu"> 나의 기본 정보 </span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a th:href="@{/deptMember}" class="sidebar-link">
-                        <i class="mdi mdi-bulletin-board"></i> <span class="hide-menu"> 부서 정보 </span>
-                    </a>
-                </li>
-            </ul>
-        </li>
+			<ul aria-expanded="false" class="collapse first-level">
+				<li class="sidebar-item"
+					th:classappend="${isMemberInfoPage} ? 'active' : ''"><a
+					th:href="@{/memberInfo}" class="sidebar-link"> <!-- empNo는 컨트롤러에서 세션을 통해 가져옴 -->
+						<i class="mdi mdi-account-card-details"></i> <span
+						class="hide-menu"> 나의 기본 정보 </span>
+				</a></li>
 
-        <!-- 관리자 페이지 섹션, isAdmin이 'Y'일 경우에만 렌더링 -->
-        <li class="sidebar-item" th:if="${isAdmin == 'Y'}">
-            <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false">
-                <i class="mdi mdi-settings"></i> <span class="hide-menu"> 관리자 페이지 </span>
-            </a>
-            <ul aria-expanded="false" class="collapse first-level">
-                <li class="sidebar-item">
-                    <a th:href="@{/deptManager}" class="sidebar-link">
-                        <i class="mdi mdi-view-list"></i> <span class="hide-menu"> 조직관리 </span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
-                    <a th:href="@{/memberList}" class="sidebar-link">
-                        <i class="mdi mdi-account-settings-variant"></i> <span class="hide-menu"> 사원관리 </span>
-                    </a>
-                </li>
-            </ul>
-        </li>
-    </ul>
+				<li class="sidebar-item"><a th:href="@{/deptMember}"
+					class="sidebar-link"> <i class="mdi mdi-bulletin-board"></i> <span
+						class="hide-menu"> 부서 정보 </span>
+				</a></li>
+			</ul></li>
+
+		<li class="sidebar-item" th:if="${menuAuth.contains('hrm')}"><a
+			class="sidebar-link has-arrow waves-effect waves-dark"
+			href="javascript:void(0)" aria-expanded="false"> <i
+				class="mdi mdi-settings"></i> <span class="hide-menu"> 관리자
+					페이지 </span>
+		</a>
+
+			<ul aria-expanded="false" class="collapse first-level">
+				<li class="sidebar-item"><a th:href="@{/deptManager}"
+					class="sidebar-link"> <i class="mdi mdi-view-list"></i> <span
+						class="hide-menu"> 조직관리 </span>
+				</a></li>
+
+				<li class="sidebar-item"><a th:href="@{/memberList}"
+					class="sidebar-link"> <i
+						class="mdi mdi-account-settings-variant"></i> <span
+						class="hide-menu"> 사원관리 </span>
+				</a></li>
+			</ul></li>
+	</ul>
 </th:block>

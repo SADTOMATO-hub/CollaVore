@@ -170,6 +170,7 @@ button:active {
 									th:field="*{name}" />
 							</div>
 						</div>
+
 						<div class="form-group row">
 							<label for="subject"
 								class="col-sm-3 text-end control-label col-form-label">말머리</label>
@@ -178,11 +179,55 @@ button:active {
 									name="subject" th:field="*{subject}" />
 							</div>
 						</div>
+
+						<div class="form-group row">
+							<label for="readAuth"
+								class="col-sm-3 text-end control-label col-form-label">읽기권한</label>
+							<div class="col-sm-9">
+								<select class="form-select" name="readAuth">
+									<th:block th:each="position : ${posiList}">
+										<option th:value="${position.posiGrade}"
+											th:text="${position.posiName}"
+											th:selected="${position.posiGrade == bodsCfig.readAuth}"></option>
+									</th:block>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label for="writeAuth"
+								class="col-sm-3 text-end control-label col-form-label">쓰기권한</label>
+							<div class="col-sm-9">
+								<select class="form-select" name="writeAuth">
+									<th:block th:each="position : ${posiList}">
+										<option th:value="${position.posiGrade}"
+											th:text="${position.posiName}"
+											th:selected="${position.posiGrade == bodsCfig.writeAuth}"></option>
+									</th:block>
+								</select>
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label for="commentAuth"
+								class="col-sm-3 text-end control-label col-form-label">댓글권한</label>
+							<div class="col-sm-9">
+								<select class="form-select" name="commentAuth">
+									<th:block th:each="position : ${posiList}">
+										<option th:value="${position.posiGrade}"
+											th:text="${position.posiName}"
+											th:selected="${position.posiGrade == bodsCfig.commentAuth}"></option>
+									</th:block>
+								</select>
+							</div>
+						</div>
+
 						<div class="insert-btn">
 							<button type="button" id="updateBtn" class="btn btn-primary"
 								th:onclick='|location.href="@{/board/bodsCfig}"|'>저장</button>
 						</div>
 					</form>
+
 				</div>
 			</div>
 		</div>

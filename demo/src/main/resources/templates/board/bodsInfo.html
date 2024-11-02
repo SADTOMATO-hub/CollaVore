@@ -189,11 +189,11 @@ button:active {
 						</div>
 						<!-- 등록 버튼 -->
 						<div class="insert-btn">
-							<button class="btn btn-success text-white" type="button"
+							<button class="btn btn-success text-white" type="button" th:if="${bods.writer} == ${empNo}"
 								th:onclick='|location.href="@{/board/bodsUpdate(postNo=${bods.postNo})}"|'>수정</button>
 							<button class="btn btn-primary" type="button"
 								th:onclick='|location.href="@{/board/bodsList(boardNo=${bods.boardNo})}"|'>목록</button>
-							<button class="btn btn-danger" type="button"
+							<button class="btn btn-danger" type="button" th:if="${bods.writer} == ${empNo}"
 								th:onclick='|location.href="@{/board/bodsDelete(postNo=${bods.postNo},boardNo=${bods.boardNo})}"|'>삭제</button>
 						</div>
 					</form>
@@ -202,12 +202,14 @@ button:active {
 		</div>
 		<div class="purple-background-container">
 			<div class="card_memberInsert">
-				<h3>댓글 관리</h3>
+				<h3>댓글 목록</h3>
 				<div class="col-md-9">
+					<input type="hidden" id="postNo" name="postNo" th:value="${bods.postNo}"> 
+					<input type="hidden" name="writer" th:value="${empNo}">
 					<form class="form-horizontal" name="insertBodsComts"
-						th:action="@{/board/bodsComts}" method="post">
+						th:action="@{/board/bodsComts}" method="post"  th:if="${bodsCfig.commentAuth} >= ${userGrade}">
 						<input type="hidden" id="postNo" name="postNo"
-							th:value="${param.postNo}"> <input type="hidden"
+							th:value="${bods.postNo}"> <input type="hidden"
 							name="writer" th:value="${empNo}">
 						<div class="form-group row">
 							<label for="content" class="col-sm-3 text-end control-label col-form-label">제목</label>
