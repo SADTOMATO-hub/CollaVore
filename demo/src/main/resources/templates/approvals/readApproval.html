@@ -194,15 +194,19 @@ button:active {
 															th:if="${session.userEmpNo == appr.approverEmpNo}"
 															class="approveBtn badge rounded-pill bg-danger"
 															th:data-ear-no="${appr.earNumber}" th:value="b3"
-															th:text="승인"></button>
+															th:text="승인">
+														</button>
 														<button type="button"
 															th:if="${session.userEmpNo == appr.approverEmpNo}"
 															class="approveBtn badge rounded-pill bg-warning"
 															th:data-ear-no="${appr.earNumber}" th:value="b2"
-															th:text="반려"></button>
+															th:text="반려">
+														</button>
 														<span
 															th:unless="${session.userEmpNo == appr.approverEmpNo}">대기</span>
-													</th:block> <span th:case="b2">반려</span> <span th:case="b3">승인</span>
+													</th:block> 
+													<span th:case="b2">반려</span>
+													<span th:case="b3">승인</span>
 													<span th:case="*">-</span></td>
 											</th:block>
 										</th:block>
@@ -219,8 +223,9 @@ button:active {
 						</div>
 					</div>
 					<div class="insert-btn">
-						<button type="button" class="btn btn-primary" id="updateBtn"
-							th:onclick="|location.href='@{/approvals/updateApprInfoForm(eaNo=${approvals.eaNo})}'|">수정하기</button>
+						<button  type="button" class="btn btn-primary" id="updateBtn"
+						th:if="${session.userEmpNo == approvals.drafterEmpNo and approvals.approverStatus == 'a1'}"
+						 th:onclick="|location.href='@{/approvals/updateApprInfoForm(eaNo=${approvals.eaNo})}'|">수정하기</button>
 					</div>
 				</div>
 			</div>
