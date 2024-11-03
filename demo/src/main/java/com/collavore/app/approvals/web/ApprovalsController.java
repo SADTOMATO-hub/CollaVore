@@ -175,10 +175,9 @@ public class ApprovalsController {
 	@PostMapping("/updateAppr")
 	@ResponseBody
 	public String updateApprove (@RequestBody ApprovalsVO apprVO) {
-		System.err.println(apprVO.getApproverStatus() + apprVO.getEarNo());
 		int updateApprStatus = approvalsService.updateApprStatus(apprVO);
+		int updateApprovalStatus = approvalsService.updateApproval(apprVO);
 		if(updateApprStatus > 0) {
-			System.out.println(updateApprStatus);
 			return null;
 		}
 		return null;

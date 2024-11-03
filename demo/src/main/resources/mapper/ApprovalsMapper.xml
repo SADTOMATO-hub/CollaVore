@@ -261,6 +261,12 @@
 		where ea_no = #{eaNo}
 	</update>
 	
+	<!-- 결재가 진행되면 전자결재 상태가 업그레이드 됨 -->
+ 	<update id="updateApprovalStatus" statementType="CALLABLE">
+ 	{ CALL
+ 		update_approval_status (#{ea_no, mode=IN})
+ 	}
+ 	</update>		
 	
 	<!-- 전자결재 삭제 -->
 	<select id="deleteApproval" statementType="CALLABLE"
