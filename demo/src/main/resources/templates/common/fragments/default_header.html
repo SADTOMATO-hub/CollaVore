@@ -142,7 +142,7 @@
 									class="mdi mdi-account me-1 ms-1"></i> 나의 기본 정보
 							</a>
 							</li>
-							<li>
+							<li th:if="${userAdmin == 'Y'}">
 								<!-- 메뉴관리자처리 --> <a class="dropdown-item"
 								href="javascript:void(0);" data-bs-toggle="modal"
 								data-bs-target="#menuManagerModal"> <i
