@@ -133,5 +133,11 @@ public class ApprovalsImpl implements ApprovalsService {
 	public List<Map<String,Object>> employeesInfo() {
 		return approvalsMapper.employees();
 	}
+
+	// 결재자 삭제
+	@Override
+	public int deleteApprover(int eaNo) {
+		return approvalsMapper.deleteApprover(eaNo);
+	}
 }
 //5번째

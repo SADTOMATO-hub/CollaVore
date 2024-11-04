@@ -305,7 +305,7 @@ button:active {
 					</div>
 					<div class="mb-3">
 						<select id="selectApprovers" class="form-select">
-							<option selected disabled>==결재자 선택==</option>
+							<option selected value=""disabled>==결재자 선택==</option>
 							<option th:each="appverInfo : ${employeesInfo}"
 								th:value="${appverInfo.empNo}">[[${appverInfo.empName}]]/[[${appverInfo.posiName}]]</option>
 						</select>
@@ -399,21 +399,40 @@ $(document).ready(
 
 	//modal에서 선택한 결재자 정보를 부모 페이지에 넘기는 기능
 	  $(document).ready(function(){
-			$("#modalSubmit").on("click", function(e){
-				e.preventDefault();
-				var seq = $('#seq').val();
-				var selectedApprover = $("#selectApprovers option:checked").text();
-				var selectedApproversEmp = $("#selectApprovers option:checked").val();
-				var selectedApproversName = selectedApprover.split('/')[0];
-				var selectedApproversInfo = selectedApprover.split('/')[1];
-				var empNoListVal = $(`[name="approvers[${seq-1}].empNo"]`).val(selectedApproversEmp);
-				//var sortVal = $('[name=sort]').eq(seq-1).val(seq);
-				$('#apprerTable tbody tr').eq(0).children().eq(seq).find('span').html(selectedApproversName);
-				$('#apprerTable tbody tr').eq(1).children().eq(seq).find('span').html(selectedApproversInfo);					
-				$('#selectApprovers').prop('selectedIndex', 0);
-				$('#approversSelect').modal('hide');				
-			});
-		});
+    $("#modalSubmit").on("click", function(e){
+        e.preventDefault();
+        var seq = $('#seq').val();
+        var selectedApprover = $("#selectApprovers option:checked").text();
+        var selectedApproversEmp = $("#selectApprovers option:checked").val();
+        
+        // 선택된 approver 이름과 정보를 분리
+        var selectedApproversName = selectedApprover.split('/')[0];
+        var selectedApproversInfo = selectedApprover.split('/')[1];
+        
+        // approver의 empNo 값 설정 및 초기화 조건
+        if (selectedApproversEmp) {
+            $(`[name="approvers[${seq-1}].empNo"]`).val(selectedApproversEmp);
+        } else {
+            // selectedApproversEmp가 빈 값인 경우 부모 값 초기화
+            $(`[name="approvers[${seq-1}].empNo"]`).val('');
+        }
+        
+        // 이름과 정보 설정 및 초기화
+        if (selectedApproversEmp) {
+            $('#apprerTable tbody tr').eq(0).children().eq(seq).find('span').html(selectedApproversName);
+            $('#apprerTable tbody tr').eq(1).children().eq(seq).find('span').html(selectedApproversInfo);
+        } else {
+            // 빈 값인 경우 초기화
+            $('#apprerTable tbody tr').eq(0).children().eq(seq).find('span').html('');
+            $('#apprerTable tbody tr').eq(1).children().eq(seq).find('span').html('');
+        }
+
+        // 초기 상태로 복귀
+        $('#selectApprovers').prop('selectedIndex', 0);
+        $('#approversSelect').modal('hide');
+    });
+});
+
 	//
 //수정버튼을 누르면 form의 데이터를 전부 넘김
 	function submitPost(event) {

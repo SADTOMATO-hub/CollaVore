@@ -122,13 +122,13 @@
 	<!-- 나의 진행 중인 전자결재 목록 조회 -->
 	<select id="myApprList" parameterType="ApprovalsVO"
 		resultType="ApprovalsVO">
-		SELECT a.ea_no
+		SELECT DISTINCT a.ea_no
 				,a.title
 				,e.name AS "drafterName"
 				,a.reg_date
 				,a.emp_no AS "drafterEmpNo"
 				,a.status AS "approvalStatus"
-				,ar.emp_no AS "approverEmpNo"
+				,a.emp_no AS "approverEmpNo"
 		<if test="compDate != null or compDate != ''">
 				, a.comp_date
 		</if>
@@ -304,5 +304,10 @@
 		ORDER by p.posi_no
 	</select>
 	<!-- -->
+	
+	<delete id="deleteApprover" parameterType="int">
+		DELETE FROM approvers
+		WHERE ea_no = #{eaNo}
+	</delete>
 </mapper>
 <!-- 3번째 -->

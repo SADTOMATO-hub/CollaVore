@@ -39,5 +39,9 @@ public interface ApprovalsService {
 	public void deleteApprovals (ApprovalsVO approvalsVo);
 //인사 테이블 조회
 	public List<Map<String,Object>> employeesInfo ();
+	
+	// 결재자 삭제
+	public int deleteApprover(int eaNo);
+		
 }
 //4번째

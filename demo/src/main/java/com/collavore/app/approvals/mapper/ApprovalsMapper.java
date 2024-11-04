@@ -42,5 +42,8 @@ public interface ApprovalsMapper {
 	public void deleteApproval (ApprovalsVO approvalsVo);
 	//인사 테이블 조회
 	public List<Map<String,Object>> employees ();
+	
+	// 결재자 삭제
+	public int deleteApprover(int eaNo);
 }
 //2번
