@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.collavore.app.hrm.mapper.PosiMapper">
 
-	
+
 	<!-- 직위 등록 -->
 	<insert id="insertPosiInfo" parameterType="HrmVO">
 		<selectKey keyProperty="posiNo" resultType="Integer"
@@ -11,24 +11,34 @@
 			FROM POSITIONS
 		</selectKey>
 		INSERT INTO POSITIONS (posi_no, name, grade, reg_date)
-		VALUES (#{posiNo}, #{posiName}, #{grade}, sysdate)
+		VALUES
+		(#{posiNo}, #{posiName}, #{grade}, sysdate)
 	</insert>
 
 	<!-- 직위 수정 -->
 	<update id="updatePosiInfo" parameterType="HrmVO">
 		UPDATE POSITIONS
-		SET name = #{posiName}, grade = #{grade}
+		SET
+		name = #{posiName}, grade = #{grade}
 		WHERE posi_no = #{posiNo}
 	</update>
 
 	<!-- 직위 삭제 -->
 	<delete id="deletePosiInfo" parameterType="Integer">
-		DELETE FROM POSITIONS WHERE posi_no = #{posiNo}
+		DELETE FROM POSITIONS
+		WHERE posi_no = #{posiNo}
 	</delete>
+
+	<!-- 특정 직위에 할당된 사원이 있는지 확인하는 쿼리 -->
+	<select id="countEmployeesWithPosition" parameterType="int"
+		resultType="int">
+		SELECT COUNT(*) FROM EMPLOYEES WHERE posi_no = #{posiNo}
+	</select>
 
 	<!-- 직위 목록 조회 -->
 	<select id="selectPosiList" resultType="HrmVO">
-		SELECT posi_no, name AS posiName, grade
+		SELECT posi_no, name AS
+		posiName, grade
 		FROM POSITIONS
 		ORDER BY grade
 	</select>

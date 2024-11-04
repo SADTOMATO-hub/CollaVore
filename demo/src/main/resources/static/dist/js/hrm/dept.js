@@ -135,6 +135,136 @@ function createDeptNode(dept, deptMap, depth) {
 
 
 
+// 수정된 부서 정보를 저장하는 배열
+let modifiedDepartments = [];
+
+// 하위 부서 등록 함수
+function addSubDept(parentDeptNo, li) {
+	const inputField = document.createElement('input');
+	inputField.type = 'text';
+	inputField.placeholder = '새 부서 이름 입력';
+	inputField.classList.add('new-dept-input'); // 새로 추가된 부서 식별을 위해 클래스 추가
+	li.appendChild(inputField);
+	inputField.focus();
+
+	// 현재 부서의 레벨을 가져와 하위 부서의 레벨을 자동 설정
+	const currentLevel = parseInt(li.querySelector('.wrap1').getAttribute('data-real-depth'), 10);
+	const newLevel = currentLevel + 1;
+	inputField.setAttribute('data-parent-dept-no', parentDeptNo);
+	inputField.setAttribute('data-new-level', currentLevel + 1);
+
+	// 엔터 키 입력 시도 저장을 위해 입력 필드를 focus out 상태로 설정
+	inputField.addEventListener('keydown', (event) => {
+		if (event.key === 'Enter') {
+			const deptName = inputField.value.trim();
+			if (deptName) {
+				modifiedDepartments.push({
+					deptName: deptName,
+					parentDeptNo: parentDeptNo,
+					level: newLevel,  // 새로 추가된 레벨 정보
+					action: 'add'
+				});
+				console.log("modifiedDepartments 배열에 추가됨:", modifiedDepartments); // 배열 확인용
+				//nputField.remove();
+			}
+			inputField.blur();
+		}
+	});
+}
+
+
+// 하위 부서 등록 저장 함수
+function saveDept() {
+	console.log("saveDept 함수가 호출되었습니다."); // 디버그용
+	console.log(modifiedDepartments);
+	// 새 부서 입력 필드에서 데이터를 가져옴
+	document.querySelectorAll('.new-dept-input').forEach(inputField => {
+		const deptName = inputField.value.trim();
+		const parentDeptNo = inputField.getAttribute('data-parent-dept-no');
+		const level = inputField.getAttribute('data-new-level');
+		if (deptName) {
+			// 새 부서 정보를 modifiedDepartments 배열에 추가
+			modifiedDepartments.push({
+				deptName: deptName,
+				parentDeptNo: parseInt(parentDeptNo, 10),
+				level: parseInt(level, 10),
+				action: 'add'
+			});
+		}
+	});
+	console.log("saveDept 함수가 호출되었습니다.");
+	console.log("서버로 전송할 데이터:", modifiedDepartments); // 서버 전송 전에 데이터 확인
+	// modifiedDepartments 배열에 데이터가 있는지 확인
+	if (modifiedDepartments.length === 0) {
+		alert('변경 사항이 없습니다.');
+		return;
+	}
+
+	console.log("서버로 전송할 데이터:", modifiedDepartments); // 서버 전송 전에 데이터 확인
+	// 배열 전송
+	fetch('/dept/save', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify(modifiedDepartments)
+	})
+		.then(response => response.text())
+		.then(result => {
+			console.log("서버 응답:", result); // 응답 확인
+			if (result === 'success') {
+				alert('변경 사항이 저장되었습니다.');
+				location.reload();
+			} else {
+				alert('저장에 실패했습니다.');
+			}
+		})
+		.catch(error => console.error('Error saving departments:', error));
+}
+
+
+
+// 부서 이름 업데이트 함수
+function updateDeptName(input, deptNo) {
+	const newName = input.value.trim();
+	if (!newName) return;
+
+	fetch('/dept/update', {
+		method: 'POST',
+		headers: { 'Content-Type': 'application/json' },
+		body: JSON.stringify({ deptNo, deptName: newName })
+	})
+		.then(response => response.text())
+		.then(result => {
+			if (result === 'success') {
+				alert('부서 이름이 수정되었습니다.');
+				const nameSpan = document.createElement('span');
+				nameSpan.classList.add('name');
+				nameSpan.textContent = newName;
+				input.replaceWith(nameSpan);
+			} else {
+				alert('수정에 실패했습니다.');
+			}
+		})
+		.catch(error => console.error('Error updating department name:', error));
+}
+
+
+// 부서 삭제 함수
+function deleteDept(deptNo, li) {
+	fetch(`/dept/delete/${deptNo}`, { method: 'DELETE' })
+		.then(response => response.text())
+		.then(result => {
+			if (result === 'success') {
+				alert('부서가 삭제되었습니다.');
+				location.reload();
+			} else if (result === 'cannot_delete') {
+				alert('이 부서에는 사원이 등록되어 있어 삭제할 수 없습니다.');
+			} else {
+				alert('삭제에 실패했습니다.');
+			}
+		})
+		.catch(error => console.error('Error deleting department:', error));
+}
+
 
 // 모달 열기 함수
 function openModal(deptNo) {
@@ -212,162 +342,6 @@ document.getElementById("setManagerBtn").addEventListener("click", function() {
     })
     .catch(error => console.error("Error updating manager:", error));
 });
-
-
-
-
-
-
-// 수정된 부서 정보를 저장하는 배열
-let modifiedDepartments = [];
-
-// 하위 부서 등록 함수
-function addSubDept(parentDeptNo, li) {
-	const inputField = document.createElement('input');
-	inputField.type = 'text';
-	inputField.placeholder = '새 부서 이름 입력';
-	inputField.classList.add('new-dept-input'); // 새로 추가된 부서 식별을 위해 클래스 추가
-
-	li.appendChild(inputField);
-	inputField.focus();
-
-	// 현재 부서의 레벨을 가져와 하위 부서의 레벨을 자동 설정
-	const currentLevel = parseInt(li.querySelector('.wrap1').getAttribute('data-real-depth'), 10);
-	inputField.setAttribute('data-parent-dept-no', parentDeptNo);
-	inputField.setAttribute('data-new-level', currentLevel + 1);
-
-	// 엔터 키 입력 시도 저장을 위해 입력 필드를 focus out 상태로 설정
-	inputField.addEventListener('keydown', (event) => {
-		if (event.key === 'Enter') {
-			inputField.blur();
-		}
-	});
-}
-
-
-
-// 하위 부서 등록 저장 함수
-function saveDept() {
-	// 새 부서 입력 필드에서 데이터를 가져옴
-	document.querySelectorAll('.new-dept-input').forEach(inputField => {
-		const deptName = inputField.value.trim();
-		const parentDeptNo = inputField.getAttribute('data-parent-dept-no');
-		const level = inputField.getAttribute('data-new-level');
-
-		if (deptName) {
-			// 새 부서 정보를 modifiedDepartments 배열에 추가
-			modifiedDepartments.push({
-				deptName: deptName,
-				parentDeptNo: parseInt(parentDeptNo, 10),
-				level: parseInt(level, 10),
-				action: 'add'
-			});
-		}
-	});
-
-	console.log("saveDept 함수가 호출되었습니다.");
-	console.log("서버로 전송할 데이터:", modifiedDepartments); // 서버 전송 전에 데이터 확인
-
-	// modifiedDepartments 배열에 데이터가 있는지 확인
-	if (modifiedDepartments.length === 0) {
-		alert('변경 사항이 없습니다.');
-		return;
-	}
-
-	// 배열 전송
-	fetch('/dept/save', {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify(modifiedDepartments)
-	})
-		.then(response => response.text())
-		.then(result => {
-			console.log("서버 응답:", result); // 응답 확인
-			if (result === 'success') {
-				alert('변경 사항이 저장되었습니다.');
-				location.reload();
-			} else {
-				alert('저장에 실패했습니다.');
-			}
-		})
-		.catch(error => console.error('Error saving departments:', error));
-}
-
-// 전역 변수로 departments 선언
-let departments = [];
-
-// 데이터를 fetch하여 departments 배열에 저장
-fetch('/api/deptManager')
-    .then(response => {
-        if (!response.ok) throw new Error('Network response was not ok');
-        return response.json();
-    })
-    .then(data => {
-        departments = data.departments; // 전역 변수에 부서 데이터 저장
-        const rootDept = data.departments.find(dept => dept.parentDeptNo === 0);
-        const tree = buildDeptTree(data.departments, rootDept);
-        container.appendChild(tree);
-        addConnections(container, data.departments);
-    })
-    .catch(error => console.error('Error fetching department data:', error));
-
-// 부서 삭제 함수
-function deleteDept(deptNo, li) {
-    // 하위 부서가 있는지 확인
-    const hasChildDept = departments.some(dept => dept.parentDeptNo === deptNo);
-    
-    // 해당 부서에 소속된 사원이 있는지 확인
-    const dept = departments.find(d => d.deptNo === deptNo);
-    const hasEmployees = dept && dept.empCnt > 0;
-
-    if (hasChildDept) {
-        alert('이 부서에는 하위 부서가 등록되어 있어 삭제할 수 없습니다.');
-        return;
-    }
-
-    if (hasEmployees) {
-        alert('이 부서에는 사원이 등록되어 있어 삭제할 수 없습니다.');
-        return;
-    }
-
-    fetch(`/dept/delete/${deptNo}`, { method: 'DELETE' })
-        .then(response => response.text())
-        .then(result => {
-            if (result === 'success') {
-                alert('부서가 삭제되었습니다.');
-                location.reload();
-            } else {
-                alert('삭제에 실패했습니다.');
-            }
-        })
-        .catch(error => console.error('Error deleting department:', error));
-}
-
-
-// 부서 이름 업데이트 함수
-function updateDeptName(input, deptNo) {
-	const newName = input.value.trim();
-	if (!newName) return;
-
-	fetch('/dept/update', {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ deptNo, deptName: newName })
-	})
-		.then(response => response.text())
-		.then(result => {
-			if (result === 'success') {
-				alert('부서 이름이 수정되었습니다.');
-				const nameSpan = document.createElement('span');
-				nameSpan.classList.add('name');
-				nameSpan.textContent = newName;
-				input.replaceWith(nameSpan);
-			} else {
-				alert('수정에 실패했습니다.');
-			}
-		})
-		.catch(error => console.error('Error updating department name:', error));
-}
 
 
 
