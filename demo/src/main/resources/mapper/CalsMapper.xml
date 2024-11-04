@@ -164,8 +164,7 @@
 		SET
 		alarm_type = #{alarmType},
 		alarm_yoil = #{alarmYoil},
-		alarm_day =
-		#{alarmDay},
+		alarm_day = #{alarmDay},
 		alarm_time = #{alarmTime}
 		WHERE sch_no = #{schNo}
 	</update>
@@ -194,6 +193,13 @@
 		#{alarmTime}
 		)
 	</insert>
+	
+	<!-- 알림 요일 정보만 업데이트하는 새로운 쿼리 -->
+    <update id="updateAlarmYoil" parameterType="SchsVO">
+        UPDATE schalarms
+        SET alarm_yoil = #{alarmYoil}
+        WHERE sch_no = #{schNo}
+    </update>
 
 	<!-- 알림 정보 삭제 -->
 	<delete id="deleteAlarmInfo" parameterType="int">

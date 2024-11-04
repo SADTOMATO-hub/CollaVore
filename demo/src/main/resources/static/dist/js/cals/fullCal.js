@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
- 
+
 	//============ 캘린더 전체조회 ============     
 	fetch('/sch/schList', {
 		method: "POST",
@@ -244,6 +244,19 @@ document.addEventListener('DOMContentLoaded', function() {
 								});
 
 								//==================================== 수정 ====================================
+								// 요일 체크박스 처리 함수 (현재 선택된 값만 반환)
+								// 요일 체크박스 처리 함수 (현재 선택된 값만 반환)
+								function getSelectedWeeklyDays() {
+									// 현재 체크된 요일 값만 배열로 추가
+									const weeklyDaysArray = Array.from(document.querySelectorAll('.weekly-checkbox'))
+										.filter(checkbox => checkbox.checked)
+										.map(checkbox => checkbox.value);
+
+									// 체크된 요일이 없으면 빈 문자열 반환
+									return weeklyDaysArray.length > 0 ? Array.from(new Set(weeklyDaysArray)).join(',') : 'null';
+								}
+
+
 								document.getElementById('viewScheduleEditBtn').onclick = function() {
 									// 수정 가능하게 설정
 									document.getElementById('viewTitle').readOnly = false;
@@ -273,7 +286,6 @@ document.addEventListener('DOMContentLoaded', function() {
 										var dailySettings = document.getElementById('viewDailySettings');
 										var weeklySettings = document.getElementById('viewWeeklySettings');
 										var monthlySettings = document.getElementById('viewMonthlySettings');
-										var alarmTypeInput = document.getElementById('viewAlarmType');
 
 
 										if (alarmCheckbox.checked) {
@@ -391,7 +403,7 @@ document.addEventListener('DOMContentLoaded', function() {
 												}
 											} else if (alarmTypeInput.value === 'd2') { // 매주 알림 예외 처리
 												const weeklyRepeat = document.getElementById('viewWeeklyRepeat').value;
-												const selectedDays = Array.from(document.querySelectorAll('.weekly-checkbox:checked')).map(cb => cb.value);
+												const selectedDays = getSelectedWeeklyDays();
 
 												if (selectedDays.length === 0) {
 													alert("매주 알림의 요일을 선택해주세요.");
@@ -419,9 +431,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-
-										let alarmTime = null;
+										// 요일 및 알림 데이터 설정
+										const weeklyDays = getSelectedWeeklyDays(); // 현재 체크된 요일 값만 업데이트
 										const alarmType = alarmTypeInput.value;
+										let alarmTime = null;
 
 										// alarmType에 따른 alarmTime 설정
 										if (alarmType === 'd1') {
@@ -432,18 +445,7 @@ document.addEventListener('DOMContentLoaded', function() {
 											alarmTime = document.getElementById('viewMonthlyHour').value;
 										}
 
-										// 체크된 요일만 배열에 추가하고 중복 제거
-										function updateWeeklyDays() {
-											const weeklyDaysArray = [];
-											document.querySelectorAll('.weekly-checkbox').forEach((checkbox) => {
-												if (checkbox.checked) {
-													weeklyDaysArray.push(checkbox.value);
-												}
-											});
-											return [...new Set(weeklyDaysArray)].join(',') || null; // 중복 제거하고 콤마로 구분된 문자열 반환
-										}
-										// 저장 클릭 시 호출되는 함수
-										const weeklyDays = updateWeeklyDays(); // 체크된 요일 업데이트
+
 
 
 
@@ -1235,7 +1237,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	// 페이지 로드 시 부서와 사원 데이터를 한 번에 가져오기
 
-	fetch("/cal/								")
+	fetch("/cal/deptWithEmp")
 		.then(response => response.json())
 		.then(data => {
 
