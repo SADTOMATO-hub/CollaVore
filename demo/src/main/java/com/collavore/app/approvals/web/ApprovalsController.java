@@ -40,7 +40,7 @@ public class ApprovalsController {
 
 		List<HomeVO> employeesInfo = homeService.empList();
 		model.addAttribute("employees", employeesInfo);
-		
+
 		model.addAttribute("sidemenu", "approvals_sidebar");
 	}
 
@@ -91,7 +91,7 @@ public class ApprovalsController {
 			String url = "redirect:/approvals/readTempInfo?eatNo=";
 			return url + eatNo;
 		} else {
-			return "updateTemplateForm?eatNo="+eatNo;
+			return "updateTemplateForm?eatNo=" + eatNo;
 		}
 	}
 
@@ -111,16 +111,16 @@ public class ApprovalsController {
 	@GetMapping("/createApprForm")
 	public String createApprovals(Model model) {
 		List<ApprovalstempVO> tempInfo = approvalsService.apprTempList();
-		List<Map<String,Object>> employeesInfo = approvalsService.employeesInfo();
+		List<Map<String, Object>> employeesInfo = approvalsService.employeesInfo();
 		model.addAttribute("tempInfo", tempInfo);
 		model.addAttribute("employeesInfo", employeesInfo);
 		return "approvals/createApprovalForm";
 	}
-	
+
 	// 전자결재 생성 시, 데이터를 받는 곳
 	@PostMapping("/createAppr")
 	public String createAppr(ApprovalsVO apprVO) {
-		approvalsService.insertApprsEa(apprVO); 
+		approvalsService.insertApprsEa(apprVO);
 		if (apprVO.getEaNo() >= 0) {
 			int resultOfEar = approvalsService.insertApprsEar(apprVO); // 전자결재 //원래 없던 ea가 들어감
 			if (resultOfEar >= 0) {
@@ -130,106 +130,145 @@ public class ApprovalsController {
 		return null;
 	}
 
-	//진행 중인 전자결재 목록
+	// 진행 중인 전자결재 목록
 	@GetMapping("/myApprList/{approvalStatus}")
-	public String myApprList(ApprovalsVO apprVO
-													,@PathVariable String approvalStatus
-													,Model model
-												  ,HttpSession session) {
+	public String myApprList(ApprovalsVO apprVO, @PathVariable String approvalStatus, Model model,
+			HttpSession session) {
 		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
 		apprVO.setUserEmpNo(userEmpNo);
 		List<ApprovalsVO> apprList = approvalsService.myApprList(apprVO);
+		model.addAttribute("sessionUserEmpNo", userEmpNo);
 		model.addAttribute("myApprList", apprList);
 		model.addAttribute("approvalStatus", approvalStatus);
 		return "approvals/onProcess";
-	} 
-	
-	//문서함
+	}
+
+	// 문서함
 	@GetMapping("/approveList/{listStatus}")
-	public String approveList(ApprovalsVO apprVO
-													,Model model
-													,@PathVariable String listStatus
-												  ,HttpSession session) {
+	public String approveList(ApprovalsVO apprVO, Model model, @PathVariable String listStatus, HttpSession session) {
 		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
 		apprVO.setUserEmpNo(userEmpNo);
 		List<ApprovalsVO> apprList = approvalsService.approveList(apprVO);
 		model.addAttribute("approveList", apprList);
 		return "approvals/approvalList";
 	}
-	
-	//전자결재 상세페이지
+
+	// 전자결재 상세페이지
 	@GetMapping("/readApprInfo")
-	public String readapprinfo (Model model, ApprovalsVO apprVO, HttpSession session) {
-		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
-		apprVO.setUserEmpNo(userEmpNo);
-		ApprovalsVO approvals = approvalsService.approvalsInfo(apprVO);
-		List<Map<String,Object>> approvers = approvalsService.approversInfo(apprVO);
-	//	System.err.println(approvers);
-		System.err.println(apprVO);
-		model.addAttribute("approvals", approvals);
-		model.addAttribute("approvers", approvers);
-		return "approvals/readApproval";
+	public String readapprinfo(Model model, ApprovalsVO apprVO, HttpSession session) {
+	    int userEmpNo = (Integer) session.getAttribute("userEmpNo");
+	    apprVO.setUserEmpNo(userEmpNo);
+	    
+	    // 결재 및 결재자 정보 조회
+	    ApprovalsVO approvals = approvalsService.approvalsInfo(apprVO);
+	    List<Map<String, Object>> approvers = approvalsService.approversInfo(apprVO);
+
+	    // 버튼 활성화 여부 및 상태 표시 설정
+	    for (int i = 0; i < approvers.size(); i++) {
+	        Map<String, Object> approver = approvers.get(i);
+	        
+	        // 상태값 초기화
+	        String approverStatus = (String) approver.get("approverStatus");
+	        String displayStatus;
+	        
+	        // 현재 결재자의 기본 상태 설정
+	        if ("b2".equals(approverStatus)) {
+	            displayStatus = "승인";
+	        } else if ("b3".equals(approverStatus)) {
+	            displayStatus = "반려";
+	        } else {
+	            displayStatus = "결재 대기"; // 기본값 설정
+	        }
+
+	        // 버튼 활성화 여부 설정
+	        boolean buttonEnabled = false; // 기본적으로 비활성화
+	        
+	        if (i == 0) {
+	            // 첫 번째 결재자는 approverStatus가 b1일 때만 버튼 활성화
+	            buttonEnabled = "b1".equals(approverStatus) && userEmpNo == ((Number) approver.get("approverEmpNo")).intValue();
+	        } else {
+	            // 두 번째 결재자부터는 이전 결재자들이 모두 승인(b3) 또는 반려(b2) 상태일 때만 버튼 활성화
+	            boolean previousApprovedOrRejected = true;
+	            for (int j = 0; j < i; j++) {
+	                String previousStatus = (String) approvers.get(j).get("approverStatus");
+	                if (!"b2".equals(previousStatus) && !"b3".equals(previousStatus)) {
+	                    previousApprovedOrRejected = false;
+	                    break;
+	                }
+	            }
+	            buttonEnabled = previousApprovedOrRejected && "b1".equals(approverStatus) && userEmpNo == ((Number) approver.get("approverEmpNo")).intValue();
+	        }
+
+	        // 버튼이 활성화된 경우 "결재 대기" 상태 표시를 숨김
+	        if (buttonEnabled && "결재 대기".equals(displayStatus)) {
+	            displayStatus = ""; // 버튼이 활성화된 경우 상태를 빈 문자열로 설정
+	        }
+
+	        approver.put("buttonEnabled", buttonEnabled);
+	        approver.put("displayStatus", displayStatus);
+	    }
+
+	    // 모델에 결재 정보 추가
+	    model.addAttribute("approvals", approvals);
+	    model.addAttribute("approvers", approvers);
+	    
+	    return "approvals/readApproval";
 	}
-	
-	//결재하기
+
+
+	// 결재하기
 	@PostMapping("/updateAppr")
 	@ResponseBody
-	public String updateApprove (@RequestBody ApprovalsVO apprVO) {
+	public String updateApprove(@RequestBody ApprovalsVO apprVO) {
 		int updateApprStatus = approvalsService.updateApprStatus(apprVO);
-		int updateApprovalStatus = approvalsService.updateApproval(apprVO);
-		if(updateApprStatus > 0) {
-			return null;
+		if (updateApprStatus > 0) {
+			return "성공";
 		}
-		return null;
+		return "실패";
 	}
-	
-	//전결 업데이트 폼
+
+	// 전결 업데이트 폼
 	@GetMapping("/updateApprInfoForm")
-	public String updateApprovalInfoForm (ApprovalsVO apprVO, Model model) {
-		List<Map<String,Object>> employeesInfo = approvalsService.employeesInfo();
+	public String updateApprovalInfoForm(ApprovalsVO apprVO, Model model) {
+		List<Map<String, Object>> employeesInfo = approvalsService.employeesInfo();
 		ApprovalsVO apprInfo = approvalsService.approvalsInfo(apprVO);
-		List<Map<String,Object>> approvers = approvalsService.approversInfo(apprVO);
+		List<Map<String, Object>> approvers = approvalsService.approversInfo(apprVO);
 		List<ApprovalstempVO> tempInfo = approvalsService.apprTempList();
 		model.addAttribute("approvals", apprInfo);
 		model.addAttribute("approvers", approvers);
-		model.addAttribute("apprSize",approvers.size());
+		model.addAttribute("apprSize", approvers.size());
 		model.addAttribute("tempInfo", tempInfo);
 		model.addAttribute("employeesInfo", employeesInfo);
 		return "approvals/updateApproval";
 	}
-	
-	//전결 업데이트 데이터 받는 고
-	@PostMapping("/updateApprInfo")
-	public String updateApprovalInfo (ApprovalsVO apprVO) {
-		//전자결재 업데이트
-		approvalsService.updateApproval(apprVO);
 
+	// 전결 업데이트 데이터 받는 고
+	@PostMapping("/updateApprInfo")
+	public String updateApprovalInfo(ApprovalsVO apprVO) {
+		// 전자결재 업데이트
+		approvalsService.updateApproval(apprVO);
+		System.err.println(apprVO.getApprovers());
 		// eaNo 기준으로 전자결재자 전체 삭제
-		
+		approvalsService.deleteApprover(apprVO.getEaNo());
 		// 새로 받은 전자결재자 등록
-		List<ApprovalsVO> apprList = apprVO.getApprovers();
-		for (ApprovalsVO approvalVO : apprList) {
-			approvalVO.setEmpNo(approvalVO.getEmpNo());
-			approvalVO.setSort(approvalVO.getSort());
-			approvalsService.updateApprover(approvalVO);
-		}
+		approvalsService.insertApprsEar(apprVO);
 		return "redirect:/approvals/myApprList/a1";
 	}
-	
-	//전자결재 템플릿 내용만 호출하는 기능
+
+	// 전자결재 템플릿 내용만 호출하는 기능
 	@GetMapping("/temp")
 	@ResponseBody
 	public ApprovalstempVO info(ApprovalstempVO apprVO) {
 		ApprovalstempVO tempInfo = approvalsService.apprInfo(apprVO);
 		return tempInfo;
 	}
-	
-	//전자결재 삭제
+
+	// 전자결재 삭제
 	@GetMapping("/deleteAppr")
-	public String deleteAppr (ApprovalsVO apprVO) {
-		 approvalsService.deleteApprovals(apprVO);
-		if(apprVO.getResultCode() >= 0) {
-			return "redirect:/approvals/tempList";
+	public String deleteAppr(ApprovalsVO apprVO) {
+		approvalsService.deleteApprovals(apprVO);
+		if (apprVO.getResultCode() >= 0) {
+			return "redirect:/approvals/myApprList/a1";
 		}
 		return null;
 	}

@@ -207,4 +207,21 @@
     FROM projdwrktemps
     WHERE pwt_no = #{pwtNo}
 </select>
+
+
+	<!-- 프로젝트 업무 템플릿 삭제(단체) -->
+	<delete id="projectwrkdelete" parameterType="int">
+		DELETE FROM projwrktemps
+		WHERE
+		proj_temp_no = #{projTempNo}
+	</delete>
+	
+	<!-- 프로젝트 상세업무 템플릿 삭제 (단체)-->
+	<delete id="projectDwrkdelete" parameterType="int">
+		DELETE FROM projdwrktemps
+		WHERE
+		pwt_no = #{pwtNo}
+	</delete>
+	
+	
 </mapper>

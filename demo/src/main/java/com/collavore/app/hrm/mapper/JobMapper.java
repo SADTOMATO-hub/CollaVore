@@ -12,6 +12,9 @@ public interface JobMapper {
 	public int deleteJobsInfo(Integer posiNo);
 
 	public List<HrmVO> selectJobsList();
+	
+    int countEmployeesWithJob(Integer jobNo);
+
 }
 
 

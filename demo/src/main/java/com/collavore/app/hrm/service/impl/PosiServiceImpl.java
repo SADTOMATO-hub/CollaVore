@@ -41,5 +41,10 @@ public class PosiServiceImpl implements PosiService {
 	public List<HrmVO> getExistingPositions() {
 		return posiMapper.selectPosiList();
 	}
+	
+	@Override
+    public boolean isPositionAssignedToEmployee(Integer posiNo) {
+        return posiMapper.countEmployeesWithPosition(posiNo) > 0;
+    }
 
 }

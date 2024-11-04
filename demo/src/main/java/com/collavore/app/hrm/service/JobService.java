@@ -9,4 +9,6 @@ public interface JobService {
 	public int updateJobs(HrmVO hrmVO) throws Exception;
 	public int deleteJobs(Integer posiNo) throws Exception;
 	public List<HrmVO> getExistinJobs();
+    public boolean isJobAssignedToEmployee(Integer jobNo);
+
 }

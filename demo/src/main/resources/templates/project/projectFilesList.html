@@ -408,7 +408,8 @@ button:active {
 	                        '<td>' + year + '년 ' + month + '월 ' + day + '일' + '</td>' +
 	                        '<td>' + info.extension + '</td>' +
 	                        '<td>' +
-	                        '<button type="button" class="btn btn-info" data-proj-no="' + info.projFileNo + '">다운로드</button>' +
+	                        '<button type="button" class="btn btn-info" data-proj-no="' + info.projFileNo + '"  style=" margin-right: 10px;">다운로드  </button>' +
+	                        '<button type="button" class="btn btn-danger text-white" data-proj-no="' + info.projFileNo + '">  삭제</button>' +
 	                        '</td>' +
 	                        '</tr>'
 	                    );
@@ -471,7 +472,25 @@ button:active {
         var projFileNo = $(this).data('proj-no');
         window.location.href = '/project/downloadfile/' + projFileNo; // 다운로드 요청
     });
+    // 다운로드 버튼 클릭 시 파일 삭제
+    $(document).on('click', '.btn-danger[data-proj-no]', function() {
+    	var projFileNo = $(this).data('proj-no');
 
+        if (confirm('정말로 이 파일을 삭제하시겠습니까?')) {
+        	
+            $.ajax({
+                url: `/project/fileDelete/${projFileNo}`, 
+                type: 'DELETE',
+                success: function(response) {
+                    alert('파일이 성공적으로 삭제되었습니다!');
+                    $(`button[data-proj-no="${projFileNo}"]`).closest('tr').remove();
+                },
+                error: function(xhr, status, error) {
+                    alert('파일 삭제에 실패했습니다: ' + error);
+                }
+            });
+        }
+    });
 	// 파일 리스트 갱신 함수
 	function updateFileList(pfNo) {
 	    $.ajax({

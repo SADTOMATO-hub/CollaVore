@@ -38,10 +38,17 @@ public interface PjTempService {
 	public ProjectDWorkTempVO projectDwrktempInfo(int pdwtNo);
 	// 프로젝트 상세 업무 템플릿 수정
 	public int projectdwrktempUpdate(ProjectDWorkTempVO projectDworktempVO);
-	
-	List<ProjectWorkTempVO> projectwrktemplistInfo(Integer projTempNo);
+	// 프로젝트 업무 단건조회
+	List<ProjectTempVO> projectwrktemplistInfo(Integer projTempNo);
 	
 	List<ProjectDWorkTempVO> projectDwrktemplistInfo(Integer pwtNo);
+	
+	// 프로젝트 업무 템플릿 삭제 
+	public int projectwrktempdel(Integer projTempNo);
+	
+	//  프로젝트 상세업무 템플릿 삭제
+	public int  projectDwrktempdel(Integer pwtNo);
+	
 	
 	
 	

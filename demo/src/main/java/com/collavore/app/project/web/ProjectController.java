@@ -98,8 +98,8 @@ public class ProjectController {
 		pjService.projectfolderinsert(projectVO);
 		if("i2".equals(projectVO.getIsTemplate())) {
 		//템플릿 업무 리스트 출력
-		List<ProjectWorkTempVO> projwrklist = pjtempService.projectwrktemplistInfo(projectVO.getProjTempNo());
-		for (ProjectWorkTempVO user : projwrklist) {
+		List<ProjectTempVO> projwrklist = pjtempService.projectwrktemplistInfo(projectVO.getProjTempNo());
+		for (ProjectTempVO user : projwrklist) {
 			projectVO.setName(user.getName());
 			projectVO.setContent(user.getContent());
 			projectVO.setProjTempNo(user.getProjTempNo());
@@ -192,7 +192,11 @@ public class ProjectController {
 		@DeleteMapping("project/projectwrkdel/{pwNo}")
 		@ResponseBody
 		public String deletewrkProject(@PathVariable int pwNo) {
-			pjService.projectwrkDelete(pwNo);
+			// 업무의 하위 상세업무 삭제
+			pjService.projectdwrkDelete(pwNo);
+			
+			// 업무 삭제 
+			pjService.projectwrkoneDelete(pwNo);
 			return "삭제 완료";
 		}
 
@@ -219,6 +223,14 @@ public class ProjectController {
 	public List<ProjectFilesVO> projectFilesList(@PathVariable int pfNo) {
 		return pjService.projectfileList(pfNo);
 	}
+	
+	// 프로젝트 파일 삭제
+		@DeleteMapping("project/fileDelete/{projFileNo}")
+		@ResponseBody
+		public String  file(@PathVariable int projFileNo) {
+			pjService.fileDelete(projFileNo);
+			return "삭제 완료";
+		}
 
 	// 파일 업로드 처리 메소드
 	@PostMapping("/project/uploadfile")

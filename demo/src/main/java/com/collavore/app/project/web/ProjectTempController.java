@@ -78,7 +78,19 @@ public class ProjectTempController {
     @DeleteMapping("/projecttempdelete/{projTempNo}")
     @ResponseBody
     public String deleteProject(@PathVariable int projTempNo) {
+    	//  프로젝트 템플릿 삭제
         pjtempService.projecttempDelete(projTempNo);
+        
+        // 프로젝트 업무 템플릿 리스트 조회
+        List<ProjectTempVO> projwrktemp = pjtempService.projectwrktemplistInfo(projTempNo);
+        pjtempService.projectwrktempdel(projTempNo);
+        // 프로젝트 업무 템플릿 삭제
+        for(ProjectTempVO temp : projwrktemp ) {
+        	pjtempService.projectDwrktempdel(temp.getPwtNo());
+        }
+        //프로젝트 상세업무 템플릿 리스트 조회
+        
+        
         return "삭제 완료";
     }
     

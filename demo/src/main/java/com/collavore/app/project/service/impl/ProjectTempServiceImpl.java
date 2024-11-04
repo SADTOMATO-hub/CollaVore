@@ -88,7 +88,7 @@ public class ProjectTempServiceImpl implements PjTempService{
 		return ProjecttempMapper.projectDwrktempUpdate(projectDworktempVO);
 	}
 	@Override
-	public List<ProjectWorkTempVO> projectwrktemplistInfo(Integer projTempNo) {
+	public List<ProjectTempVO> projectwrktemplistInfo(Integer projTempNo) {
 		return ProjecttempMapper.projectwrktemplistInfo(projTempNo);
 	}
 	
@@ -96,6 +96,15 @@ public class ProjectTempServiceImpl implements PjTempService{
 	public List<ProjectDWorkTempVO> projectDwrktemplistInfo(Integer pwtNo) {
 		return ProjecttempMapper.projectDwrktemplistInfo(pwtNo);
 	}
+	@Override
+	public int projectwrktempdel(Integer projTempNo) {
+		return ProjecttempMapper.projectwrkdelete(projTempNo);
+	}
+	@Override
+	public int projectDwrktempdel(Integer pwtNo) {
+		return ProjecttempMapper.projectDwrkdelete(pwtNo);
+	}
+
 
 
 

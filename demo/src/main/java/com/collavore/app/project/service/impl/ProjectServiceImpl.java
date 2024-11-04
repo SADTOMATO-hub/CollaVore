@@ -227,4 +227,14 @@ public class ProjectServiceImpl implements PjService{
 	public int projfiledel(Integer pfNo) {
 		return projectMapper.ProjectfileDelete(pfNo); 
 	}
+
+	@Override
+	public int projectwrkoneDelete(int pwNo) {
+		return projectMapper.projectwrkoneDelete(pwNo); 
+	}
+
+	@Override
+	public int fileDelete(int projFileNo) {
+		return projectMapper.fileDelete(projFileNo);
+	}
 }

@@ -792,7 +792,9 @@ button:active {
                         tree.create_node(parentId, newNode, 'last', function(new_node) {
                             console.log('새 노드가 추가되었습니다:', new_node);
                         });
-                        location.reload(true); // 페이지 새로고침
+                        //location.reload(true); // 페이지 새로고침
+                        //refreshSection('mySectionId');
+                        tree.refresh(true);
                         // 폼 초기화
                         $('#insertFormProjwrks')[0].reset();
                     },
@@ -918,9 +920,7 @@ button:active {
                         
                         $('#editProjName').val(response.name);
                         $('#editProjContent').val(response.content);
-                        setTimeout(() => {
                             $('#editProjManager').val(response.pmgrNo); // 선택된 값을 설정
-                        }, 50);
                         $('#editProjGit').val(response.projectGitUrl);
                         $('#editProjStatus').val(response.status);
                         $('#projNo').val(response.projNo);
@@ -956,9 +956,7 @@ button:active {
                         $('#nameProjWrksUpdate').val(response.name);
                         $('#contentProjWrksUpdate').val(response.content);
                         $('#jobNoWrks').val(response.jobNo);
-                        setTimeout(() => {
                             $('#mgrNoProjWrksUpdate2').val(response.mgrNo); // 선택된 값을 설정
-                        }, 50);
                     },
                     error: function(xhr, status, error) {
                         alert('프로젝트 정보를 가져오는 데 실패했습니다: ' + error);
@@ -993,9 +991,7 @@ button:active {
                         $('#updatecompDate').val(formatDate(response.compDate));
                         $('#updatecommitId').val(response.commitId);
                         $('#hiddenjobNoWrks').val(response.jobNo);
-                        setTimeout(() => {
                             $('#updatemgrNoProjDwrks').val(response.mgrNo); // 선택된 값을 설정
-                        }, 50);
                         $('#updateisStatus').val(response.isStatus);
                         $('#selPwNo').val(pwNo); 
                         $('#selParentPdwNo').val(projNo); 
@@ -1018,7 +1014,7 @@ button:active {
         }
     	// 프로젝트 수정 처리
         $('#editProjectForm').on('submit', function(e) {
-        	console.log($('#editProjManager').val());
+        	//console.log($('#editProjManager').val());
         	e.preventDefault();
             $.ajax({
                 url: `/project/projectupdate`,
@@ -1130,9 +1126,10 @@ button:active {
                 	    url: `/project/projectlistinfo/${pwNo}`, 
                 	    type: 'GET',
                 	    success: function(response) {
-                	    	// 옵션값 함수 호출
-                        	handleJobNoChange(response.jobNo);
-                	    	console.log(response);
+                	        // 옵션값 함수 호출
+                	        handleJobNoChange(response.jobNo); // 여기서 비동기 작업이 시작됨
+                	        console.log(response);
+                	        
                 	        $('#projinfodel').show();
                 	        $('#editProjectModal').hide();
                 	        $('#wrkInfo').hide();
@@ -1156,9 +1153,9 @@ button:active {
                 	        }; 
                 	        $('#projectstartdate').val(formatDate(response.startDate));
                 	        $('#projectenddate').val(formatDate(response.endDate));
-                	        setTimeout(() => {
-                	        	$('#projectmgrno').val(response.pmgrNo);
-                            }, 50);
+                	        
+                
+                	        $('#projectmgrno').val(response.pmgrNo);
                 	    }
                 	});
             }else if(level <= 2){
@@ -1180,7 +1177,7 @@ button:active {
                     success: function(response) {
                         // 응답 확인
                         console.log('Response:', response);
-                        handleJobNoChange(response.jobNo);
+                        handleJobNoChange(response.jobNo, response.mgrNo);
                         
                         // DOM 요소에 값 설정
                         $('#wrkInfodel h4').text(projectName);
@@ -1188,9 +1185,7 @@ button:active {
                         $('#wrkcontent').val(response.content);
                         $('#jobwrks').val(response.jobNo);
                         $('#wrkNumber').val(response.pwNo);
-                        setTimeout(() => {
                             $('#wrkmgrinfo').val(response.mgrNo); // 선택된 값을 설정
-                        }, 50);
                     },
                     error: function(xhr, status, error) {
                         alert('프로젝트 정보를 가져오는 데 실패했습니다: ' + error);
@@ -1424,7 +1419,7 @@ button:active {
         });
         
      // 수정 시 담당자 조회
-        function handleJobNoChange(jobNo) {
+        function handleJobNoChange(jobNo, mgrNo) {
             
             if (jobNo !== '0') {
                 $('#mgrNoProjWrks').show();
@@ -1433,6 +1428,8 @@ button:active {
                 $.ajax({
                     url: '/project/projectmgrlist/' + jobNo,
                     type: 'GET',
+                    // 호출 받아도 먼저 실행 후 다른처리가 가능한 코드 
+                    async: false,
                     data: { jobNo: jobNo },
                     success: function(response) {
                         // 기존 옵션 삭제
@@ -1453,6 +1450,7 @@ button:active {
                             $('#wrkmgrinfo').append('<option value="' + info.empNo + '">' + info.name + '</option>');
                             $('#projectmgrno').append('<option value="' + info.empNo + '">' + info.name + '</option>');
                         });
+
                     },
                     error: function() {
                     }

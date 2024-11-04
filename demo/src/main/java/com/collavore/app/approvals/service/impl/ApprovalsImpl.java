@@ -123,11 +123,6 @@ public class ApprovalsImpl implements ApprovalsService {
 		return approvalsMapper.updateApprover(approvalsVo);
 	}
 	
-	@Override
-	public int updateApprovalStatus(ApprovalsVO approvalsVo) {
-		return approvalsMapper.updateApprovalStatus(approvalsVo);
-	}
-	
 	// 전자결재 삭제
 	@Override
 	public void deleteApprovals(ApprovalsVO approvalsVo) {
@@ -137,6 +132,12 @@ public class ApprovalsImpl implements ApprovalsService {
 	@Override
 	public List<Map<String,Object>> employeesInfo() {
 		return approvalsMapper.employees();
+	}
+
+	// 결재자 삭제
+	@Override
+	public int deleteApprover(int eaNo) {
+		return approvalsMapper.deleteApprover(eaNo);
 	}
 }
 //5번째

@@ -18,16 +18,15 @@ public class JobServiceImpl implements JobService {
 		this.jobMapper = jobMapper;
 	}
 
-	
 	// 직위
 	@Override
 	public int jobsInsert(HrmVO hrmVO) {
-	    return jobMapper.insertJobsInfo(hrmVO);
+		return jobMapper.insertJobsInfo(hrmVO);
 	}
 
 	@Override
 	public int updateJobs(HrmVO hrmVO) {
-	    return jobMapper.updateJobsInfo(hrmVO);
+		return jobMapper.updateJobsInfo(hrmVO);
 	}
 
 	@Override
@@ -40,4 +39,8 @@ public class JobServiceImpl implements JobService {
 		return jobMapper.selectJobsList();
 	}
 
+	@Override
+	public boolean isJobAssignedToEmployee(Integer jobNo) {
+		return jobMapper.countEmployeesWithJob(jobNo) > 0;
+	}
 }
