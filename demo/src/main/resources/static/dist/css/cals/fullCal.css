@@ -35,19 +35,14 @@
     color : blue;
 }
 
-
-
-
-
-
-
-
-
-
-
 /* 모달 */
 /* 모달창의 배경 흐림 효과 */
-.modal {
+#addScheduleModal, 
+#viewScheduleModal,
+#sharedCalendarModal,
+#trashCalendarModal,
+#editCalendarModal
+ {
     display: none; 
     position: fixed; 
     z-index: 1000; 
@@ -60,7 +55,12 @@
 }
 
 /* 모달창 콘텐츠 스타일 */
-.modal-content {
+#addScheduleModal .modal-content, 
+#viewScheduleModal .modal-content,
+#sharedCalendarModal .modal-content,
+#trashCalendarModal .modal-content,
+#editCalendarModal .modal-content
+{
     background-color: #fff;
     margin: 5% auto;
     padding: 20px;
@@ -72,15 +72,29 @@
 }
 
 /* 모달창 닫기 버튼 */
-.close {
+#addScheduleModal .close, 
+#viewScheduleModal .close,
+#sharedCalendarModal .close ,
+#trashCalendarModal .close,
+#editCalendarModal .close
+ {
     color: #aaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
 }
 
-.close:hover,
-.close:focus {
+#addScheduleModal .close:hover, 
+#viewScheduleModal .close:hover,
+#sharedCalendarModal .close:hover,
+#trashCalendarModal .close:hover,
+#editCalendarModal .close:hover,
+#addScheduleModal .close:focus, 
+#viewScheduleModal .close:focus,
+#sharedCalendarModal .close:focus,
+#trashCalendarModal .close:focus,
+#editCalendarModal .close:focus
+{
     color: #000;
     text-decoration: none;
     cursor: pointer;
@@ -158,26 +172,6 @@ button {
     border-radius: 5px;
     border: none;
     cursor: pointer;
-}
-
-/* 저장, 수정, 삭제 버튼 스타일 */
-button[type="submit"], #editBtn, #deleteBtn {
-    background-color: #007bff;
-    color: white;
-}
-
-button[type="submit"]:hover, #editBtn:hover, #deleteBtn:hover {
-    background-color: #0056b3;
-}
-
-/* 취소 버튼 스타일 */
-button.close {
-    background-color: #dc3545;
-    color: white;
-}
-
-button.close:hover {
-    background-color: #c82333;
 }
 
 

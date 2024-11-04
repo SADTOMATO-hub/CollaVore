@@ -10,7 +10,7 @@
 
 		<!-- 공유 캘린더 섹션 -->
 		<li class="sidebar-item" id="sharedCalendar"><a
-			class="sidebar-link waves-effect waves-dark"
+			class="sidebar-link has-arrow waves-effect waves-dark"
 			href="javascript:void(0)" aria-expanded="false"> <i
 				class="mdi mdi-calendar-multiple-check"></i> <span class="hide-menu">공유캘린더</span>
 		</a> <a class="sidebar-link waves-effect waves-dark"
@@ -20,11 +20,12 @@
 			<ul id="sharedCalendarList" aria-expanded="false"
 				class="collapse first-level">
 				<!-- 동적으로 생성될 공유 캘린더 리스트 -->
-			</ul></li>
+			</ul>
+		</li>
 
 		<!-- 프로젝트 캘린더 섹션 -->
 		<li class="sidebar-item" id="projectCalendar"><a
-			class="sidebar-link waves-effect waves-dark"
+			class="sidebar-link has-arrow waves-effect waves-dark"
 			href="javascript:void(0)" aria-expanded="false"> <i
 				class="mdi mdi-calendar-range"></i> <span class="hide-menu">프로젝트캘린더</span>
 		</a>
@@ -35,7 +36,7 @@
 
 		<!-- 휴지통 -->
 		<li class="sidebar-item" id="wasteCalendar"><a
-			class="sidebar-link waves-effect waves-dark"
+			class="sidebar-link has-arrow waves-effect waves-dark"
 			href="javascript:void(0)" aria-expanded="false"> <i
 				class="mdi mdi-delete"></i> <span class="hide-menu">휴지통</span>
 		</a>
@@ -212,7 +213,7 @@
 				<div class="modal-buttons">
 					<button type="submit" class="btn btn-primary">저장</button>
 					<button type="button" id="deleteBtn" class="btn btn-danger">삭제</button>
-					<button type="button" class="close btn btn-secondary">취소</button>
+					<button type="button" id="closeBtn" class="btn btn-secondary">취소</button>
 				</div>
 			</form>
 		</div>
