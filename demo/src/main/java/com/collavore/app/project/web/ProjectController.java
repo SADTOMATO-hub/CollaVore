@@ -1,4 +1,4 @@
-package com.collavore.app.project.web;
+ package com.collavore.app.project.web;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -76,11 +76,13 @@ public class ProjectController {
 		List<ProjectVO> list = pjService.projectList();
 		List<ProjectTempVO> templist = pjtempService.projecttempList();
 		List<ProjectVO> emplist = pjService.empList();
-
+		ProjectVO gitInfo = pjService.compGitInfo();
+		
 		model.addAttribute("empNo", empNo);
 		model.addAttribute("projects", list);
 		model.addAttribute("templist", templist);
 		model.addAttribute("emp", emplist);
+		model.addAttribute("gitInfo", gitInfo);
 		return "project/projectList";
 	}
 
@@ -171,8 +173,9 @@ public class ProjectController {
 	@DeleteMapping("project/projectdelete/{projNo}")
 	@ResponseBody
 	public String deleteProject(@PathVariable int projNo) {
+	
+		pjService.projectComtDel(projNo);
 		
-		pjService.projectDelete(projNo);
 		List<ProjectVO> projectVOList = pjService.projectwrkList(projNo);
 		pjService.projectwrkDelete(projNo);
 		for(ProjectVO info :  projectVOList) {
@@ -184,7 +187,9 @@ public class ProjectController {
 		for(ProjectVO fileinfo: projectfileList) {
 			pjService.projfiledel(fileinfo.getPfNo());
 		}
-		pjService.projectfolderDelete(projNo);	
+		pjService.projectfolderDelete(projNo);
+		
+		pjService.projectDelete(projNo);
 		return "삭제 완료";
 	}
 	
@@ -496,8 +501,11 @@ public class ProjectController {
 	public String cloneRepository(@RequestBody ProjectVO projectVO) throws InterruptedException {
 		String cloneGitUrl = projectVO.getProjectGitUrl();
 		String localPath = projectVO.getCloneLocalPath();
+		
+		//ProjectVO gitInfo = pjService.compGitInfo();
 
 		try {
+			//Process process = Runtime.getRuntime().exec(new String[] { "git", "clone", cloneGitUrl, localPath });
 			Process process = Runtime.getRuntime().exec(new String[] { "git", "clone", cloneGitUrl, localPath });
 			process.waitFor();
 

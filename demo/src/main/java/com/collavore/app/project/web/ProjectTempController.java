@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -77,21 +78,22 @@ public class ProjectTempController {
     // 템플릿 삭제
     @DeleteMapping("/projecttempdelete/{projTempNo}")
     @ResponseBody
+    @Transactional
     public String deleteProject(@PathVariable int projTempNo) {
-    	//  프로젝트 템플릿 삭제
-        pjtempService.projecttempDelete(projTempNo);
+    	// 프로젝트 상세업무 삭제
+    	int ddelete = pjtempService.projectDwrktempdel(projTempNo);
+    	if (ddelete >0){
+    		// 프로젝트 업무 삭제 
+	        int wdelete = pjtempService.projectwrktempdel(projTempNo); 
+	        if(wdelete > 0) {
+	        	//  프로젝트 템플릿 삭제
+	        	pjtempService.projecttempDelete(projTempNo);
+	        	return "삭제 완료";
+        	}
+	        return "삭제 실패";
+    	}
+    	return "삭제 실패";
         
-        // 프로젝트 업무 템플릿 리스트 조회
-        List<ProjectTempVO> projwrktemp = pjtempService.projectwrktemplistInfo(projTempNo);
-        pjtempService.projectwrktempdel(projTempNo);
-        // 프로젝트 업무 템플릿 삭제
-        for(ProjectTempVO temp : projwrktemp ) {
-        	pjtempService.projectDwrktempdel(temp.getPwtNo());
-        }
-        //프로젝트 상세업무 템플릿 리스트 조회
-        
-        
-        return "삭제 완료";
     }
     
 	// 프로젝트 단건 조회 

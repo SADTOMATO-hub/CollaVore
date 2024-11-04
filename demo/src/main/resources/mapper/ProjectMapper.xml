@@ -565,5 +565,27 @@
 	        projfiles
 		WHERE 
 		 	proj_file_no = #{projFileNo}
-	</delete> 	
+	</delete> 
+	
+	
+	
+		<!-- 깃인포-->
+		<select id="selectGitInfo" resultType="ProjectVO">
+		SELECT 
+				comp_git_url  
+				, comp_git_token        	  
+		FROM 
+			projconfig
+	</select>	
+	
+		
+	<!-- 프로젝트 코멘트 삭제-->
+	<delete id="projectcomtdel" parameterType="int">
+		DELETE FROM projdrkcomts
+            WHERE pdw_no IN  
+            	(SELECT pdw_no FROM projdwrks WHERE pw_no IN 
+           		 (SELECT pw_no FROM projwrks WHERE proj_no = #{projNo}
+            	)
+            )
+	</delete> 
 </mapper>

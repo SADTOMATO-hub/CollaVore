@@ -237,4 +237,14 @@ public class ProjectServiceImpl implements PjService{
 	public int fileDelete(int projFileNo) {
 		return projectMapper.fileDelete(projFileNo);
 	}
+
+	@Override
+	public ProjectVO compGitInfo() {
+		return projectMapper.selectGitInfo();
+	}
+
+	@Override
+	public int projectComtDel(int projNo) {
+		return projectMapper.projectcomtdel(projNo);
+	}
 }

@@ -316,7 +316,7 @@ button:active {
 										class="btn btn-danger text-white delete-btn"
 										th:attr="data-proj-no=${info.projNo}">삭제</button>
 									<button type="button" class="btn btn-success text-white"
-										th:onclick="selectDirectory('[[${info.projectGitUrl}]]')">내려받기</button>
+										 data-bs-toggle="modal" data-bs-target="#git" th:data-project-git-url="${info.projectGitUrl}">내려받기</button>
 								</td>
 							</tr>
 						</th:block>
@@ -348,6 +348,7 @@ button:active {
 							<label for="projName" class="form-label">프로젝트 이름</label>     
 							    <input
 							        type="text"
+							        
 							        class="form-control"
 							        name="name"
 							        id="projName"
@@ -448,11 +449,6 @@ button:active {
 							</select>
 						</div>
 						<div class="mb-3">
-							<label for="editProjGit" class="form-label">프로젝트 Git 주소</label> <input
-								type="text" class="form-control" name="projectGitUrl"
-								id="editProjGit" required>
-						</div>
-						<div class="mb-3">
 							<label for="editProjStatus" class="form-label">진행상태</label> <select
 								class="form-select" name="status" id="editProjStatus" required>
 								<option value="">선택하세요</option>
@@ -477,15 +473,47 @@ button:active {
 			</div>
 		</div>
 	</div>
+	<!--  -->
+	<div class="modal fade" id="git" tabindex="-1"
+		aria-labelledby="gitModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="giturls">프로젝트 내려받기</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+						<div class="mb-3">
+							<label for="giturl" class="form-label">내려받을 경로</label>
+							<textarea class="form-control" name="localUrl"
+								id="localUrls" rows="5"  required></textarea>
+						</div>
+						                <input type="hidden" id="gitUrlInput" name="projectGitUrl" value="">
+						<button type="button" class="btn btn-success text-white" th:onclick="selectDirectory()">내려받기</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>
 <script>
 const empNo = '[[${empNo}]]';
+const compGitUrl = '[[${gitInfo.compGitUrl}]]';
+const compGitToken = '[[${gitInfo.compGitToken}]]';
+
 
 //프로젝트생성 모달폼 
 $(document).ready(function() {
+    // 모달이 열릴 때 Git URL을 설정하는 이벤트
+    document.getElementById('git').addEventListener('show.bs.modal', function (event) {
+        // 이벤트 발생 요소 (버튼)에서 Git URL 가져오기
+        const button = event.relatedTarget;
+        const projectGitUrl = button.getAttribute('data-project-git-url');
+        // Hidden input과 표시 텍스트에 Git URL 설정
+        document.getElementById('gitUrlInput').value = projectGitUrl;
+    });
     $('#projectForm').on('submit', function(event) {
         event.preventDefault(); 
-
         $.ajax({
             url: '/project/projectinsert', 
             type: 'POST',
@@ -533,8 +561,8 @@ $(document).ready(function() {
                         <td>
                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
                         <button type="button" class="btn btn-danger text-white delete-btn" data-proj-no="${newProject.projNo}">삭제</button>
-                        <button type="button" class="btn btn-success text-white" th:onclick="selectDirectory('${newProject.projectGitUrl}')">내려받기</button>
-                        </td>                            
+                        <button type="button" class="btn btn-success text-white" th:onclick="selectDirectory()">내려받기</button>
+                        </td>
                     </tr>
                 `);
                 // gitRepo 생성
@@ -587,7 +615,6 @@ $(document).on('click', '.btn-warning', function() {
             $('#editProjName').val(response.name);
             $('#editProjContent').val(response.content);
             $('#editProjManager').val(response.pmgrNo);
-            $('#editProjGit').val(response.projectGitUrl);
             $('#editProjStatus').val(response.status);
             const formatDate = (dateString) => {
                 const date = new Date(dateString);
@@ -617,7 +644,6 @@ $('#editProjectForm').on('submit', function(e) {
             name: $('#editProjName').val(),
             content: $('#editProjContent').val(),
             pmgrNo: $('#editProjManager').val(),
-            projectGitUrl: $('#editProjGit').val(),
             status: $('#editProjStatus').val(),
             startDate: $('#editProjStartDate').val(),
             endDate: $('#editProjEndDate').val()
@@ -679,7 +705,6 @@ $(document).ready(function() {
 
 // gitRepo 생성
 function gitAddRepos(projNo, projName, projContent, empNo){
-	const TOKEN = ''; // 발급한 GitHub Personal Access Token
 
 	// 요청 데이터 설정
 	const data = {
@@ -693,7 +718,7 @@ function gitAddRepos(projNo, projName, projContent, empNo){
 	  method: 'POST',
 	  headers: {
 	    'Content-Type': 'application/json',
-	    Authorization: `token ${TOKEN}`
+	    Authorization: `token ${compGitToken}`
 	  },
 	  body: JSON.stringify(data)
 	})
@@ -706,7 +731,7 @@ function gitAddRepos(projNo, projName, projContent, empNo){
 	  })
 	  .then(data => {
 		    // JSON 객체에서 'git_url' 값 가져오기
-		    const gitUrl = data.clone_url;
+		    const gitUrl = compGitUrl;
 		    const repoName = data.name;
 		    const owner = data.owner.login;
 		    gitReadMECommit(projName, owner, repoName);
@@ -720,10 +745,10 @@ function gitAddRepos(projNo, projName, projContent, empNo){
 /* git Url 변경 */
 function gitCloneUrlUpdate(projNo, cloneUrl){
 
-	const data = {
-			projNo: `${projNo}`, 
-			projectGitUrl: `${cloneUrl}`
-	};
+    const data = {
+            projNo: `${projNo}`, 
+            projectGitUrl: `${cloneUrl}`
+    };
 	
 	fetch('/project/projGitUrlAdd', {
 	  method: 'POST',
@@ -743,13 +768,13 @@ function gitCloneUrlUpdate(projNo, cloneUrl){
 
 // repo 생성 후 초기 commit
 function gitReadMECommit(projName, owner, repo){
-	const TOKEN = '';
+	
 	const url = 'https://api.github.com/repos/'+owner+ '/'+repo+'/contents/README.md';
 	
 	fetch(url, {
 		  method: 'PUT',
 		  headers: {
-		    'Authorization': `token ${TOKEN}`,
+		    'Authorization': `token ${compGitToken}`,
 		    'Content-Type': 'application/json',
 		  },
 		  body: JSON.stringify({
@@ -763,12 +788,15 @@ function gitReadMECommit(projName, owner, repo){
 }
 
 // 로컬폴더 입력받아서 git clone 실행
-function selectDirectory(cloneUrl) {
-	const targetDir = 'C:/Users/admin/Desktop/test/1';
-	const data = {
-			projectGitUrl: `${cloneUrl}`,
-			cloneLocalPath: `${targetDir}`
-	};
+function selectDirectory() {
+	let localUrl = $('#localUrls').val().replace(/\\/g, "/");
+	let cloneUrl= document.getElementById('gitUrlInput').value;
+	console.log(localUrl);
+	console.log(cloneUrl);
+    const data = {
+            projectGitUrl: `${cloneUrl}`,
+            cloneLocalPath: `${localUrl}`
+    };
 	
     fetch('/project/gitClone', {
       method: 'POST',
@@ -789,4 +817,5 @@ function validateInput(input) {
         input.value = input.value.replace(/[^a-zA-Z0-9_ ]/g, ''); // 유효하지 않은 문자 제거
     }
 }
+
 </script>
