@@ -146,11 +146,11 @@ button:active {
 		<div class="purple-background-container">
 			<div class="breadcrumb">
 				<div class="breadcrumb-left">
-					<h4>[[${boardName}]] - 게시글 등록</h4>
-					<p>[[${boardName}]] - 게시글 등록 페이지 입니다.</p>
+					<h4>[[${boardInfo.name}]] - 게시글 등록</h4>
+					<p>[[${boardInfo.name}]] - 게시글 등록 페이지 입니다.</p>
 				</div>
 				<div class="breadcrumb-right">
-					<span>게시판 > [[${boardName}]] - 게시글 등록</span>
+					<span>게시판 > [[${boardInfo.name}]] - 게시글 등록</span>
 				</div>
 			</div>
 			<div class="card_memberInsert">
@@ -164,6 +164,16 @@ button:active {
 							<div class="col-sm-9">
 								<input type="text" class="form-control" id="title" name="title" placeholder="게시글 제목" />
 							</div>
+						</div>
+						<div class="form-group row">
+						    <label for="title" class="col-sm-3 text-end control-label col-form-label">머리글</label>
+						    <div class="col-sm-9">
+						        <select class="form-select" id="subject" name="subject">
+						            <th:block th:each="subject : ${boardInfo.subjectList}">
+						                <option th:value="${subject}" th:text="${subject}"></option>
+						            </th:block>
+						        </select>
+						    </div>
 						</div>
 						<div class="form-group row">
 							<label for="content" class="col-sm-3 text-end control-label col-form-label">내용</label>

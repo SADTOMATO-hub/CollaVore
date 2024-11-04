@@ -20,6 +20,7 @@
 		,content
 		, reg_date
 		, mod_date
+		,subject
 		FROM bods
 		where board_no = #{boardNo}
 		ORDER
@@ -36,6 +37,7 @@
 		, writer
 		, reg_date
 		, mod_date
+		, subject
 		FROM bods
 		WHERE post_no =
 		#{postNo}
@@ -79,6 +81,7 @@
 		, board_no = #{boardNo}
 		, writer = #{writer}
 		, mod_date = sysdate
+		, subject = #{subject}
 		WHERE post_no = #{postNo}
 	</update>
 
@@ -213,8 +216,9 @@ where board_no = #{boardNo}
 
 
 	<!-- 게시판 이름조회 -->
-	<select id="selectBoardName" resultType="String">
+	<select id="selectBoardName" resultType="BodsCfigVO">
 		SELECT name
+			, subject
 		FROM bodscfig
 		WHERE board_no = #{boardNo}
 	</select>

@@ -55,7 +55,7 @@ public interface BodsService {
 	public int deleteBodsCfig(int bodsCfigVO);
 	
 	// 게시판이름 조회
-	public String boardNameSearch(int boardNo);
+	public BodsCfigVO boardNameSearch(int boardNo);
 
 	// 직위 조회
 	public List<BodsCfigVO> selPosiList();

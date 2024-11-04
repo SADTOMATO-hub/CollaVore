@@ -145,11 +145,11 @@ button:active {
 		<div class="purple-background-container">
 			<div class="breadcrumb">
 				<div class="breadcrumb-left">
-					<h4>게시글 상세보기</h4>
-					<p>게시글 상세보기 페이지 입니다.</p>
+					<h4>[[${boardInfo.name}]] - 게시글 상세</h4>
+					<p>[[${boardInfo.name}]] - 게시글 상세 페이지 입니다.</p>
 				</div>
 				<div class="breadcrumb-right">
-					<span>게시판 > 게시글 상세보기</span>
+					<span>게시판 > [[${boardInfo.name}]] - 게시글 상세</span>
 				</div>
 			</div>
 			<div class="card_memberInsert">
@@ -164,6 +164,13 @@ button:active {
 								class="col-sm-3 text-end control-label col-form-label">제목</label>
 							<div class="col-sm-9">
 								<div th:utext="${bods.title}" style="margin-top:7px;"></div>	
+							</div>
+						</div>
+						<div class="form-group row">
+							<label for="subject"
+								class="col-sm-3 text-end control-label col-form-label">머리글</label>
+							<div class="col-sm-9">
+								<div th:utext="${bods.subject}" style="margin-top:7px;"></div>	
 							</div>
 						</div>
 						<div class="form-group row">

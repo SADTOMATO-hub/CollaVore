@@ -183,7 +183,7 @@ public class BodsServiceImpl implements BodsService {
 	
 	// 게시판이름 조회
 	@Override
-	public String boardNameSearch(int boardNo) {
+	public BodsCfigVO boardNameSearch(int boardNo) {
 		return bodsMapper.selectBoardName(boardNo);
 	}
 
