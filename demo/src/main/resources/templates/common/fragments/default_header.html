@@ -7,119 +7,509 @@
 		</div>
 	</div>
 	<style>
-	  #navbarSupportedContent>ul{
-	    display: flex;
-	    justify-content: center; /* Horizontal alignment */
-	    align-items: center; /* Optional: Vertical alignment */
-	  }
-	</style>
+#navbarSupportedContent>ul {
+	display: flex;
+	justify-content: center; /* Horizontal alignment */
+	align-items: center; /* Optional: Vertical alignment */
+}
+</style>
 	<header class="topbar" data-navbarbg="skin5">
 
 		<nav class="navbar top-navbar navbar-expand-md navbar-dark">
 			<div class="navbar-header" data-logobg="skin5">
-				<a class="navbar-brand" href="/dashboard"> 
-					<!-- Logo icon --> 
-					<b class="logo-icon ps-2"> 
-						<img src="/assets/images/logo-icon.png" alt="homepage" class="light-logo" width="25" />
-					</b> 
-					<span class="logo-text ms-2"> 
-						<img src="/assets/images/logo-text.png" alt="homepage" class="light-logo" />
+				<a class="navbar-brand" href="/dashboard"> <!-- Logo icon --> <b
+					class="logo-icon ps-2"> <img src="/assets/images/logo-icon.png"
+						alt="homepage" class="light-logo" width="25" />
+				</b> <span class="logo-text ms-2"> <img
+						src="/assets/images/logo-text.png" alt="homepage"
+						class="light-logo" />
 				</span>
-				</a> 
-				<a class="nav-toggler waves-effect waves-light d-block d-md-none" href="javascript:void(0)">
-					<i class="ti-menu ti-close"></i>
+				</a> <a class="nav-toggler waves-effect waves-light d-block d-md-none"
+					href="javascript:void(0)"> <i class="ti-menu ti-close"></i>
 				</a>
 			</div>
-			<a class="nav-link sidebartoggler waves-effect waves-light" href="javascript:void(0)" data-sidebartype="mini-sidebar"><i class="mdi mdi-menu font-24"></i></a>
-			<div class="navbar-collapse collapse" id="navbarSupportedContent" data-navbarbg="skin5">
+			<a class="nav-link sidebartoggler waves-effect waves-light"
+				href="javascript:void(0)" data-sidebartype="mini-sidebar"><i
+				class="mdi mdi-menu font-24"></i></a>
+			<div class="navbar-collapse collapse" id="navbarSupportedContent"
+				data-navbarbg="skin5">
 				<ul class="navbar-nav float-start me-auto" style="margin: 0 auto;">
-					<li class="nav-item d-none d-lg-block">
-					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown_hrm" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<span class="d-none d-md-block">인사관리 <i class="fa fa-angle-down"></i></span>
-						</a>
+					<li class="nav-item d-none d-lg-block"></li>
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarDropdown_hrm"
+						role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<span class="d-none d-md-block">인사관리 <i
+								class="fa fa-angle-down"></i></span>
+					</a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown_hrm">
-							<li><a class="dropdown-item" th:href="@{/memberInfo}">나의 기본 정보</a></li>
-							<li><a class="dropdown-item" th:href="@{/deptMember}">부서 정보</a></li>
-							<li><hr class="dropdown-divider" /></li>
-							<li><a class="dropdown-item" th:href="@{/deptManager}">조직관리</a></li>
-							<li><a class="dropdown-item" th:href="@{/memberList}">사원관리</a></li>
-						</ul>
-					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown_proj" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<span class="d-none d-md-block">프로젝트관리 <i class="fa fa-angle-down"></i></span>
-						</a>
+							<li><a class="dropdown-item" th:href="@{/memberInfo}">나의
+									기본 정보</a></li>
+							<li><a class="dropdown-item" th:href="@{/deptMember}">부서
+									정보</a></li>
+							<li th:if="${menuAuth.contains('hrm')}"><hr
+									class="dropdown-divider" /></li>
+							<li th:if="${menuAuth.contains('hrm')}"><a
+								class="dropdown-item" th:href="@{/deptManager}">조직관리</a></li>
+							<li th:if="${menuAuth.contains('hrm')}"><a
+								class="dropdown-item" th:href="@{/memberList}">사원관리</a></li>
+						</ul></li>
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarDropdown_proj"
+						role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<span class="d-none d-md-block">프로젝트관리 <i
+								class="fa fa-angle-down"></i></span>
+					</a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown_proj">
-							<li><a class="dropdown-item" th:href="@{/project/projectlist}">프로젝트현황</a></li>
-							<li><a class="dropdown-item" th:href="@{/project/projectworklist}">프로젝트 업무 관리</a></li>
-							<li><hr class="dropdown-divider" /></li>
-							<li><a class="dropdown-item" th:href="@{/project/projectfilelist}">소스관리</a></li>
-							<li><a class="dropdown-item" th:href="@{/project/projectfilelist}">프로젝트 파일</a></li>
-						</ul>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" th:href="@{/cal/schList}" aria-expanded="false">
-							<span class="d-none d-md-block">일정관리 </span>
-						</a>
-					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown_appr" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<span class="d-none d-md-block">전자결재관리 <i class="fa fa-angle-down"></i></span>
-						</a>
+							<li><a class="dropdown-item"
+								th:href="@{/project/projectlist}">프로젝트현황</a></li>
+							<li><a class="dropdown-item"
+								th:href="@{/project/projectworklist}">프로젝트 업무 관리</a></li>
+							<li th:if="${menuAuth.contains('project')}"><hr
+									class="dropdown-divider" /></li>
+							<li th:if="${menuAuth.contains('project')}"><a
+								class="dropdown-item" th:href="@{/project/projecttemplist}">프로젝트
+									템플릿 관리</a></li>
+							<li th:if="${menuAuth.contains('project')}"><a
+								class="dropdown-item" th:href="@{/project/projectwrktemplist}">프로젝트
+									업무 템플릿 관리</a></li>
+							<li th:if="${menuAuth.contains('project')}"><a
+								class="dropdown-item" th:href="@{/project/projectDwrktemplist}">프로젝트
+									상세 업무 템플릿 관리</a></li>
+						</ul></li>
+					<li class="nav-item"><a class="nav-link"
+						th:href="@{/cal/schList}" aria-expanded="false"> <span
+							class="d-none d-md-block">일정관리 </span>
+					</a></li>
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarDropdown_appr"
+						role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<span class="d-none d-md-block">전자결재관리 <i
+								class="fa fa-angle-down"></i></span>
+					</a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown_appr">
-							<li><a class="dropdown-item" th:href="@{/approvals/myApprList/a1}">진행중인 전자결재</a></li>
-							<li><a class="dropdown-item" th:href="@{/approvals/approveList/all}">문서함</a></li>
-							<li><hr class="dropdown-divider" /></li>
-							<li><a class="dropdown-item" th:href="@{/approvals/tempList}">전자결재 템플릿 관리</a></li>
-						</ul>
-					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown_bods" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<span class="d-none d-md-block">게시판 <i class="fa fa-angle-down"></i></span>
-						</a>
+							<li><a class="dropdown-item"
+								th:href="@{/approvals/myApprList/a1}">진행중인 전자결재</a></li>
+							<li><a class="dropdown-item"
+								th:href="@{/approvals/approveList/all}">문서함</a></li>
+							<li th:if="${menuAuth.contains('approval')}"><hr
+									class="dropdown-divider" /></li>
+							<li th:if="${menuAuth.contains('approval')}"><a
+								class="dropdown-item" th:href="@{/approvals/tempList}">전자결재
+									템플릿 관리</a></li>
+						</ul></li>
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarDropdown_bods"
+						role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<span class="d-none d-md-block">게시판 <i
+								class="fa fa-angle-down"></i></span>
+					</a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown_bods">
-							<li><a class="dropdown-item" th:href="@{/board/bodsList?boardNo=1}">공지사항</a></li>
-							<li><a class="dropdown-item" th:href="@{/board/bodsList?boardNo=2}">자유게시판</a></li>
-							<li><hr class="dropdown-divider" /></li>
-							<li><a class="dropdown-item" th:href="@{/board/bodsCfig}">게시판관리</a></li>
-						</ul>
-					</li>
+							<li><a class="dropdown-item"
+								th:href="@{/board/bodsList?boardNo=1}">공지사항</a></li>
+							<li><a class="dropdown-item"
+								th:href="@{/board/bodsList?boardNo=2}">자유게시판</a></li>
+							<li th:if="${menuAuth.contains('board')}"><hr
+									class="dropdown-divider" /></li>
+							<li th:if="${menuAuth.contains('board')}"><a
+								class="dropdown-item" th:href="@{/board/bodsCfig}">게시판관리</a></li>
+						</ul></li>
 				</ul>
 				<ul class="navbar-nav float-end">
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+						role="button" data-bs-toggle="dropdown" aria-expanded="false">
 							<i class="mdi mdi-bell font-24"></i>
-						</a>
+					</a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
 							<li><a class="dropdown-item" href="#">Action</a></li>
 							<li><a class="dropdown-item" href="#">Another action</a></li>
 							<li><hr class="dropdown-divider" /></li>
-							<li><a class="dropdown-item" href="#">Something else here</a></li>
-						</ul>
-					</li>
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-						    <img th:src="${session.userImg != null ? '/imgs/' + session.userImg : '/assets/images/users/default.png'}" alt="user" class="rounded-circle" width="31" />
-						</a>
-						<ul class="dropdown-menu dropdown-menu-end user-dd animated" aria-labelledby="navbarDropdown">
+							<li><a class="dropdown-item" href="#">Something else
+									here</a></li>
+						</ul></li>
+					<li class="nav-item dropdown"><a
+						class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic"
+						href="#" id="navbarDropdown" role="button"
+						data-bs-toggle="dropdown" aria-expanded="false"> <img
+							th:src="${session.userImg != null ? '/imgs/' + session.userImg : '/assets/images/users/default.png'}"
+							alt="user" class="rounded-circle" width="31" />
+					</a>
+						<ul class="dropdown-menu dropdown-menu-end user-dd animated"
+							aria-labelledby="navbarDropdown">
 							<li>
-								<!-- 링링 마이페이지 연결 -->
-								<a class="dropdown-item" th:href="@{/memberInfo}"> 
-									<i class="mdi mdi-account me-1 ms-1"></i> 나의 기본 정보
-								</a>
+								<!-- 링링 마이페이지 연결 --> <a class="dropdown-item"
+								th:href="@{/memberInfo}"> <i
+									class="mdi mdi-account me-1 ms-1"></i> 나의 기본 정보
+							</a>
+							</li>
+							<li th:if="${userAdmin == 'Y'}">
+								<!-- 메뉴관리자처리 --> <a class="dropdown-item"
+								href="javascript:void(0);" data-bs-toggle="modal"
+								data-bs-target="#menuManagerModal"> <i
+									class="mdi mdi-account me-1 ms-1"></i> 메뉴 권한 부여
+							</a>
 							</li>
 							<li>
-								<!-- 링링 로그아웃 -->
-								<a class="dropdown-item" th:href="@{/logout}"> 
+								<!-- 링링 로그아웃 --> <a class="dropdown-item" th:href="@{/logout}">
 									<i class="fa fa-power-off me-1 ms-1"></i> 로그아웃
-								</a>
+							</a>
 							</li>
-						</ul>
-					</li>
+						</ul></li>
 				</ul>
 			</div>
 		</nav>
 	</header>
+
+
+	<!-- Modal Structure -->
+	<div class="modal fade" id="menuManagerModal" tabindex="-1"
+		aria-labelledby="menuManagerModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="menuManagerModalLabel">메뉴 관리자 추가</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+
+					<!-- Tab Navigation -->
+					<ul class="nav nav-tabs" id="menuManagerTabs" role="tablist">
+						<li class="nav-item" role="presentation"><a
+							class="nav-link active" id="hrm-tab" data-bs-toggle="tab"
+							href="#hrm" role="tab" aria-controls="hrm" aria-selected="true">인사관리</a>
+						</li>
+						<li class="nav-item" role="presentation"><a class="nav-link"
+							id="project-tab" data-bs-toggle="tab" href="#project" role="tab"
+							aria-controls="project" aria-selected="false">프로젝트관리</a></li>
+						<li class="nav-item" role="presentation"><a class="nav-link"
+							id="calendar-tab" data-bs-toggle="tab" href="#calendar"
+							role="tab" aria-controls="calendar" aria-selected="false">일정관리</a>
+						</li>
+						<li class="nav-item" role="presentation"><a class="nav-link"
+							id="approval-tab" data-bs-toggle="tab" href="#approval"
+							role="tab" aria-controls="approval" aria-selected="false">전자결재관리</a>
+						</li>
+						<li class="nav-item" role="presentation"><a class="nav-link"
+							id="board-tab" data-bs-toggle="tab" href="#board" role="tab"
+							aria-controls="board" aria-selected="false">게시판관리</a></li>
+					</ul>
+
+
+					<!-- Department and Employee Select Boxes -->
+					<div class="form-group row m-2">
+						<label for="departmentSelect"
+							class="col-sm-3 text-center control-label col-form-label">부서
+							선택</label>
+						<div class="col-sm-9">
+							<select id="departmentSelect" class="form-select">
+								<option value="">부서를 선택하세요</option>
+								<!-- 부서 목록은 서버에서 동적으로 추가 -->
+							</select>
+						</div>
+					</div>
+					<div class="form-group row m-2">
+						<label for="employeeSelect"
+							class="col-sm-3 text-center control-label col-form-label">사원
+							조회</label>
+						<div class="col-sm-9">
+							<select id="employeeSelect" class="form-select">
+								<option value="">사원을 선택하세요</option>
+								<!-- 선택된 부서와 메뉴 탭에 맞는 사원 목록이 동적으로 추가 -->
+							</select>
+						</div>
+					</div>
+
+
+
+					<!-- Tab Contents -->
+					<div class="tab-content mt-3" id="menuManagerTabContent">
+						<div class="tab-pane fade show active" id="hrm" role="tabpanel"
+							aria-labelledby="hrm-tab">
+							<h6>인사관리 권한 목록</h6>
+							<table class="table">
+								<thead>
+									<tr>
+										<th>사원명</th>
+										<th>부서</th>
+										<th>직위</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody id="employeeList-hrm"></tbody>
+							</table>
+						</div>
+						<div class="tab-pane fade" id="project" role="tabpanel"
+							aria-labelledby="project-tab">
+							<h6>프로젝트관리 권한 목록</h6>
+							<table class="table">
+								<thead>
+									<tr>
+										<th>사원명</th>
+										<th>부서</th>
+										<th>직위</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody id="employeeList-project"></tbody>
+							</table>
+						</div>
+						<div class="tab-pane fade" id="calendar" role="tabpanel"
+							aria-labelledby="calendar-tab">
+							<h6>일정관리 권한 목록</h6>
+							<table class="table">
+								<thead>
+									<tr>
+										<th>사원명</th>
+										<th>부서</th>
+										<th>직위</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody id="employeeList-calendar"></tbody>
+							</table>
+						</div>
+						<div class="tab-pane fade" id="approval" role="tabpanel"
+							aria-labelledby="approval-tab">
+							<h6>전자결재관리 권한 목록</h6>
+							<table class="table">
+								<thead>
+									<tr>
+										<th>사원명</th>
+										<th>부서</th>
+										<th>직위</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody id="employeeList-approval"></tbody>
+							</table>
+						</div>
+						<div class="tab-pane fade" id="board" role="tabpanel"
+							aria-labelledby="board-tab">
+							<h6>게시판관리 권한 목록</h6>
+							<table class="table">
+								<thead>
+									<tr>
+										<th>사원명</th>
+										<th>부서</th>
+										<th>직위</th>
+										<th></th>
+									</tr>
+								</thead>
+								<tbody id="employeeList-board"></tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		// 초기 로드 시 부서 목록 가져오기
+		window.onload = function() {
+		    deptList();
+		    
+		 	// 최초 한번 실행
+			authEmpList('hrm'); 
+			
+			//각 탭 클릭 시 이벤트 설정
+			document.querySelectorAll('.nav-link').forEach(tab => {
+			    tab.addEventListener('click', function () {
+			        const selectTab = this.id.replace('-tab', ''); // 클릭된 탭의 ID에서 'tab'을 제외한 부분만 사용
+			        authEmpList(selectTab); // 해당 탭에 맞는 데이터를 가져오는 함수 호출
+			    });
+			});
+
+		};
+
+		function deptList() {
+		    fetch('/menuDeptList') // 부서 목록을 가져오는 서버 엔드포인트
+		        .then(response => response.json())
+		        .then(departments => {
+		            const departmentSelect = document.getElementById('departmentSelect');
+		            departmentSelect.innerHTML = '<option value="">부서를 선택하세요</option>';
+		            departments.forEach(department => {
+		                const option = document.createElement('option');
+		                option.value = department.deptNo;
+		                option.textContent = department.deptName;
+		                departmentSelect.appendChild(option);
+		            });
+		        })
+		        .catch(error => console.error('부서 목록 가져오기 오류:', error));
+		}
+		
+		// 부서 선택 시 이벤트 설정
+		document.getElementById('departmentSelect').addEventListener('change', function() {
+		    const deptNo = this.value;
+		    const selectTab = document.querySelector('.nav-tabs .active').id.replace('-tab', ''); // 현재 선택된 탭
+		    if (deptNo) {
+		    	deptEmpList(deptNo, selectTab);
+		    } else {
+		        document.getElementById('employeeSelect').innerHTML = '<option value="">사원을 선택하세요</option>';
+		    }
+		});
+		
+		// 특정 부서 및 메뉴 권한이 없는 사원 목록을 가져와 employeeSelect에 표시하는 함수
+		function deptEmpList(deptNo, tabName) {
+		    let url = `/empList?deptNo=${deptNo}&menuValue=${tabName}`; // 부서별로 권한이 없는 사원 목록을 가져오는 API
+
+		    fetch(url)
+		        .then(response => response.json())
+		        .then(employees => {
+		            const employeeSelect = document.getElementById('employeeSelect');
+		            employeeSelect.innerHTML = '<option value="">사원을 선택하세요</option>'; // 기존 옵션 초기화
+
+		            employees.forEach(employee => {
+		                const option = document.createElement('option');
+		                option.value = employee.empNo;
+		                option.textContent = employee.empName;
+		                employeeSelect.appendChild(option);
+		            });
+		        })
+		        .catch(error => console.error('사원 목록 가져오기 오류:', error));
+		}
+		
+		
+		// 특정 탭에 권한이 없는 사원 목록을 가져와 employeeSelect에 표시하는 함수
+		function searchEmpList(tabName) {
+		    let url = `/empList?menuValue=${tabName}`; // 권한이 없는 사원 목록을 가져오는 API
+	
+		    fetch(url)
+		        .then(response => response.json())
+		        .then(employees => {
+		            const employeeSelect = document.getElementById('employeeSelect');
+		            employeeSelect.innerHTML = '<option value="">사원을 선택하세요</option>'; // 기존 옵션 초기화
+	
+		            employees.forEach(employee => {
+		                const option = document.createElement('option');
+		                option.value = employee.empNo;
+		                option.textContent = employee.empName;
+		                employeeSelect.appendChild(option);
+		            });
+		        })
+		        .catch(error => console.error('사원 목록 가져오기 오류:', error));
+		}
+		
+		// 탭별 데이터를 가져오는 함수
+		function authEmpList(tabName) {
+	        searchEmpList(tabName); // 해당 탭의 권한 없는 사원 목록 로드
+		    let targetUrl = '/hasMenuAuth?menuValue=' + tabName;
+		    fetch(targetUrl)
+		        .then(response => response.json())
+		        .then(data => {
+		            makeTrTag(data, tabName); // 데이터를 받아 해당 탭에 표시하는 함수 호출
+		        })
+		        .catch(error => console.error('데이터 가져오기 오류:', error));
+		}
+	
+		// employeeSelect에서 선택한 사원을 현재 활성화된 탭에 추가하는 함수
+		document.getElementById('employeeSelect').addEventListener('change', function () {
+		    const empNo = this.value;
+		    const employeeName = this.options[this.selectedIndex].text;
+		    const selectTab = document.querySelector('.nav-tabs .active').id.replace('-tab', '');
+	
+		    if (empNo) {
+		        // 서버에 선택한 사원과 탭 데이터를 전송하여 권한 추가 요청
+		        let saveUrl = '/giveMenuAuth'; // 서버에서 권한을 추가하는 엔드포인트
+		        let data = {
+		            empNo: empNo,
+		            menuValue: selectTab
+		        };
+	
+		        fetch(saveUrl, {
+		            method: 'POST',
+		            headers: {
+		                'Content-Type': 'application/json'
+		            },
+		            body: JSON.stringify(data)
+		        })
+		        .then(response => response.json())
+		        .then(result => {
+	                makeTrTag([{
+	                    empNo: result.empNo,
+	                    empName: result.empName,
+	                    deptName: result.deptName,  // 서버에서 반환된 부서 이름
+	                    posiName: result.posiName   // 서버에서 반환된 직위 이름
+	                }], selectTab);
+		        })
+		        .catch(error => console.error('서버 요청 오류:', error));
+		    }
+		});
+	
+		// 데이터를 해당 탭에 표시하는 함수
+		function makeTrTag(data, tabName) {
+		    const employeeListId = `employeeList-${tabName}`; // 해당 탭의 테이블 ID
+		    const employeeList = document.getElementById(employeeListId);
+		    
+		    // 기존의 "등록된 사원이 없습니다" 메시지 제거
+		    const noDataMessage = document.querySelector(`#${employeeListId} .no-data-message`);
+		    if (noDataMessage) {
+		        noDataMessage.remove();
+		    }
+
+		    // 데이터가 없을 경우 "등록된 사원이 없습니다" 메시지 추가
+		    if (data.length === 0) {
+		        const row = document.createElement('tr');
+		        row.className = 'no-data-message';
+		        row.innerHTML = `<td colspan="4" class="text-center">등록된 사원이 없습니다</td>`;
+		        employeeList.appendChild(row);
+		        return;
+		    }
+
+		    // 데이터를 각각의 행으로 추가
+		    data.forEach(employee => {
+		        if (!document.querySelector(`#${employeeListId} #employeeRow-${employee.empNo}`)) {
+		            const row = document.createElement('tr');
+		            row.id = `employeeRow-${employee.authNo}`;
+		            row.innerHTML = `
+		                <td>${employee.empName}</td>
+		                <td>${employee.deptName}</td>
+		                <td>${employee.posiName}</td>
+		                <td><button class="btn btn-danger btn-sm" onclick="removeEmployee('${employee.authNo}', '${employeeListId}')">삭제</button></td>
+		            `;
+		            employeeList.appendChild(row);
+		        }
+		    });
+		    
+		    // 부서 선택에 따라 권한 없는 사원 목록을 다시 로드
+		    let deptNo = $('#departmentSelect').val();
+		    deptEmpList(deptNo, tabName);
+		}
+
+		
+		// 특정 권한 목록에서 사원 삭제하는 함수
+		function removeEmployee(authNo, listId) {
+		    console.log('asfasfas');
+		    let deleteUrl = `/removeMenuAuth/${authNo}`; // authNo를 이용하여 서버에 삭제 요청
+
+		    fetch(deleteUrl, {
+		        method: 'DELETE',
+		    })
+		    .then(response => response.json())
+		    .then(result => {
+		        if (result) {
+		            // 삭제 성공 시 해당 행을 DOM에서 제거
+		            const row = document.querySelector(`#${listId} #employeeRow-${authNo}`);
+		            if (row) {
+		                row.remove();
+		            }
+
+		            // 삭제 후 tbody가 비어 있으면 "등록된 사원이 없습니다" 메시지 추가
+		            const employeeList = document.getElementById(listId);
+		            if (employeeList.children.length === 0) {
+		                const noDataMessage = document.createElement('tr');
+		                noDataMessage.className = 'no-data-message';
+		                noDataMessage.innerHTML = `<td colspan="4" class="text-center">등록된 사원이 없습니다</td>`;
+		                employeeList.appendChild(noDataMessage);
+		            }
+		        } else {
+		            console.error('권한 삭제 실패:', result.message);
+		        }
+		    })
+		    .catch(error => console.error('서버 요청 오류:', error));
+		}
+
+
+	</script>
+
 </th:block>

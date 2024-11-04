@@ -82,7 +82,8 @@
 		job_no,
 		posi_no,
 		git_token,
-		img
+		img,
+		is_admin
 		)
 		VALUES (
 		#{empNo},
@@ -99,7 +100,8 @@
 		#{jobNo},
 		#{posiNo},
 		#{gitToken},
-		#{img}
+		#{img},
+		#{isAdmin}
 		)
 	</insert>
 
@@ -289,8 +291,7 @@
 		, tel
 		, email
 		, address
-		,
-		work_type
+		, work_type
 		, info
 		, join_date
 		, leave_date
@@ -298,6 +299,7 @@
 		, job_no
 		, posi_no
 		, img
+		, is_admin
 		FROM
 		employees
 		WHERE emp_no = #{empNo}
@@ -322,6 +324,7 @@
 		, job_no = #{jobNo}
 		, posi_no = #{posiNo}
 		, img = #{img}
+		, is_admin = #{isAdmin}
 		WHERE emp_no = #{empNo}
 	</update>
 

@@ -38,6 +38,8 @@ public interface ApprovalsMapper {
 	public List <ApprovalsVO> approvalsList (int eaNo);
 		//결재자 수정
 	public int updateApprover (ApprovalsVO approvalsVo);
+	//결재가 진행되면 전자결재가 상태가 업데이트 됨
+	public int updateApprovalStatus (ApprovalsVO approvalsVo);
 	//전자결재 삭제
 	public void deleteApproval (ApprovalsVO approvalsVo);
 	//인사 테이블 조회

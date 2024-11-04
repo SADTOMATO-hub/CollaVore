@@ -3,7 +3,6 @@ package com.collavore.app.approvals.web;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,22 +16,31 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.collavore.app.approvals.service.ApprovalsService;
 import com.collavore.app.approvals.service.ApprovalsVO;
 import com.collavore.app.approvals.service.ApprovalstempVO;
+import com.collavore.app.service.HomeService;
+import com.collavore.app.service.HomeVO;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequestMapping("/approvals")
+@RequiredArgsConstructor
 public class ApprovalsController {
-	private ApprovalsService approvalsService;
+	private final ApprovalsService approvalsService;
+	private final HomeService homeService;
 
-	@Autowired
-	ApprovalsController(ApprovalsService approvalsService) {
-		this.approvalsService = approvalsService;
-	}
-
-	
 	@ModelAttribute
-	public void addAttributes(Model model) {
+	public void addAttributes(Model model, HttpSession session) {
+		String userAdmin = (String) session.getAttribute("userAdmin");
+		model.addAttribute("userAdmin", userAdmin);
+
+		@SuppressWarnings("unchecked")
+		List<String> menuAuth = (List<String>) session.getAttribute("menuAuth");
+		model.addAttribute("menuAuth", menuAuth);
+
+		List<HomeVO> employeesInfo = homeService.empList();
+		model.addAttribute("employees", employeesInfo);
+		
 		model.addAttribute("sidemenu", "approvals_sidebar");
 	}
 
@@ -167,10 +175,9 @@ public class ApprovalsController {
 	@PostMapping("/updateAppr")
 	@ResponseBody
 	public String updateApprove (@RequestBody ApprovalsVO apprVO) {
-		System.err.println(apprVO.getApproverStatus() + apprVO.getEarNo());
 		int updateApprStatus = approvalsService.updateApprStatus(apprVO);
+		int updateApprovalStatus = approvalsService.updateApproval(apprVO);
 		if(updateApprStatus > 0) {
-			System.out.println(updateApprStatus);
 			return null;
 		}
 		return null;

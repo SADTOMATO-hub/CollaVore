@@ -3,14 +3,12 @@ package com.collavore.app.board.web;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -18,23 +16,36 @@ import com.collavore.app.board.service.BodsCfigVO;
 import com.collavore.app.board.service.BodsComtsVO;
 import com.collavore.app.board.service.BodsService;
 import com.collavore.app.board.service.BodsVO;
-import com.collavore.app.board.service.impl.BodsServiceImpl;
 import com.collavore.app.common.service.PageDTO;
+import com.collavore.app.service.HomeService;
+import com.collavore.app.service.HomeVO;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 public class BodsController {
-	private BodsService bodsService;
+	private final BodsService bodsService;
+	private final HomeService homeService;
 
-	@Autowired
-	public BodsController(BodsService bodsService) {
-		this.bodsService = bodsService;
-	}
 
 	@ModelAttribute
-	public void addAttributes(BodsCfigVO bodsCfigVO, Model model) {
+	public void addAttributes(BodsCfigVO bodsCfigVO, Model model, HttpSession session) {
+		List<HomeVO> employeesInfo = homeService.empList();
+		model.addAttribute("employees", employeesInfo);
+		
+		String userAdmin = (String) session.getAttribute("userAdmin");
+		model.addAttribute("userAdmin", userAdmin);
+		
+		Integer userGrade = (Integer) session.getAttribute("userGrade");
+		model.addAttribute("userGrade", userGrade);
 
+		@SuppressWarnings("unchecked")
+		List<String> menuAuth = (List<String>) session.getAttribute("menuAuth");
+		model.addAttribute("menuAuth", menuAuth);
+		
+		bodsCfigVO.setPosiGrade(userGrade);
 		List<BodsCfigVO> list = bodsService.bodsListAll(bodsCfigVO);
 		model.addAttribute("bodsCfigList", list);
 		model.addAttribute("sidemenu", "board_sidebar");
@@ -42,12 +53,20 @@ public class BodsController {
 	
 	// 전체조회 : URI - boardList / RETURN - board/boardList
 	@GetMapping("/board/bodsList") // 인터넷창에 치는 주소
-	public String bodsList(BodsVO bodsVO, Model model) {
+	public String bodsList(BodsVO bodsVO, Model model, HttpSession session) {
+		Integer userGrade = (Integer) session.getAttribute("userGrade");
+		model.addAttribute("userGrade", userGrade);
+		
 		String page = bodsVO.getPage() == null ? "1" : bodsVO.getPage();
 
 		String boardName = bodsService.boardNameSearch(bodsVO.getBoardNo());
 		model.addAttribute("boardName", boardName);
 
+		BodsCfigVO bodsCfigVO = new BodsCfigVO();
+		bodsCfigVO.setBoardNo(bodsVO.getBoardNo());
+		bodsCfigVO = bodsService.bodsCfigInfo(bodsCfigVO);
+		model.addAttribute("bodsCfig", bodsCfigVO);
+		
 		List<BodsVO> list = bodsService.bodsList(bodsVO);
 		model.addAttribute("bodsList", list);
 
@@ -69,8 +88,18 @@ public class BodsController {
 	public String bodsInfo(BodsVO bodsVO, Model model, HttpSession session) {
 		Integer empNo = (Integer) session.getAttribute("userEmpNo");
 		model.addAttribute("empNo", empNo);
+		
+		Integer userGrade = (Integer) session.getAttribute("userGrade");
+		model.addAttribute("userGrade", userGrade);
+		
 		BodsVO findVO = bodsService.bodsInfo(bodsVO);
 		model.addAttribute("bods", findVO);
+
+		BodsCfigVO bodsCfigVO = new BodsCfigVO();
+		bodsCfigVO.setBoardNo(findVO.getBoardNo());
+		bodsCfigVO = bodsService.bodsCfigInfo(bodsCfigVO);
+		model.addAttribute("bodsCfig", bodsCfigVO);
+		
 		return "board/bodsInfo";
 	}
 
@@ -177,7 +206,11 @@ public class BodsController {
 
 		List<BodsCfigVO> list = bodsService.bodsListAll(bodsCfigVO);
 		model.addAttribute("bodsCfigList", list);
-
+		
+		// 직위 조회
+		List<BodsCfigVO> posiList = bodsService.selPosiList();
+		model.addAttribute("posiList", posiList);
+		
 		/*
 		 * int totalCnt = bodsService.bodsListAll(bodsCfigVO); PageDTO pageing = new
 		 * PageDTO(page, totalCnt); model.addAttribute("pageing", pageing);
@@ -211,8 +244,14 @@ public class BodsController {
 			bodsCfigVO.setBoardNo(boardNo);
 		}
 		model.addAttribute("boardNo", boardNo);
+		
 		BodsCfigVO findVO = bodsService.bodsCfigInfo(bodsCfigVO);
 		model.addAttribute("bodsCfig", findVO);
+
+		// 직위 조회
+		List<BodsCfigVO> posiList = bodsService.selPosiList();
+		model.addAttribute("posiList", posiList);
+		
 		return "board/bodsCfigInfo";
 	}
 
@@ -224,6 +263,10 @@ public class BodsController {
 	public String bodsCfigUpdateForm(BodsCfigVO bodsCfigVO, Model model) {
 		BodsCfigVO findVO = bodsService.bodsCfigInfo(bodsCfigVO);
 		model.addAttribute("bodsCfig", findVO);
+
+		// 직위 조회
+		List<BodsCfigVO> posiList = bodsService.selPosiList();
+		model.addAttribute("posiList", posiList);
 		return "/board/bodsCfigUpdate";
 	}
 

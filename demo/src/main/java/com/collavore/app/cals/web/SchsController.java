@@ -1,14 +1,11 @@
 package com.collavore.app.cals.web;
 
-import java.io.Console;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -22,22 +19,31 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.collavore.app.cals.service.SchsService;
 import com.collavore.app.cals.service.SchsVO;
+import com.collavore.app.service.HomeService;
+import com.collavore.app.service.HomeVO;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Controller // @Controller 대신 @RestController 사용
+@RequiredArgsConstructor
 public class SchsController {
 	private final SchsService schsService;
+	private final HomeService homeService;
 
-	// 생성자 주입
-	@Autowired
-	public SchsController(SchsService schsService) {
-		this.schsService = schsService;
-	}
-
-	// 사이드바
+		// 사이드바
 	@ModelAttribute
-	public void addAttributes(Model model) {
+	public void addAttributes(Model model, HttpSession session) {
+		List<HomeVO> employeesInfo = homeService.empList();
+		model.addAttribute("employees", employeesInfo);
+
+		String userAdmin = (String) session.getAttribute("userAdmin");
+		model.addAttribute("userAdmin", userAdmin);
+
+		@SuppressWarnings("unchecked")
+		List<String> menuAuth = (List<String>) session.getAttribute("menuAuth");
+		model.addAttribute("menuAuth", menuAuth);
+		
 		model.addAttribute("sidemenu", "calendar_sidebar");
 	}
 

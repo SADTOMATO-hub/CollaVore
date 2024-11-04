@@ -206,6 +206,7 @@ button:active {
 
 		function updateAjax(event){
 			event.preventDefault(); // 폼 제출 방지
+			let postNo = $('#postNo').val();
 			oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
 			
 			let dataObj = getFormData();
@@ -218,6 +219,7 @@ button:active {
 				console.log(data);
 				if(data.result){
 					alert('성공적으로 수정되었습니다.');
+					location.href="/board/bodsInfo?postNo="+postNo;
 				}else{
 					alert('수정되지 않았습니다.');
 				}

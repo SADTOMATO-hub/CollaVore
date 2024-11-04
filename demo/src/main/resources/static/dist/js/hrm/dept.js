@@ -293,22 +293,56 @@ function saveDept() {
 		.catch(error => console.error('Error saving departments:', error));
 }
 
+// 전역 변수로 departments 선언
+let departments = [];
+
+// 데이터를 fetch하여 departments 배열에 저장
+fetch('/api/deptManager')
+    .then(response => {
+        if (!response.ok) throw new Error('Network response was not ok');
+        return response.json();
+    })
+    .then(data => {
+        departments = data.departments; // 전역 변수에 부서 데이터 저장
+        const rootDept = data.departments.find(dept => dept.parentDeptNo === 0);
+        const tree = buildDeptTree(data.departments, rootDept);
+        container.appendChild(tree);
+        addConnections(container, data.departments);
+    })
+    .catch(error => console.error('Error fetching department data:', error));
+
 // 부서 삭제 함수
 function deleteDept(deptNo, li) {
-	fetch(`/dept/delete/${deptNo}`, { method: 'DELETE' })
-		.then(response => response.text())
-		.then(result => {
-			if (result === 'success') {
-				alert('부서가 삭제되었습니다.');
-				location.reload();
-			} else if (result === 'cannot_delete') {
-				alert('이 부서에는 사원이 등록되어 있어 삭제할 수 없습니다.');
-			} else {
-				alert('삭제에 실패했습니다.');
-			}
-		})
-		.catch(error => console.error('Error deleting department:', error));
+    // 하위 부서가 있는지 확인
+    const hasChildDept = departments.some(dept => dept.parentDeptNo === deptNo);
+    
+    // 해당 부서에 소속된 사원이 있는지 확인
+    const dept = departments.find(d => d.deptNo === deptNo);
+    const hasEmployees = dept && dept.empCnt > 0;
+
+    if (hasChildDept) {
+        alert('이 부서에는 하위 부서가 등록되어 있어 삭제할 수 없습니다.');
+        return;
+    }
+
+    if (hasEmployees) {
+        alert('이 부서에는 사원이 등록되어 있어 삭제할 수 없습니다.');
+        return;
+    }
+
+    fetch(`/dept/delete/${deptNo}`, { method: 'DELETE' })
+        .then(response => response.text())
+        .then(result => {
+            if (result === 'success') {
+                alert('부서가 삭제되었습니다.');
+                location.reload();
+            } else {
+                alert('삭제에 실패했습니다.');
+            }
+        })
+        .catch(error => console.error('Error deleting department:', error));
 }
+
 
 // 부서 이름 업데이트 함수
 function updateDeptName(input, deptNo) {
