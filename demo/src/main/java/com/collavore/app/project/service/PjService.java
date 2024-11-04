@@ -111,5 +111,8 @@ public interface PjService {
 	
 	// 프로젝트 파일 삭제
 	public int projfiledel(Integer pfNo);
+	
+	// 프로젝트 업무 단건 삭제
+	public int projectwrkoneDelete(int pwNo);
 
 }
