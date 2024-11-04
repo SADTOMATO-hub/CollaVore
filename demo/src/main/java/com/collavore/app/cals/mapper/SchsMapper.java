@@ -39,6 +39,9 @@ public interface SchsMapper {
 
 	// 알림 정보 삭제 (알림 설정이 비활성화된 경우)
 	public int deleteAlarmInfo(int schNo);
+	
+	 //  알림 요일 정보만 업데이트하는 메서드
+    int updateAlarmYoil(SchsVO schsVO);
 
 	// 해당 sch_no의 알림 존재 여부 확인
 	public int checkAlarm(int schNo);

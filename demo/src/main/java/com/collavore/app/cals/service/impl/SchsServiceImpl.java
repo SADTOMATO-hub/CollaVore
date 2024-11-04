@@ -25,17 +25,18 @@ public class SchsServiceImpl implements SchsService {
 	public List<SchsVO> SchsList(int empNo) {
 		return schsMapper.selectSchsAll(empNo);
 	}
-	 // 풀캘린더에서 이벤트 드롭으로 날짜 시간값만 바꾸기
+
+	// 풀캘린더에서 이벤트 드롭으로 날짜 시간값만 바꾸기
 	@Override
-    public int updateEventTime(Integer schNo, String startDate, String endDate) {
-        try {
-            return schsMapper.updateEventTime(schNo, startDate, endDate);
-        } catch (Exception e) {
-            System.err.println("Error in SchsServiceImpl.updateEventTime: " + e.getMessage());
-            e.printStackTrace();
-            return 0;
-        }
-    }
+	public int updateEventTime(Integer schNo, String startDate, String endDate) {
+		try {
+			return schsMapper.updateEventTime(schNo, startDate, endDate);
+		} catch (Exception e) {
+			System.err.println("Error in SchsServiceImpl.updateEventTime: " + e.getMessage());
+			e.printStackTrace();
+			return 0;
+		}
+	}
 
 	// 단건조회
 	@Override
@@ -95,28 +96,33 @@ public class SchsServiceImpl implements SchsService {
 		return resultMap;
 	}
 
-	@Override
 	public int updateAlarm(SchsVO schsVO) {
-		int affectedRows = 0;
+	    int affectedRows = 0;
 
-		if ("f1".equals(schsVO.getIsAlarm())) {
-			// 알림 정보가 모두 유효한 경우에만 삽입
-			if (schsVO.getAlarmType() != null || schsVO.getAlarmYoil() != null || schsVO.getAlarmDay() != null
-					|| schsVO.getAlarmTime() != null) {
+	    if ("f1".equals(schsVO.getIsAlarm())) {
+	        // 알림 정보가 모두 유효한 경우에만 삽입
+	        if (schsVO.getAlarmType() != null || (schsVO.getAlarmYoil() != null && !schsVO.getAlarmYoil().isEmpty())
+	                || schsVO.getAlarmDay() != null || schsVO.getAlarmTime() != null) {
 
-				// 기존 알림 정보 삭제
-				schsMapper.deleteAlarmInfo(schsVO.getSchNo());
+	            // 기존 알림 정보 삭제
+	            schsMapper.deleteAlarmInfo(schsVO.getSchNo());
 
-				// 새로운 알림 정보 삽입
-				affectedRows = schsMapper.insertAlarmInfo(schsVO);
-			}
-		} else if ("f2".equals(schsVO.getIsAlarm())) {
-			// 알림 설정이 꺼져 있는 경우 알림 정보 삭제
-			affectedRows = schsMapper.deleteAlarmInfo(schsVO.getSchNo());
-		}
+	            // alarmYoil 값이 빈 문자열이면 null로 설정
+	            if (schsVO.getAlarmYoil() != null && schsVO.getAlarmYoil().isEmpty()) {
+	                schsVO.setAlarmYoil(null);
+	            }
 
-		return affectedRows;
+	            // 새로운 알림 정보 삽입
+	            affectedRows = schsMapper.insertAlarmInfo(schsVO);
+	        }
+	    } else if ("f2".equals(schsVO.getIsAlarm())) {
+	        // 알림 설정이 꺼져 있는 경우 알림 정보 삭제
+	        affectedRows = schsMapper.deleteAlarmInfo(schsVO.getSchNo());
+	    }
+
+	    return affectedRows;
 	}
+
 
 	// 알림 정보 추가
 	@Override
@@ -135,27 +141,22 @@ public class SchsServiceImpl implements SchsService {
 	public int deleteSchs(int schsNO) {
 		return schsMapper.deleteSchsInfo(schsNO);
 	}
-	
-	  @Override
-	    @Transactional
-	    public int deleteSchedule(int schNo) {
-	        // 1. 일정 번호로 알림 정보 조회 및 삭제
-	        List<Integer> alarmNoList = schsMapper.getAlarmsByScheduleNo(schNo);
-	        
-	        if (alarmNoList != null && !alarmNoList.isEmpty()) {
-	            for (int alarmNo : alarmNoList) {
-	            	schsMapper.deleteAlarm(alarmNo);
-	            }
-	        }
 
-	        // 2. 일정 정보 삭제
-	        return schsMapper.deleteSchedule(schNo);
-	    }
-    
+	@Override
+	@Transactional
+	public int deleteSchedule(int schNo) {
+		// 1. 일정 번호로 알림 정보 조회 및 삭제
+		List<Integer> alarmNoList = schsMapper.getAlarmsByScheduleNo(schNo);
 
-	
-	
-	
+		if (alarmNoList != null && !alarmNoList.isEmpty()) {
+			for (int alarmNo : alarmNoList) {
+				schsMapper.deleteAlarm(alarmNo);
+			}
+		}
+
+		// 2. 일정 정보 삭제
+		return schsMapper.deleteSchedule(schNo);
+	}
 
 	// =====================캘린더 사이드바=====================
 	// 일정생성창 캘린더 전체조회
@@ -173,30 +174,29 @@ public class SchsServiceImpl implements SchsService {
 	// 프로젝트 캘린더
 
 	// 첫 번째 인서트: 캘린더 등록
-    @Override
-    public int insertCals(SchsVO schsVO) {
-        schsMapper.insertCalsInfo(schsVO); // 캘린더 정보 저장
-        return schsVO.getCalNo(); // 생성된 캘린더 번호 반환
-    }
+	@Override
+	public int insertCals(SchsVO schsVO) {
+		schsMapper.insertCalsInfo(schsVO); // 캘린더 정보 저장
+		return schsVO.getCalNo(); // 생성된 캘린더 번호 반환
+	}
 
- // 두 번째 인서트: 참여자 정보 저장
-    @Override
-    public int insertCalShares(int calNo, List<Integer> empNos) {
-        int count = 0;
-        for (Integer empNo : empNos) {
-            Map<String, Object> params = new HashMap<>();
-            params.put("calNo", calNo);
-            params.put("empNo", empNo);
+	// 두 번째 인서트: 참여자 정보 저장
+	@Override
+	public int insertCalShares(int calNo, List<Integer> empNos) {
+		int count = 0;
+		for (Integer empNo : empNos) {
+			Map<String, Object> params = new HashMap<>();
+			params.put("calNo", calNo);
+			params.put("empNo", empNo);
 
-            // 디버그: 각 삽입 시도를 로깅
-            System.out.println("Inserting calNo: " + calNo + ", empNo: " + empNo);
+			// 디버그: 각 삽입 시도를 로깅
+			System.out.println("Inserting calNo: " + calNo + ", empNo: " + empNo);
 
-            count += schsMapper.insertCalShares(params); // 매퍼 호출
-        }
-        System.out.println("Total inserted rows: " + count);
-        return count;
-    }
-
+			count += schsMapper.insertCalShares(params); // 매퍼 호출
+		}
+		System.out.println("Total inserted rows: " + count);
+		return count;
+	}
 
 	// 캘린더 조회
 	@Override
@@ -221,39 +221,32 @@ public class SchsServiceImpl implements SchsService {
 //		}
 //		return resultMap;
 //	}
-    @Override
-    @Transactional
-    public int updateCalendarWithParticipants(int calNo, String name, String color, List<Integer> empNos) {
-        // 캘린더 기본 정보 업데이트
-        int updateCount = schsMapper.updateCalendarDetails(calNo, name, color);
+	@Override
+	@Transactional
+	public int updateCalendarWithParticipants(int calNo, String name, String color, List<Integer> empNos) {
+		// 캘린더 기본 정보 업데이트
+		int updateCount = schsMapper.updateCalendarDetails(calNo, name, color);
 
-        // 기존 참여자 삭제
-        schsMapper.deleteParticipantsByCalNo(calNo);
+		// 기존 참여자 삭제
+		schsMapper.deleteParticipantsByCalNo(calNo);
 
-        // 새 참여자 추가
-        int addCount = 0;
-        for (Integer empNo : empNos) {
-            Map<String, Object> params = new HashMap<>();
-            params.put("calNo", calNo);
-            params.put("empNo", empNo);
-            addCount += schsMapper.addParticipant(params);
-        }
+		// 새 참여자 추가
+		int addCount = 0;
+		for (Integer empNo : empNos) {
+			Map<String, Object> params = new HashMap<>();
+			params.put("calNo", calNo);
+			params.put("empNo", empNo);
+			addCount += schsMapper.addParticipant(params);
+		}
 
-        return updateCount + addCount; // 총 성공한 업데이트 및 추가 작업의 수 반환
-    }
-	//캘린더 수정할때 저장된 기본값 불러오기 부서 사원 참여자 
+		return updateCount + addCount; // 총 성공한 업데이트 및 추가 작업의 수 반환
+	}
+
+	// 캘린더 수정할때 저장된 기본값 불러오기 부서 사원 참여자
 	@Override
 	public List<Map<String, Object>> getCalInfo(int calNo) {
-	    return schsMapper.getCalInfo(calNo);
+		return schsMapper.getCalInfo(calNo);
 	}
-	
-	
-	
-	
-	
-	
-	
-	
 
 	// 공유캘린더 조회 (is_delete가 'h2'인 항목만)
 	@Override
@@ -296,49 +289,48 @@ public class SchsServiceImpl implements SchsService {
 	// =====================END 캘린더 사이드바=====================
 	// =====================알림관리========================
 
-	
 	// 새로 등록된 사원에 내캘린더 생성
 	@Override
 	public int addNewMyCal(int empNo) {
-	    Map<String, Object> result = new HashMap<>();
-	    result.put("result", null);  // 초기값 설정
-	    try {
-	        // 프로시저 호출
-		    schsMapper.insertMyCal(empNo, result);
+		Map<String, Object> result = new HashMap<>();
+		result.put("result", null); // 초기값 설정
+		try {
+			// 프로시저 호출
+			schsMapper.insertMyCal(empNo, result);
 
-	        // 결과 값이 null인 경우 기본값 0 반환
-	        Integer resultValue = (Integer) result.get("result");
-	        return (resultValue != null) ? resultValue : 0;
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return 0;  // 예외 발생 시 기본값 반환
-	    }
+			// 결과 값이 null인 경우 기본값 0 반환
+			Integer resultValue = (Integer) result.get("result");
+			return (resultValue != null) ? resultValue : 0;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return 0; // 예외 발생 시 기본값 반환
+		}
 	}
-	
+
 	@Override
-    @Transactional
-    public int permanentlyDel(int calNo) {
-        // 1. 일정관리 조회
-        List<Integer> schNoList = schsMapper.getSchedulesByCalNo(calNo);
+	@Transactional
+	public int permanentlyDel(int calNo) {
+		// 1. 일정관리 조회
+		List<Integer> schNoList = schsMapper.getSchedulesByCalNo(calNo);
 
-        // 2. 일정이 있다면 일정번호로 일정알림관리 조회 및 삭제
-        for (int schNo : schNoList) {
-            List<Integer> alarmNoList = schsMapper.getAlarmsByScheduleNo(schNo);
+		// 2. 일정이 있다면 일정번호로 일정알림관리 조회 및 삭제
+		for (int schNo : schNoList) {
+			List<Integer> alarmNoList = schsMapper.getAlarmsByScheduleNo(schNo);
 
-            // 일정알림 삭제
-            for (int alarmNo : alarmNoList) {
-            	schsMapper.deleteAlarm(alarmNo);
-            }
+			// 일정알림 삭제
+			for (int alarmNo : alarmNoList) {
+				schsMapper.deleteAlarm(alarmNo);
+			}
 
-            // 일정관리 삭제
-            schsMapper.deleteSchedule(schNo);
-        }
+			// 일정관리 삭제
+			schsMapper.deleteSchedule(schNo);
+		}
 
-        // 3. 캘린더 공유관리 삭제
-        schsMapper.deleteCalShares(calNo);
+		// 3. 캘린더 공유관리 삭제
+		schsMapper.deleteCalShares(calNo);
 
-        // 4. 캘린더 관리에서 캘린더 삭제
-        return schsMapper.deleteCalendar(calNo);
-    }
-	
+		// 4. 캘린더 관리에서 캘린더 삭제
+		return schsMapper.deleteCalendar(calNo);
+	}
+
 }
