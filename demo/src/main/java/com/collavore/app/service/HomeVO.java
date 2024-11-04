@@ -41,4 +41,10 @@ public class HomeVO {
 	private Integer authNo;
 	private Integer menuNo;
 	private String menuValue;
+	
+	// 상세업무관련
+	private String todoContent;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date todoRegDate;
+	private String todoImportance;
 }

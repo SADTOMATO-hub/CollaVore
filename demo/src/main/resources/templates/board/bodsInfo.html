@@ -157,7 +157,7 @@ button:active {
 					<form class="form-horizontal" name="insertForm"
 						th:action="@{/board/bodsInsert}" method="post">
 						<input type="hidden" name="boardNo" th:value="${param.boardNo}" />
-						<input type="hidden" name="empNo" th:value="${empNo}" />
+						<input type="hidden" name="empNo" id="empNo" th:value="${empNo}" />
 
 						<div class="form-group row">
 							<label for="title"
@@ -204,13 +204,10 @@ button:active {
 			<div class="card_memberInsert">
 				<h3>댓글 목록</h3>
 				<div class="col-md-9">
-					<input type="hidden" id="postNo" name="postNo" th:value="${bods.postNo}"> 
-					<input type="hidden" name="writer" th:value="${empNo}">
 					<form class="form-horizontal" name="insertBodsComts"
 						th:action="@{/board/bodsComts}" method="post"  th:if="${bodsCfig.commentAuth} >= ${userGrade}">
-						<input type="hidden" id="postNo" name="postNo"
-							th:value="${bods.postNo}"> <input type="hidden"
-							name="writer" th:value="${empNo}">
+						<input type="hidden" id="postNo" name="postNo" th:value="${bods.postNo}"> 
+						<input type="hidden" name="writer" th:value="${empNo}">
 						<div class="form-group row">
 							<label for="content" class="col-sm-3 text-end control-label col-form-label">제목</label>
 							<div class="col-sm-9">
@@ -247,78 +244,87 @@ button:active {
 
 		//ajax로 댓글 불러오기
 		let postNo = $('#postNo').val();
+		let empNo = $('#empNo').val();
 
 		getCommentList();
 
 		function getCommentList() {
-			$
-					.ajax({
-						type : "get", // HTTP 요청 메소드를 GET으로 설정
-						url : `/board/comtsList?postNo=` + postNo, // URL에 postNo를 동적으로 추가
-						success : function(rs) { // 요청이 성공했을 때 실행되는 콜백 함수
-							console.log(rs);// 서버에서 받은 결과
-							let commentsBody = $('#commentsBody'); // 테이블 본문 요소를 선택
-							commentsBody.empty(); // 기존의 댓글 목록을 지움 (선택 사항)
-							rs
-									.forEach(function(comt) { // 결과로 받은 댓글 목록을 순회
-										let row = `<tr  id="cmtNo${comt.cmtNo}">`
-												+ // HTML 테이블 행 생성
-												`<td>`
-												+ comt.cmtNo
-												+ '</td>'
-												+ // 댓글 번호
-												`<td id="replyno${comt.writer}">`
-												+ comt.writer
-												+ '</td>'
-												+ // 작성자
-												`<td id="updateContent${comt.cmtNo}">`
-												+ comt.content
-												+ '</td>'
-												+ // 댓글 내용
-												'<td>'
-												+ comt.regDate
-												+ '</td>'
-												+ // 등록 날짜
-												`<td><button type="button" class="btn btn-danger" onclick='deletebodsComts("${comt.cmtNo}")'>댓글삭제</button></td>`
-												+ // 삭제버튼
-												`<td><button type="button" class="btn btn-success text-white" onclick='updateBodsComtsform(${comt.cmtNo},"${comt.writer}","${comt.content}")'>댓글수정</button></td>`
-												+ // 수정버튼 
-												'</tr>';
+		    $.ajax({
+		        type: "get", // HTTP 요청 메소드를 GET으로 설정
+		        url: `/board/comtsList?postNo=` + postNo, // URL에 postNo를 동적으로 추가
+		        success: function(rs) { // 요청이 성공했을 때 실행되는 콜백 함수
+		            console.log(rs); // 서버에서 받은 결과
+		            let commentsBody = $('#commentsBody'); // 테이블 본문 요소를 선택
+		            commentsBody.empty(); // 기존의 댓글 목록을 지움 (선택 사항)
+		            
+		            rs.forEach(function(comt) { // 결과로 받은 댓글 목록을 순회
+		                let row = `<tr id="cmtNo${comt.cmtNo}">`
+		                    + `<td>${comt.cmtNo}</td>` // 댓글 번호
+		                    + `<td id="replyno${comt.writer}">${comt.writer}</td>` // 작성자
+		                    + `<td id="updateContent${comt.cmtNo}">${comt.content}</td>` // 댓글 내용
+		                    + `<td>${comt.regDate}</td>`; // 등록 날짜
+		                
+		                // 현재 사용자와 댓글 작성자를 비교하여 수정 및 삭제 버튼 표시
+		                if (comt.empNo == empNo) {
+		                	let escapedContent = comt.content
+			                    .replace(/"/g, '\\"')    // "를 \"로 변환
+			                    .replace(/'/g, "\\'")     // '를 \'로 변환
+			                    .replace(/\n/g, "\\n");   // 줄바꿈을 \n로 변환
 
-										commentsBody.append(row);
-									});
+		                    row += `<td><button type="button" class="btn btn-danger" onclick='deletebodsComts("${comt.cmtNo}")'>댓글삭제</button></td>`
+		                        + `<td><button type="button" class="btn btn-success text-white" onclick='updateBodsComtsform("${comt.cmtNo}","${comt.writer}","${escapedContent}")'>댓글수정</button></td>`;
+		                } else {
+		                    row += `<td></td><td></td>`; // 빈 칸 추가
+		                }
 
-						}
-					});
+		                row += '</tr>';
+		                commentsBody.append(row);
+		            });
+		        }
+		    });
 		}
+
 		//댓글 수정 폼
-		//$("#comtsUpdate").on('click', updateBodsComts);
 		function updateBodsComtsform(cmtNo, writer, content) {
+		
+		    // 이미 수정 중인 댓글이 있는지 확인
+		    if ($('#cmtNo').val() != null) {
+		        alert("이미 수정 중인 댓글이 있습니다.");
+		        return;
+		    }
+		
+		    // 댓글 작성자와 내용 부분을 input과 textarea로 대체
+		    const editableRow = `
+		        <tr id="cmtNo${cmtNo}">
+		            <td>${cmtNo}</td>
+		            <td>${writer}</td>
+		            <td>
+		                <input type="hidden" id="cmtNo" name="cmtNo" value="${cmtNo}">
+		                <input type="text" id="updateContent${cmtNo}" value="${content}" style="width:100%;" maxlength="300" autofocus>
+		            </td>
+		            <td colspan="2">
+		                <button type="button" onclick="updateBodsComts(${cmtNo})" class="btn btn-success text-white">수정 완료</button>
+		                <button type="button" onclick="cancelUpdate(${cmtNo}, '${content}')" class="btn btn-secondary">취소</button>
+		            </td>
+		        </tr>`;
+		
+		    // 기존 댓글 행을 수정할 수 있는 행으로 교체
+		    $('#cmtNo' + cmtNo).replaceWith(editableRow);
+		}
+		
+		// 수정 취소 시 원래 내용으로 복구하는 함수
+		function cancelUpdate(cmtNo, originalContent) {
+		    const originalRow = `
+		        <tr id="cmtNo${cmtNo}">
+		            <td>${cmtNo}</td>
+		            <td>${$('#replyno' + cmtNo).text()}</td>
+		            <td id="updateContent${cmtNo}">${originalContent}</td>
+		            <td></td>
+		            <td></td>
+		        </tr>`;
+		    $('#cmtNo' + cmtNo).replaceWith(originalRow);
+		}
 
-			var updatebodsComtsView = "";
-
-			if ($('#cmtNo').val() != null) {
-				alert("이미 수정 중인 댓글이 있습니다.");
-				return;
-			}
-
-			updatebodsComtsView += '<tr><td colspan="6"><div class="reply" style="white-space:pre" id="cmtNo'+cmtNo+'">';
-			updatebodsComtsView += '<p>&nbsp;&nbsp;' + writer + ' / ' + '</p>';
-			updatebodsComtsView += '<p> <label>&nbsp;&nbsp;댓글 수정</label> <br>';
-			updatebodsComtsView += '<input type="hidden" id="cmtNo" name="cmtNo" value="'+cmtNo+'">';
-			updatebodsComtsView += '<textarea style="white-space:pre" id="updateContent'+cmtNo+'" class="mini2" rows="5" cols="80" name="updateContent'+cmtNo+'"';
-				updatebodsComtsView += 'maxlength="300" placeholder="'+content+'" autofocus>'
-					+ content + '</textarea></p>';
-			updatebodsComtsView += '<div class="row">';
-			updatebodsComtsView += '<div class="col-12">';
-			updatebodsComtsView += '<button type="button" onclick="updateBodsComts('
-					+ cmtNo + ')" class="mini">댓글 수정</button>';
-
-			updatebodsComtsView += '</div></div> </div></td></tr>';
-
-			$('#cmtNo' + cmtNo).replaceWith(updatebodsComtsView);
-
-		};
 
 		// 댓글 수정
 		//$("#comtsUpdate").on('click', updateBodsComts);

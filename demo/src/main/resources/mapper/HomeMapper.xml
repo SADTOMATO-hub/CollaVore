@@ -131,4 +131,22 @@
 		DELETE FROM menusauth
 		WHERE auth_no = #{authNo}
 	</delete>
+	
+	<select id="selectTodoList" resultType="HomeVO">
+		SELECT * 
+		FROM (
+			SELECT CASE WHEN content IS NULL THEN name ELSE content END AS todoContent
+			    , reg_date AS todoRegDate
+			    , importance AS todoImportance
+			FROM projdwrks
+			WHERE mgr_no = #{empNo}
+			<![CDATA[
+	    		AND is_status <> 'k4'
+			]]>
+			ORDER BY reg_date DESC
+			) 
+		<![CDATA[
+			WHERE ROWNUM <= 5
+		]]>
+	</select>
 </mapper>

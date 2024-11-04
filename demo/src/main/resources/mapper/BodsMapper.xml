@@ -118,12 +118,10 @@
 	<!-- 댓글 전체 조회 -->
 	<select id="selectBodsComtsAll" resultType="BodsComtsVO">
 		SELECT cmt_no
-		,(select name
-		from employees
-		where emp_no = writer) writer
+		, writer AS empNo
+		,(select name from employees where emp_no = writer) writer
 		, content
-		,
-		reg_date
+		, reg_date
 		, post_no
 		FROM bodscomts
 		where post_no = #{postNo}
