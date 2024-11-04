@@ -9,7 +9,7 @@ public interface SchsService {
 	public List<SchsVO> SchsList(int empNo);
 	// 풀캘린더에서 이벤트드롭으로 날짜시간값만 바꾸기
 	//public int updateEventTime(Integer schNo, String startDate, String endDate);
-	public int updateEventTime(Integer schNo, String startDate, String endDate);
+	public int updateEventTime(SchsVO schsVO);
 
 	// 단건조회
 	public SchsVO SchsInfo(SchsVO schsVO);

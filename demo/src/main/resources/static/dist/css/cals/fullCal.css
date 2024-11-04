@@ -174,26 +174,6 @@ button {
     cursor: pointer;
 }
 
-/* 저장, 수정, 삭제 버튼 스타일 */
-button[type="submit"], #editBtn, #deleteBtn {
-    background-color: #007bff;
-    color: white;
-}
-
-button[type="submit"]:hover, #editBtn:hover, #deleteBtn:hover {
-    background-color: #0056b3;
-}
-
-/* 취소 버튼 스타일 */
-button.close {
-    background-color: #dc3545;
-    color: white;
-}
-
-button.close:hover {
-    background-color: #c82333;
-}
-
 
 /* 사이드바 관련 CSS */
 

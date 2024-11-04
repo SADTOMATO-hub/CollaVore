@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.collavore.app.cals.mapper.SchsMapper;
-import com.collavore.app.cals.service.CalsVO;
 import com.collavore.app.cals.service.SchsService;
 import com.collavore.app.cals.service.SchsVO;
 
@@ -28,9 +27,10 @@ public class SchsServiceImpl implements SchsService {
 
 	// 풀캘린더에서 이벤트 드롭으로 날짜 시간값만 바꾸기
 	@Override
-	public int updateEventTime(Integer schNo, String startDate, String endDate) {
+	public int updateEventTime(SchsVO schsVO) {
+		
 		try {
-			return schsMapper.updateEventTime(schNo, startDate, endDate);
+			return schsMapper.updateEventTime(schsVO);
 		} catch (Exception e) {
 			System.err.println("Error in SchsServiceImpl.updateEventTime: " + e.getMessage());
 			e.printStackTrace();
