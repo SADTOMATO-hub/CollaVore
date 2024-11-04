@@ -440,7 +440,23 @@
 		function makeTrTag(data, tabName) {
 		    const employeeListId = `employeeList-${tabName}`; // 해당 탭의 테이블 ID
 		    const employeeList = document.getElementById(employeeListId);
-	
+		    
+		    // 기존의 "등록된 사원이 없습니다" 메시지 제거
+		    const noDataMessage = document.querySelector(`#${employeeListId} .no-data-message`);
+		    if (noDataMessage) {
+		        noDataMessage.remove();
+		    }
+
+		    // 데이터가 없을 경우 "등록된 사원이 없습니다" 메시지 추가
+		    if (data.length === 0) {
+		        const row = document.createElement('tr');
+		        row.className = 'no-data-message';
+		        row.innerHTML = `<td colspan="4" class="text-center">등록된 사원이 없습니다</td>`;
+		        employeeList.appendChild(row);
+		        return;
+		    }
+
+		    // 데이터를 각각의 행으로 추가
 		    data.forEach(employee => {
 		        if (!document.querySelector(`#${employeeListId} #employeeRow-${employee.empNo}`)) {
 		            const row = document.createElement('tr');
@@ -454,13 +470,16 @@
 		            employeeList.appendChild(row);
 		        }
 		    });
-			let deptNo = $('#departmentSelect').val();
-			deptEmpList(deptNo, tabName)
+		    
+		    // 부서 선택에 따라 권한 없는 사원 목록을 다시 로드
+		    let deptNo = $('#departmentSelect').val();
+		    deptEmpList(deptNo, tabName);
 		}
+
 		
 		// 특정 권한 목록에서 사원 삭제하는 함수
 		function removeEmployee(authNo, listId) {
-			console.log('asfasfas')
+		    console.log('asfasfas');
 		    let deleteUrl = `/removeMenuAuth/${authNo}`; // authNo를 이용하여 서버에 삭제 요청
 
 		    fetch(deleteUrl, {
@@ -474,12 +493,22 @@
 		            if (row) {
 		                row.remove();
 		            }
+
+		            // 삭제 후 tbody가 비어 있으면 "등록된 사원이 없습니다" 메시지 추가
+		            const employeeList = document.getElementById(listId);
+		            if (employeeList.children.length === 0) {
+		                const noDataMessage = document.createElement('tr');
+		                noDataMessage.className = 'no-data-message';
+		                noDataMessage.innerHTML = `<td colspan="4" class="text-center">등록된 사원이 없습니다</td>`;
+		                employeeList.appendChild(noDataMessage);
+		            }
 		        } else {
 		            console.error('권한 삭제 실패:', result.message);
 		        }
 		    })
 		    .catch(error => console.error('서버 요청 오류:', error));
 		}
+
 
 	</script>
 

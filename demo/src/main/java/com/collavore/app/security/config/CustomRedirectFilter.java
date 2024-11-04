@@ -13,7 +13,7 @@ public class CustomRedirectFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         if (request.getRequestURI().equals("/")) {
-            response.sendRedirect("/myPage"); // 루트("/")로 접근 시 리다이렉트
+            response.sendRedirect("/dashboard"); // 루트("/")로 접근 시 리다이렉트
             return;
         }
         filterChain.doFilter(request, response); // 다른 요청은 필터 체인으로 전달
