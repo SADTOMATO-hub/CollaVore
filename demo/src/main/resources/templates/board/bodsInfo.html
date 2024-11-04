@@ -250,31 +250,36 @@ button:active {
 
 		function getCommentList() {
 		    $.ajax({
-		        type: "get", // HTTP 요청 메소드를 GET으로 설정
-		        url: `/board/comtsList?postNo=` + postNo, // URL에 postNo를 동적으로 추가
-		        success: function(rs) { // 요청이 성공했을 때 실행되는 콜백 함수
-		            console.log(rs); // 서버에서 받은 결과
-		            let commentsBody = $('#commentsBody'); // 테이블 본문 요소를 선택
-		            commentsBody.empty(); // 기존의 댓글 목록을 지움 (선택 사항)
-		            
-		            rs.forEach(function(comt) { // 결과로 받은 댓글 목록을 순회
+		        type: "get",
+		        url: `/board/comtsList?postNo=` + postNo,
+		        success: function(rs) {
+		            console.log(rs);
+		            let commentsBody = $('#commentsBody');
+		            commentsBody.empty();
+
+		            if (rs.length === 0) {
+		                // 등록된 댓글이 없을 경우 안내 메시지 추가
+		                commentsBody.append('<tr><td colspan="6" class="text-center">등록된 댓글이 없습니다.</td></tr>');
+		                return;
+		            }
+
+		            rs.forEach(function(comt) {
 		                let row = `<tr id="cmtNo${comt.cmtNo}">`
-		                    + `<td>${comt.cmtNo}</td>` // 댓글 번호
-		                    + `<td id="replyno${comt.writer}">${comt.writer}</td>` // 작성자
-		                    + `<td id="updateContent${comt.cmtNo}">${comt.content}</td>` // 댓글 내용
-		                    + `<td>${comt.regDate}</td>`; // 등록 날짜
-		                
-		                // 현재 사용자와 댓글 작성자를 비교하여 수정 및 삭제 버튼 표시
+		                    + `<td>${comt.cmtNo}</td>`
+		                    + `<td id="replyno${comt.writer}">${comt.writer}</td>`
+		                    + `<td id="updateContent${comt.cmtNo}">${comt.content}</td>`
+		                    + `<td>${comt.regDate}</td>`;
+
 		                if (comt.empNo == empNo) {
-		                	let escapedContent = comt.content
-			                    .replace(/"/g, '\\"')    // "를 \"로 변환
-			                    .replace(/'/g, "\\'")     // '를 \'로 변환
-			                    .replace(/\n/g, "\\n");   // 줄바꿈을 \n로 변환
+		                    let escapedContent = comt.content
+		                        .replace(/"/g, '\\"')
+		                        .replace(/'/g, "\\'")
+		                        .replace(/\n/g, "\\n");
 
 		                    row += `<td><button type="button" class="btn btn-danger" onclick='deletebodsComts("${comt.cmtNo}")'>댓글삭제</button></td>`
 		                        + `<td><button type="button" class="btn btn-success text-white" onclick='updateBodsComtsform("${comt.cmtNo}","${comt.writer}","${escapedContent}")'>댓글수정</button></td>`;
 		                } else {
-		                    row += `<td></td><td></td>`; // 빈 칸 추가
+		                    row += `<td></td><td></td>`;
 		                }
 
 		                row += '</tr>';
@@ -283,6 +288,7 @@ button:active {
 		        }
 		    });
 		}
+
 
 		//댓글 수정 폼
 		function updateBodsComtsform(cmtNo, writer, content) {
