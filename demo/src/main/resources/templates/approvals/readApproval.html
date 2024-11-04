@@ -152,6 +152,7 @@ button:active {
 					<span>전자결재 관리 > 전자결재 상세</span>
 				</div>
 			</div>
+			<input type="hidden" id="eaNo" th:value="approvals.eaNo">
 			<div class="card_memberInsert">
 				<div class="col-md-9">
 					<div class="form-group row">
@@ -235,6 +236,7 @@ button:active {
 
 <script>
 	var sort = $('input[name=sort]').val();
+	const eaNo = $('#eaNo').val();
 	$(".approveBtn").on('click', function(event) {
 		var approveOrDenine = $(this).val();
 		const earNo = this.getAttribute('data-ear-no');
@@ -245,7 +247,8 @@ button:active {
 			contentType : "application/json",
 			data : JSON.stringify({
 				earNo : earNo,
-				approverStatus : approveOrDenine
+				approverStatus : approveOrDenine,
+				ea_no : eaNo
 			}),
 			success : function(response) {
 				if (confirm(`${buttonText} 하시겠습니까?`) == true) { //확인

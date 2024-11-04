@@ -265,50 +265,69 @@ button:active {
 }
 </style>
 	<div class="body-page-wrapper">
-		<div class="purple-background-container">
-			<div class="breadcrumb">
-				<div class="breadcrumb-left">
-					<h4>진행 중인 전자결재</h4>
-					<p>진행 중인 전자결재 목록 페이지 입니다.</p>
-				</div>
-				<div class="breadcrumb-right">
-					<span>진행 중인 전자결재 > 전자결재 목록</span>
-				</div>
-			</div>
+    <div class="purple-background-container">
+        <div class="breadcrumb">
+            <div class="breadcrumb-left">
+                <h4>진행 중인 전자결재</h4>
+                <p>진행 중인 전자결재 목록 페이지 입니다.</p>
+            </div>
+            <div class="breadcrumb-right">
+                <span>진행 중인 전자결재 > 전자결재 목록</span>
+            </div>
+        </div>
 
-			<div class="card_memberList">
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th></th>
-							<th>순번</th>
-							<th>전자결재명</th>
-							<th>기안자</th>
-							<th>기안일</th>
-							<th:block th:if="${#strings.equals(approvalStatus, 'a1')}"> 
-									<th></th>										
-							</th:block>
-						</tr>
-					</thead>
-					<tbody>
-						<th:block th:each=" myAppr, sts : ${myApprList}">
-							<tr
-								th:onclick="|location.href='@{/approvals/readApprInfo(eaNo=${myAppr.eaNo})}'|">
-								<td><input type="hidden" id="eaNo"
-									th:value="${myAppr.eaNo}"></td>
-								<td>[[${sts.count}]]</td>
-								<td>[[${myAppr.title}]]</td>
-								<td>[[${myAppr.drafterName}]]</td>
-								<td>[[${#dates.format(myAppr.regDate, "yyyy년 MM월 dd일")}]]</td>
-								<th:block
-									th:if="${session.userEmpNo == myAppr.drafterEmpNo && #strings.equals(myAppr.approvalStatus, 'a1')}">
-									<td><button type="button" class="btn btn-danger">삭제</button></td>
-								</th:block>
-							</tr>
-						</th:block>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
+        <div class="card_memberList">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>순번</th>
+                        <th>전자결재명</th>
+                        <th>기안자</th>
+                        <th>기안일</th>
+                        <th:block th:if="${#strings.equals(approvalStatus, 'a1')}"> 
+                            <th></th>                                        
+                        </th:block>
+                    </tr>
+                </thead>
+                <tbody>
+                    <th:block th:each=" myAppr, sts : ${myApprList}">
+                        <tr class="approval-row">
+                            <td><input type="hidden" id="eaNo" th:value="${myAppr.eaNo}"></td>
+                            <td>[[${sts.count}]]</td>
+                            <td>[[${myAppr.title}]]</td>
+                            <td>[[${myAppr.drafterName}]]</td>
+                            <td>[[${#dates.format(myAppr.regDate, "yyyy년 MM월 dd일")}]]</td>
+                            <th:block
+                            	th:if="${session.userEmpNo == myAppr.approverEmpNo && #strings.equals(myAppr.approvalStatus, 'a1')}">
+                            	<td></td>
+                            </th:block>
+                            <td>
+                            <th:block
+                                th:if="${session.userEmpNo == myAppr.drafterEmpNo && #strings.equals(myAppr.approvalStatus, 'a1')}">
+                                <td><button type="button" class="btn btn-danger delete-button">삭제</button></td>
+                            </th:block>
+                        </tr>
+                    </th:block>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<script>
+    const eaNo = $('#eaNo').val();
+    $(document).ready(function() {
+        $(".approval-row").on("click", function(event) {
+            if (!$(event.target).hasClass("delete-button")) {
+                location.href = '/approvals/readApprInfo?eaNo=' + eaNo;
+            }
+        });
+        $(".delete-button").on("click", function(event) {
+            event.stopPropagation();
+            if (confirm("해당 전자결재를 삭제하시겠습니까?")) {
+                location.href = '/approvals/deleteAppr?eaNo=' + eaNo;
+            }
+        });
+    });
+</script>
 </div>
+
