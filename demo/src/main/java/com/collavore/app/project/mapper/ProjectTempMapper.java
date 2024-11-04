@@ -40,7 +40,13 @@ public interface ProjectTempMapper {
 	// 상세 업무 템플릿 수정
 	public int projectDwrktempUpdate(ProjectDWorkTempVO projectDworktempVO);
 	
-	List<ProjectWorkTempVO> projectwrktemplistInfo(Integer projTempNo);
+	List<ProjectTempVO> projectwrktemplistInfo(Integer projTempNo);
 	
 	List<ProjectDWorkTempVO> projectDwrktemplistInfo(Integer pwtNo);
+	
+	// 업무 템플릿 삭제
+	public int projectwrkdelete(Integer pwtNo);
+	
+	// 상세업무 템플릿 삭제
+	public int projectDwrkdelete(Integer pwtNo);
 }

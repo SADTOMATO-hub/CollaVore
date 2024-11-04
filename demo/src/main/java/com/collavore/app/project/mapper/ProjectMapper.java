@@ -113,5 +113,8 @@ public interface ProjectMapper {
 	// 프로젝트 업무 파일 단건 삭제
 	public int projectwrkoneDelete(int pwNo);
 	
+	// 프로젝트 파일 삭제
+	public int fileDelete(int projFileNo);
+	
 	
 }

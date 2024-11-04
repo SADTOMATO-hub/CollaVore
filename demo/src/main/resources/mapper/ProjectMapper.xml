@@ -549,12 +549,21 @@
 		WHERE 
 			pf_no = #{pfNo}
 	</select>		
-     <!-- 프로젝트 파일 삭제-->
+     <!-- 프로젝트 파일 삭제(프로젝트 삭제 시 전체 삭제)-->
 	<delete id="ProjectfileDelete" parameterType="int">
 		delete 
 		FROM 
 	        projfiles
 		WHERE 
 		 	pf_no = #{pfNo}
+	</delete> 	
+	
+     <!-- 프로젝트 파일 삭제(단건)-->
+	<delete id="fileDelete" parameterType="int">
+		delete 
+		FROM 
+	        projfiles
+		WHERE 
+		 	proj_file_no = #{projFileNo}
 	</delete> 	
 </mapper>
