@@ -377,7 +377,6 @@ $(document).ready(
 				}
 			});
 		});
-
 	//modal에서 선택한 결재자 정보를 부모 페이지에 넘기는 기능
 	  $(document).ready(function(){
 			$("#modalSubmit").on("click", function(e){
@@ -401,7 +400,7 @@ $(document).ready(
 	var drafterEmpNo = $('input[name=drafterEmpNo]').val(userEmpNo);	
 		event.preventDefault(); // 폼 제출 방지
 		oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
-		if ( 	content  == null
+		if ( 	   content  == null
 				|| content == '' 
 				|| content == '&nbsp;'
 				|| content == '<br>' 
