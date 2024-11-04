@@ -71,7 +71,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			//============ 풀캘린더API ============
 			var calendarEl = document.getElementById('calendar');
 			var calendar = new FullCalendar.Calendar(calendarEl, {
-
 				locale: 'ko',
 				headerToolbar: {
 					left: 'prev,next today',
