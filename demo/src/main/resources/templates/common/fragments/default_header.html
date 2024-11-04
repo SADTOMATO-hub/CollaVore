@@ -183,8 +183,8 @@
 							id="project-tab" data-bs-toggle="tab" href="#project" role="tab"
 							aria-controls="project" aria-selected="false">프로젝트관리</a></li>
 						<li class="nav-item" role="presentation"><a class="nav-link"
-							id="calendar-tab" data-bs-toggle="tab" href="#calendar"
-							role="tab" aria-controls="calendar" aria-selected="false">일정관리</a>
+							id="cals-tab" data-bs-toggle="tab" href="#cals"
+							role="tab" aria-controls="cals" aria-selected="false">일정관리</a>
 						</li>
 						<li class="nav-item" role="presentation"><a class="nav-link"
 							id="approval-tab" data-bs-toggle="tab" href="#approval"
@@ -254,8 +254,9 @@
 								<tbody id="employeeList-project"></tbody>
 							</table>
 						</div>
-						<div class="tab-pane fade" id="calendar" role="tabpanel"
-							aria-labelledby="calendar-tab">
+						
+						<div class="tab-pane fade" id="cals" role="tabpanel"
+							aria-labelledby="cals-tab">
 							<h6>일정관리 권한 목록</h6>
 							<table class="table">
 								<thead>
@@ -266,9 +267,10 @@
 										<th></th>
 									</tr>
 								</thead>
-								<tbody id="employeeList-calendar"></tbody>
+								<tbody id="employeeList-cals"></tbody>
 							</table>
 						</div>
+						
 						<div class="tab-pane fade" id="approval" role="tabpanel"
 							aria-labelledby="approval-tab">
 							<h6>전자결재관리 권한 목록</h6>
@@ -301,9 +303,14 @@
 						</div>
 					</div>
 				</div>
+				
+				
+				
 			</div>
 		</div>
 	</div>
+	
+	
 	<script>
 		// 초기 로드 시 부서 목록 가져오기
 		window.onload = function() {
@@ -440,7 +447,12 @@
 		function makeTrTag(data, tabName) {
 		    const employeeListId = `employeeList-${tabName}`; // 해당 탭의 테이블 ID
 		    const employeeList = document.getElementById(employeeListId);
-		    
+
+		    // 기존 행 삭제
+		    while (employeeList.firstChild) {
+		        employeeList.removeChild(employeeList.firstChild);
+		    }
+
 		    // 기존의 "등록된 사원이 없습니다" 메시지 제거
 		    const noDataMessage = document.querySelector(`#${employeeListId} .no-data-message`);
 		    if (noDataMessage) {

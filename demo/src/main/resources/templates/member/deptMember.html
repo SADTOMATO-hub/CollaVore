@@ -217,7 +217,7 @@
 }
 
 /* 모달 영역 시작 */
-.modal {
+#employeeModal {
 	display: none;
 	position: fixed;
 	z-index: 1000;
@@ -229,7 +229,7 @@
 }
 
 /* 모달 내용 스타일 */
-.modal-content {
+#employeeModal .modal-content {
 	background-color: #fff;
 	margin: 0; /* 불필요한 외부 여백 제거 */
 	border-radius: 10px; /* 상단 둥글게 */
@@ -240,7 +240,7 @@
 }
 
 /* 모달 헤더 스타일 */
-.modal-header {
+#employeeModal .modal-header {
 	display: flex;
 	justify-content: center; /* 제목을 중앙 정렬 */
 	align-items: center;
@@ -255,14 +255,14 @@
 }
 
 /* h2 중앙 정렬 */
-.modal-header h2 {
+#employeeModal .modal-header h2 {
 	flex-grow: 1; /* 가운데 공간을 채워서 중앙 정렬 효과 */
 	text-align: center;
 	margin: 0; /* 기본 margin 제거 */
 }
 
 /* X 버튼 스타일 */
-.modal-close {
+#employeeModal .modal-close {
 	position: absolute;
 	right: 20px; /* 오른쪽에 고정 */
 	color: #fff;
@@ -271,14 +271,14 @@
 	cursor: pointer;
 }
 
-.modal-close:hover, .modal-close:focus {
+#employeeModal .modal-close:hover, .modal-close:focus {
 	color: #ccc;
 	text-decoration: none;
 	cursor: pointer;
 }
 
 /* 모달 안의 사진 중앙 정렬 */
-.modal-profile-photo {
+#employeeModal .modal-profile-photo {
 	display: flex;
 	justify-content: center; /* 수평 중앙 정렬 */
 	align-items: center; /* 수직 중앙 정렬 */
@@ -286,7 +286,7 @@
 	margin-bottom: 15px; /* 아래쪽 여백 */
 }
 
-.modal-profile-photo img {
+#employeeModal .modal-profile-photo img {
 	width: 200px;
 	height: 200px;
 	border-radius: 50%; /* 이미지 둥글게 */
@@ -297,7 +297,7 @@
 }
 
 /* 모달 폼 그룹 스타일 */
-.modal-form-group {
+#employeeModal .modal-form-group {
 	margin-top: 15px;
 	display: flex;
 	justify-content: flex-start; /* 라벨과 인풋 필드를 동일 라인에 배치 */
@@ -305,7 +305,7 @@
 }
 
 /* 라벨 스타일 */
-.modal-label {
+#employeeModal .modal-label {
 	display: inline-block;
 	width: 100px; /* 라벨 가로 사이즈 조정 */
 	font-weight: bold;
@@ -315,7 +315,7 @@
 }
 
 /* 인풋, 텍스트 영역 스타일 */
-.modal-input, .modal-textarea {
+#employeeModal .modal-input, .modal-textarea {
 	width: calc(100% - 160px); /* 인풋, 텍스트 영역 가로 사이즈 조정 */
 	padding: 8px;
 	border-radius: 4px;
@@ -324,17 +324,17 @@
 	font-size: 14px;
 }
 
-.modal-span {
+#employeeModal .modal-span {
 	width: calc(100% - 160px); /* 인풋, 텍스트 영역 가로 사이즈 조정 */
 	padding: 8px;
 }
 /* 텍스트 영역 높이 */
-.modal-textarea {
+#employeeModal .modal-textarea {
 	height: 100px; /* 텍스트 영역 높이 */
 	resize: none;
 }
 /* 저장 버튼 스타일 */
-.modal-button {
+#employeeModal .modal-button {
 	display: block; /* 중앙 정렬을 위해 block 요소로 변경 */
 	padding: 10px 20px;
 	background-color: #6c5ce7;
@@ -347,7 +347,7 @@
 }
 
 /* 마우스 호버 시 효과 */
-.modal-button :hover {
+#employeeModal .modal-button :hover {
 	background-color: #5a4bcf; /* 호버 시 더 어두운 보라색으로 변경 */
 }
 </style>

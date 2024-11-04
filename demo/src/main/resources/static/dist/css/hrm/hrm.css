@@ -304,7 +304,7 @@
 
 
 
-.modal {
+#deptModal {
     display: none; /* 기본적으로 모달 숨김 */
     position: fixed;
     z-index: 1;
@@ -315,7 +315,7 @@
     background-color: rgba(0, 0, 0, 0.4); /* 반투명 배경 */
 }
 
-.modal-content {
+#deptModal .modal-content {
     background-color: white;
     margin: 15% auto;
     padding: 20px;
@@ -325,7 +325,7 @@
     border-radius: 8px;
 }
 
-.close-button {
+#deptModal .close-button {
     color: #aaa;
     float: right;
     font-size: 28px;
@@ -333,8 +333,8 @@
     cursor: pointer;
 }
 
-.close-button:hover,
-.close-button:focus {
+#deptModal .close-button:hover,
+#deptModal .close-button:focus {
     color: black;
     text-decoration: none;
     cursor: pointer;

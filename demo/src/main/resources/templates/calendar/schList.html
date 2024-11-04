@@ -3,10 +3,312 @@
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
 
-	<script src='../dist/js/cals/index.global.js'></script>
-	<script src='../dist/js/cals/fullCal.js'></script>
-	<link rel="stylesheet" href='../dist/css/cals/fullCal.css'>
-	<style>
+	<div class="body-page-wrapper">
+		<div class="purple-background-container">
+			<div class="breadcrumb">
+				<div class="breadcrumb-left">
+					<h4>일정관리</h4>
+					<p>일정관리 페이지 입니다.</p>
+				</div>
+				<div class="breadcrumb-right">
+					<span>일정관리 > 일정조회</span>
+				</div>
+			</div>
+			<div class="card_memberList" id="calendar"></div>
+		</div>
+	</div>
+
+
+	<!-- 일정 추가 모달 -->
+	<div id="addScheduleModal" class="modal">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2 class="modal-title" id="addScheduleModalLabel">일정 생성</h2>
+				<!-- <button type="button" class="btn-close" data-bs-dismiss="modal"
+					aria-label="Close"></button> -->
+			</div>
+			<div class="modal-body">
+				<form id="scheduleForm">
+					<!-- 캘린더 선택 -->
+					<div class="input-group">
+						<label class="input-group-text" for="calendarSelectBox">캘린더
+							선택</label> <select class="form-select" id="calendarSelectBox"
+							style="margin-top: 10px;">
+						</select>
+					</div>
+					<div class="input-group">
+						<label class="input-group-text" for="title">일정 제목</label> <input
+							type="text" style="margin-top: 10px;" class="form-control"
+							id="title" name="title" placeholder="제목 입력" aria-label="title"
+							aria-describedby="basic-addon1">
+					</div>
+					<div class="input-group">
+						<label class="input-group-text" for="startDate">일정 시작일</label> <input
+							type="date" style="margin-top: 10px;" id="startDate"
+							class="form-control" required> <label
+							class="input-group-text" for="startTime">시간</label> <input
+							type="time" style="margin-top: 10px;" id="startTime"
+							class="form-control" required>
+					</div>
+					<div class="input-group"
+						style="display: flex; align-items: center;">
+						<label for="allDay" class="input-group-text col-form-label"
+							style="width: auto;">종일여부</label> <input type="checkbox"
+							class="btn-check" id="allDay" autocomplete="off"> <label
+							class="btn btn-outline-primary" for="allDay"
+							style="margin-top: 17px;">종일 알림</label>
+					</div>
+					<div class="input-group">
+						<label class="input-group-text" for="endDate">일정 종료일</label> <input
+							type="date" style="margin-top: 10px;" id="endDate"
+							class="form-control" required> <label
+							class="input-group-text" for="endTime">시간</label> <input
+							type="time" style="margin-top: 10px;" id="endTime"
+							class="form-control" required>
+					</div>
+					<!-- 알림 여부 -->
+					<div class="input-group"
+						style="display: flex; align-items: center;">
+						<label for="isAlarm" class="input-group-text col-form-label"
+							style="width: auto;">알림 설정</label> <input type="checkbox"
+							class="btn-check" id="isAlarm" autocomplete="off"> <label
+							class="btn btn-outline-primary" for="isAlarm"
+							style="margin-top: 17px;">알림 등록</label>
+					</div>
+					<!-- 알림 설정 필드 (기본적으로 숨김 처리) -->
+					<div id="alarmFields" style="display: none;">
+						<div class="input-group">
+							<label class="input-group-text" for="alarmFrequency">알림
+								빈도</label> <select class="form-select" id="alarmFrequency"
+								style="margin-top: 10px;">
+								<option value="daily">매일</option>
+								<option value="weekly">매주</option>
+								<option value="monthly">매달</option>
+							</select>
+						</div>
+						<!-- 매일 알림 -->
+						<div id="dailyRepeat" style="display: none;">
+							<div class="input-group">
+								<input type="number" id="dailyInterval"
+									style="margin-top: 10px;" min="1" max="24" value="1"
+									class="form-control"> <label class="input-group-text"
+									for="dailyInterval">시 마다</label>
+							</div>
+						</div>
+						<!-- 매주 알림 -->
+						<div id="weeklyRepeat" style="display: none;">
+							<div class="input-group"
+								style="display: flex; align-items: center;">
+								<label class="input-group-text" for="weeklyDays">알림 요일
+									선택</label>
+							</div>
+							<div id="weeklyDays">
+								<div class="input-group"
+									style="display: flex; align-items: center;">
+									<input type="checkbox" class="btn-check weekly-checkbox"
+										id="monday" name="weeklyDay" autocomplete="off" value="mon">
+									<label class="btn btn-outline-primary" for="monday"
+										style="margin-top: 17px;">월요일</label> <input type="checkbox"
+										class="btn-check weekly-checkbox" id="tuesday"
+										name="weeklyDay" autocomplete="off" value="tue"> <label
+										class="btn btn-outline-primary" for="tuesday"
+										style="margin-top: 17px;">화요일</label> <input type="checkbox"
+										class="btn-check weekly-checkbox" id="wednesday"
+										name="weeklyDay" autocomplete="off" value="wed"> <label
+										class="btn btn-outline-primary" for="wednesday"
+										style="margin-top: 17px;">수요일</label> <input type="checkbox"
+										class="btn-check weekly-checkbox" id="thursday"
+										name="weeklyDay" autocomplete="off" value="thu"> <label
+										class="btn btn-outline-primary" for="thursday"
+										style="margin-top: 17px;">목요일</label> <input type="checkbox"
+										class="btn-check weekly-checkbox" id="friday" name="weeklyDay"
+										autocomplete="off" value="fri"> <label
+										class="btn btn-outline-primary" for="friday"
+										style="margin-top: 17px;">금요일</label> <input type="checkbox"
+										class="btn-check weekly-checkbox" id="saturday"
+										name="weeklyDay" autocomplete="off" value="sat"> <label
+										class="btn btn-outline-primary" for="saturday"
+										style="margin-top: 17px;">토요일</label> <input type="checkbox"
+										class="btn-check weekly-checkbox" id="sunday" name="weeklyDay"
+										autocomplete="off" value="sun"> <label
+										class="btn btn-outline-primary" for="sunday"
+										style="margin-top: 17px;">일요일</label>
+								</div>
+								<div class="input-group">
+									<input type="number" id="weeklyHour" style="margin-top: 2px;"
+										min="1" max="24" value="1" class="form-control"> <label
+										class="input-group-text" for="weeklyHour">시 마다</label>
+								</div>
+							</div>
+						</div>
+						<!-- 매월 알림 -->
+						<div id="monthlyRepeat" style="display: none;">
+							<div class="input-group">
+								<input type="number" style="margin-top: 10px;" id="monthlyDay"
+									min="1" max="31" value="1" class="form-control"> <label
+									class="input-group-text" for="monthlyDay">일</label> <input
+									type="number" style="margin-top: 10px;" id="monthlyHour"
+									min="1" max="24" value="1" class="form-control"> <label
+									class="input-group-text" for="monthlyHour">시 마다</label>
+							</div>
+						</div>
+					</div>
+					<div class="modal-buttons">
+						<button type="submit">저장</button>
+						<button type="button" id="addCancelBtn">취소</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- END  일정 추가 모달 -->
+
+
+	<!-- 일정 조회 모달 -->
+	<div id="viewScheduleModal" class="modal">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h2 class="modal-title" id="viewScheduleModalLabel">일정 조회</h2>
+			</div>
+			<div class="modal-body">
+				<form id="viewScheduleForm">
+					<!-- 캘린더 선택 -->
+					<div class="input-group">
+						<label class="input-group-text" for="viewCalendar">캘린더 선택</label>
+						<input type="text" style="margin-top: 10px;" class="form-control"
+							id="viewCalendar" name="viewCalendar" aria-label="title"
+							aria-describedby="basic-addon1" readonly>
+					</div>
+					<div class="input-group">
+						<label class="input-group-text" for="viewTitle">일정 제목</label> <input
+							type="text" style="margin-top: 10px;" class="form-control"
+							id="viewTitle" name="viewTitle" aria-label="title"
+							aria-describedby="basic-addon1" readonly>
+					</div>
+					<div class="input-group">
+						<label class="input-group-text" for="viewStartDate">일정 시작일</label>
+						<input type="date" style="margin-top: 10px;" id="viewStartDate"
+							class="form-control" required> <label
+							class="input-group-text" for="viewStartTime">시간</label> <input
+							type="time" style="margin-top: 10px;" id="viewStartTime"
+							class="form-control" required>
+					</div>
+					<div class="input-group">
+						<label class="input-group-text" for="viewEndDate">일정 종료일</label> <input
+							type="date" style="margin-top: 10px;" id="viewEndDate"
+							class="form-control" required> <label
+							class="input-group-text" for="viewEndTime">시간</label> <input
+							type="time" style="margin-top: 10px;" id="viewEndTime"
+							class="form-control" required>
+					</div>
+					<!-- 알림 여부 -->
+					<div id="viewAlarmCheckboxWrapper" style="display: none;">
+						<div class="input-group"
+							style="display: flex; align-items: center;">
+							<label for="viewAlarmUse" class="input-group-text col-form-label"
+								style="width: auto;">알림 설정</label> <input type="checkbox"
+								class="btn-check" id="viewAlarmUse" autocomplete="off">
+							<label class="btn btn-outline-primary" for="viewAlarmUse"
+								style="margin-top: 17px;">알림 등록</label>
+						</div>
+					</div>
+					<!-- 알림 설정 필드 (기본적으로 숨김 처리) -->
+					<div id="viewAlarmSettings" style="display: none;">
+						<div class="input-group">
+							<label class="input-group-text" for="viewAlarmType">알림 빈도</label>
+							<select class="form-select" id="viewAlarmType"
+								style="margin-top: 10px;">
+								<option value="d1">매일</option>
+								<option value="d2">매주</option>
+								<option value="d3">매달</option>
+							</select>
+						</div>
+						<!-- 매일 알림 -->
+						<div id="viewDailySettings" style="display: none;">
+							<div class="input-group">
+								<input type="number" id="viewDailyRepeat"
+									style="margin-top: 10px;" min="1" max="24" value="1"
+									class="form-control"> <label class="input-group-text"
+									for="viewDailyRepeat" style="width: auto;">시 마다</label>
+							</div>
+						</div>
+						<!-- 매주 알림 -->
+						<div id="viewWeeklySettings" style="display: none;">
+							<div class="input-group"
+								style="display: flex; align-items: center;">
+								<label class="input-group-text" for="weeklyDays"
+									style="width: auto;">알림 요일 선택</label>
+							</div>
+							<div id="weeklyDays">
+								<div class="input-group"
+									style="display: flex; align-items: center;">
+
+									<input type="checkbox" class="btn-check weekly-checkbox"
+										id="infoMonday" name="weeklyDay" autocomplete="off"
+										value="mon"> <label class="btn btn-outline-primary"
+										for="infoMonday" style="margin-top: 17px;">월요일</label> <input
+										type="checkbox" class="btn-check weekly-checkbox"
+										id="infoTuesday" name="weeklyDay" autocomplete="off"
+										value="tue"> <label class="btn btn-outline-primary"
+										for="infoTuesday" style="margin-top: 17px;">화요일</label> <input
+										type="checkbox" class="btn-check weekly-checkbox"
+										id="infoWednesday" name="weeklyDay" autocomplete="off"
+										value="wed"> <label class="btn btn-outline-primary"
+										for="infoWednesday" style="margin-top: 17px;">수요일</label> <input
+										type="checkbox" class="btn-check weekly-checkbox"
+										id="infoThursday" name="weeklyDay" autocomplete="off"
+										value="thu"> <label class="btn btn-outline-primary"
+										for="infoThursday" style="margin-top: 17px;">목요일</label> <input
+										type="checkbox" class="btn-check weekly-checkbox"
+										id="infoFriday" name="weeklyDay" autocomplete="off"
+										value="fri"> <label class="btn btn-outline-primary"
+										for="infoFriday" style="margin-top: 17px;">금요일</label> <input
+										type="checkbox" class="btn-check weekly-checkbox"
+										id="infoSaturday" name="weeklyDay" autocomplete="off"
+										value="sat"> <label class="btn btn-outline-primary"
+										for="infoSaturday" style="margin-top: 17px;">토요일</label> <input
+										type="checkbox" class="btn-check weekly-checkbox"
+										id="infoSunday" name="weeklyDay" autocomplete="off"
+										value="sun"> <label class="btn btn-outline-primary"
+										for="infoSunday" style="margin-top: 17px;">일요일</label>
+								</div>
+								<div class="input-group">
+									<input type="number" id="viewWeeklyRepeat"
+										style="margin-top: 2px;" min="1" max="24" value="1"
+										class="form-control"> <label class="input-group-text"
+										for="viewWeeklyRepeat" style="width: auto;">시 마다</label>
+								</div>
+							</div>
+						</div>
+						<!-- 매월 알림 -->
+						<div id="viewMonthlySettings" style="display: none;">
+							<div class="input-group">
+								<input type="number" style="margin-top: 10px;"
+									id="viewMonthlyDay" min="1" max="31" value="1"
+									class="form-control"> <label class="input-group-text"
+									for="viewMonthlyDay" style="width: auto;">일</label> <input
+									type="number" style="margin-top: 10px;" id="viewMonthlyHour"
+									min="1" max="24" value="1" class="form-control"> <label
+									class="input-group-text" for="viewMonthlyHour"
+									style="width: auto;">시 마다</label>
+							</div>
+						</div>
+					</div>
+					<div class="modal-buttons">
+						<button type="button" id="viewScheduleEditBtn">수정</button>
+						<button type="button" id="viewScheduleDeleteBtn">삭제</button>
+						<button type="button" class="viewScheduleClose">취소</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src='/dist/js/cals/index.global.js'></script>
+<script src='/dist/js/cals/fullCal.js'></script>
+<link rel="stylesheet" href='/dist/css/cals/fullCal.css'>
+<style>
 textarea {
 	width: 100%;
 	height: 6.25em;
@@ -274,350 +576,24 @@ button:active {
 	display: none;
 }
 
-
-
-
-
-
 /* 수호가 만져본 것 ; */
 /* 부모 요소에 flex 속성 적용 */
 /* 요일 선택을 담는 컨테이너 */
 /* 요일 버튼들을 가로로 배치 */
 #weeklyDays {
-    display: flex;
-    justify-content: space-between; /* 버튼 간 간격 조절 */
-    gap: 5px; /* 버튼 사이 간격 */
+	display: flex;
+	justify-content: space-between; /* 버튼 간 간격 조절 */
+	gap: 5px; /* 버튼 사이 간격 */
 }
 
 /* 각 요일 버튼에 동일한 너비 설정 */
 #weeklyDays .btn-outline-primary {
-    flex: 1; /* 버튼을 같은 너비로 설정 */
-    text-align: center; /* 텍스트 가운데 정렬 */
-    padding: 8px 0; /* 버튼의 세로 크기 조절 */
-    max-width: 80px; /* 각 버튼의 최대 너비 */
-    min-width: 50px; /* 각 버튼의 최소 너비 */
-    margin: 0; /* 버튼 간 기본 마진 제거 */
+	flex: 1; /* 버튼을 같은 너비로 설정 */
+	text-align: center; /* 텍스트 가운데 정렬 */
+	padding: 8px 0; /* 버튼의 세로 크기 조절 */
+	max-width: 80px; /* 각 버튼의 최대 너비 */
+	min-width: 50px; /* 각 버튼의 최소 너비 */
+	margin: 0; /* 버튼 간 기본 마진 제거 */
 }
 /* 수호가 만져본 것 ; */
-
-
 </style>
-	<div class="body-page-wrapper">
-		<div class="purple-background-container">
-			<div class="breadcrumb">
-				<div class="breadcrumb-left">
-					<h4>일정관리</h4>
-					<p>일정관리 페이지 입니다.</p>
-				</div>
-				<div class="breadcrumb-right">
-					<span>일정관리 > 일정조회</span>
-				</div>
-			</div>
-
-			<div class="card_memberList" id="calendar">
-			</div>
-		</div>
-	</div>
-	
-
-
-
-	<!-- 일정 추가 모달 -->
-	<div id="addScheduleModal" class="modal">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h2 class="modal-title" id="addScheduleModalLabel">일정 생성</h2>
-				<!-- <button type="button" class="btn-close" data-bs-dismiss="modal"
-					aria-label="Close"></button> -->
-			</div>
-			<div class="modal-body">
-				<form id="scheduleForm">
-					<!-- 캘린더 선택 -->
-					<div class="input-group">
-						<label class="input-group-text" for="calendarSelectBox">캘린더
-							선택</label> <select class="form-select" id="calendarSelectBox"
-							style="margin-top: 10px;">
-						</select>
-					</div>
-					<div class="input-group">
-						<label class="input-group-text" for="title">일정 제목</label> <input
-							type="text" style="margin-top: 10px;" class="form-control"
-							id="title" name="title" placeholder="제목 입력" aria-label="title"
-							aria-describedby="basic-addon1">
-					</div>
-					<div class="input-group">
-						<label class="input-group-text" for="startDate">일정 시작일</label> <input
-							type="date" style="margin-top: 10px;" id="startDate"
-							class="form-control" required> <label
-							class="input-group-text" for="startTime">시간</label> <input
-							type="time" style="margin-top: 10px;" id="startTime"
-							class="form-control" required>
-					</div>
-					<div class="input-group"
-						style="display: flex; align-items: center;">
-						<label for="allDay" class="input-group-text col-form-label"
-							style="width: auto;">종일여부</label> <input type="checkbox"
-							class="btn-check" id="allDay" autocomplete="off"> <label
-							class="btn btn-outline-primary" for="allDay"
-							style="margin-top: 17px;">종일 알림</label>
-					</div>
-					<div class="input-group">
-						<label class="input-group-text" for="endDate">일정 종료일</label> <input
-							type="date" style="margin-top: 10px;" id="endDate"
-							class="form-control" required> <label
-							class="input-group-text" for="endTime">시간</label> <input
-							type="time" style="margin-top: 10px;" id="endTime"
-							class="form-control" required>
-					</div>
-					<!-- 알림 여부 -->
-					<div class="input-group"
-						style="display: flex; align-items: center;">
-						<label for="isAlarm" class="input-group-text col-form-label"
-							style="width: auto;">알림 설정</label> <input type="checkbox"
-							class="btn-check" id="isAlarm" autocomplete="off"> <label
-							class="btn btn-outline-primary" for="isAlarm"
-							style="margin-top: 17px;">알림 등록</label>
-					</div>
-					<!-- 알림 설정 필드 (기본적으로 숨김 처리) -->
-					<div id="alarmFields" style="display: none;">
-						<div class="input-group">
-							<label class="input-group-text" for="alarmFrequency">알림
-								빈도</label> <select class="form-select" id="alarmFrequency"
-								style="margin-top: 10px;">
-								<option value="daily">매일</option>
-								<option value="weekly">매주</option>
-								<option value="monthly">매달</option>
-							</select>
-						</div>
-						<!-- 매일 알림 -->
-						<div id="dailyRepeat" style="display: none;">
-							<div class="input-group">
-								<input type="number" id="dailyInterval"
-									style="margin-top: 10px;" min="1" max="24" value="1"
-									class="form-control"> <label class="input-group-text"
-									for="dailyInterval">시 마다</label>
-							</div>
-						</div>
-						<!-- 매주 알림 -->
-						<div id="weeklyRepeat" style="display: none;">
-							<div class="input-group"
-								style="display: flex; align-items: center;">
-								<label class="input-group-text" for="weeklyDays">알림 요일
-									선택</label>
-							</div>
-							<div id="weeklyDays">
-								<div class="input-group"
-									style="display: flex; align-items: center;">
-									 <input type="checkbox"
-										class="btn-check weekly-checkbox" id="monday" name="weeklyDay"
-										autocomplete="off" value="mon"> <label
-										class="btn btn-outline-primary" for="monday"
-										style="margin-top: 17px;">월요일</label>
-									 <input type="checkbox"
-										class="btn-check weekly-checkbox" id="tuesday" name="weeklyDay"
-										autocomplete="off" value="tue"> <label
-										class="btn btn-outline-primary" for="tuesday"
-										style="margin-top: 17px;">화요일</label>
-									 <input type="checkbox"
-										class="btn-check weekly-checkbox" id="wednesday" name="weeklyDay"
-										autocomplete="off" value="wed"> <label
-										class="btn btn-outline-primary" for="wednesday"
-										style="margin-top: 17px;">수요일</label>
-									 <input type="checkbox"
-										class="btn-check weekly-checkbox" id="thursday" name="weeklyDay"
-										autocomplete="off" value="thu"> <label
-										class="btn btn-outline-primary" for="thursday"
-										style="margin-top: 17px;">목요일</label>
-									 <input type="checkbox"
-										class="btn-check weekly-checkbox" id="friday" name="weeklyDay"
-										autocomplete="off" value="fri"> <label
-										class="btn btn-outline-primary" for="friday"
-										style="margin-top: 17px;">금요일</label>
-									 <input type="checkbox"
-										class="btn-check weekly-checkbox" id="saturday" name="weeklyDay"
-										autocomplete="off" value="sat"> <label
-										class="btn btn-outline-primary" for="saturday"
-										style="margin-top: 17px;">토요일</label>
-									 <input type="checkbox"
-										class="btn-check weekly-checkbox" id="sunday" name="weeklyDay"
-										autocomplete="off" value="sun"> <label
-										class="btn btn-outline-primary" for="sunday"
-										style="margin-top: 17px;">일요일</label>
-								</div>
-								<div class="input-group">
-									<input type="number" id="weeklyHour" style="margin-top: 2px;"
-										min="1" max="24" value="1" class="form-control"> <label
-										class="input-group-text" for="weeklyHour">시 마다</label>
-								</div>
-							</div>
-						</div>
-						<!-- 매월 알림 -->
-						<div id="monthlyRepeat" style="display: none;">
-							<div class="input-group">
-								<input type="number" style="margin-top: 10px;" id="monthlyDay"
-									min="1" max="31" value="1" class="form-control"> <label
-									class="input-group-text" for="monthlyDay">일</label> <input
-									type="number" style="margin-top: 10px;" id="monthlyHour"
-									min="1" max="24" value="1" class="form-control"> <label
-									class="input-group-text" for="monthlyHour">시 마다</label>
-							</div>
-						</div>
-					</div>
-					<div class="modal-buttons">
-						<button type="submit">저장</button>
-						<button type="button" id="addCancelBtn">취소</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-	<!-- END  일정 추가 모달 -->
-
-
-	<!-- 일정 조회 모달 -->
-	<div id="viewScheduleModal" class="modal">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h2 class="modal-title" id="viewScheduleModalLabel">일정 조회</h2>
-			</div>
-			<div class="modal-body">
-				<form id="viewScheduleForm">
-					<!-- 캘린더 선택 -->
-					<div class="input-group">
-						<label class="input-group-text" for="viewCalendar">캘린더 선택</label>
-						<input type="text" style="margin-top: 10px;" class="form-control"
-							id="viewCalendar" name="viewCalendar" aria-label="title"
-							aria-describedby="basic-addon1" readonly>
-					</div>
-					<div class="input-group">
-						<label class="input-group-text" for="viewTitle">일정 제목</label> <input
-							type="text" style="margin-top: 10px;" class="form-control"
-							id="viewTitle" name="viewTitle" aria-label="title"
-							aria-describedby="basic-addon1" readonly>
-					</div>
-					<div class="input-group">
-						<label class="input-group-text" for="viewStartDate">일정 시작일</label>
-						<input type="date" style="margin-top: 10px;" id="viewStartDate"
-							class="form-control" required> <label
-							class="input-group-text" for="viewStartTime">시간</label> <input
-							type="time" style="margin-top: 10px;" id="viewStartTime"
-							class="form-control" required>
-					</div>
-					<div class="input-group">
-						<label class="input-group-text" for="viewEndDate">일정 종료일</label> <input
-							type="date" style="margin-top: 10px;" id="viewEndDate"
-							class="form-control" required> <label
-							class="input-group-text" for="viewEndTime">시간</label> <input
-							type="time" style="margin-top: 10px;" id="viewEndTime"
-							class="form-control" required>
-					</div>
-					<!-- 알림 여부 -->
-					<div id="viewAlarmCheckboxWrapper" style="display: none;">
-						<div class="input-group"
-							style="display: flex; align-items: center;">
-							<label for="viewAlarmUse" class="input-group-text col-form-label"
-								style="width: auto;">알림 설정</label> <input type="checkbox"
-								class="btn-check" id="viewAlarmUse" autocomplete="off">
-							<label class="btn btn-outline-primary" for="viewAlarmUse"
-								style="margin-top: 17px;">알림 등록</label>
-						</div>
-					</div>
-					<!-- 알림 설정 필드 (기본적으로 숨김 처리) -->
-					<div id="viewAlarmSettings" style="display: none;">
-						<div class="input-group">
-							<label class="input-group-text" for="viewAlarmType">알림 빈도</label>
-							<select class="form-select" id="viewAlarmType"
-								style="margin-top: 10px;">
-								<option value="d1">매일</option>
-								<option value="d2">매주</option>
-								<option value="d3">매달</option>
-							</select>
-						</div>
-						<!-- 매일 알림 -->
-						<div id="viewDailySettings" style="display: none;">
-							<div class="input-group">
-								<input type="number" id="viewDailyRepeat"
-									style="margin-top: 10px;" min="1" max="24" value="1"
-									class="form-control"> <label class="input-group-text"
-									for="viewDailyRepeat" style="width: auto;">시 마다</label>
-							</div>
-						</div>
-						<!-- 매주 알림 -->
-						<div id="viewWeeklySettings" style="display: none;">
-							<div class="input-group"
-								style="display: flex; align-items: center;">
-								<label class="input-group-text" for="weeklyDays"
-									style="width: auto;">알림 요일 선택</label>
-							</div>
-							<div id="weeklyDays" >
-								 <div class="input-group"
-									style="display: flex; align-items: center;">
-									
-										<input type="checkbox" class="btn-check weekly-checkbox" id="infoMonday" name="weeklyDay"
-										autocomplete="off" value="mon"  > 
-										<label class="btn btn-outline-primary" for="infoMonday"
-										style="margin-top: 17px;">월요일</label>
-									<input type="checkbox"
-										class="btn-check weekly-checkbox" id="infoTuesday" name="weeklyDay"
-										autocomplete="off" value="tue" > <label
-										class="btn btn-outline-primary" for="infoTuesday"
-										style="margin-top: 17px;">화요일</label>
-									 <input type="checkbox"
-										class="btn-check weekly-checkbox" id="infoWednesday" name="weeklyDay"
-										autocomplete="off" value="wed" > <label
-										class="btn btn-outline-primary" for="infoWednesday"
-										style="margin-top: 17px;">수요일</label>
-									 <input type="checkbox"
-										class="btn-check weekly-checkbox" id="infoThursday" name="weeklyDay"
-										autocomplete="off" value="thu" > <label
-										class="btn btn-outline-primary" for="infoThursday"
-										style="margin-top: 17px;">목요일</label>
-									 <input type="checkbox"
-										class="btn-check weekly-checkbox" id="infoFriday" name="weeklyDay"
-										autocomplete="off" value="fri" > <label
-										class="btn btn-outline-primary" for="infoFriday"
-										style="margin-top: 17px;">금요일</label>
-									 <input type="checkbox"
-										class="btn-check weekly-checkbox" id="infoSaturday" name="weeklyDay"
-										autocomplete="off" value="sat" > <label
-										class="btn btn-outline-primary" for="infoSaturday"
-										style="margin-top: 17px;">토요일</label>
-									<input type="checkbox"
-										class="btn-check weekly-checkbox" id="infoSunday" name="weeklyDay"
-										autocomplete="off" value="sun" > <label
-										class="btn btn-outline-primary" for="infoSunday"
-										style="margin-top: 17px;">일요일</label>
-								</div>
-								<div class="input-group">
-									<input type="number" id="viewWeeklyRepeat"
-										style="margin-top: 2px;" min="1" max="24" value="1"
-										class="form-control"> <label class="input-group-text"
-										for="viewWeeklyRepeat" style="width: auto;">시 마다</label>
-								</div>
-							</div>
-						</div>
-						<!-- 매월 알림 -->
-						<div id="viewMonthlySettings" style="display: none;">
-							<div class="input-group">
-								<input type="number" style="margin-top: 10px;"
-									id="viewMonthlyDay" min="1" max="31" value="1"
-									class="form-control"> <label class="input-group-text"
-									for="viewMonthlyDay" style="width: auto;">일</label> <input
-									type="number" style="margin-top: 10px;" id="viewMonthlyHour"
-									min="1" max="24" value="1" class="form-control"> <label
-									class="input-group-text" for="viewMonthlyHour"
-									style="width: auto;">시 마다</label>
-							</div>
-						</div>
-					</div>
-					<div class="modal-buttons">
-						<button type="button" id="viewScheduleEditBtn">수정</button>
-						<button type="button" id="viewScheduleDeleteBtn">삭제</button>
-						<button type="button" class="viewScheduleClose">취소</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
-</div>
