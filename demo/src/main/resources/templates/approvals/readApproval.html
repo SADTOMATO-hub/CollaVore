@@ -236,7 +236,6 @@ button:active {
 
 <script>
 	var sort = $('input[name=sort]').val();
-	const eaNo = $('#eaNo').val();
 	$(".approveBtn").on('click', function(event) {
 		var approveOrDenine = $(this).val();
 		const earNo = this.getAttribute('data-ear-no');
@@ -248,7 +247,6 @@ button:active {
 			data : JSON.stringify({
 				earNo : earNo,
 				approverStatus : approveOrDenine,
-				ea_no : eaNo
 			}),
 			success : function(response) {
 				if (confirm(`${buttonText} 하시겠습니까?`) == true) { //확인
