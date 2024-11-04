@@ -48,8 +48,15 @@ public class JobController {
 	@DeleteMapping("/jobs/delete/{jobNo}")
 	@ResponseBody
 	public String deleteJobs(@PathVariable Integer jobNo) throws Exception {
-		int result = jobService.deleteJobs(jobNo);
-		return result == 1 ? "success" : "failure";
+	    // 직위가 사원에게 할당되어 있는지 확인
+	    if (jobService.isJobAssignedToEmployee(jobNo)) {
+	        // 할당된 직위라면 삭제 불가 응답 반환
+	        return "cannot_delete";
+	    }
+
+	    // 할당되지 않은 직위만 삭제 수행
+	    int result = jobService.deleteJobs(jobNo);
+	    return result == 1 ? "success" : "failure";
 	}
 
 	// 기존 직위 불러오기

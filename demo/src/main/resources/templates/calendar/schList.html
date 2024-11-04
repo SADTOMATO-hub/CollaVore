@@ -106,22 +106,22 @@
 								<div class="input-group"
 									style="display: flex; align-items: center;">
 									<input type="checkbox" class="btn-check weekly-checkbox"
-										id="monday" name="weeklyDay" autocomplete="off" value="mon">
+										id="monday" name="addWeeklyDay" autocomplete="off" value="mon">
 									<label class="btn btn-outline-primary" for="monday"
 										style="margin-top: 17px;">월요일</label> <input type="checkbox"
 										class="btn-check weekly-checkbox" id="tuesday"
-										name="weeklyDay" autocomplete="off" value="tue"> <label
+										name="addWeeklyDay" autocomplete="off" value="tue"> <label
 										class="btn btn-outline-primary" for="tuesday"
 										style="margin-top: 17px;">화요일</label> <input type="checkbox"
 										class="btn-check weekly-checkbox" id="wednesday"
-										name="weeklyDay" autocomplete="off" value="wed"> <label
+										name="addWeeklyDay" autocomplete="off" value="wed"> <label
 										class="btn btn-outline-primary" for="wednesday"
 										style="margin-top: 17px;">수요일</label> <input type="checkbox"
 										class="btn-check weekly-checkbox" id="thursday"
-										name="weeklyDay" autocomplete="off" value="thu"> <label
+										name="addWeeklyDay" autocomplete="off" value="thu"> <label
 										class="btn btn-outline-primary" for="thursday"
 										style="margin-top: 17px;">목요일</label> <input type="checkbox"
-										class="btn-check weekly-checkbox" id="friday" name="weeklyDay"
+										class="btn-check weekly-checkbox" id="friday" name="addWeeklyDay"
 										autocomplete="off" value="fri"> <label
 										class="btn btn-outline-primary" for="friday"
 										style="margin-top: 17px;">금요일</label> <input type="checkbox"
@@ -129,7 +129,7 @@
 										name="weeklyDay" autocomplete="off" value="sat"> <label
 										class="btn btn-outline-primary" for="saturday"
 										style="margin-top: 17px;">토요일</label> <input type="checkbox"
-										class="btn-check weekly-checkbox" id="sunday" name="weeklyDay"
+										class="btn-check weekly-checkbox" id="sunday" name="addWeeklyDay"
 										autocomplete="off" value="sun"> <label
 										class="btn btn-outline-primary" for="sunday"
 										style="margin-top: 17px;">일요일</label>
@@ -154,8 +154,8 @@
 						</div>
 					</div>
 					<div class="modal-buttons">
-						<button type="submit">저장</button>
-						<button type="button" id="addCancelBtn">취소</button>
+						<button type="submit" class="btn btn-primary">저장</button>
+						<button type="button" class="btn btn-secondary"id="addCancelBtn">취소</button>
 					</div>
 				</form>
 			</div>
@@ -295,9 +295,9 @@
 						</div>
 					</div>
 					<div class="modal-buttons">
-						<button type="button" id="viewScheduleEditBtn">수정</button>
-						<button type="button" id="viewScheduleDeleteBtn">삭제</button>
-						<button type="button" class="viewScheduleClose">취소</button>
+						<button type="button" class="btn btn-primary"id="viewScheduleEditBtn">수정</button>
+						<button type="button" class="btn btn-danger"id="viewScheduleDeleteBtn">삭제</button>
+						<button type="button" class="btn btn-secondary viewScheduleClose">취소</button>
 					</div>
 				</form>
 			</div>

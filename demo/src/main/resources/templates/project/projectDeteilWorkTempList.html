@@ -484,7 +484,7 @@ $(document).ready(function() {
                     	</td>
                         <td>${formatCurrentDate()}</td>
                         <td>
-                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
+                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal" th:attr= data-proj-temp-no='${response.pdwtNo}'>수정</button>
                             <button type="button" class="btn btn-danger text-white delete-btn" data-proj-temp-no="${response.pdwtNo}">삭제</button>
                         </td>
                     </tr>

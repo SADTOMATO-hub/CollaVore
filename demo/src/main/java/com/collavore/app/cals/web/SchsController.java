@@ -1,5 +1,7 @@
 package com.collavore.app.cals.web;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -87,8 +89,20 @@ public class SchsController {
 	    try {
 	        // schNo를 String으로 받고 Integer로 변환
 	        Integer schNo = Integer.parseInt(payload.get("schNo").toString());
-	        String startDate = payload.get("startDate").toString();
-	        String endDate = payload.get("endDate").toString();
+	        String startDateString = payload.get("startDate").toString();
+	        String endDateString = payload.get("endDate").toString();
+	        
+	        // 날짜 형식을 지정합니다.
+	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	        
+	        // String을 Date로 변환 후, Date를 Timestamp로 변환합니다.
+	        Timestamp startDate = new Timestamp(sdf.parse(startDateString).getTime());
+	        Timestamp endDate = new Timestamp(sdf.parse(endDateString).getTime());
+	        
+			SchsVO svo = new SchsVO();
+			svo.setSchNo(schNo);
+			svo.setStartDate(startDate);
+			svo.setEndDate(endDate);
 
 	        // 필수 값 확인
 	        if (schNo == null || startDate == null || endDate == null) {
@@ -96,7 +110,7 @@ public class SchsController {
 	        }
 
 	        // 업데이트 요청
-	        int updatedRows = schsService.updateEventTime(schNo, startDate, endDate);
+	        int updatedRows = schsService.updateEventTime(svo);
 
 	        if (updatedRows > 0) {
 	            return ResponseEntity.ok("success");
@@ -133,7 +147,7 @@ public class SchsController {
 
 			// 단건 조회
 			SchsVO event = schsService.SchsInfo(schsVO);
-
+			
 			if (event != null) {
 				result.put("success", true);
 				result.put("data", event);

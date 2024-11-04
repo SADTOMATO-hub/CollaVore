@@ -40,7 +40,6 @@ function addLevel() {
 
 // 레벨 삭제 함수
 function removeLevel(button, posiNo = null) {
-    // 확인 대화 상자
     if (confirm('정말로 삭제하시겠습니까?')) {
         if (posiNo) {
             // 서버로 삭제 요청
@@ -50,23 +49,29 @@ function removeLevel(button, posiNo = null) {
             .then(response => response.text())
             .then(result => {
                 if (result === 'success') {
-                    button.parentElement.parentElement.remove();
+                    alert('직위가 성공적으로 삭제되었습니다.');
+                    const row = button.closest('tr'); // 삭제할 행을 찾음
+                    row.remove(); // 행 삭제
                     reorderLevels();
+                } else if (result === 'cannot_delete') {
+                    alert('해당 직위가 사원에게 할당되어 있어 삭제할 수 없습니다.');
                 } else {
                     alert('삭제에 실패했습니다.');
                 }
             })
             .catch(error => {
                 console.error('Error deleting position:', error);
-                alert('삭제 중 오류가 발생했습니다.');
+                alert('삭제 중 오류가 발생했습니다. 관리자에게 문의하세요.');
             });
         } else {
             // 새로 추가된 레벨의 경우 화면에서만 삭제
-            button.parentElement.parentElement.remove();
+            const row = button.closest('tr'); // 삭제할 행을 찾음
+            row.remove();
             reorderLevels();
         }
     }
 }
+
 
 // 레벨 재정렬
 function reorderLevels() {

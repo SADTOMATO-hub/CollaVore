@@ -102,8 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						const day = String(d.getDate()).padStart(2, '0');
 						const hours = String(d.getHours()).padStart(2, '0');
 						const minutes = String(d.getMinutes()).padStart(2, '0');
-						const seconds = String(d.getSeconds()).padStart(2, '0');
-						return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+						return `${year}-${month}-${day} ${hours}:${minutes}`;
 					};
 
 					var updatedEvent = {
@@ -163,21 +162,11 @@ document.addEventListener('DOMContentLoaded', function() {
 										eventData.calType === 'g2' ? eventData.name :
 											eventData.calType === 'g3' ? '프로젝트 캘린더' : '알 수 없음';
 								document.getElementById('viewTitle').value = eventData.title || '';
-								document.getElementById('viewStartDate').value = eventData.startDate ? eventData.startDate.split('T')[0] : '';
-								document.getElementById('viewStartTime').value = eventData.startDate ? eventData.startDate.split('T')[1].substring(0, 5) : '';
-								document.getElementById('viewEndDate').value = eventData.endDate ? eventData.endDate.split('T')[0] : '';
-								document.getElementById('viewEndTime').value = eventData.endDate ? eventData.endDate.split('T')[1].substring(0, 5) : '';
 
-								// 시작일과 종료일을 Date 객체로 변환
-								var startDate = new Date(eventData.startDate);
-								var endDate = new Date(eventData.endDate);
-
-								// 날짜와 시간을 원하는 형식으로 설정
-								document.getElementById('viewStartDate').value = startDate.toISOString().split('T')[0];
-								document.getElementById('viewStartTime').value = startDate.toTimeString().substring(0, 5);
-								document.getElementById('viewEndDate').value = endDate.toISOString().split('T')[0];
-								document.getElementById('viewEndTime').value = endDate.toTimeString().substring(0, 5);
-
+								document.getElementById('viewStartDate').value = eventData.startDate ? eventData.startDate.split(' ')[0] : '';
+								document.getElementById('viewStartTime').value = eventData.startDate ? eventData.startDate.split(' ')[1].substring(0, 5) : '';
+								document.getElementById('viewEndDate').value = eventData.endDate ? eventData.endDate.split(' ')[0] : '';
+								document.getElementById('viewEndTime').value = eventData.endDate ? eventData.endDate.split(' ')[1].substring(0, 5) : '';
 
 
 								// 알림 설정
@@ -247,12 +236,12 @@ document.addEventListener('DOMContentLoaded', function() {
 								// 요일 체크박스 처리 함수 (현재 선택된 값만 반환)
 								function getSelectedWeeklyDays() {
 									// 현재 체크된 요일 값만 배열로 추가
-									const weeklyDaysArray = Array.from(document.querySelectorAll('.weekly-checkbox'))
-										.filter(checkbox => checkbox.checked)
-										.map(checkbox => checkbox.value);
-
 									// 체크된 요일이 없으면 빈 문자열 반환
-									return weeklyDaysArray.length > 0 ? Array.from(new Set(weeklyDaysArray)).join(',') : 'null';
+									var weeklyDaysArray = [];
+									document.querySelectorAll('input[name="weeklyDay"]:checked').forEach(function(checkbox) {
+										weeklyDaysArray.push(checkbox.value);
+									});
+									return weeklyDaysArray;
 								}
 
 
@@ -431,7 +420,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 										// 요일 및 알림 데이터 설정
-										const weeklyDays = getSelectedWeeklyDays(); // 현재 체크된 요일 값만 업데이트
+										const selectedDays = getSelectedWeeklyDays(); // 현재 체크된 요일 값만 업데이트
+										const weeklyDays = selectedDays.length > 0 ? selectedDays.join(",") : null; // d2 (매주)일 경우 요일 설정 (쉼표로 구분된 문자열)
 										const alarmType = alarmTypeInput.value;
 										let alarmTime = null;
 
@@ -452,8 +442,8 @@ document.addEventListener('DOMContentLoaded', function() {
 										const updatedData = {
 											schNo: eventId,
 											title: document.getElementById('viewTitle').value,
-											startDate: document.getElementById('viewStartDate').value + 'T' + document.getElementById('viewStartTime').value,
-											endDate: document.getElementById('viewEndDate').value + 'T' + document.getElementById('viewEndTime').value,
+											startDate: document.getElementById('viewStartDate').value + ' ' + document.getElementById('viewStartTime').value,
+											endDate: document.getElementById('viewEndDate').value + ' ' + document.getElementById('viewEndTime').value,
 											calNo: eventData.calNo,
 											alarmType: alarmType,
 											alarmYoil: weeklyDays, // d2일 때 요일이 들어가도록
@@ -463,7 +453,6 @@ document.addEventListener('DOMContentLoaded', function() {
 										};
 
 										console.log("Updated Data:", updatedData); // 여기서 `monthlyDay`와 `weeklyDays` 값을 확인
-
 
 
 
@@ -644,7 +633,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					// 선택된 요일들 반환 (매주 알림 설정 시)
 					function getSelectedDays() {
 						var selectedDays = [];
-						document.querySelectorAll('input[name="weeklyDay"]:checked').forEach(function(checkbox) {
+						document.querySelectorAll('input[name="addWeeklyDay"]:checked').forEach(function(checkbox) {
 							selectedDays.push(checkbox.value);
 						});
 						return selectedDays;
@@ -850,8 +839,8 @@ document.addEventListener('DOMContentLoaded', function() {
 						var endTime = document.getElementById('endTime').value;
 
 						// 시작일과 종료일에 시간을 추가하여 하나의 datetime으로 변환
-						var startDateTime = new Date(startDate + 'T' + startTime).toISOString(); // ISO 형식으로 변환
-						var endDateTime = new Date(endDate + 'T' + endTime).toISOString(); // ISO 형식으로 변환
+						var startDateTime = new Date(startDate + ' ' + startTime); // ISO 형식으로 변환
+						var endDateTime = new Date(endDate + ' ' + endTime); // ISO 형식으로 변환
 
 						// schsData 변수 초기화 및 데이터 설정
 						var schsData = {
@@ -1494,7 +1483,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 	//=========================  휴지통 리스트 옆 연필 아이콘 클릭 모달 ==================================
 	// 모달 닫기 버튼 처리
-	document.querySelectorAll('.close').forEach(closeBtn => {
+	document.querySelectorAll('#closeBtn').forEach(closeBtn => {
 		closeBtn.addEventListener('click', function() {
 			const modal = this.closest('.modal');
 			modal.style.display = 'none'; // 모달 닫기
@@ -1585,7 +1574,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	//=================================함수모음======================================
 	// 오늘 날짜를 YYYY-MM-DD 형식으로 반환하는 함수
 	function getTodayDate() {
-		return new Date().toISOString().slice(0, 10);
+		return new Date();
 	}
 
 	//사이드바  캘린더 리스트 생성 뿌리기 

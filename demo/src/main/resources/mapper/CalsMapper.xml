@@ -38,10 +38,10 @@
 		schs.sch_no
 	</select>
 	<!--풀캘린더에서 드롭으로 날짜 시간만 변경하기 -->
-	<update id="updateEventTime">
+	<update id="updateEventTime" parameterType="SchsVO">
      UPDATE schs
-    SET start_date = TO_TIMESTAMP(#{startDate}, 'YYYY-MM-DD HH24:MI:SS'),
-        end_date = TO_TIMESTAMP(#{endDate}, 'YYYY-MM-DD HH24:MI:SS')
+	SET	start_date = TO_TIMESTAMP(#{formattedStartDate, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI'),
+        end_date = TO_TIMESTAMP(#{formattedEndDate, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI')
     WHERE sch_no = #{schNo}
     </update>
 	
@@ -151,9 +151,8 @@
 	<update id="updateSchsInfo" parameterType="SchsVO">
 		UPDATE schs
 		SET title = #{title},
-		start_date = #{startDate},
-		end_date =
-		#{endDate},
+		start_date = TO_TIMESTAMP(#{formattedStartDate, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI'),
+        end_date = TO_TIMESTAMP(#{formattedEndDate, jdbcType=VARCHAR}, 'YYYY-MM-DD HH24:MI'),
 		cal_no = #{calNo},   <!-- cal_no가 올바르게 설정되었는지 확인 -->
 		is_alarm = #{isAlarm}
 		WHERE sch_no = #{schNo}
@@ -259,8 +258,7 @@
 	<select id="selectTeamCal" resultType="SchsVO">
 		SELECT cs.cal_no
 		, c.name
-		,
-		c.color
+		, c.color
 		FROM calshares cs
 		INNER JOIN cals c
 		ON c.cal_no = cs.cal_no
