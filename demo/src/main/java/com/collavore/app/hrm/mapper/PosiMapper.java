@@ -15,4 +15,6 @@ public interface PosiMapper {
 	public int deletePosiInfo(Integer posiNo);
 
 	public List<HrmVO> selectPosiList();
+	
+	public int countEmployeesWithPosition(Integer posiNo);
 }

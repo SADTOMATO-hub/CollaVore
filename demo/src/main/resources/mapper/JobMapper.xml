@@ -10,27 +10,36 @@
 			FROM JOBS
 		</selectKey>
 		INSERT INTO JOBS (job_no, name, reg_date)
-		VALUES (#{jobNo}, #{jobName}, sysdate)
+		VALUES (#{jobNo}, #{jobName},
+		sysdate)
 	</insert>
 
 	<!-- 직무 수정 -->
 	<update id="updateJobsInfo" parameterType="HrmVO">
 		UPDATE JOBS
-		SET name = #{jobName}
-		WHERE job_no = #{jobNo}                                                      
+		SET name =
+		#{jobName}
+		WHERE job_no = #{jobNo}
 	</update>
 
 	<!-- 직무 삭제 -->
 	<delete id="deleteJobsInfo" parameterType="Integer">
-		DELETE FROM JOBS WHERE job_no = #{jobNo}
+		DELETE FROM JOBS WHERE
+		job_no = #{jobNo}
 	</delete>
 
+	<!-- 특정 직위에 할당된 사원이 있는지 확인하는 쿼리 -->
+	<select id="countEmployeesWithJob" parameterType="int" resultType="int">
+		SELECT COUNT(*) FROM EMPLOYEES WHERE job_no = #{jobNo}
+	</select>
+	
 	<!-- 직무 목록 조회 -->
 	<select id="selectJobsList" resultType="HrmVO">
-		SELECT name AS jobName, job_no
+		SELECT name AS jobName,
+		job_no
 		FROM JOBS
 		ORDER BY job_no
 	</select>
 
-	
+
 </mapper>

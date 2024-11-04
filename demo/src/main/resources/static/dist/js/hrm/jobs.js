@@ -1,5 +1,6 @@
 // 기존 직무 데이터를 저장할 배열
 let existingJobs = [];
+let nonDeletableJobs = []; // 사원에 등록된 직무 번호 목록을 저장
 
 // 직무 데이터 로드
 function loadExistingJobs() {
@@ -7,14 +8,17 @@ function loadExistingJobs() {
     .then(response => response.json())
     .then(data => {
         existingJobs = data.map(item => item.jobName); // 기존 직무 이름을 저장
+        nonDeletableJobs = data.filter(item => item.isAssigned).map(item => item.jobNo); // 사원에 등록된 직무 번호 저장
         const container = document.getElementById('jobsTable');
         container.innerHTML = ''; // 기존 데이터 초기화
+
         // 데이터를 이용해 직무 테이블 업데이트
         data.forEach(item => {
             const div = document.createElement('div');
             div.innerHTML = `
                 <span onclick="editJob(this)">${item.jobName}</span>
-                <button data-job-no="${item.jobNo}" onclick="removeJob(this, ${item.jobNo})">X</button>
+                <button data-job-no="${item.jobNo}" onclick="removeJob(this, ${item.jobNo})" 
+                    ${item.isAssigned ? 'disabled title="사원에 등록된 직무는 삭제할 수 없습니다."' : ''}>X</button>
             `;
             container.appendChild(div);
         });
@@ -105,19 +109,21 @@ function editJob(span) {
     input.focus(); // 바로 입력할 수 있도록 포커스 설정
 }
 
+
 // 직무 삭제 함수
 function removeJob(button, jobNo = null) {
-    // 확인 대화 상자
     if (confirm('정말로 삭제하시겠습니까?')) {
         if (jobNo) {
-            // 서버로 삭제 요청
             fetch(`/jobs/delete/${jobNo}`, {
                 method: 'DELETE'
             })
             .then(response => response.text())
             .then(result => {
                 if (result === 'success') {
+                    alert('직위가 성공적으로 삭제되었습니다.');
                     button.parentElement.remove();
+                } else if (result === 'cannot_delete') {
+                    alert('해당 직위가 사원에게 할당되어 있어 삭제할 수 없습니다.');
                 } else {
                     alert('삭제에 실패했습니다.');
                 }
@@ -127,11 +133,13 @@ function removeJob(button, jobNo = null) {
                 alert('삭제 중 오류가 발생했습니다.');
             });
         } else {
-            // 새로 추가된 직무는 화면에서만 삭제
-            button.parentElement.remove();
+            button.parentElement.remove(); // 새로 추가된 직위는 화면에서만 삭제
         }
     }
 }
+
+
+
 
 // 페이지 로드 시 기존 데이터 불러오기
 document.addEventListener('DOMContentLoaded', loadExistingJobs);

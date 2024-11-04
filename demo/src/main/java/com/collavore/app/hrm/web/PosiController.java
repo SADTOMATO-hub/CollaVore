@@ -46,8 +46,15 @@ public class PosiController {
 	@DeleteMapping("/positions/delete/{posiNo}")
 	@ResponseBody
 	public String deletePosition(@PathVariable Integer posiNo) throws Exception {
-		int result = posiService.deletePosition(posiNo);
-		return result == 1 ? "success" : "failure";
+	    // 직위가 사원에게 할당되어 있는지 확인
+	    if (posiService.isPositionAssignedToEmployee(posiNo)) {
+	        // 할당된 직위라면 삭제 불가 응답 반환
+	        return "cannot_delete";
+	    }
+
+	    // 할당되지 않은 직위만 삭제 수행
+	    int result = posiService.deletePosition(posiNo);
+	    return result == 1 ? "success" : "failure";
 	}
 
 	// 기존 직위 불러오기
