@@ -288,7 +288,7 @@ button:active {
 						</div>
 						<div class="mb-3">
 							<select id="selectApprovers" class="form-select">
-								<option selected disabled>==결재자 선택==</option>
+								<option selected value="" disabled>==결재자 선택==</option>
 								<option th:each="appverInfo : ${employeesInfo}"
 									th:value="${appverInfo.empNo}">[[${appverInfo.empName}]]/[[${appverInfo.posiName}]]</option>
 							</select>
@@ -445,7 +445,6 @@ function submitPost(event) {
     }
 
     // 모든 검증을 통과하면 폼 제출
-    console.log("제출:", content);
     insertForm.submit(); // 폼 제출			
 }
 
