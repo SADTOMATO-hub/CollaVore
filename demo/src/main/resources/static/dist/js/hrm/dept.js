@@ -307,3 +307,74 @@ function createLine(parent, child) {
 
     return line;
 }
+
+// 모달 열기 함수
+function openModal(deptNo) {
+    const modal = document.getElementById("deptModal");
+    const deptNoSpan = document.getElementById("deptNo");
+
+    deptNoSpan.textContent = deptNo;
+    modal.style.display = "block";
+
+    // 부서에 속한 사원 목록을 가져와 모달에 표시
+    fetch(`/employees/byDept/${deptNo}`)
+        .then(response => response.json())
+        .then(data => {
+            const employeeListItems = document.getElementById("employeeListItems");
+            employeeListItems.innerHTML = "";
+
+            data.forEach(employee => {
+                const li = document.createElement("li");
+                li.innerHTML = `
+                    <input type="checkbox" name="manager" value="${employee.empNo}">
+                    ${employee.empName} (${employee.jobName} - ${employee.posiName})
+                `;
+                employeeListItems.appendChild(li);
+            });
+        })
+        .catch(error => console.error("Error fetching employees:", error));
+}
+
+// 모달 닫기 함수
+function closeModal() {
+    const modal = document.getElementById("deptModal");
+    modal.style.display = "none";
+}
+
+// 닫기 버튼과 외부 클릭 시 모달 닫기 이벤트 설정
+document.querySelector(".btn-close").addEventListener("click", closeModal);
+window.addEventListener("click", (event) => {
+    const modal = document.getElementById("deptModal");
+    if (event.target === modal) {
+        closeModal();
+    }
+});
+
+// 부서장을 지정하는 버튼 클릭 이벤트
+document.getElementById("setManagerBtn").addEventListener("click", function() {
+    const deptNo = document.getElementById("deptNo").textContent;
+    const selectedManager = document.querySelector('input[name="manager"]:checked');
+
+    if (!selectedManager) {
+        alert("부서장을 지정할 사원을 선택해주세요.");
+        return;
+    }
+
+    const empNo = selectedManager.value;
+
+    fetch(`/departments/updateManager`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ deptNo, empNo })
+    })
+    .then(response => response.text())
+    .then(result => {
+        if (result === "success") {
+            alert("부서장이 지정되었습니다.");
+            closeModal();
+        } else {
+            alert("부서장 지정에 실패했습니다.");
+        }
+    })
+    .catch(error => console.error("Error updating manager:", error));
+});
