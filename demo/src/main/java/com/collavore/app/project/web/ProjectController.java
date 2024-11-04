@@ -192,7 +192,11 @@ public class ProjectController {
 		@DeleteMapping("project/projectwrkdel/{pwNo}")
 		@ResponseBody
 		public String deletewrkProject(@PathVariable int pwNo) {
-			pjService.projectwrkDelete(pwNo);
+			// 업무의 하위 상세업무 삭제
+			pjService.projectdwrkDelete(pwNo);
+			
+			// 업무 삭제 
+			pjService.projectwrkoneDelete(pwNo);
 			return "삭제 완료";
 		}
 

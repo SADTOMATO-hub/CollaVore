@@ -470,7 +470,7 @@
 
 
 	<!-- 프로젝트 업무 삭제-->
-	<delete id="projectwrkDelete2" parameterType="int">
+	<delete id="projectwrkoneDelete" parameterType="int">
 	    DELETE FROM projwrks
 	    WHERE pw_no = #{pwNo}
 	</delete>
