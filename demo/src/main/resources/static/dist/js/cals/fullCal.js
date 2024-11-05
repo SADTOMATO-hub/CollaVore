@@ -780,6 +780,12 @@ document.addEventListener('DOMContentLoaded', function() {
 							}
 						}
 
+						// f1일 때 alarmType이 설정되지 않은 경우 예외 처리
+						if (isAlarm === 'f1' && !alarmType) {
+							alert("알림을 사용하려면 매일, 매주, 매달 중 하나를 선택해주세요.");
+							return;
+						}
+
 						// 예외 처리 추가
 						if (isAlarm === 'f1') {
 							if (alarmType === 'd1') { // 매일 알림 예외 처리
@@ -1585,7 +1591,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			`
 	        <input type="hidden" class="cal_name" value="${calendar.name}" />
 	        <a href="javascript:void(0)" data-calno="${calendar.calNo}" class="sidebar-link calendar-item">
-	            <i class="mdi mdi-calendar-blank" style="color:${calendar.color};"></i> ${truncatedName}
+	            <i class="mdi mdi-checkbox-blank" style="color:${calendar.color};"></i> ${truncatedName}
 	        </a>
 	        <span class="hide-menu edit-icon" style="margin-left: 10px;">
 	            <i class="mdi mdi-pencil" aria-hidden="true"></i>
