@@ -299,7 +299,7 @@ button:active {
             <th:block th:if="${!#lists.isEmpty(myApprList)}" th:each="myAppr, sts : ${myApprList}">
                 <tr class="approval-row" th:data-ea-no="${myAppr.eaNo}">
                     <td>[[${sts.count}]]</td>
-                    <td><span th:text="${session.userEmpNo == myAppr.drafterEmpNo ? '기안' : '결재'}"></span></td>
+                    <td><span th:text="${session.userEmpNo == myAppr.drafterEmpNo ? '기안함' : '결재 요청 받음'}"></span></td>
                     <td>[[${myAppr.title}]]</td>
                     <td>[[${myAppr.drafterName}]]</td>
                     <td>[[${#dates.format(myAppr.regDate, "yyyy년 MM월 dd일")}]]</td>
