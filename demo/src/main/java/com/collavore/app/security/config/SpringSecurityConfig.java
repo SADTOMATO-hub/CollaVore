@@ -27,18 +27,18 @@ import jakarta.servlet.http.HttpSession;
 @Configuration
 public class SpringSecurityConfig {
 
-    private final UserDetailsService userDetailsService;
+	private final UserDetailsService userDetailsService;
 
-    public SpringSecurityConfig(UserDetailsService userDetailsService) {
-        this.userDetailsService = userDetailsService;
-    }
+	public SpringSecurityConfig(UserDetailsService userDetailsService) {
+		this.userDetailsService = userDetailsService;
+	}
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-    @Bean
+	@Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
@@ -50,49 +50,55 @@ public class SpringSecurityConfig {
                 .loginProcessingUrl("/login")
                 .successHandler(customAuthenticationSuccessHandler())
                 .permitAll()
+                .failureUrl("/login?error=true") 
+	            .failureHandler((request, response, exception) -> {
+	                String errorMessage = "아이디 또는 비밀번호가 올바르지 않습니다.";
+	                request.getSession().setAttribute("loginError", errorMessage);
+	                response.sendRedirect("/login?error=true");
+	            })
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")
                 .logoutSuccessUrl("/login?logout=true")
                 .permitAll()
-            )
+            )  // 로그인 실패 처리
             .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin())) // iframe 허용하는 명령어
             ;
 
         return http.build();
     }
 
-    @Bean
-    public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
-        return new AuthenticationSuccessHandler() {
-            @Override
-            public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                                Authentication authentication) throws IOException {
-                LoginUserVO loginUser = (LoginUserVO) authentication.getPrincipal();
-                UserVO userVO = loginUser.getUserVO();
+	@Bean
+	public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+		return new AuthenticationSuccessHandler() {
+			@Override
+			public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+					Authentication authentication) throws IOException {
+				LoginUserVO loginUser = (LoginUserVO) authentication.getPrincipal();
+				UserVO userVO = loginUser.getUserVO();
 
-                HttpSession session = request.getSession();
-                session.setAttribute("userEmpNo", userVO.getEmpNo());
-                session.setAttribute("userDeptNo", userVO.getDeptNo());
-                session.setAttribute("userImg", userVO.getImg());
-                session.setAttribute("userGrade", userVO.getPosiGrade());
-                session.setAttribute("userAdmin", userVO.getIsAdmin());
-                
-                List<String> menuAuth = userDetailsService.myMenuAuth(userVO.getEmpNo());
-                
-                session.setAttribute("menuAuth", menuAuth);
-                
-                response.sendRedirect("/dashboard");
-            }
-        };
-    }
+				HttpSession session = request.getSession();
+				session.setAttribute("userEmpNo", userVO.getEmpNo());
+				session.setAttribute("userDeptNo", userVO.getDeptNo());
+				session.setAttribute("userImg", userVO.getImg());
+				session.setAttribute("userGrade", userVO.getPosiGrade());
+				session.setAttribute("userAdmin", userVO.getIsAdmin());
 
-    @Bean
-    public FilterRegistrationBean<CustomRedirectFilter> redirectFilterRegistration() {
-        FilterRegistrationBean<CustomRedirectFilter> registrationBean = new FilterRegistrationBean<>();
-        registrationBean.setFilter(new CustomRedirectFilter());
-        registrationBean.addUrlPatterns("/*");
-        registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE); // 필터 순서 설정
-        return registrationBean;
-    }
+				List<String> menuAuth = userDetailsService.myMenuAuth(userVO.getEmpNo());
+
+				session.setAttribute("menuAuth", menuAuth);
+
+				response.sendRedirect("/dashboard");
+			}
+		};
+	}
+
+	@Bean
+	public FilterRegistrationBean<CustomRedirectFilter> redirectFilterRegistration() {
+		FilterRegistrationBean<CustomRedirectFilter> registrationBean = new FilterRegistrationBean<>();
+		registrationBean.setFilter(new CustomRedirectFilter());
+		registrationBean.addUrlPatterns("/*");
+		registrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE); // 필터 순서 설정
+		return registrationBean;
+	}
 }
