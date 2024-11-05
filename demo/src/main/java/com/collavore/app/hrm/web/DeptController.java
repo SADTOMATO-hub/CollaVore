@@ -1,5 +1,6 @@
 package com.collavore.app.hrm.web;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -110,6 +111,10 @@ public class DeptController {
 	public Map<String, Object> getEmployeesByDept(@PathVariable Integer deptNo) {
 		List<HrmVO> deptEmpList = deptService.getEmployeesByDept(deptNo);
 		HrmVO deptMgrInfo = deptService.getMgrByDept(deptNo);
+		// null 처리
+		deptEmpList = (deptEmpList != null) ? deptEmpList : Collections.emptyList();
+		deptMgrInfo = (deptMgrInfo != null) ? deptMgrInfo : new HrmVO(); // 기본 생성자 사용 또는 null 반환이 필요한 경우 그대로 유지
+
 		return Map.of("deptEmpList", deptEmpList, "deptMgrInfo", deptMgrInfo);
 	}
 

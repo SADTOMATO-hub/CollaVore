@@ -190,6 +190,7 @@ async function toggleEmployees(deptNo, deptDiv) {
 // 모달 열기 함수
 // 모달 열기 함수
 function openModal(empName, posiName, img, empNo, tel, email) {
+	console.log("asdfasdfadsf");
 	const modal = document.getElementById("employeeModal");
 	var closeModal = document.querySelector(".modal-close");
 
@@ -228,6 +229,8 @@ function closeModal() {
 // employee-item 클릭 이벤트 감지 (이벤트 위임 방식)
 document.addEventListener("click", function(event) {
 	const empItem = event.target.closest(".employee-item");
+	console.log(empItem);
+	console.log(empItem.querySelector(".mgr-name").innerText);
 	if (empItem) {
 		console.log("employee-item clicked!");
 
@@ -246,18 +249,6 @@ document.addEventListener("click", function(event) {
 
 // 모달 외부 클릭 시 닫기
 const modal = document.getElementById("employeeModal");
-
-// 모달 열기 함수
-function openModal() {
-	modal.style.display = "block";
-	overlay.style.display = "block"; // 오버레이 보이기
-}
-
-// 모달 닫기 함수
-function closeModal() {
-	modal.style.display = "none";
-	overlay.style.display = "none"; // 오버레이 숨기기
-}
 
 // 모달 바깥을 클릭하면 모달을 닫습니다.
 window.onclick = function(event) {

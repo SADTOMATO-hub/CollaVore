@@ -456,29 +456,49 @@ function openModal(deptNo) {
         .then(response => response.json())
         .then(data => {
 			let mgrInfo = data.deptMgrInfo;
-			console.log(mgrInfo);
 			const managerInfoItems = document.getElementById("managerInfoItems");
-            managerInfoItems.innerHTML = "";
-            const li = document.createElement("li");
-            li.innerHTML = `
-                ${mgrInfo.empName} (${mgrInfo.jobName} - ${mgrInfo.posiName})
-            `;
-            managerInfoItems.appendChild(li);
+			managerInfoItems.innerHTML = "";
+			
+			if (mgrInfo.empName != null) {
+			    const li = document.createElement("li");
+			    li.innerHTML = `
+			        ${mgrInfo.empName} (${mgrInfo.jobName} - ${mgrInfo.posiName})
+			    `;
+			    managerInfoItems.appendChild(li);
+			} else {
+			    const li = document.createElement("li");
+			    li.innerHTML = "등록된 부서장이 없습니다"; // No registered department manager
+			    managerInfoItems.appendChild(li);
+			}
 			
 			let employees = data.deptEmpList;
-            const employeeListItems = document.getElementById("employeeListItems");
-            employeeListItems.innerHTML = "";
+			if(employees.length > 0 && employees[0].empName != null){
+				const employeeListItems = document.getElementById("employeeListItems");
+				employeeListItems.innerHTML = "";
+				
+				employees.forEach(employee => {
+				    const li = document.createElement("li");
+				    li.innerHTML = `
+				        <input type="checkbox" name="emp" value="${employee.empNo}" onclick="selectOnlyThis(this)">
+				        ${employee.empName} (${employee.jobName} - ${employee.posiName})
+				    `;
+				    employeeListItems.appendChild(li);
+				});
+			} else {
+			    const li = document.createElement("li");
+			    li.innerHTML = "등록된 부서원이 없습니다"; // No registered department manager
+			    employeeListItems.appendChild(li);
+			}
 
-            employees.forEach(employee => {
-                const li = document.createElement("li");
-                li.innerHTML = `
-                    <input type="checkbox" name="emp" value="${employee.empNo}">
-                    ${employee.empName} (${employee.jobName} - ${employee.posiName})
-                `;
-                employeeListItems.appendChild(li);
-            });
         })
         .catch(error => console.error("Error fetching employees:", error));
+}
+
+function selectOnlyThis(checkbox) {
+    const checkboxes = document.querySelectorAll('input[name="emp"]');
+    checkboxes.forEach(cb => {
+        if (cb !== checkbox) cb.checked = false;
+    });
 }
 
 // 모달 닫기 함수
