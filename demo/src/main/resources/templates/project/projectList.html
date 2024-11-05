@@ -490,7 +490,7 @@ button:active {
 								id="localUrls" rows="5"  required></textarea>
 						</div>
 						                <input type="hidden" id="gitUrlInput" name="projectGitUrl" value="">
-						<button type="button" class="btn btn-success text-white" th:onclick="selectDirectory()">내려받기</button>
+						<button type="button" class="btn btn-success text-white" th:onclick="selectDirectory('${info.projNo}')">내려받기</button>
 				</div>
 			</div>
 		</div>
