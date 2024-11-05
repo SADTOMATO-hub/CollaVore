@@ -76,7 +76,7 @@
 	padding: 10px 20px;
 	border-radius: 8px;
 	text-align: center;
-	width: 220px;
+	width: 150px;
 	height: 100px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	transition: background-color 0.3s ease, box-shadow 0.3s ease;
@@ -128,6 +128,7 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: space-between; /* 자식 요소를 위아래로 배치 */
+	margin-left:10px;
 }
 
 .mgr-name {
@@ -151,12 +152,11 @@
 .employee-list {
 	display: none;
 	position: fixed; /* 고정 위치로 설정하여 부모 컨테이너의 영향을 받지 않도록 함 */
-	width: 220px;
+	width: 150px;
 	background-color: #ffffff;
 	border: 1px solid #ddd;
 	border-radius: 8px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-	padding: 10px;
 	z-index: 1000; /* 다른 요소 위에 표시되도록 설정 */
 	margin-top: 10px;
 	max-height: 400px; /* 최대 높이 지정 */
@@ -382,7 +382,7 @@
 					<span>마이페이지 > 부서정보 조회기</span>
 				</div>
 			</div>
-			<div class="card_memberInsert">
+			<div class="card_memberInsert scrollable">
 				<!-- 기존 부서/부서원 리스트 표시 영역 -->
 				<div id="department-container"></div>
 
