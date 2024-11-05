@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -542,4 +543,33 @@ public class ProjectController {
 		return "삭제 완료";
 	}
 
+
+	// 프로젝트 리스트 출력
+	@GetMapping("project/projectSourceList")
+	public String projectSourceList(Model model, HttpSession session) {
+		Integer empNo = (Integer) session.getAttribute("userEmpNo");
+		List<ProjectVO> list = pjService.projectList();
+		List<ProjectTempVO> templist = pjtempService.projecttempList();
+		List<ProjectVO> emplist = pjService.empList();
+		ProjectVO gitInfo = pjService.compGitInfo();
+		
+		model.addAttribute("empNo", empNo);
+		model.addAttribute("projects", list);
+		model.addAttribute("templist", templist);
+		model.addAttribute("emp", emplist);
+		model.addAttribute("gitInfo", gitInfo);
+		return "project/projectSourceList";
+	}
+	
+	@GetMapping("project/projectSourceInfo")
+	public String projectSourceInfo(@RequestParam int projNo, Model model, HttpSession session) {
+		Integer empNo = (Integer) session.getAttribute("userEmpNo");
+		ProjectVO projInfo = pjService.projectInfo(projNo);
+		ProjectVO gitInfo = pjService.compGitInfo();
+		
+		model.addAttribute("empNo", empNo);
+		model.addAttribute("projInfo", projInfo);
+		model.addAttribute("gitInfo", gitInfo);
+		return "project/projectSourceInfo";
+	}
 }
