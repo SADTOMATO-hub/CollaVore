@@ -247,4 +247,9 @@ public class ProjectServiceImpl implements PjService{
 	public int projectComtDel(int projNo) {
 		return projectMapper.projectcomtdel(projNo);
 	}
+
+	@Override
+	public int projectdeteilworkDelete(int pdwNo) {
+		return projectMapper.projectdwrkdel(pdwNo);
+	}
 }

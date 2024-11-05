@@ -331,7 +331,6 @@
 		,is_status = #{isStatus}
 		,start_date = #{startDate}
 		,comp_date = #{compDate}
-		,commit_id = #{commitId}
 		,importance = #{importance}
 		,mgr_no = #{mgrNo}
 		,reg_date = sysdate
@@ -453,7 +452,7 @@
 
 		WHERE pdw_no = #{pdwNo}
 	</update>
-	
+	<!-- 깃 url 생성 -->
 	<update id="insertGitUrl" parameterType="ProjectVO">
 		UPDATE proj
 		SET project_git_url = #{projectGitUrl}
@@ -581,11 +580,18 @@
 		
 	<!-- 프로젝트 코멘트 삭제-->
 	<delete id="projectcomtdel" parameterType="int">
-		DELETE FROM projdrkcomts
+		DELETE FROM projdwrkcomts
             WHERE pdw_no IN  
             	(SELECT pdw_no FROM projdwrks WHERE pw_no IN 
            		 (SELECT pw_no FROM projwrks WHERE proj_no = #{projNo}
             	)
             )
 	</delete> 
+	
+	<!-- 프로젝트 상세업무 삭제(단건)-->
+	<delete id="projectdwrkdel" parameterType="int">
+		DELETE FROM projdwrks
+            WHERE pdw_no = #{pdwNo} 
+	</delete> 
+	
 </mapper>
