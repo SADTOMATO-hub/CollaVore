@@ -432,12 +432,7 @@
 		        })
 		        .then(response => response.json())
 		        .then(result => {
-	                makeTrTag([{
-	                    empNo: result.empNo,
-	                    empName: result.empName,
-	                    deptName: result.deptName,  // 서버에서 반환된 부서 이름
-	                    posiName: result.posiName   // 서버에서 반환된 직위 이름
-	                }], selectTab);
+		        	authEmpList(selectTab);
 		        })
 		        .catch(error => console.error('서버 요청 오류:', error));
 		    }
