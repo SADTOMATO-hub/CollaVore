@@ -388,7 +388,6 @@ button:active {
 						<div class="mb-3">
 							<label for="projStatus" class="form-label">진행상태</label> <select
 								class="form-select" name="status" id="projStatus" required>
-								<option value="0">선택하세요</option>
 								<option value="j1">진행전</option>
 								<option value="j2">진행중</option>
 								<option value="j3">완료</option>
@@ -404,6 +403,7 @@ button:active {
 								type="date" class="form-control" name="endDate" id="projEndDate"
 								required>
 						</div>
+						
 						<button type="submit" class="btn btn-primary">생성</button>
 					</form>
 				</div>
@@ -489,7 +489,7 @@ button:active {
 							<textarea class="form-control" name="localUrl"
 								id="localUrls" rows="5"  required></textarea>
 						</div>
-						                <input type="hidden" id="gitUrlInput" name="projectGitUrl" value="">
+						 <input type="hidden" id="gitUrlInput" name="projectGitUrl" value="">
 						<button type="button" class="btn btn-success text-white" th:onclick="selectDirectory('${info.projNo}')">내려받기</button>
 				</div>
 			</div>
@@ -500,7 +500,6 @@ button:active {
 const empNo = '[[${empNo}]]';
 const compGitUrl = '[[${gitInfo.compGitUrl}]]';
 const compGitToken = '[[${gitInfo.compGitToken}]]';
-
 
 //프로젝트생성 모달폼 
 $(document).ready(function() {
@@ -549,7 +548,7 @@ $(document).ready(function() {
                         break;
                 }
                 $('table tbody').append(`
-                    <tr>
+                    <tr data-no="${newProject.projNo}">
                         <td scope="row">${newProject.projNo}</td>
                         <td>${newProject.name}</td>
                         <td>
@@ -561,13 +560,13 @@ $(document).ready(function() {
                         <td>
                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
                         <button type="button" class="btn btn-danger text-white delete-btn" data-proj-no="${newProject.projNo}">삭제</button>
-                        <button type="button" class="btn btn-success text-white" th:onclick="selectDirectory()">내려받기</button>
+                        <button type="button" class="btn btn-success text-white btn-down" >내려받기</button>
                         </td>
                     </tr>
                 `);
                 // gitRepo 생성
                 gitAddRepos(newProject.projNo, newProject.name, newProject.content, empNo);
-
+     
                 alert('프로젝트가 성공적으로 생성되었습니다!');
                 $('#projectModal').modal('hide'); 
             },
@@ -731,11 +730,14 @@ function gitAddRepos(projNo, projName, projContent, empNo){
 	  })
 	  .then(data => {
 		    // JSON 객체에서 'git_url' 값 가져오기
-		    const gitUrl = compGitUrl;
+		    const gitUrl = data.clone_url;
 		    const repoName = data.name;
 		    const owner = data.owner.login;
 		    gitReadMECommit(projName, owner, repoName);
 		    gitCloneUrlUpdate(projNo, gitUrl);
+		    
+		    $(`[data-no=${projNo}]`).find('.btn-down').attr("data-project-git-url", gitUrl);
+	           
 		    
 	  })
 	  .catch(error => console.error('Error:', error));
@@ -808,6 +810,8 @@ function selectDirectory() {
       .then(response => response.text())
       .then(data => console.log(data))
       .catch(error => console.error('Error:', error));
+    alert('프로젝트가 로컬에 생성되었습니다!');
+    $('#git').hide(); 
   }
 function validateInput(input) {
     const regex = /^[a-zA-Z0-9_ ]*$/; // 영어, 숫자, 언더바, 공백 허용하는 정규 표현식

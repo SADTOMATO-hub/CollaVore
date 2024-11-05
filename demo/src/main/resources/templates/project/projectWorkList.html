@@ -358,14 +358,12 @@ button:active {
 									</div>
 									<label for="importance" class="form-label">중요도</label> <select
 										class="form-select" name="importance" id="importance" required>
-										<option value="" disabled selected>선택하세요</option>
 										<option value="l1">낮음</option>
 										<option value="l2">중간</option>
 										<option value="l3">높음</option>
 									</select> <label for="isStatus" class="form-label">진행상황</label> <select
 										class="form-select" name="isStatus" id="insertisStatus"
 										required>
-										<option value="" disabled selected>선택하세요</option>
 										<option value="k1">진행전</option>
 										<option value="k2">진행중</option>
 										<option value="k3">완 료</option>
@@ -377,11 +375,6 @@ button:active {
 									<div>
 										<label class="form-label">업무 종료일</label> <input type="date"
 											id="compDate" name="compDate" class="form-control" required>
-									</div>
-									<div>
-										<label class="form-label">프로젝트 깃 커밋ID</label> <input
-											type="text" id="commitId" name="commitId"
-											class="form-control" required>
 									</div>
 									<div>
 										<label class="form-label" id="wrklabel2">업무 담당자</label> <select
@@ -482,12 +475,6 @@ button:active {
 											required>
 									</div>
 									<div>
-										<label class="form-label">프로젝트 깃 커밋ID</label> <input
-											type="text" id="updatecommitId" name="commitId"
-											class="form-control" required>
-									</div>
-									<div></div>
-									<div>
 										<label class="form-label" id="wrklabel2">업무 담당자</label> <select
 											class="form-select" name="mgrNo" id="updatemgrNoProjDwrks"
 											required>
@@ -496,10 +483,13 @@ button:active {
 												th:value="${info.empNo}">[[${info.name}]]</option>
 										</select>
 									</div>
-									<input type="hidden" id="pdwNo" name="pdwNo"
+									<input type="hidden" id="pdwNumber" name="pdwNo"
 										class="form-control">
 									<div>
 										<button type="submit" class="btn btn-primary">수정</button>
+										<button type="button"
+											class="btn btn-danger text-white delete-btn"
+											data-type="projectdwrk">삭제</button>
 									</div>
 								</form>
 							</div>
@@ -542,11 +532,6 @@ button:active {
 												th:value="${info.empNo}">[[${info.name}]]</option>
 										</select>
 
-									</div>
-									<div>
-										<label class="form-label">프로젝트 git 주소</label> <input
-											type="text" id="editProjGit" name="projectGitUrl"
-											class="form-control" required>
 									</div>
 									<div class="mb-3">
 										<label for="editProjStatus" class="form-label">진행상태</label> <select
@@ -661,11 +646,7 @@ button:active {
 											class="badge rounded-pill bg-success"
 											th:if="${isStatus == 'j3'}">완 료</span>
 									</div>
-									<div class="mb-3">
-										<label class="form-label">프로젝트 깃 주소</label> <input type="text"
-											id="projectgiturl" name="projectGiturl" class="form-control"
-											readonly>
-									</div>
+
 									<div>
 										<label class="form-label">업무 타입</label> <select
 											class="form-select" name="jobNo" id="jobnoinfo" disabled>
@@ -906,6 +887,7 @@ button:active {
                     type: 'GET',
                     success: function(response) {
                     	// 옵션값 함수 호출
+                    	console.log(response);
                     	handleJobNoChange(response.jobNo);
                        
                       	
@@ -1005,7 +987,7 @@ button:active {
             // projNo를 hidden input에 설정
             $('#projNo').val(projNo.replace(/^[PW]/, '')); 
             $('#pwNo').val(pwNo); 
-            $('#pdwNo').val(pwNo); 
+            $('#pdwNumber').val(pwNo); 
             
             $('#selPwNo').val(pwNo); 
             $('#selParentPdwNo').val(projNo); 
@@ -1081,12 +1063,12 @@ button:active {
                 type: 'POST',
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    pdwNo: $('#pdwNo').val(),
+                    pdwNo: $('#pdwNumber').val(),
                     name: $('#projdwrkname').val(),
                     content: $('#projdwrkcontent').val(),
                     isStatus: $('#updateisStatus').val(),
                     startDate: $('#updatestartDate').val(),
-                    compDate: $('#updateendDate').val(),
+                    compDate: $('#updatecompDate').val(),
                     commitId: $('#updatecommitId').val(),
                     importance: $('#updateimportance').val(),
                     mgrNo: $('#updatemgrNoProjDwrks').val(),
@@ -1394,6 +1376,8 @@ button:active {
                             $('#mgrNoProjdWrks').empty().append('<option value="0">선택하세요</option>');
                             $('#mgrNoProjWrksUpdate').empty().append('<option value="0">선택하세요</option>');
                             $('#mgrNoProjWrksUpdate2').empty().append('<option value="0">선택하세요</option>');
+                            $('#projectmgrno').empty().append('<option value="0">선택하세요</option>');
+                            $('#editProjManager').empty().append('<option value="0">선택하세요</option>');
                             
                             
                             
@@ -1403,6 +1387,8 @@ button:active {
                                 $('#mgrNoProjdWrks').append('<option value="' + info.empNo + '">' + info.name + '</option>');
                                 $('#mgrNoProjWrksUpdate').append('<option value="' + info.empNo + '">' + info.name + '</option>');
                                 $('#mgrNoProjWrksUpdate2').append('<option value="' + info.empNo + '">' + info.name + '</option>');
+                                $('#projectmgrno').append('<option value="' + info.empNo + '">' + info.name + '</option>');
+                                $('#editProjManager').append('<option value="' + info.empNo + '">' + info.name + '</option>');
                                 
                                 
                             });
@@ -1485,14 +1471,17 @@ button:active {
                     	 $('#chat .badge').remove();
                     	 $('.status-button').remove();
                     	 $('#delbtn').remove();
+                    	 
                         // 버튼 추가
                         let statusBadge = '<span class="badge rounded-pill bg-info">진행중</span>';
                         $('#chat h4').after(statusBadge);
-                    	buttonElement.replaceWith(`
-                                <button type="button" class="btn btn-outline-success status-button" onclick="updateStatus('k2')" style="float: right;">
-                                    컨펌요청
-                                </button>
-                            `);
+                     // 새로운 버튼 추가
+                        let newButton = `
+                            <button type="button" class="btn btn-outline-success status-button" onclick="updateStatus('k2')" style="float: right;">
+                                컨펌요청
+                            </button>
+                        `;
+                        $('#chat').append(newButton);
                     }
 				});
 			}else if(currentStatus == 'k2'){
@@ -1547,13 +1536,19 @@ button:active {
 		        
 		        const projNo = $('#projNumber').val();
 		        const pwNo = $('#wrkNumber').val();
+		        const pdwNo = $('#pdwNumber').val();
+		        
 		        console.log	(pwNo);
+		        console.log	(pdwNo);
 		        let url;
 		        if (type === 'project') {
 		            url = `/project/projectdelete/${projNo}`; // 프로젝트 삭제 URL
 		        } else if (type === 'work') {
 		        	
 		            url = `/project/projectwrkdel/${pwNo}`; // 업무 삭제 URL
+		        }else if( type === 'projectdwrk'){
+		        	
+		        	url = `/project/projectdwrkdelete/${pdwNo}`; // 상세업무 삭제 URL
 		        }
 
 		        if (confirm('정말로 삭제하시겠습니까?')) {
@@ -1572,27 +1567,7 @@ button:active {
 		        }
 		    });
 		});
-		// 프로젝트 상세업무 삭제 
-		$(document).ready(function() {
-		    $('#').on('submit', function(event) {
-		        event.preventDefault(); // 기본 폼 제출 방지
-	            const projNo = $(buttonElement).parent().attr('id').split('_')[1]; 
-	            projNo = parseInt(projNo.replace(/^[PW]/, ''), 10); 
-
-		        // AJAX 호출
-		        $.ajax({
-		            url: `/project/prjectdelete/${projNo}`, 
-		            type: 'DELETE', 
-		            success: function(response) {
-		                alert('프로젝트가 삭제되었습니다.');
-		                location.reload(); // 페이지 새로고침
-		            },
-		            error: function(xhr, status, error) {
-		                alert('삭제 중 오류가 발생했습니다: ' + error);
-		            }
-		        });
-		    });
-		});		
+		
 		// 삭제 버튼 클릭 이벤트 리스너 추가
 		$(document).on('click', '.delete-chat-btn', function() {
 		    const chatItem = $(this).closest('.chat-item');

@@ -39,7 +39,6 @@ import com.collavore.app.project.service.ProjectFilesVO;
 import com.collavore.app.project.service.ProjectFoldersVO;
 import com.collavore.app.project.service.ProjectTempVO;
 import com.collavore.app.project.service.ProjectVO;
-import com.collavore.app.project.service.ProjectWorkTempVO;
 import com.collavore.app.service.HomeService;
 import com.collavore.app.service.HomeVO;
 
@@ -175,7 +174,6 @@ public class ProjectController {
 	public String deleteProject(@PathVariable int projNo) {
 	
 		pjService.projectComtDel(projNo);
-		
 		List<ProjectVO> projectVOList = pjService.projectwrkList(projNo);
 		pjService.projectwrkDelete(projNo);
 		for(ProjectVO info :  projectVOList) {
@@ -465,7 +463,7 @@ public class ProjectController {
 	@GetMapping("project/projectmgrlist/{jobNo}")
 	@ResponseBody
 	public List<ProjectVO> projectmgrInfo(@PathVariable int jobNo) {
-		// System.err.println(jobNo);
+		 System.err.println(jobNo);
 		return pjService.projectMgrListInfo(jobNo);
 	}
 
@@ -533,6 +531,14 @@ public class ProjectController {
 	@ResponseBody
 	public String deletedcomts(@PathVariable int pdwcNo) {
 		pjService.projectcomtsDelete(pdwcNo);
+		return "삭제 완료";
+	}
+	
+	// 프로젝트 상세업무 삭제(단건)
+	@DeleteMapping("project/projectdwrkdelete/{pdwNo}")
+	@ResponseBody
+	public String dwrkdelete(@PathVariable int pdwNo) {
+		pjService.projectdeteilworkDelete(pdwNo);
 		return "삭제 완료";
 	}
 

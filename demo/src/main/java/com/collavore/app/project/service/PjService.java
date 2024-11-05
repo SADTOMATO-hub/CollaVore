@@ -123,4 +123,7 @@ public interface PjService {
 	
 	// 프로젝트 코멘트 삭제
 	public int projectComtDel(int projNo);
+	
+	// 프로젝트 상세업무 삭제(단건)
+	public int projectdeteilworkDelete(int pdwNo);
 }
