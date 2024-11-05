@@ -179,7 +179,7 @@ button:active {
                             <thead>
                                 <tr style="text-align: center;">
                                     <th:block th:each="appr : ${approvers}">
-                                        <td><span>[[${appr.approverName}]]</span></td>
+                                        <td><span><strong>[[${appr.approverName}]]</strong><span></td>
                                     </th:block>
                                 </tr>
                             </thead>
@@ -195,7 +195,9 @@ button:active {
 										        <img class="approval-status-img" src="/assets/images/approveStatus/rejected.png" alt="반려">
 										    </span>
 										    <!-- '결재 대기' 상태는 버튼이 비활성화되었을 때만 표시 -->
-										    <span class="display-status" th:if="${!appr.buttonEnabled && appr.displayStatus != '승인' && appr.displayStatus != '반려'}" th:text="${appr.displayStatus}"></span>
+										    <span class="status-image" th:if="${appr.displayStatus == '결재 대기'}">
+										        <img class="approval-status-img" src="/assets/images/approveStatus/standby.png" alt="결재 대기">
+										    </span>
 										    <!-- 승인 및 반려 버튼: buttonEnabled가 true일 때만 표시 -->
 										    <button type="button"
 										        th:if="${session.userEmpNo == appr.approverEmpNo && appr.buttonEnabled}"
