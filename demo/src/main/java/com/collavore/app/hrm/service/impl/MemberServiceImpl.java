@@ -184,4 +184,10 @@ public class MemberServiceImpl implements MemberService {
 		return memberMapper.selectMembersWithDeptAndPosition();  // 부서 및 직위 정보를 조인한 사원 목록 조회
 	}
 
+	// 나의 전자결재
+	@Override
+	public List<HrmVO> getAppList(Integer empNo) {
+		return memberMapper.selectAppList(empNo);
+	}
+
 }

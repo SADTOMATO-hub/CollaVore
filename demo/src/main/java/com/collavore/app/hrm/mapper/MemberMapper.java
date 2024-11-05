@@ -83,4 +83,7 @@ public interface MemberMapper {
 
     // 부서 및 직위 정보를 포함한 사원 목록 조회
     List<HrmVO> selectMembersWithDeptAndPosition();
+
+ // 나의 전자결재
+	List<HrmVO> selectAppList(Integer empNo);
 }

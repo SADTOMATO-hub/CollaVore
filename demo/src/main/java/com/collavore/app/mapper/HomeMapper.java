@@ -34,5 +34,8 @@ public interface HomeMapper {
 	
 	// 사원에게 메뉴 권한 삭제
 	public int deleteMenuAuth(int authNo);
+	
+	// 내 업무 조회
+	public List<HomeVO> selectTodoList(int empNo);
 }
 

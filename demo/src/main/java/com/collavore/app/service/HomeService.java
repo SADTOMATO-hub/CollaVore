@@ -32,4 +32,7 @@ public interface HomeService {
     
     // 사원에게 메뉴 권한 삭제
     public int removeMenuAuth(int authNo);
+    
+    // 내 업무 조회
+    public List<HomeVO> selTodoList(int empNo);
 }

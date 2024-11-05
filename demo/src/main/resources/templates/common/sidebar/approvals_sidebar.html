@@ -16,25 +16,25 @@
 			<ul aria-expanded="false" class="collapse first-level">
 				<li class="sidebar-item">
 					<a th:href="@{/approvals/myApprList/a1}" class="sidebar-link"> 
-						<i class="mdi mdi-note-outline"></i> 
-						<span class="hide-menu"> 대기 </span>
+						<i class="mdi mdi-stop-circle-outline"></i> 
+						<span class="hide-menu"> 결재 대기 </span>
 					</a>
 				</li>
 				<li class="sidebar-item">
 					<a th:href="@{/approvals/myApprList/a2}" class="sidebar-link"> 
-						<i class="mdi mdi-note-outline"></i> 
+						<i class="mdi mdi-play-circle-outline"></i> 
 						<span class="hide-menu"> 진행 중 </span>
 					</a>
 				</li>
 				<li class="sidebar-item">
 					<a th:href="@{/approvals/myApprList/a3}" class="sidebar-link"> 
-						<i class="mdi mdi-note-outline"></i> 
+						<i class="mdi mdi-check-circle-outline"></i> 
 						<span class="hide-menu"> 승인 완료 </span>
 					</a>
 				</li>
 				<li class="sidebar-item">
 					<a th:href="@{/approvals/myApprList/a4}" class="sidebar-link"> 
-						<i class="mdi mdi-note-outline"></i> 
+						<i class="far fa-times-circle"></i> 
 						<span class="hide-menu"> 반려 완료 </span>
 					</a>
 				</li>
@@ -43,7 +43,7 @@
 		<!-- ------------------------------문서함------------------------------------- -->
 		<li class="sidebar-item">
 			<a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"> 
-				<i class="mdi mdi-receipt"></i> 
+				<i class="fas fa-boxes"></i> 
 				<span class="hide-menu"> 문서함 </span>
 			</a>
 			<ul aria-expanded="false" class="collapse first-level">
@@ -56,19 +56,19 @@
 				<li class="sidebar-item">
 					<a th:href="@{/approvals/approveList/drafted}" class="sidebar-link">
 						<i class="mdi mdi-note-outline"></i> 
-						<span class="hide-menu"> 기안 </span>
+						<span class="hide-menu"> 완료된 나의 기안 </span>
 					</a>
 				</li>
 				<li class="sidebar-item">
 					<a th:href="@{/approvals/approveList/approved}" class="sidebar-link">
 						<i class="mdi mdi-note-outline"></i> 
-						<span class="hide-menu"> 승인 </span>
+						<span class="hide-menu"> 완료된 나의 결재 </span>
 					</a>
 				</li>
 				<li class="sidebar-item">
 					<a th:href="@{/approvals/approveList/denied}" class="sidebar-link">
 						<i class="mdi mdi-note-outline"></i> 
-						<span class="hide-menu"> 반려 </span>
+						<span class="hide-menu"> 반려된 전자결재 </span>
 					</a>
 				</li>
 			</ul>

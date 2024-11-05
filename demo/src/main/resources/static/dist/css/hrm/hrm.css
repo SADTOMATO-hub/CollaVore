@@ -432,6 +432,39 @@ button:hover {
 }
 
 
+#managerInfo {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    margin: 20px auto; /* 중앙 정렬 */
+}
+
+#managerInfo p {
+    font-weight: bold;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+#managerInfoItems {
+    list-style: none; /* 기본 리스트 스타일 제거 */
+    padding: 0;
+    margin: 0;
+}
+#managerInfoItems li {
+    display: flex;
+    align-items: center;
+    justify-content: center; /* 수평 중앙 정렬 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+#managerInfoItems li:last-child {
+    border-bottom: none; /* 마지막 항목의 구분선 제거 */
+}
+
 
 #employeeList {
     background-color: #f9f9f9;

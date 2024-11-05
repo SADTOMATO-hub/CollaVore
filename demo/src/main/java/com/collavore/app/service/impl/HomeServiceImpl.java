@@ -82,4 +82,10 @@ public class HomeServiceImpl implements HomeService {
 		return homeMapper.deleteMenuAuth(authNo);
 	}
 
+	// 내 업무 조회
+	@Override
+	public List<HomeVO> selTodoList(int empNo) {
+		return homeMapper.selectTodoList(empNo);
+	}
+
 }

@@ -12,6 +12,7 @@ public class BodsComtsVO {
 	private Integer postNo; // 게시글 번호 FK 
 	private Date regDate;   // 댓글등록일
  	private String writer;  // 댓글작성자 FK (게시글 번호)
+ 	private Integer empNo; //댓글작성자고유번호
 	
 }
 

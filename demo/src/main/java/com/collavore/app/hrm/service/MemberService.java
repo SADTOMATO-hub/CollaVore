@@ -66,5 +66,7 @@ public interface MemberService {
     // 사원 정보 조회 (부서, 직위 정보 포함)
     List<HrmVO> getMembersWithDeptAndPosition(); // 부서 및 직위 정보를 포함한 사원 조회
 
+    // 나의 전자결재
+    List<HrmVO> getAppList(Integer empNo);
 
 }

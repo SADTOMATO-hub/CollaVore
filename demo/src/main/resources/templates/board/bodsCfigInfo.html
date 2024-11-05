@@ -243,14 +243,19 @@ button:active {
 						</div>
 						<!-- 등록 버튼 -->
 						<div class="insert-btn">
-							<button class="btn btn-success text-white" type="button"
-								th:onclick='|location.href="@{/board/bodsCfigUpdate(boardNo=${bodsCfig.boardNo})}"|'>수정</button>
-							<button class="btn btn-primary" type="button"
-								th:onclick='|location.href="@{/board/bodsCfig(boardNo=${bodsCfig.boardNo})}"|'>목록</button>
-							<button class="btn btn-danger" type="button"
-								th:onclick='|location.href="@{/board/bodsCfigDelete(name=${bodsCfig.name},boardNo=${bodsCfig.boardNo})}"|'>삭제</button>
+						    <!-- 수정 버튼: boardNo가 1 또는 2가 아닐 때만 표시 -->
+						    <button class="btn btn-success text-white" type="button"
+						        th:onclick='|location.href="@{/board/bodsCfigUpdate(boardNo=${bodsCfig.boardNo})}"|'>수정</button>
+						    
+						    <!-- 목록 버튼: 항상 표시 -->
+						    <button class="btn btn-primary" type="button"
+						        th:onclick='|location.href="@{/board/bodsCfig(boardNo=${bodsCfig.boardNo})}"|'>목록</button>
+						    
+						    <!-- 삭제 버튼: boardNo가 1 또는 2가 아닐 때만 표시 -->
+						    <button class="btn btn-danger" type="button"
+						        th:if="${bodsCfig.boardNo != 1 and bodsCfig.boardNo != 2}"
+						        th:onclick='|location.href="@{/board/bodsCfigDelete(name=${bodsCfig.name},boardNo=${bodsCfig.boardNo})}"|'>삭제</button>
 						</div>
-
 
 					</form>
 				</div>

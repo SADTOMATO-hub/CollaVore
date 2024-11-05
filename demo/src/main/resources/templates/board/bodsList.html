@@ -269,19 +269,19 @@ button:active {
 		<div class="purple-background-container">
 			<div class="breadcrumb">
 				<div class="breadcrumb-left">
-					<h4>[[${boardName}]]</h4>
-					<p>[[${boardName}]] 게시판의 게시글 입니다.</p>
+					<h4>[[${boardInfo.name}]]</h4>
+					<p>[[${boardInfo.name}]] 게시판의 게시글 입니다.</p>
 				</div>
 				<div class="breadcrumb-right">
-					<span>게시판 > [[${boardName}]]</span>
+					<span>게시판 > [[${boardInfo.name}]]</span>
 				</div>
 			</div>
-
 			<div class="card_memberList">
 				<table class="table table-hover">
 					<thead>
 						<tr>
 							<th scope="col">게시글 번호</th>
+							<th scope="col">머리글</th>
 							<th scope="col">제목</th>
 							<th scope="col">작성자</th>
 							<th scope="col">등록일</th>
@@ -291,6 +291,7 @@ button:active {
 						<th:block th:each="info, stat : ${bodsList}">
 							<tr th:attr="data-post-no=${info.postNo}">
 								<td>[[${stat.index + 1}]]</td>
+								<td>[[${info.subject}]]</td>
 								<td>[[${info.title}]]</td>
 								<td>[[${info.writerName}]]</td>
 								<td>[[${#dates.format(info.regDate, "yyyy년 MM월 dd일")}]]</td>
