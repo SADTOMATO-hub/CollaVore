@@ -283,16 +283,14 @@
 		, cal_type
 		, reg_date
 		, is_delete
-		,
-		delete_date
+		, delete_date
 		, color
 		) VALUES (
 		#{calNo}
 		, #{name}
 		, #{calType}
 		, SYSDATE
-		,
-		#{isDelete}
+		, #{isDelete}
 		, NULL
 		, #{color}
 		)

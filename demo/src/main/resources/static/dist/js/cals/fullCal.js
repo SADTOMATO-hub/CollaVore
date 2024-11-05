@@ -1585,7 +1585,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			`
 	        <input type="hidden" class="cal_name" value="${calendar.name}" />
 	        <a href="javascript:void(0)" data-calno="${calendar.calNo}" class="sidebar-link calendar-item">
-	            <i class="mdi mdi-calendar-blank" style="color:${calendar.color};"></i> ${truncatedName}
+	            <i class="mdi mdi-checkbox-blank" style="color:${calendar.color};"></i> ${truncatedName}
 	        </a>
 	        <span class="hide-menu edit-icon" style="margin-left: 10px;">
 	            <i class="mdi mdi-pencil" aria-hidden="true"></i>
