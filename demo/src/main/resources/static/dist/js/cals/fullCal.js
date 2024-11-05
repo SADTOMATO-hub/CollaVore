@@ -780,6 +780,12 @@ document.addEventListener('DOMContentLoaded', function() {
 							}
 						}
 
+						// f1일 때 alarmType이 설정되지 않은 경우 예외 처리
+						if (isAlarm === 'f1' && !alarmType) {
+							alert("알림을 사용하려면 매일, 매주, 매달 중 하나를 선택해주세요.");
+							return;
+						}
+
 						// 예외 처리 추가
 						if (isAlarm === 'f1') {
 							if (alarmType === 'd1') { // 매일 알림 예외 처리
