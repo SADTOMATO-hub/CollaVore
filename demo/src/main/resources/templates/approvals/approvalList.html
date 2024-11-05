@@ -284,6 +284,7 @@ button:active {
 							<td>전자결재 제목</td>
 							<td>기안자</td>
 							<td>기안일</td>
+							<td>종료일</td>
 						</tr>
 					</thead>
 					<tbody>
@@ -294,6 +295,7 @@ button:active {
 								<td>[[${approve.title}]]</td>
 								<td>[[${approve.drafterName}]]</td>
 								<td>[[${#dates.format(approve.regDate, "yyyy년 MM월 dd일")}]]</td>
+								<td>[[${#dates.format(approve.compDate, "yyyy년 MM월 dd일")}]]</td>
 							</tr>
 						</th:block>
 					</tbody>
