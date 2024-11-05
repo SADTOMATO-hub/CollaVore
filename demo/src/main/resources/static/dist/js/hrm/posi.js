@@ -24,18 +24,41 @@ function loadExistingData() {
         });
 }
 
+// 중복 검사 함수
+function checkDuplicate(input) {
+    const newName = input.value.trim();
+    if (newName === "") return;
+
+    const existingNames = Array.from(document.querySelectorAll('#positionTable input'))
+        .map(input => input.value.trim())
+        .filter(name => name !== ""); // 입력된 직위명만 수집
+
+    const duplicateCount = existingNames.filter(name => name === newName).length;
+
+    if (duplicateCount > 1) {
+        alert("중복된 직위명은 사용할 수 없습니다.");
+        input.value = ""; // 중복이 발견되면 입력 필드를 초기화
+        input.focus(); // 입력 필드에 다시 포커스를 맞춤
+    }
+}
+
 // 새 레벨 추가 함수
 function addLevel() {
     levelCounter++;
     const table = document.getElementById('positionTable');
+
     const row = document.createElement('tr');
     row.innerHTML = `
         <td>Level. ${levelCounter}</td>
-        <td><input type="text" placeholder="새 직위 입력" /></td>
+        <td><input type="text" placeholder="새 직위 입력" onblur="checkDuplicate(this)" /></td>
         <td><button onclick="removeLevel(this)"><i class="fas fa-minus"></i></button></td>
     `;
     table.appendChild(row);
     reorderLevels();
+
+    // 새로 추가된 입력 필드에 포커스 설정
+    const newInput = row.querySelector('input');
+    newInput.focus();
 }
 
 // 레벨 삭제 함수
@@ -87,14 +110,27 @@ function saveData() {
     const rows = document.querySelectorAll('#positionTable tr');
     const positions = [];
     let nonName = false;
+    const nameSet = new Set(); // 중복 확인을 위한 Set
+    let hasDuplicate = false; // 중복 발생 여부 확인
 
     rows.forEach((row, index) => {
         if (index === 0) return; // 첫 번째는 헤더이므로 제외
         const posiNo = row.cells[1].querySelector('input').dataset.posiNo || null;
         const posiName = row.cells[1].querySelector('input').value.trim();
+
+        // 공백 이름 검사
         if (posiName === '') {
             nonName = true;
         }
+
+        // 중복 검사
+        if (nameSet.has(posiName)) {
+            alert("중복된 직위명이 있습니다. 확인 후 다시 시도해주세요.");
+            hasDuplicate = true;
+            return; // 중복이 발견되면 즉시 종료
+        }
+        nameSet.add(posiName);
+
         positions.push({
             posiNo: posiNo,
             posiName: posiName,
@@ -107,8 +143,11 @@ function saveData() {
         return;
     }
 
-    console.log(positions);  // 전송할 데이터를 콘솔에 출력
-    // 서버에 데이터 전송 (AJAX 사용)
+    if (hasDuplicate) {
+        return; // 중복이 있을 경우 저장 요청 중단
+    }
+
+    // 서버에 데이터 전송
     fetch('/positions/save', {
         method: 'POST',
         headers: {
@@ -127,7 +166,7 @@ function saveData() {
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('에러 발생!');
+        alert('에러 발생! 관리자에게 문의하세요.');
     });
 }
 
