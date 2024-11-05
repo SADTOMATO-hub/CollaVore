@@ -4,7 +4,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.collavore.app.security.service.impl.UserDetailsService;
 
@@ -28,11 +27,13 @@ public class SecurityController {
 	}
 
 	@GetMapping("/login")
-	public String logins(@RequestParam(value = "error", required = false) String error, HttpSession session,
-			Model model) {
-		if (error != null) {
-			model.addAttribute("loginError", "아이디 또는 비밀번호가 올바르지 않습니다.");
-		}
-		return "login";
+	public String logins(HttpSession session, Model model) {
+	    String loginError = (String) session.getAttribute("loginError");
+	    if (loginError != null) {
+	        model.addAttribute("loginError", loginError);
+	        session.removeAttribute("loginError"); // 세션에서 제거하여 리프레시 시 메시지가 유지되지 않도록 함
+	    }
+	    return "login";
 	}
+
 }

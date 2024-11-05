@@ -77,8 +77,8 @@ body, html {
 				<input type="password" name="password" class="form-control" placeholder="비밀번호 입력" autocomplete="current-password" required>
 				<button type="submit">로그인</button>
 
-				<div th:if="${loginError}" class="error">
-					<p th:text="${loginError}"></p>
+				<div th:if="${loginError}" class="error" style="font-weight:bold;">
+					<p th:utext="${loginError}"></p>
 				</div>
 			</form>
 		</div>
