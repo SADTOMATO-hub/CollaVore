@@ -3,21 +3,27 @@
 		<!-- -------------------------------기안하기----------------------------------------------- -->
 		<li class="sidebar-item">
 			<a class="sidebar-link waves-effect waves-dark" th:href="@{/approvals/createApprForm}" aria-expanded="false" id="createBtn"> 
-				<i class="mdi mdi-border-color"></i> 
+				<i class="fas fa-edit"></i> 
 				<span class="hide-menu">기안하기</span>
 			</a>
 		</li>
 		<!-- ------------------------------------ 진행 중인 전자결재 ------------------------------------- -->
 		<li class="sidebar-item">
+			
 			<a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"> 
-				<i class="mdi mdi-receipt"></i> 
+				<i class="mdi mdi-arrow-right-bold"></i> 
 				<span class="hide-menu"> 진행 중인 전자결재 </span>
 			</a>
 			<ul aria-expanded="false" class="collapse first-level">
 				<li class="sidebar-item">
+					<a th:href="@{/approvals/myApprList/a5}" class="sidebar-link"> 
+						<i class="fas fa-inbox"></i> 
+						<span class="hide-menu"> 전체 </span>
+					</a>
+				<li class="sidebar-item">
 					<a th:href="@{/approvals/myApprList/a1}" class="sidebar-link"> 
 						<i class="mdi mdi-stop-circle-outline"></i> 
-						<span class="hide-menu"> 결재 대기 </span>
+						<span class="hide-menu"> 내 기안 </span>
 					</a>
 				</li>
 				<li class="sidebar-item">
@@ -49,25 +55,25 @@
 			<ul aria-expanded="false" class="collapse first-level">
 				<li class="sidebar-item">
 					<a th:href="@{/approvals/approveList/all}" class="sidebar-link"> 
-						<i class="mdi mdi-note-outline"></i> 
+						<i class="fas fa-inbox"></i> 
 						<span class="hide-menu"> 전체 </span>
 					</a>
 				</li>
 				<li class="sidebar-item">
 					<a th:href="@{/approvals/approveList/drafted}" class="sidebar-link">
-						<i class="mdi mdi-note-outline"></i> 
+						<i class="mdi mdi-check"></i> 
 						<span class="hide-menu"> 완료된 나의 기안 </span>
 					</a>
 				</li>
 				<li class="sidebar-item">
 					<a th:href="@{/approvals/approveList/approved}" class="sidebar-link">
-						<i class="mdi mdi-note-outline"></i> 
-						<span class="hide-menu"> 완료된 나의 결재 </span>
+						<i class="mdi mdi-account-check"></i> 
+						<span class="hide-menu"> 내가 결재한 전자결재 </span>
 					</a>
 				</li>
 				<li class="sidebar-item">
 					<a th:href="@{/approvals/approveList/denied}" class="sidebar-link">
-						<i class="mdi mdi-note-outline"></i> 
+						<i class="far fa-times-circle"></i> 
 						<span class="hide-menu"> 반려된 전자결재 </span>
 					</a>
 				</li>
@@ -76,20 +82,20 @@
 		<!-- ------------------------------템플릿 관리----------------------------------------- -->
 		<li class="sidebar-item" th:if="${menuAuth.contains('approval')}">
 			<a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"> 
-				<i class="mdi mdi-receipt"></i> 
+				<i class="mdi mdi-settings"></i> 
 				<span class="hide-menu"> 템플릿 관리 </span>
 			</a>
 			<ul aria-expanded="false" class="collapse first-level">
 				<li class="sidebar-item">
-					<a th:href="@{/approvals/tempList}" class="sidebar-link"> 
-						<i class="mdi mdi-note-outline"></i> 
-						<span class="hide-menu"> 등록된 템플릿 </span>
+					<a th:href="@{/approvals/createTempForm}" class="sidebar-link"> 
+						<i class="mdi mdi-grease-pencil"></i>
+						<span class="hide-menu"> 새 템플릿 생성 </span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a th:href="@{/approvals/createTempForm}" class="sidebar-link"> 
-						<i class="mdi mdi-note-outline"></i>
-						<span class="hide-menu"> 새 템플릿 생성 </span>
+					<a th:href="@{/approvals/tempList}" class="sidebar-link"> 
+						<i class="mdi mdi-folder-multiple-outline"></i> 
+						<span class="hide-menu"> 등록된 템플릿 </span>
 					</a>
 				</li>
 			</ul>

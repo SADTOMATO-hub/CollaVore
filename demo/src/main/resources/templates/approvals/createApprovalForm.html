@@ -234,7 +234,7 @@ button:active {
 									<select id="selectContent" class="form-select">
 										<option selected disabled>==템플릿 선택==</option>
 										<option th:each="temps : ${tempInfo}"
-											th:value="${temps.eatNo}">[[${temps.eatNo}]]/[[${temps.title}]]</option>
+											th:value="${temps.eatNo}">[[${temps.title}]]</option>
 									</select>
 								<input type="hidden" id="eatNo" name="eatNo" />
 							</div>
@@ -284,13 +284,21 @@ button:active {
 				<div class="modal-body">
 					<form id="apprForm">
 						<div class="mb-3">
+							<label for="selectDept" class="form-label">부서 선택</label>
+						</div>
+						<div class="mb-3">
+							<select id="selectDept" class="form-select">
+								<option selected value="" disabled>==부서 선택==</option>
+								<option th:each="deptsInfo : ${depts}"
+									th:value="${deptsInfo.deptNo}">[[${deptsInfo.deptName}]]</option>
+							</select>
+						</div>
+						<div class="mb-3">
 							<label for="selectApprovers" class="form-label">결재자 선택</label>
 						</div>
 						<div class="mb-3">
 							<select id="selectApprovers" class="form-select">
 								<option selected value="" disabled>==결재자 선택==</option>
-								<option th:each="appverInfo : ${employeesInfo}"
-									th:value="${appverInfo.empNo}">[[${appverInfo.empName}]]/[[${appverInfo.posiName}]]</option>
 							</select>
 						</div>
 						<button type="button" class="btn btn-primary" id="modalSubmit">결재자
@@ -378,6 +386,40 @@ $(document).ready(
 			});
 		});
 	//modal에서 선택한 결재자 정보를 부모 페이지에 넘기는 기능
+	  $(document).ready(function() {
+        // 부서 선택 시, 해당 부서에 소속된 결재자 목록을 동적으로 불러오는 AJAX
+        $('#selectDept').on('change', function() {
+            var deptNo = $(this).val(); // 선택된 부서 번호
+
+            // 부서 번호가 없으면 리턴
+            if (!deptNo) return;
+
+            // 결재자 선택 드롭다운 초기화
+            $('#selectApprovers').empty();
+            $('#selectApprovers').append('<option selected value="" disabled>==결재자 선택==</option>');
+
+            // AJAX 요청: 해당 부서의 결재자 목록을 받아옴
+            $.ajax({
+                url: '/approvals/selectEmps/' + deptNo,
+                type: 'POST',
+                success: function(response) {
+                    if (response.length === 0) {
+                        $('#selectApprovers').append('<option value="">결재자 없음</option>');
+                        return;
+                    }
+                    // 응답 받은 결재자 목록을 드롭다운에 추가
+                    $.each(response, function(index, employeesInfo) {
+                        $('#selectApprovers').append(
+                            `<option value="${employeesInfo.empNo}">${employeesInfo.empName} / ${employeesInfo.posiName}</option>`
+                        );
+                    });
+                },
+                error: function(xhr, status, error) {
+                    alert("결재자 정보를 불러오는 중 오류가 발생했습니다.");
+                }
+            });
+        });
+    });
  $(document).ready(function(){
     $("#modalSubmit").on("click", function(e){
         e.preventDefault();
@@ -410,6 +452,8 @@ $(document).ready(
         // 초기 상태로 복귀
         $('#selectApprovers').prop('selectedIndex', 0);
         $('#approversSelect').modal('hide');
+        
+        $('#selectDept').prop('selectedIndex', 0);
     });
 });
 	//

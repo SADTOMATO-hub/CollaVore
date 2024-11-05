@@ -16,10 +16,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.collavore.app.approvals.service.ApprovalsService;
 import com.collavore.app.approvals.service.ApprovalsVO;
 import com.collavore.app.approvals.service.ApprovalstempVO;
+import com.collavore.app.hrm.service.HrmVO;
 import com.collavore.app.service.HomeService;
 import com.collavore.app.service.HomeVO;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.websocket.Session;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -109,12 +111,25 @@ public class ApprovalsController {
 
 	// 전자결재 생성 폼
 	@GetMapping("/createApprForm")
-	public String createApprovals(Model model) {
+	public String createApprovals(Model model, HrmVO hrmVO,  HttpSession session ) {
+		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
 		List<ApprovalstempVO> tempInfo = approvalsService.apprTempList();
-		List<Map<String, Object>> employeesInfo = approvalsService.employeesInfo();
+		//부서 테이블 조회
+		List <HrmVO> depts = approvalsService.depts();
+		model.addAttribute("depts", depts);
 		model.addAttribute("tempInfo", tempInfo);
-		model.addAttribute("employeesInfo", employeesInfo);
+		model.addAttribute("userEmpNo", userEmpNo);
 		return "approvals/createApprovalForm";
+	}
+	
+	//부서가 선택되면 인사테이블을 호출
+	@PostMapping("/selectEmps/{deptNo}")
+	@ResponseBody
+	public List<HrmVO> employeeList(@PathVariable("deptNo") int deptNo, HttpSession session){
+		//인사 테이블 조회
+		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
+		List<HrmVO> employeesInfo = approvalsService.employeesInfo(userEmpNo, deptNo);
+		return employeesInfo;
 	}
 
 	// 전자결재 생성 시, 데이터를 받는 곳
@@ -124,7 +139,7 @@ public class ApprovalsController {
 		if (apprVO.getEaNo() >= 0) {
 			int resultOfEar = approvalsService.insertApprsEar(apprVO); // 전자결재 //원래 없던 ea가 들어감
 			if (resultOfEar >= 0) {
-				return "redirect:/approvals/myApprList/a1";
+				return "redirect:/approvals/myApprList/a5";
 			}
 		}
 		return null;
@@ -221,30 +236,32 @@ public class ApprovalsController {
 
 	// 전결 업데이트 폼
 	@GetMapping("/updateApprInfoForm")
-	public String updateApprovalInfoForm(ApprovalsVO apprVO, Model model) {
-		List<Map<String, Object>> employeesInfo = approvalsService.employeesInfo();
+	public String updateApprovalInfoForm(ApprovalsVO apprVO, Model model, HttpSession session) {
 		ApprovalsVO apprInfo = approvalsService.approvalsInfo(apprVO);
 		List<Map<String, Object>> approvers = approvalsService.approversInfo(apprVO);
 		List<ApprovalstempVO> tempInfo = approvalsService.apprTempList();
+		//부서 테이블 조회
+		List <HrmVO> depts = approvalsService.depts();
+		model.addAttribute("depts", depts);
 		model.addAttribute("approvals", apprInfo);
 		model.addAttribute("approvers", approvers);
 		model.addAttribute("apprSize", approvers.size());
 		model.addAttribute("tempInfo", tempInfo);
-		model.addAttribute("employeesInfo", employeesInfo);
 		return "approvals/updateApproval";
 	}
+	
+	//부서가 선택되면 인사테이블을 호출 
 
-	// 전결 업데이트 데이터 받는 고
+	// 전결 업데이트 데이터 받는 곳
 	@PostMapping("/updateApprInfo")
 	public String updateApprovalInfo(ApprovalsVO apprVO) {
 		// 전자결재 업데이트
 		approvalsService.updateApproval(apprVO);
-		System.err.println(apprVO.getApprovers());
 		// eaNo 기준으로 전자결재자 전체 삭제
 		approvalsService.deleteApprover(apprVO.getEaNo());
 		// 새로 받은 전자결재자 등록
 		approvalsService.insertApprsEar(apprVO);
-		return "redirect:/approvals/myApprList/a1";
+		return "redirect:/approvals/myApprList/a5";
 	}
 
 	// 전자결재 템플릿 내용만 호출하는 기능
@@ -260,7 +277,7 @@ public class ApprovalsController {
 	public String deleteAppr(ApprovalsVO apprVO) {
 		approvalsService.deleteApprovals(apprVO);
 		if (apprVO.getResultCode() >= 0) {
-			return "redirect:/approvals/myApprList/a1";
+			return "redirect:/approvals/myApprList/a5";
 		}
 		return null;
 	}

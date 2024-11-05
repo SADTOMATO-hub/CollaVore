@@ -3,6 +3,7 @@ package com.collavore.app.approvals.service.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,17 +12,18 @@ import com.collavore.app.approvals.mapper.ApprovalsMapper;
 import com.collavore.app.approvals.service.ApprovalsService;
 import com.collavore.app.approvals.service.ApprovalsVO;
 import com.collavore.app.approvals.service.ApprovalstempVO;
+import com.collavore.app.hrm.service.HrmVO;
 
 import lombok.extern.log4j.Log4j2;
 @Log4j2
 @Service
-public class ApprovalsImpl implements ApprovalsService {
+public class ApprovalsServiceImpl implements ApprovalsService {
 	// mapper와 연결
 	private ApprovalsMapper approvalsMapper;
 
 		// 생성자
 	@Autowired
-	public ApprovalsImpl(ApprovalsMapper approvalsMapper) {
+	public ApprovalsServiceImpl(ApprovalsMapper approvalsMapper) {
 		this.approvalsMapper = approvalsMapper;
 	}
 
@@ -112,15 +114,12 @@ public class ApprovalsImpl implements ApprovalsService {
 	// 전자결재 수정
 	@Override
 	public int updateApproval(ApprovalsVO approvalsVo) {
-		return approvalsMapper.updateApproval(approvalsVo);
+		int result = approvalsMapper.updateApproval(approvalsVo);
+		return result;
 	}
 	@Override
 	public List<ApprovalsVO> approvalsList(int eaNo) {
 		return approvalsMapper.approvalsList(eaNo);
-	}
-	@Override
-	public int updateApprover(ApprovalsVO approvalsVo) {
-		return approvalsMapper.updateApprover(approvalsVo);
 	}
 	
 	// 전자결재 삭제
@@ -128,12 +127,19 @@ public class ApprovalsImpl implements ApprovalsService {
 	public void deleteApprovals(ApprovalsVO approvalsVo) {
 		approvalsMapper.deleteApproval(approvalsVo);
 	}
-	// 인사테이블
+	
+	// 인사 테이블
 	@Override
-	public List<Map<String,Object>> employeesInfo() {
-		return approvalsMapper.employees();
+	public List<HrmVO> employeesInfo(int userEmpNo, int deptNo) {
+		return approvalsMapper.employees(userEmpNo, deptNo);
 	}
-
+	
+	// 부서 테이블 조회
+	@Override
+	public List<HrmVO> depts() {
+		return approvalsMapper.depts();
+	}
+	
 	// 결재자 삭제
 	@Override
 	public int deleteApprover(int eaNo) {

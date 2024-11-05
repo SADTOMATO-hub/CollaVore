@@ -3,8 +3,13 @@ package com.collavore.app.approvals.mapper;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.collavore.app.approvals.service.ApprovalsVO;
 import com.collavore.app.approvals.service.ApprovalstempVO;
+import com.collavore.app.hrm.service.HrmVO;
+
+import groovyjarjarpicocli.CommandLine.Parameters;
 
 public interface ApprovalsMapper {
 	//템플릿 목록 조회, 템플릿의 모든 정보를 불러오는 기능
@@ -36,13 +41,12 @@ public interface ApprovalsMapper {
 	public int updateApproval (ApprovalsVO approvalsVo);
 		//결재자 리스트
 	public List <ApprovalsVO> approvalsList (int eaNo);
-		//결재자 수정
-	public int updateApprover (ApprovalsVO approvalsVo);
 	//전자결재 삭제
 	public void deleteApproval (ApprovalsVO approvalsVo);
 	//인사 테이블 조회
-	public List<Map<String,Object>> employees ();
-	
+	public List<HrmVO> employees (@Param("userEmpNo") int userEmpNo, @Param("deptNo") int deptNo);
+	//부서 테이블 조회
+	public List <HrmVO> depts ();
 	// 결재자 삭제
 	public int deleteApprover(int eaNo);
 }
