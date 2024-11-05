@@ -334,7 +334,7 @@ public class ProjectController {
 		Map<String, Object> map = new HashMap<>();
 		String selNo = projectVO.getSelPwNo();
 		String selParentNo = projectVO.getSelParentPdwNo();
-		// System.err.println(projectVO);
+		 //System.err.println(projectVO);
 		switch (selParentNo.substring(0, 1)) {
 		case "W":
 			projectVO.setPwNo(Integer.parseInt(selParentNo.replace("W", "")));
@@ -434,7 +434,8 @@ public class ProjectController {
 	    
 	    ProjectVO projectManager = pjService.projectdwrkInfo(pdwNo);
 	    List<ProjectVO> selectmgrs = Collections.singletonList(projectManager);
-
+	    System.err.println(projectComments);
+	    
 	    // 결과를 하나의 Map으로 결합하여 반환
 	    Map<String, Object> response = new HashMap<>();
 	    response.put("comments", projectComments);
