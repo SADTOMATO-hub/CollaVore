@@ -14,17 +14,30 @@ btn.onclick = function() {
 		document.getElementById("tel").value);
 }
 
-// X 버튼을 클릭하면 모달을 닫습니다.
-closeBtn.onclick = function() {
-	modal.style.display = "none";
+// 모달 열기 함수
+function openModal() {
+    modal.style.display = "block";
+    overlay.style.display = "block"; // 오버레이 보이기
 }
 
-// 바깥을 클릭하면 모달을 닫습니다.
-window.onclick = function(event) {
-	if (event.target == modal) {
-		modal.style.display = "none";
-	}
+// 모달 닫기 함수
+function closeModal() {
+    modal.style.display = "none";
+    overlay.style.display = "none"; // 오버레이 숨기기
 }
+
+// 수정 버튼 클릭 시 모달 열기
+btn.onclick = openModal;
+
+// 닫기 버튼 클릭 시 모달 닫기
+closeBtn.onclick = closeModal;
+
+// 모달 바깥을 클릭하면 모달을 닫습니다.
+window.onclick = function(event) {
+    if (event.target === overlay) {
+        closeModal();
+    }
+};
 
 // 비밀번호 유효성 검사
 const passwordField = document.getElementById('password');

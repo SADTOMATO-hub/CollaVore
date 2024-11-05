@@ -104,6 +104,11 @@
 	margin-top: 30px;
 	position: relative;
 }
+.mgr-noninfo {
+	height: 70%; /* dept-info의 나머지 부분 사용 */
+	margin-top: 45px;
+	position: relative;
+}
 
 .mgr-image {
 	flex: 0 0 40%; /* mgr-info의 40% 너비 */
@@ -350,6 +355,18 @@
 #employeeModal .modal-button :hover {
 	background-color: #5a4bcf; /* 호버 시 더 어두운 보라색으로 변경 */
 }
+/* Style for the overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+    display: none; /* hidden by default */
+    z-index: 999; /* ensure it covers the page */
+}
+
 </style>
 
 
@@ -377,6 +394,8 @@
 </div>
 
 
+<div id="overlay" class="overlay"></div>
+			
 <div id="employeeModal" class="modal">
     <div class="modal-content">
         <!-- 모달 헤더 영역 -->

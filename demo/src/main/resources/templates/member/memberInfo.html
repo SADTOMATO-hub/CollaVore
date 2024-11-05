@@ -320,6 +320,22 @@ td {
 }
 
 /* 모달 영역 끝 */
+/* Style for the overlay */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+    display: none; /* hidden by default */
+    z-index: 999; /* ensure it covers the page */
+}
+
+/* Ensure the modal is on top of the overlay */
+#editModal {
+    z-index: 1000;
+}
 </style>
 	<div class="body-page-wrapper">
 		<div class="purple-background-container">
@@ -384,26 +400,38 @@ td {
 						<th>기안일</th>
 					</tr>
 					<tbody>
-					    <tr th:each="app : ${appList}"  th:onclick="|window.location.href='/approvals/readApprInfo?eaNo=' + ${app.eaNo}|" style="cursor: pointer;">
+					    <tr th:each="app : ${appList}" 
+					        th:onclick="|window.location.href='/approvals/readApprInfo?eaNo=' + ${app.eaNo}|" 
+					        style="cursor: pointer;">
 					        <td th:text="${app.eaNo}"></td>
 					        <td th:text="${app.appTitle}"></td>
-					        <td><span th:classappend="${app.appStatus == 'a1' ? 'btn btn-primary  rounded-pill' : 
-                                                  app.appStatus == 'a2' ? 'btn btn-info  rounded-pill' : 
-                                                  app.appStatus == 'a3' ? 'btn btn-success text-white  rounded-pill' : 
-                                                  app.appStatus == 'a4' ? 'btn btn-danger  rounded-pill' : ''}"
-                                    style="cursor: default;">
-                            <span th:text="${app.appStatus == 'a1' ? '대기' : 
-                                           app.appStatus == 'a2' ? '진행' : 
-                                           app.appStatus == 'a3' ? '승인완료' : 
-                                           app.appStatus == 'a4' ? '반려완료' : ''}"></span>
-                        </span>
+					        <td>
+					            <span th:classappend="${app.appStatus == 'a1' ? 'btn btn-primary rounded-pill' : 
+					                                      app.appStatus == 'a2' ? 'btn btn-info rounded-pill' : 
+					                                      app.appStatus == 'a3' ? 'btn btn-success text-white rounded-pill' : 
+					                                      app.appStatus == 'a4' ? 'btn btn-danger rounded-pill' : ''}" 
+					                  style="cursor: default;">
+					                <span th:text="${app.appStatus == 'a1' ? '대기' : 
+					                               app.appStatus == 'a2' ? '진행' : 
+					                               app.appStatus == 'a3' ? '승인완료' : 
+					                               app.appStatus == 'a4' ? '반려완료' : ''}"></span>
+					            </span>
 					        </td>
 					        <td th:text="${#dates.format(app.appRegDate, 'yyyy년 MM월 dd일')}"></td>
+					    </tr>
+					
+					    <!-- No documents message -->
+					    <tr th:if="${appList.isEmpty()}">
+					        <td colspan="4" style="text-align: center; color: gray;">기안 한 전자결재문서가 없습니다</td>
 					    </tr>
 					</tbody>
 				</table>
 			</div>
+			
 			<!-- 모달 구조 -->
+			
+			<div id="overlay" class="overlay"></div>
+
 			<div id="editModal" class="modal">
 				<div class="modal-content">
 					<!-- 모달 헤더 영역 -->

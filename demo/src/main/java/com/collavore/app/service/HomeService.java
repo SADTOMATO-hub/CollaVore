@@ -1,6 +1,7 @@
 package com.collavore.app.service;
 
 import java.util.List;
+import java.util.Map;
 
 public interface HomeService {
 	// 게시판조회
@@ -35,4 +36,7 @@ public interface HomeService {
     
     // 내 업무 조회
     public List<HomeVO> selTodoList(int empNo);
+    
+    // 프로젝트 상단 통계
+    public Map<String, Object> setStatInfo();
 }
