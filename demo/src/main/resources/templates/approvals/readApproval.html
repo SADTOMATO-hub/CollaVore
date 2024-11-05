@@ -179,44 +179,51 @@ button:active {
                             <thead>
                                 <tr style="text-align: center;">
                                     <th:block th:each="appr : ${approvers}">
-                                        <td><span><strong>[[${appr.approverName}]]</strong><span></td>
+                                        <td><strong>[[${appr.positionTitle}]]</strong></td>
                                     </th:block>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr style="text-align: center; height: 100px;">
-                                    <th:block th:each="appr : ${approvers}">
-                                        <td>
-										    <!-- 상태 표시 -->
-										    <span class="status-image" th:if="${appr.displayStatus == '승인'}">
-										        <img class="approval-status-img" src="/assets/images/approveStatus/approved.png" alt="승인">
-										    </span>
-										    <span class="status-image" th:if="${appr.displayStatus == '반려'}">
-										        <img class="approval-status-img" src="/assets/images/approveStatus/rejected.png" alt="반려">
-										    </span>
-										    <!-- '결재 대기' 상태는 버튼이 비활성화되었을 때만 표시 -->
-										    <span class="status-image" th:if="${appr.displayStatus == '결재 대기'}">
-										        <img class="approval-status-img" src="/assets/images/approveStatus/standby.png" alt="결재 대기">
-										    </span>
-										    <!-- 승인 및 반려 버튼: buttonEnabled가 true일 때만 표시 -->
-										    <button type="button"
-										        th:if="${session.userEmpNo == appr.approverEmpNo && appr.buttonEnabled}"
-										        class="approveBtn btn btn-primary"
-										        th:data-ear-no="${appr.earNumber}" th:value="b2"
-										        th:text="승인"></button>
-										    <button type="button"
-										        th:if="${session.userEmpNo == appr.approverEmpNo && appr.buttonEnabled}"
-										        class="approveBtn btn btn-danger"
-										        th:data-ear-no="${appr.earNumber}" th:value="b3"
-										        th:text="반려"></button>
-										</td>
-                                    </th:block>
-                                </tr>
+								    <th:block th:each="appr, iter : ${approvers}">
+								        <td>
+								            <!-- 상태 표시 -->
+								            <span class="status-image" th:if="${appr.displayStatus == '승인'}">
+								                <img class="approval-status-img" src="/assets/images/approveStatus/approved.png" alt="승인">
+								               	<span>[[${#dates.format(appr.PROC_DATE, 'yyyy-MM-dd HH:mm')}]]</span>
+								            </span>
+								            <span class="status-image" th:if="${appr.displayStatus == '반려'}">
+								                <img class="approval-status-img" src="/assets/images/approveStatus/rejected.png" alt="반려">
+								                <span>[[${#dates.format(appr.PROC_DATE, 'yyyy-MM-dd HH:mm')}]]</span>
+								            </span>
+								            <span class="status-image" th:if="${appr.displayStatus == '결재 대기'}">
+								                <img class="approval-status-img" src="/assets/images/approveStatus/standby.png" alt="결재 대기">
+								            </span>
+								
+								            <!-- 승인 및 반려 버튼 -->
+								            <button type="button"
+								                th:if="${session.userEmpNo == appr.approverEmpNo && appr.buttonEnabled}"
+								                class="approveBtn btn btn-primary"
+								                th:data-ear-no="${appr.earNumber}" th:value="b2"
+								                th:text="승인"></button>
+								            <button type="button"
+								                th:if="${session.userEmpNo == appr.approverEmpNo && appr.buttonEnabled}"
+								                class="approveBtn btn btn-danger"
+								                th:data-ear-no="${appr.earNumber}" th:value="b3"
+								                th:text="반려"></button>
+								        </td>
+								    </th:block>
+								
+								    <!-- 빈 td 추가 (4개의 칸을 맞추기 위해) -->
+								    <th:block th:if="${#lists.size(approvers) < 4}">
+								        <td th:each="i : ${#numbers.sequence(#lists.size(approvers) + 1, 4)}"></td>
+								    </th:block>
+								</tr>
                             </tbody>
                             <tfoot>
                                 <tr style="text-align: center;">
                                     <th:block th:each="appr : ${approvers}">
-                                        <td><span>[[${appr.positionTitle}]]</span></td>
+                                        <td><span>[[${appr.approverName}]]<span></td>
                                     </th:block>
                                 </tr>
                             </tfoot>

@@ -229,7 +229,8 @@
 				,r.sort as "approverSort"
 				,r.ear_no as "earNumber"
 				,r.proc_date
-		FROM approvals a JOIN approvers r
+		FROM approvals a 
+		JOIN approvers r
 			ON a.ea_no = r.ea_no
 		JOIN employees e
 			ON r.emp_no = e.emp_no
