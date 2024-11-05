@@ -336,6 +336,28 @@ td {
 #editModal {
     z-index: 1000;
 }
+
+/*input 눈모양 아이콘 처리*/
+
+    .input-field {
+        position: relative;
+        width: 100%;
+    }
+    
+    .input-field input {
+        width: calc(100% - 30px); /* Adjusted width for icon space */
+        padding-right: 30px; /* Add padding for icon */
+    }
+    
+    .icon {
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 20px;
+        color: #888;
+    }
 </style>
 	<div class="body-page-wrapper">
 		<div class="purple-background-container">
@@ -482,11 +504,12 @@ td {
 							않은 연락처 형식입니다. (010-XXXX-XXXX)</small> <small id="telSuccess"
 							style="color: green; display: none;">정상적인 연락처입니다.</small>
 
-						<div class="modal-form-group">
-							<label for="password" class="modal-label">비밀번호 :</label> <input
-								type="password" id="password" name="password"
-								class="modal-input" th:field="*{password}"
-								placeholder="비밀번호 (수정시에만 입력하세요)">
+						<div class="modal-form-group input-field">
+						    <label for="password" class="modal-label">비밀번호 :</label>
+						    <input type="password" id="password" name="password"
+						           class="modal-input" th:field="*{password}"
+						           placeholder="Enter Your Password">
+						    <i class="fas fa-eye icon" id="togglePassword"></i>
 						</div>
 						<small id="passwordError" style="color: red; display: none;">비밀번호는
 							최소 8자 이상이어야 하며, 대문자, 소문자, 숫자, 특수 문자를 포함해야 합니다.</small> <small

@@ -24,6 +24,10 @@ public class ProjectTempServiceImpl implements PjTempService{
 	public List<ProjectTempVO> projecttempList() {
 		return ProjecttempMapper.selecttempProjectAll();
 	}
+	@Override
+	public List<ProjectTempVO> projecttempListSearch(String searchText) {
+		return ProjecttempMapper.selecttempProjectAllSearch(searchText);
+	}
     @Override
     public int projecttempinsert(ProjectTempVO projectTempVO) {
         int result = ProjecttempMapper.ProjectTmepInsert(projectTempVO);
@@ -46,6 +50,9 @@ public class ProjectTempServiceImpl implements PjTempService{
 	@Override
 	public List<ProjectWorkTempVO> projectWrktempList() {
 		return ProjecttempMapper.selectWrkTempProjectAll();
+	}@Override
+	public List<ProjectWorkTempVO> projectWrktempListSearch(String searchText) {
+		return ProjecttempMapper.selectWrkTempProjectAllSearch(searchText);
 	}
 	@Override
 	public int projectwrktempinsert(ProjectWorkTempVO projectworktempVO) {
@@ -69,6 +76,10 @@ public class ProjectTempServiceImpl implements PjTempService{
 	@Override
 	public List<ProjectDWorkTempVO> projectDwrktemplist() {
 		return ProjecttempMapper.selectDwrktempProjectAll();
+	}
+	@Override
+	public List<ProjectDWorkTempVO> projectDwrktemplistSearch(String searchText) {
+		return ProjecttempMapper.selectDwrktempProjectAllSearch(searchText);
 	}
 	@Override
 	public int projectDwrktempinsert(ProjectDWorkTempVO projectDworktempVO) {

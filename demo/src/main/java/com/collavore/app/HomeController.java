@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.collavore.app.security.service.impl.UserDetailsService;
 import com.collavore.app.service.HomeService;
 import com.collavore.app.service.HomeVO;
 
@@ -23,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class HomeController {
 	private final HomeService homeService;
+	private final UserDetailsService userDetailsService;
 	
 	// 사이드 적용
 	@ModelAttribute
@@ -94,8 +96,14 @@ public class HomeController {
 	// 사원에게 메뉴 권한 부여
 	@PostMapping("/giveMenuAuth")
 	@ResponseBody
-	public HomeVO giveMenuAuth(@RequestBody HomeVO homeVO) {
+	public HomeVO giveMenuAuth(@RequestBody HomeVO homeVO, HttpSession session) {
 		homeService.giveMenuAuth(homeVO);
+		
+        Integer empNo = (Integer) session.getAttribute("userEmpNo");
+
+		List<String> menuAuth = userDetailsService.myMenuAuth(empNo);
+		session.setAttribute("menuAuth", menuAuth);
+        
 		HomeVO menuEmpList = homeService.selMenuAuthEmpInfo(homeVO);
 		return menuEmpList;
 	}
@@ -103,8 +111,12 @@ public class HomeController {
 	// 사원에게 메뉴 권한 삭제
 	@DeleteMapping("/removeMenuAuth/{authNo}")
 	@ResponseBody
-	public boolean removeMenuAuth(@PathVariable Integer authNo) {
+	public boolean removeMenuAuth(@PathVariable Integer authNo, HttpSession session) {
 		int result = homeService.removeMenuAuth(authNo);
+        Integer empNo = (Integer) session.getAttribute("userEmpNo");
+
+		List<String> menuAuth = userDetailsService.myMenuAuth(empNo);
+		session.setAttribute("menuAuth", menuAuth);
 		return result > 0 ? true : false;
 	}
 	

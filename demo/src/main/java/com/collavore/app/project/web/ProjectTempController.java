@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.collavore.app.project.service.PjService;
@@ -25,6 +26,7 @@ import com.collavore.app.project.service.ProjectWorkTempVO;
 import com.collavore.app.service.HomeService;
 import com.collavore.app.service.HomeVO;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 
@@ -54,9 +56,21 @@ public class ProjectTempController {
    
     // 프로젝트 템플릿 리스트
     @GetMapping("/projecttemplist")
-    public String projecttempList(Model model) {
-        List<ProjectTempVO> list = pjtempService.projecttempList();
+    public String projecttempList(
+    		@RequestParam(value = "searchText", required = false) String searchText,
+    		Model model,
+    	    HttpServletRequest request) {
+	    searchText = searchText == null ? "" : searchText.trim().toLowerCase();
+        List<ProjectTempVO> list = pjtempService.projecttempListSearch(searchText);
 
+   	 	// AJAX 요청인지 확인 후 fragment만 반환
+   	    if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+   	        String fragment = request.getParameter("fragment");
+   	        if ("tbody".equals(fragment)) {
+   	            return "project/projectTempList :: memberListBody";
+   	        }
+   	    }
+        
         model.addAttribute("projects", list);
         return "project/projectTempList";
     }   
@@ -120,11 +134,24 @@ public class ProjectTempController {
 		
 	    // 프로젝트 업무 템플릿 리스트
 	    @GetMapping("/projectwrktemplist")
-	    public String projectwrktempList(Model model) {
-	        List<ProjectWorkTempVO> list = pjtempService.projectWrktempList();
+	    public String projectwrktempList(
+	    		@RequestParam(value = "searchText", required = false) String searchText,
+	    		Model model,
+	    	    HttpServletRequest request) {
+		    searchText = searchText == null ? "" : searchText.trim().toLowerCase();
+	        List<ProjectWorkTempVO> list = pjtempService.projectWrktempListSearch(searchText);
 	        List<ProjectTempVO> prolist = pjtempService.projecttempList();
 	        List<ProjectVO> jobs = pjService.jobsList(); 
-	        
+
+
+	   	 	// AJAX 요청인지 확인 후 fragment만 반환
+	   	    if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+	   	        String fragment = request.getParameter("fragment");
+	   	        if ("tbody".equals(fragment)) {
+	   	            return "project/projectWorkTempList :: memberListBody";
+	   	        }
+	   	    }
+	   	    
 	        model.addAttribute("jobs", jobs);
 	        model.addAttribute("projects", list);
 	        model.addAttribute("prolist", prolist);
@@ -191,10 +218,22 @@ public class ProjectTempController {
 		
 	    // 프로젝트 템플릿 리스트
 	    @GetMapping("/projectDwrktemplist")
-	    public String projectDwrktempList(Model model) {
-	        List<ProjectDWorkTempVO> list = pjtempService.projectDwrktemplist();
+	    public String projectDwrktempList(
+	    		@RequestParam(value = "searchText", required = false) String searchText,
+	    		Model model,
+	    	    HttpServletRequest request) {
+		    searchText = searchText == null ? "" : searchText.trim().toLowerCase();
+	        List<ProjectDWorkTempVO> list = pjtempService.projectDwrktemplistSearch(searchText);
 	        List<ProjectWorkTempVO> worklist = pjtempService.projectWrktempList();
-	        
+
+	   	 	// AJAX 요청인지 확인 후 fragment만 반환
+	   	    if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+	   	        String fragment = request.getParameter("fragment");
+	   	        if ("tbody".equals(fragment)) {
+	   	            return "project/projectDeteilWorkTempList :: memberListBody";
+	   	        }
+	   	    }
+	   	    
 	        model.addAttribute("projects", list);
 	        model.addAttribute("wrkproj", worklist);
 	        return "project/projectDeteilWorkTempList";

@@ -285,6 +285,9 @@ button:active {
 			</div>
 
 			<div class="card_memberList">
+				<div class="search-container">
+					<input type="text" id="searchBox" placeholder="검색어를 입력하세요">
+				</div>
 				<table class="memberList_table">
 					<thead>
 						<tr>
@@ -294,10 +297,10 @@ button:active {
 							<th scope="col">프로젝트 템플릿 번호</th>
 							<th scope="col">프로젝트 업무 타입</th>
 							<th scope="col">등록일</th>
-							<th scope="col"></th>
+							<th scope="col"><button th:onclick="|location.reload()|">초기화</button></th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody th:fragment="projWorkTempListBody">
 						<th:block th:each="info : ${projects}">
 							<tr>
 								<td scope="row">[[${info.pwtNo}]]</td>
@@ -423,8 +426,51 @@ button:active {
 		</div>
 	</div>
 </div>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+	document.addEventListener('DOMContentLoaded', function() {
+	    const searchBox = document.getElementById('searchBox');
+	    
+	    const resetButton = document.querySelector('button');
+	    resetButton.addEventListener('click', function() {
+	        location.reload(); 
+	    });
+	    
+		function updateTableData() {
+		    const searchText = searchBox.value.trim();
+		    
+		    const baseParams = `searchText=${encodeURIComponent(searchText)}`;
+
+		    fetch(`/project/projectwrktemplist?${baseParams}&fragment=projWorkTempListBody`, { headers: { "X-Requested-With": "XMLHttpRequest" } })
+		        .then(response => response.text())
+		        .then(html => {
+		            const doc = new DOMParser().parseFromString(html, 'text/html');
+		            const tableBody = document.querySelector('.memberList_table tbody');
+		            const newBody = doc.querySelector('.memberList_table tbody');
+
+		            if (newBody && newBody.children.length > 0) {
+		                // 결과가 있는 경우 테이블에 결과를 표시합니다.
+		                tableBody.innerHTML = newBody.innerHTML;
+		            } else {
+		                // 결과가 없는 경우 안내 메시지를 표시합니다.
+		                tableBody.innerHTML = `<tr><td colspan="7">검색 결과가 없습니다.</td></tr>`;
+		            }
+		        });
+		}
+
+
+	    const debounce = (func, delay) => {
+	        let timeout;
+	        return (...args) => {
+	            clearTimeout(timeout);
+	            timeout = setTimeout(() => func.apply(this, args), delay);
+	        };
+	    };
+
+	    const debouncedUpdateTableData = debounce(updateTableData, 300);
+	    searchBox.addEventListener('input', debouncedUpdateTableData);
+	});
+	
 function formatCurrentDate() {
     const now = new Date();
     const year = now.getFullYear();

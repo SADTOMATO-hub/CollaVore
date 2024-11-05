@@ -326,6 +326,10 @@
 			        authEmpList(selectTab); // 해당 탭에 맞는 데이터를 가져오는 함수 호출
 			    });
 			});
+			// 모달이 닫힐 때 새로고침
+			document.getElementById('menuManagerModal').addEventListener('hidden.bs.modal', () => {
+			    location.reload();
+			});
 
 		};
 

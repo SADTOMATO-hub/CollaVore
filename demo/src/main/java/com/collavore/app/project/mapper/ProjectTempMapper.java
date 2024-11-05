@@ -9,6 +9,8 @@ import com.collavore.app.project.service.ProjectWorkTempVO;
 public interface ProjectTempMapper {
 	// 템플릿 리스트
 	List<ProjectTempVO> selecttempProjectAll();
+	// 템플릿 리스트(검색)
+	List<ProjectTempVO> selecttempProjectAllSearch(String searchText);
 	// 템플릿 생성
 	public int ProjectTmepInsert(ProjectTempVO projectTempVO);
 	// 템플릿 삭제
@@ -20,6 +22,8 @@ public interface ProjectTempMapper {
 	
 	// 업무 템플릿 리스트
 	List<ProjectWorkTempVO> selectWrkTempProjectAll();
+	// 업무 템플릿 리스트
+	List<ProjectWorkTempVO> selectWrkTempProjectAllSearch(String searchText);
 	// 업무 템플릿 생성
 	public int ProjectwrkTempInsert(ProjectWorkTempVO projectworktempVO);
 	// 업무 템플릿 삭제
@@ -31,6 +35,8 @@ public interface ProjectTempMapper {
 	
 	// 상세 업무 템플릿 리스트
 	List<ProjectDWorkTempVO> selectDwrktempProjectAll();
+	// 상세 업무 템플릿 리스트
+	List<ProjectDWorkTempVO> selectDwrktempProjectAllSearch(String searchText);
 	// 상세 업무 템플릿 생성
 	public int ProjectDwrkTempInsert(ProjectDWorkTempVO projectDworktempVO);
 	// 상세 업무 템플릿 삭제

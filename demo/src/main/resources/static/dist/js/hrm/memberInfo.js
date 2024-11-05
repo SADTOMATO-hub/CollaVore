@@ -116,3 +116,21 @@ function previewImage(event) {
 	};
 	reader.readAsDataURL(event.target.files[0]);  // 선택한 파일을 읽어서 미리보기로 보여줌
 }
+
+
+/*비밀번호 암호화 보이게 처리 */
+
+const togglePassword = document.getElementById("togglePassword");
+
+togglePassword.addEventListener("click", function() {
+    // Toggle the type attribute between 'password' and 'text'
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        togglePassword.classList.remove("fa-eye");
+        togglePassword.classList.add("fa-eye-slash");
+    } else {
+        passwordField.type = "password";
+        togglePassword.classList.remove("fa-eye-slash");
+        togglePassword.classList.add("fa-eye");
+    }
+});

@@ -68,7 +68,7 @@ function createDeptNode(dept) {
             ${dept.deptName}
         </div>
             ${dept.mgrName ? `
-        	<div class="mgr-info">
+        	<div class="mgr-info" style="cursor:pointer;">
 	            <div class="mgr-image">
 	                <img class="profile-image" src="${dept.mgrImg ? `/imgs/${dept.mgrImg}` : '/assets/images/users/default.png'}" alt="부서장 이미지" width="40px">
 	            </div>
@@ -78,7 +78,7 @@ function createDeptNode(dept) {
 	            </div>
    			 </div>
             ` : `
-       		<div class="mgr-noninfo">
+       		<div class="mgr-noninfo" style="cursor:pointer;">
                 등록된 부서장 없음
 		    </div>
             `}
@@ -146,7 +146,7 @@ async function toggleEmployees(deptNo, deptDiv) {
 		            <div class="employee-item" 
 		                 data-tel="${emp.tel || 'Unknown'}" 
 		                 data-email="${emp.email || 'Unknown'}">
-		                <div class="mgr-info">
+		                <div class="mgr-info" style="cursor:pointer;">
 		                    <input type="hidden" name="empNo" value="${emp.empNo}">
 		                    <div class="mgr-image">
 		                        <img class="profile-image" src="${emp.img ? `/imgs/${emp.img}` : '/assets/images/users/default.png'}" alt="소속사원 이미지" width="40px">

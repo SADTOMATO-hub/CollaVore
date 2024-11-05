@@ -5,6 +5,8 @@ import java.util.List;
 public interface PjTempService {
 	//프로젝트 템플릿 전체 조회
 	List<ProjectTempVO> projecttempList();
+	// 템플릿 리스트(검색)
+	List<ProjectTempVO> projecttempListSearch(String searchText);
 	//프로젝트 템플릿 생성
 	public int projecttempinsert(ProjectTempVO projectTempVO);
 	//프로젝트 템플릿 삭제
@@ -17,6 +19,8 @@ public interface PjTempService {
 	
 	// 프로젝트 업무 템플릿 전체 조회
 	List<ProjectWorkTempVO> projectWrktempList();
+	// 프로젝트 업무 템플릿 전체 조회
+	List<ProjectWorkTempVO> projectWrktempListSearch(String searchText);
 	// 프로젝트 업무 템플릿 생성
 	public int projectwrktempinsert(ProjectWorkTempVO projectworktempVO);
 	// 프로젝트 업무 템플릿 삭제
@@ -30,6 +34,8 @@ public interface PjTempService {
 	
 	// 프로젝트 상세 업무 템플릿 전체 조회
 	List<ProjectDWorkTempVO> projectDwrktemplist();
+	// 프로젝트 상세 업무 템플릿 전체 조회
+	List<ProjectDWorkTempVO> projectDwrktemplistSearch(String searchText);
 	// 프로젝트 상세 업무 템플릿 생성
 	public int projectDwrktempinsert(ProjectDWorkTempVO projectDworktempVO);
 	// 프로젝트 상세 업무 템플릿 삭제

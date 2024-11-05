@@ -155,7 +155,9 @@
 				<h4 class="card-title mb-0">전자결재현황</h4>
 			</div>
 			<ul class="list-style-none">
-				<li th:each="app : ${apps}" class="d-flex no-block card-body">
+				<li th:each="app : ${apps}" class="d-flex no-block card-body"
+					th:onclick="|window.location.href='/approvals/readApprInfo?eaNo=' + ${app.eaNo}|" 
+					        style="cursor: pointer;">
 					<div th:switch="${app.appStatus}">
 						<span th:case="'a1'"
 							class="btn btn-secondary status-btn text-white">대기</span> <span
