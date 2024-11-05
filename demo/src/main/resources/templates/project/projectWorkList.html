@@ -1320,10 +1320,14 @@ button:active {
                     const chatItem = `
                         <li class="odd chat-item">
                             <div class="chat-content">
+                            <button class="btn btn-link btn-sm text-decoration-none delete-chat-btn">
+                            <i class="me-2 mdi mdi-delete"></i>
+                       		 </button>
                                 <div class="box bg-light-inverse">${response.content}</div>
-                                <br />
+                                <br/>
                             </div>
                             <div class="chat-time">${getCurrentDate()}</div>
+                            <input type="hidden" name="pdwcNo" id="pdwcNumber" value="${response.data.pdwcNo}">
                         </li>`;
                     
                     $('#chat-list').append(chatItem); // chat-list에 새 메시지 추가
@@ -1481,7 +1485,7 @@ button:active {
                                 컨펌요청
                             </button>
                         `;
-                        $('#chat').append(newButton);
+                        $('#chat h4').append(newButton);
                     }
 				});
 			}else if(currentStatus == 'k2'){
@@ -1573,7 +1577,7 @@ button:active {
 		    const chatItem = $(this).closest('.chat-item');
 		    //const pdwcNo = $(pdwcNumber).val();
 		    const pdwcNo = chatItem.find('input[name="pdwcNo"]').val();
-			//console.log(pdwcNo);
+			console.log(pdwcNo);
 		    if (confirm('이 메시지를 삭제하시겠습니까?')) {
 		        $.ajax({
 		            url: `/project/projectcomtsdel/${pdwcNo}`, // 삭제 요청을 보낼 엔드포인트

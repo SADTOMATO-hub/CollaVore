@@ -77,7 +77,7 @@
 		<!--,is_template = #{is_template} -->
 		,status = #{status}
 		<!-- ,proj_temp_no = #{proj_temp_no} -->
-		,project_git_url = #{projectGitUrl}
+		
 		,p_mgr_no = #{pMgrNo}
 
 		WHERE proj_no		= #{projNo}
