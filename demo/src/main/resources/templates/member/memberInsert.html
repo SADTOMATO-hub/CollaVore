@@ -355,6 +355,7 @@ button:active {
 						<button type="submit" class="btn btn-primary" id="submitBtn">등록</button>
 						<button type="button" class="btn btn-secondary"
 							onclick="goToListPage()">취소</button>
+
 					</div>
 
 				</form>
@@ -367,6 +368,9 @@ button:active {
 
 
 <script>
+function goToListPage() {
+    window.location.href = "/memberList"; 
+}
 document.addEventListener("DOMContentLoaded", function () {
     const requiredFields = ['empName', 'password', 'tel', 'email', 'workType', 'joinDate', 'deptNo', 'posiNo', 'jobNo'];
 
