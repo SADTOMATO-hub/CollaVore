@@ -76,4 +76,8 @@ public class ProjectVO {
 	// 프로젝트 파일 관련
 	private Integer projFileNo;
 	
+	// 프로젝트 깃 정보
+	private String compGitUrl; 
+	private String compGitToken ;
+	
 }

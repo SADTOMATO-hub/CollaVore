@@ -292,27 +292,26 @@ button:active {
 									th:text="${member.info}"></textarea>
 							</div>
 						</div>
-					</div>
 
-
-					<div class="form-group row">
-						<label for="isAdmin"
-							class="col-sm-3 text-end control-label col-form-label">권한</label>
-						<div class="col-md-9 d-flex align-items-center">
-							<div class="form-check form-check-inline">
-								<input type="radio" class="form-check-input" id="isAdminNo"
-									name="isAdmin" value="N" th:checked="${member.isAdmin == 'N'}" />
-								<label class="form-check-label mb-0" for="isAdminNo">일반
-									사원</label>
-							</div>
-							<div class="form-check form-check-inline">
-								<input type="radio" class="form-check-input" id="isAdminYes"
-									name="isAdmin" value="Y" th:checked="${member.isAdmin == 'Y'}" />
-								<label class="form-check-label mb-0" for="isAdminYes">관리자</label>
+						<div class="form-group row">
+							<label for="isAdmin"
+								class="col-sm-3 text-end control-label col-form-label">권한</label>
+							<div class="col-md-9 d-flex align-items-center">
+								<div class="form-check form-check-inline">
+									<input type="radio" class="form-check-input" id="isAdminNo"
+										name="isAdmin" value="N" th:checked="${member.isAdmin == 'N'}" />
+									<label class="form-check-label mb-0" for="isAdminNo">일반
+										사원</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input type="radio" class="form-check-input" id="isAdminYes"
+										name="isAdmin" value="Y" th:checked="${member.isAdmin == 'Y'}" />
+									<label class="form-check-label mb-0" for="isAdminYes">관리자</label>
+								</div>
 							</div>
 						</div>
-					</div>
 
+					</div>
 					<div class="insert-btn">
 						<button type="submit" class="btn btn-primary">수정</button>
 						<button type="button" class="btn btn-secondary"

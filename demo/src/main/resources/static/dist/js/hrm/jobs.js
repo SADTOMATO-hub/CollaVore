@@ -32,12 +32,40 @@ function loadExistingJobs() {
 // 새 직무 추가 함수
 function addJob() {
     const container = document.getElementById('jobsTable');
+    const input = document.createElement('input');
+    input.type = 'text';
+    input.placeholder = "새 직무 입력";
+
     const div = document.createElement('div');
-    div.innerHTML = `
-        <input type="text" placeholder="새 직무 입력" />
-        <button onclick="removeJob(this)">X</button>
-    `; 
+    div.appendChild(input);
+
+    const button = document.createElement('button');
+    button.textContent = 'X';
+    button.onclick = function() {
+        div.remove();
+    };
+
+    input.onblur = function() {
+        const newName = input.value.trim();
+
+        // 기존 직무 이름과 중복 검사
+        if (newName !== '' && !existingJobs.some(job => job.jobName === newName)) {
+            existingJobs.push({ jobName: newName }); // 중복되지 않으면 추가
+            div.innerHTML = `
+                <span onclick="editJob(this)">${newName}</span>
+                <button onclick="removeJob(this)">X</button>
+            `;
+        } else if (newName === '') {
+            div.remove(); // 값이 없으면 입력 취소
+        } else {
+            alert("중복된 직무 이름은 사용할 수 없습니다.");
+            input.focus(); // 중복된 경우 입력 상태 유지
+        }
+    };
+
+    div.appendChild(button);
     container.appendChild(div);
+    input.focus();
 }
 
 // 직무 저장 함수
@@ -95,29 +123,49 @@ function saveJobs() {
 }
 
 // 직무 수정 함수 (span을 클릭했을 때 실행)
-function editJob(span, jobNo) {
+// 직무 수정 함수 (span을 클릭했을 때 실행)
+function editJob(span, jobNo = null) {
     const jobName = span.textContent;
     const input = document.createElement('input');
     input.type = 'text';
     input.value = jobName;
+    let alertShown = false; // 중복 알림이 한 번만 뜨도록 제어
+
     input.onblur = function() {
-        if (input.value.trim() !== '') {
-            span.textContent = input.value.trim();
+        const newName = input.value.trim();
+
+        // 기존 직무 이름과 중복 검사 및 수정된 내용 적용
+        if (newName !== '' && !existingJobs.some(job => job.jobName === newName) && newName !== jobName) {
+            span.textContent = newName;
 
             // 수정된 직무를 modifiedJobs 배열에 추가 (중복 방지)
-            if (!modifiedJobs.some(job => job.jobNo === jobNo)) {
-                modifiedJobs.push({ jobNo: jobNo, jobName: input.value.trim() });
+            if (jobNo && !modifiedJobs.some(job => job.jobNo === jobNo)) {
+                modifiedJobs.push({ jobNo: jobNo, jobName: newName });
+            } else if (!jobNo) {
+                modifiedJobs.push({ jobName: newName });
             }
-        } else {
-            span.textContent = jobName; // 값이 없을 경우 기존 값으로 되돌림
+        } else if (newName === jobName) {
+            span.textContent = jobName; // 변경되지 않았으면 기존 값 유지
+        } else if (existingJobs.some(job => job.jobName === newName)) {
+            if (!alertShown) { // 한 번만 실행되도록 설정
+                alert("중복된 직무 이름은 사용할 수 없습니다.");
+                alertShown = true;
+            }
+            input.focus(); // 중복된 경우 입력 상태 유지
+            return; // 중복된 경우 함수 종료
         }
+
         span.style.display = 'inline';
         input.remove(); // input 제거
     };
+
     span.style.display = 'none';
     span.parentNode.insertBefore(input, span);
     input.focus();
 }
+
+
+
 
 // 직무 삭제 함수
 function removeJob(button, jobNo = null) {

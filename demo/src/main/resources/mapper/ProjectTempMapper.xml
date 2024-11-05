@@ -218,9 +218,8 @@
 	
 	<!-- 프로젝트 상세업무 템플릿 삭제 (단체)-->
 	<delete id="projectDwrkdelete" parameterType="int">
-		DELETE FROM projdwrktemps
-		WHERE
-		pwt_no = #{pwtNo}
+            DELETE FROM projdwrktemps
+            WHERE pdwt_no IN  (SELECT pdwt_no FROM projdwrktemps WHERE pwt_no IN (SELECT pwt_no FROM projwrktemps WHERE proj_temp_no = #{projTempNo}))
 	</delete>
 	
 	

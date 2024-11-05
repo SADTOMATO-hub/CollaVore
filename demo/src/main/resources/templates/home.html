@@ -2,36 +2,36 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
-<style>
-    .status-btn {
-        width: 40px;
-        height: 40px;
-        padding: 0;
-        margin-right: 10px;
-        border-radius: 8px; /* 버튼을 둥글게 */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 14px;
-        font-weight: bold;
-    }
+	<style>
+.status-btn {
+	width: 40px;
+	height: 40px;
+	padding: 0;
+	margin-right: 10px;
+	border-radius: 8px; /* 버튼을 둥글게 */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 14px;
+	font-weight: bold;
+}
 
-    .app-title {
-        display: flex;
-        align-items: center;
-    }
+.app-title {
+	display: flex;
+	align-items: center;
+}
 
-    .card-body {
-        align-items: center; /* 수직 정렬 */
-        margin-bottom: 10px;
-    }
+.card-body {
+	align-items: center; /* 수직 정렬 */
+	margin-bottom: 10px;
+}
 
-    .ms-auto {
-        margin-left: auto;
-        text-align: right;
-    }
+.ms-auto {
+	margin-left: auto;
+	text-align: right;
+}
 </style>
-	
+
 	<div class="container-fluid">
 		<div class="row">
 			<!-- Column -->
@@ -39,9 +39,9 @@
 				<div class="card card-hover">
 					<div class="box bg-cyan text-center">
 						<h1 class="font-light text-white">
-							<i class="mdi mdi-view-dashboard"></i>
+							<i class="mdi mdi-account"></i>
 						</h1>
-						<h6 class="text-white">Dashboard</h6>
+						<h6 class="text-white">사원 수 : [[${stats.empCnt}]]명</h6>
 					</div>
 				</div>
 			</div>
@@ -49,9 +49,9 @@
 				<div class="card card-hover">
 					<div class="box bg-success text-center">
 						<h1 class="font-light text-white">
-							<i class="mdi mdi-chart-areaspline"></i>
+							<i class="mdi mdi-collage"></i>
 						</h1>
-						<h6 class="text-white">Charts</h6>
+						<h6 class="text-white">프로젝트 수 : [[${stats.projCnt}]]건</h6>
 					</div>
 				</div>
 			</div>
@@ -59,9 +59,9 @@
 				<div class="card card-hover">
 					<div class="box bg-warning text-center">
 						<h1 class="font-light text-white">
-							<i class="mdi mdi-collage"></i>
+							<i class="mdi mdi-file-document-box"></i>
 						</h1>
-						<h6 class="text-white">Widgets</h6>
+						<h6 class="text-white">진행중 프로젝트 수 : [[${stats.projIngCnt}]]건</h6>
 					</div>
 				</div>
 			</div>
@@ -69,9 +69,9 @@
 				<div class="card card-hover">
 					<div class="box bg-danger text-center">
 						<h1 class="font-light text-white">
-							<i class="mdi mdi-border-outside"></i>
+							<i class="mdi mdi-github-box"></i>
 						</h1>
-						<h6 class="text-white">Tables</h6>
+						<h6 class="text-white">진행중 업무 수 : [[${stats.pdwCnt}]]건</h6>
 					</div>
 				</div>
 			</div>
@@ -83,285 +83,102 @@
 					<div class="card-body">
 						<h4 class="card-title">공지사항</h4>
 					</div>
-					<div class="comment-widgets scrollable">
-						<div th:each="notice : ${notices}"
-							class="d-flex flex-row comment-row mt-0"
-							th:onclick="|location.href='@{/board/bodsInfo(postNo=${notice.postNo})}'|" style="cursor: pointer;">
-							<div class="p-2">
-								<img
-									th:src="${notice.profileImg != null ? '/imgs/' + notice.profileImg : '/assets/images/users/default.png'}"
-									alt="user" width="50" class="rounded-circle" />
-							</div>
-							<div class="comment-text w-100">
-								<h6 class="font-medium" th:text="${notice.empName}"></h6>
-								<span class="mb-3 d-block" th:text="${notice.title}"></span>
-								<div class="comment-footer">
-									<span class="text-muted float-end"
-										th:text="${#dates.format(notice.regDate, 'yyyy년 MM월 dd일')}"></span>
+					<div class="comment-widgets scrollable" style="height: 520px">
+						<div th:if="${notices.size() > 0}">
+							<div th:each="notice : ${notices}"
+								class="d-flex flex-row comment-row mt-0"
+								th:onclick="|location.href='@{/board/bodsInfo(postNo=${notice.postNo})}'|"
+								style="cursor: pointer;">
+								<div class="p-2">
+									<img
+										th:src="${notice.profileImg != null ? '/imgs/' + notice.profileImg : '/assets/images/users/default.png'}"
+										alt="user" width="50" class="rounded-circle" />
 								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				
-				<!-- Card -->
-				<div class="card">
-					<div class="card-body">
-						<h4 class="card-title">나의 업무</h4>
-						<div class="todo-widget scrollable" style="height: 520px">
-							<ul class="list-task todo-list list-group mb-0"
-								data-role="tasklist">
-								<li th:if="${todos == null || #lists.isEmpty(todos)}" class="list-group-item text-center">
-							        등록된 업무가 없습니다.
-							    </li>
-							    <li th:each="todo : ${todos}" class="list-group-item todo-item" data-role="task">
-							        <div class="form-check">
-							            <label class="form-check-label mb-0 w-100 todo-label" for="customCheck">
-							                <!-- ToDo 내용 표시 -->
-							                <span class="todo-desc fw-normal" th:text="${todo.todoContent}">내용 없음</span>
-							                <!-- 중요도 표시 -->
-											<span class="badge rounded-pill float-end"
-											      th:switch="${todo.todoImportance}">
-											    <span th:case="'l1'" class="btn btn-success rounded-pill" style="cursor: default;">낮음</span>
-											    <span th:case="'l2'" class="btn btn-warning rounded-pill" style="cursor: default;">중간</span>
-											    <span th:case="'l3'" class="btn btn-danger rounded-pill" style="cursor: default;">높음</span>
-											</span>
-							            </label>
-							        </div>
-							        <!-- 등록 날짜 표시 -->
-							        <div class="item-date" th:text="${#dates.format(todo.todoRegDate, 'yyyy-MM-dd HH:mm:ss')}">날짜 없음</div>
-							    </li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
-			
-			<div class="col-md-6">
-				<!-- 전자결재현황 -->
-				<div class="card">
-					<div class="card-body">
-						<h4 class="card-title mb-0">전자결재현황</h4>
-					</div>
-						<ul class="list-style-none">
-						    <li th:each="app : ${apps}" class="d-flex no-block card-body">
-						        <div th:switch="${app.appStatus}">
-						            <span th:case="'a1'" class="btn btn-secondary status-btn text-white">대기</span>
-						            <span th:case="'a2'" class="btn btn-success status-btn text-white">진행</span>
-						            <span th:case="'a3'" class="btn btn-primary status-btn text-white">승인</span>
-						            <span th:case="'a4'" class="btn btn-danger status-btn text-white">반려</span>
-						        </div>
-						        <div class="app-title">
-						            <a th:href="|@{/approvals/readApprInfo(eaNo=${app.eaNo})}|" class="mb-0 font-medium p-0" 
-						               th:text="${app.appTitle}">앱 제목</a>
-						        </div>
-						        <div class="ms-auto">
-						            <div class="text-right">
-						                <h5 class="text-muted mb-0" 
-						                    th:text="${#dates.format(app.appDate, 'yyyy년 MM월 dd일')}"></h5>
-						            </div>
-						        </div>
-						    </li>
-						
-						    <!-- 리스트가 비어 있을 경우 메시지 출력 -->
-						    <li th:if="${#lists.isEmpty(apps)}" class="text-center d-flex no-block card-body">
-						        전자결재내역이 없습니다
-						    </li>
-						</ul>
-				</div>
-				
-				<div class="card">
-					<div class="card-body">
-						<h4 class="card-title mb-0">Progress Box</h4>
-						<div class="mt-3">
-							<div class="d-flex no-block align-items-center">
-								<span>81% Clicks</span>
-								<div class="ms-auto">
-									<span>125</span>
-								</div>
-							</div>
-							<div class="progress">
-								<div class="progress-bar progress-bar-striped"
-									role="progressbar" style="width: 81%" aria-valuenow="10"
-									aria-valuemin="0" aria-valuemax="100"></div>
-							</div>
-						</div>
-						<div>
-							<div class="d-flex no-block align-items-center mt-4">
-								<span>72% Uniquie Clicks</span>
-								<div class="ms-auto">
-									<span>120</span>
-								</div>
-							</div>
-							<div class="progress">
-								<div class="progress-bar progress-bar-striped bg-success"
-									role="progressbar" style="width: 72%" aria-valuenow="25"
-									aria-valuemin="0" aria-valuemax="100"></div>
-							</div>
-						</div>
-						<div>
-							<div class="d-flex no-block align-items-center mt-4">
-								<span>53% Impressions</span>
-								<div class="ms-auto">
-									<span>785</span>
-								</div>
-							</div>
-							<div class="progress">
-								<div class="progress-bar progress-bar-striped bg-info"
-									role="progressbar" style="width: 53%" aria-valuenow="50"
-									aria-valuemin="0" aria-valuemax="100"></div>
-							</div>
-						</div>
-						<div>
-							<div class="d-flex no-block align-items-center mt-4">
-								<span>3% Online Users</span>
-								<div class="ms-auto">
-									<span>8</span>
-								</div>
-							</div>
-							<div class="progress">
-								<div class="progress-bar progress-bar-striped bg-danger"
-									role="progressbar" style="width: 3%" aria-valuenow="75"
-									aria-valuemin="0" aria-valuemax="100"></div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-12">
-				<h5 class="card-title">Calender</h5>
-				<div class="card">
-					<div class="">
-						<div class="row">
-							<div class="col-lg-3 border-right pe-0">
-								<div class="card-body border-bottom">
-									<h4 class="card-title mt-2">Drag & Drop Event</h4>
-								</div>
-								<div class="card-body">
-									<div class="row">
-										<div class="col-md-12">
-											<div id="calendar-events" class="">
-												<div class="calendar-events mb-3" data-class="bg-info">
-													<i class="fa fa-circle text-info me-2"></i>Event One
-												</div>
-												<div class="calendar-events mb-3" data-class="bg-success">
-													<i class="fa fa-circle text-success me-2"></i> Event Two
-												</div>
-												<div class="calendar-events mb-3" data-class="bg-danger">
-													<i class="fa fa-circle text-danger me-2"></i>Event Three
-												</div>
-												<div class="calendar-events mb-3" data-class="bg-warning">
-													<i class="fa fa-circle text-warning me-2"></i>Event Four
-												</div>
-											</div>
-											<!-- checkbox -->
-											<div class="form-check">
-												<input type="checkbox" class="form-check-input"
-													id="drop-remove" /> <label class="form-check-label"
-													for="drop-remove">Remove after drop</label>
-											</div>
-											<a href="javascript:void(0)" data-toggle="modal"
-												data-target="#add-new-event"
-												class="
-                                d-flex
-                                align-items-center
-                                justify-content-center
-                                btn
-                                mt-3
-                                btn-info
-                                d-block
-                                waves-effect waves-light
-                              ">
-												<i class="mdi mdi-plus fs-4 me-1"></i> Add New Event
-											</a>
-										</div>
+								<div class="comment-text w-100">
+									<h6 class="font-medium" th:text="${notice.empName}"></h6>
+									<span class="mb-3 d-block" th:text="${notice.title}"></span>
+									<div class="comment-footer">
+										<span class="text-muted float-end"
+											th:text="${#dates.format(notice.regDate, 'yyyy년 MM월 dd일')}"></span>
 									</div>
 								</div>
 							</div>
-							<div class="col-lg-9">
-								<div class="card-body b-l calender-sidebar">
-									<div id="calendar"></div>
-								</div>
-							</div>
+						</div>
+						<div th:unless="${notices.size() > 0}" class="text-center mt-3">
+							<p>등록된 공지사항이 없습니다.</p>
 						</div>
 					</div>
 				</div>
+				<!-- 공지사항 -->
 			</div>
-		</div>
-		<!-- BEGIN MODAL -->
-		<div class="modal none-border" id="my-event">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">
-							<strong>Add Event</strong>
-						</h4>
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">&times;</button>
+
+			<div class="col-md-6">
+				<!-- 나의 업무 -->
+				<div class="card">
+					<div class="card-body">
+						<h4 class="card-title">나의 업무</h4>
 					</div>
-					<div class="modal-body"></div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary waves-effect"
-							data-dismiss="modal">Close</button>
-						<button type="button"
-							class="btn btn-success save-event waves-effect waves-light">
-							Create event</button>
-						<button type="button"
-							class="btn btn-danger delete-event waves-effect waves-light"
-							data-dismiss="modal">Delete</button>
+					<div class="todo-widget scrollable" style="height: 530px">
+						<ul class="list-task todo-list list-group mb-0"
+							data-role="tasklist">
+							<li th:if="${todos == null || #lists.isEmpty(todos)}"
+								class=" text-center">등록된 업무가 없습니다.</li>
+							<li th:each="todo : ${todos}" class="list-group-item todo-item"
+								data-role="task">
+								<div class="form-check">
+									<label class="form-check-label mb-0 w-100 todo-label"
+										for="customCheck"> <!-- ToDo 내용 표시 --> <span
+										class="todo-desc fw-normal" th:text="${todo.todoContent}">내용
+											없음</span> <!-- 중요도 표시 --> <span class="badge rounded-pill float-end"
+										th:switch="${todo.todoImportance}"> <span
+											th:case="'l1'" class="btn btn-success rounded-pill"
+											style="cursor: default;">낮음</span> <span th:case="'l2'"
+											class="btn btn-warning rounded-pill" style="cursor: default;">중간</span>
+											<span th:case="'l3'" class="btn btn-danger rounded-pill"
+											style="cursor: default;">높음</span>
+									</span>
+									</label>
+								</div> <!-- 등록 날짜 표시 -->
+								<div class="item-date"
+									th:text="${#dates.format(todo.todoRegDate, 'yyyy-MM-dd HH:mm:ss')}">날짜
+									없음</div>
+							</li>
+						</ul>
 					</div>
 				</div>
+				<!-- 나의 업무 -->
 			</div>
 		</div>
-		<!-- Modal Add Category -->
-		<div class="modal fade none-border" id="add-new-event">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">
-							<strong>Add</strong> a category
-						</h4>
-						<button type="button" class="close" data-dismiss="modal"
-							aria-hidden="true">&times;</button>
-					</div>
-					<div class="modal-body">
-						<form>
-							<div class="row">
-								<div class="col-md-6">
-									<label class="control-label">Category Name</label> <input
-										class="form-control form-white" placeholder="Enter name"
-										type="text" name="category-name" />
-								</div>
-								<div class="col-md-6">
-									<label class="control-label">Choose Category Color</label> <select
-										class="form-select shadow-none form-white"
-										data-placeholder="Choose a color..." name="category-color">
-										<option value="success">Success</option>
-										<option value="danger">Danger</option>
-										<option value="info">Info</option>
-										<option value="primary">Primary</option>
-										<option value="warning">Warning</option>
-										<option value="inverse">Inverse</option>
-									</select>
-								</div>
-							</div>
-						</form>
-					</div>
-					<div class="modal-footer">
-						<button type="button"
-							class="
-                      btn btn-danger
-                      waves-effect waves-light
-                      save-category
-                    "
-							data-dismiss="modal">Save</button>
-						<button type="button" class="btn btn-secondary waves-effect"
-							data-dismiss="modal">Close</button>
-					</div>
-				</div>
+		<!-- 전자결재현황 -->
+		<div class="card">
+			<div class="card-body">
+				<h4 class="card-title mb-0">전자결재현황</h4>
 			</div>
+			<ul class="list-style-none">
+				<li th:each="app : ${apps}" class="d-flex no-block card-body">
+					<div th:switch="${app.appStatus}">
+						<span th:case="'a1'"
+							class="btn btn-secondary status-btn text-white">대기</span> <span
+							th:case="'a2'" class="btn btn-success status-btn text-white">진행</span>
+						<span th:case="'a3'" class="btn btn-primary status-btn text-white">승인</span>
+						<span th:case="'a4'" class="btn btn-danger status-btn text-white">반려</span>
+					</div>
+					<div class="app-title">
+						<a th:href="|@{/approvals/readApprInfo(eaNo=${app.eaNo})}|"
+							class="mb-0 font-medium p-0" th:text="${app.appTitle}">앱 제목</a>
+					</div>
+					<div class="ms-auto">
+						<div class="text-right">
+							<h5 class="text-muted mb-0"
+								th:text="${#dates.format(app.appDate, 'yyyy년 MM월 dd일')}"></h5>
+						</div>
+					</div>
+				</li>
+				<!-- 리스트가 비어 있을 경우 메시지 출력 -->
+				<li th:if="${#lists.isEmpty(apps)}" class="text-center card-body">전자결재내역이
+					없습니다</li>
+			</ul>
 		</div>
+		<!-- 전자결재현황 -->
 	</div>
 </div>

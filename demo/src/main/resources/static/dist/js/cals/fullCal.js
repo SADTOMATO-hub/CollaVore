@@ -435,15 +435,20 @@ document.addEventListener('DOMContentLoaded', function() {
 										}
 
 
+										var startDateTime = document.getElementById('viewStartDate').value + ' ' + document.getElementById('viewStartTime').value;
+										var endDateTime = document.getElementById('viewEndDate').value + ' ' + document.getElementById('viewEndTime').value
 
-
-
+										// 시작 날짜와 종료 날짜 비교 예외 처리
+										if (startDateTime > endDateTime) {
+											alert("종료 날짜는 시작 날짜보다 이후여야 합니다.");
+											return;  // 함수를 종료하여 제출을 막음
+										}
 
 										const updatedData = {
 											schNo: eventId,
 											title: document.getElementById('viewTitle').value,
-											startDate: document.getElementById('viewStartDate').value + ' ' + document.getElementById('viewStartTime').value,
-											endDate: document.getElementById('viewEndDate').value + ' ' + document.getElementById('viewEndTime').value,
+											startDate: startDateTime,
+											endDate: endDateTime,
 											calNo: eventData.calNo,
 											alarmType: alarmType,
 											alarmYoil: weeklyDays, // d2일 때 요일이 들어가도록
@@ -480,7 +485,7 @@ document.addEventListener('DOMContentLoaded', function() {
 													document.getElementById('viewScheduleEditBtn').textContent = '수정';
 													document.getElementById('viewScheduleModal').style.display = 'none'; // 모달 닫기
 
-													//location.reload();
+													location.reload();
 												} else {
 													alert('일정 수정에 실패했습니다.');
 												}
@@ -780,6 +785,12 @@ document.addEventListener('DOMContentLoaded', function() {
 							}
 						}
 
+						// f1일 때 alarmType이 설정되지 않은 경우 예외 처리
+						if (isAlarm === 'f1' && !alarmType) {
+							alert("알림을 사용하려면 매일, 매주, 매달 중 하나를 선택해주세요.");
+							return;
+						}
+
 						// 예외 처리 추가
 						if (isAlarm === 'f1') {
 							if (alarmType === 'd1') { // 매일 알림 예외 처리
@@ -841,6 +852,12 @@ document.addEventListener('DOMContentLoaded', function() {
 						// 시작일과 종료일에 시간을 추가하여 하나의 datetime으로 변환
 						var startDateTime = startDate + ' ' + startTime; // ISO 형식으로 변환
 						var endDateTime = endDate + ' ' + endTime; // ISO 형식으로 변환
+
+						// 시작 날짜와 종료 날짜 비교 예외 처리
+						if (startDateTime > endDateTime) {
+							alert("종료 날짜는 시작 날짜보다 이후여야 합니다.");
+							return;  // 함수를 종료하여 제출을 막음
+						}
 
 						// schsData 변수 초기화 및 데이터 설정
 						var schsData = {
@@ -1585,7 +1602,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			`
 	        <input type="hidden" class="cal_name" value="${calendar.name}" />
 	        <a href="javascript:void(0)" data-calno="${calendar.calNo}" class="sidebar-link calendar-item">
-	            <i class="mdi mdi-calendar-blank" style="color:${calendar.color};"></i> ${truncatedName}
+	            <i class="mdi mdi-checkbox-blank" style="color:${calendar.color};"></i> ${truncatedName}
 	        </a>
 	        <span class="hide-menu edit-icon" style="margin-left: 10px;">
 	            <i class="mdi mdi-pencil" aria-hidden="true"></i>

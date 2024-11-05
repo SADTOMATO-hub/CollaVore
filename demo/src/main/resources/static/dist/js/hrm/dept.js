@@ -12,13 +12,25 @@ document.addEventListener('DOMContentLoaded', function() {
             return response.json();
         })
         .then(data => {
-            const rootDept = data.departments.find(dept => dept.parentDeptNo === 0);
-            const tree = buildDeptTree(data.departments, rootDept);
+            const departments = data.departments;  // departments 데이터를 여기서 정의
+
+            const rootDept = departments.find(dept => dept.parentDeptNo === 0);
+            const tree = buildDeptTree(departments, rootDept);
             container.appendChild(tree);
-            addConnections(container, data.departments); // 부모-자식 간 연결선 추가
+            addConnections(container, departments); // 부모-자식 간 연결선 추가
+            
+            // deleteDept 함수를 호출할 때 departments 배열을 함께 전달
+            container.addEventListener('click', (event) => {
+                if (event.target.classList.contains('delete-dept')) {
+                    const deptNo = parseInt(event.target.closest('.wrap1').getAttribute('data-dept-no'), 10);
+                    const li = event.target.closest('li');
+                    deleteDept(deptNo, li, departments); // departments 전달
+                }
+            });
         })
         .catch(error => console.error('Error fetching department data:', error));
 });
+
 
 // 부서 트리 빌드 함수
 function buildDeptTree(departments, rootDept) {
@@ -115,6 +127,30 @@ function createDeptNode(dept, deptMap, depth) {
     return li;
 }
 
+
+// 하위 부서 등록 및 서버 저장
+let modifiedDepartments = [];
+
+// 중복된 이름 확인 함수
+function isDeptNameDuplicate(deptName, excludeDeptNo = null) {
+    const existingNames = new Set();
+    
+    // modifiedDepartments 배열에 저장된 이름 추가
+    modifiedDepartments.forEach(dept => {
+        if (dept.deptNo !== excludeDeptNo) {  // 수정 시 동일한 부서번호는 제외
+            existingNames.add(dept.deptName);
+        }
+    });
+
+    // 화면에 표시된 부서 이름 추가
+    const container = document.getElementById('orgMap');
+    const displayedDepartments = Array.from(container.querySelectorAll('.name')).map(node => node.textContent);
+    displayedDepartments.forEach(name => existingNames.add(name));
+
+    // 정확히 일치하는 이름만 중복으로 판단
+    return existingNames.has(deptName);
+}
+
 // 부서 이름 수정 함수
 function editDeptName(nameSpan, dept) {
     const input = document.createElement('input');
@@ -124,52 +160,88 @@ function editDeptName(nameSpan, dept) {
     nameSpan.replaceWith(input); 
     input.focus();
 
+    // 중복 실행 방지를 위한 플래그
+    let updateExecuted = false;
+
     function handleUpdate() {
+        if (updateExecuted) return;
+        updateExecuted = true;
+
         const newName = input.value.trim();
+
+        // 중복된 이름 확인, 현재 부서를 제외
+        if (isDeptNameDuplicate(newName, dept.deptNo)) {
+            alert("이미 존재하는 부서 이름입니다. 다른 이름을 사용해주세요.");
+            input.value = nameSpan.textContent; // 기존 이름으로 유지
+            input.focus();
+            updateExecuted = false; // 플래그 초기화
+            return;
+        }
+
         nameSpan.textContent = newName;
         input.replaceWith(nameSpan);
         modifiedDepartments.push({ deptNo: dept.deptNo, deptName: newName, action: 'update' });
         console.log("현재 modifiedDepartments:", modifiedDepartments); // 디버그용
+
+        // 이벤트 리스너 제거
+        input.removeEventListener('blur', handleUpdate);
+        input.removeEventListener('keydown', handleKeyDown);
     }
+
+    function handleKeyDown(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            handleUpdate();
+        }
+    }
+
+    // 이벤트 리스너 등록
     input.addEventListener('blur', handleUpdate);
-    input.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') handleUpdate();
-    });
+    input.addEventListener('keydown', handleKeyDown);
 }
 
-// 하위 부서 등록 및 서버 저장
-let modifiedDepartments = [];
-
+// 하위 부서 등록 함수
 function addSubDept(parentDeptNo, li) {
-    // 입력 필드 생성 및 설정
     const inputField = document.createElement('input');
     inputField.type = 'text';
     inputField.placeholder = '새 부서 이름 입력';
     inputField.classList.add('new-dept-input');
-    inputField.focus(); // 자동 포커스 설정
+    inputField.focus();
 
-    // 새로운 부서가 추가될 레벨 설정
     const newLevel = parseInt(li.querySelector('.wrap1').getAttribute('data-real-depth'), 10) + 1;
-
-    // 자식 레벨 <ol>을 찾거나 새로 생성
     let childList = li.querySelector('ol');
     if (!childList) {
         childList = document.createElement('ol');
         li.appendChild(childList);
     }
 
-    // 새로운 <li> 생성하여 입력 필드를 추가
     const newLi = document.createElement('li');
-    newLi.classList.add('depth'); // 기존 스타일 유지
+    newLi.classList.add('depth');
     newLi.appendChild(inputField);
     childList.appendChild(newLi);
 
-    // 엔터 키나 포커스를 벗어났을 때 임시로 modifiedDepartments에만 저장
-    function handleTemporaryStore() {
+    // 중복 실행 방지를 위한 플래그
+    let saveExecuted = false;
+
+    function handleSave() {
+        if (saveExecuted) return;
+        saveExecuted = true;
+
         const deptName = inputField.value.trim();
-        
+
+        // 중복된 이름 확인
+        if (isDeptNameDuplicate(deptName)) {
+            alert("이미 존재하는 부서 이름입니다. 다른 이름을 사용해주세요.");
+            inputField.value = ''; // 중복된 이름일 경우 필드 초기화
+            inputField.focus();
+
+            // 중복이 감지된 경우 다시 입력을 받을 수 있도록 플래그 초기화
+            saveExecuted = false;
+            return; // 중복인 경우 함수 종료
+        }
+
         if (deptName) {
-            // 저장을 위해 modifiedDepartments 배열에 임시 저장 (화면에 표시하지 않음)
+            // 유효한 이름일 때만 modifiedDepartments에 저장하고 화면에 표시
             modifiedDepartments.push({
                 parentDeptNo: parentDeptNo,
                 deptNo: null,
@@ -177,21 +249,44 @@ function addSubDept(parentDeptNo, li) {
                 level: newLevel,
                 action: 'add'
             });
-            console.log("임시로 modifiedDepartments에 저장됨:", modifiedDepartments);
+            
+            // 입력 필드를 새로운 span 요소로 교체하여 스타일 유지
+            const nameSpan = document.createElement('span');
+            nameSpan.classList.add('name'); // 스타일 유지를 위해 클래스 추가
+            nameSpan.textContent = deptName;
+            
+            // inputField의 스타일을 nameSpan에 복사
+            nameSpan.style.border = inputField.style.border || '1px solid #ccc';
+            nameSpan.style.padding = inputField.style.padding || '4px 8px';
+            nameSpan.style.borderRadius = inputField.style.borderRadius || '4px';
+            nameSpan.style.backgroundColor = inputField.style.backgroundColor || '#f9f9f9';
+            nameSpan.style.color = inputField.style.color || '#333';
+
+            inputField.replaceWith(nameSpan); // 입력 필드를 span으로 교체
+
+            // 이벤트 리스너 제거
+            inputField.removeEventListener('blur', handleSave);
+            inputField.removeEventListener('keydown', handleKeyDown);
         } else {
             newLi.remove(); // 이름이 입력되지 않으면 입력 필드를 제거
         }
     }
 
-    // 엔터 키나 포커스를 벗어났을 때 modifiedDepartments에만 임시 저장하고, 화면에 반영하지 않음
-    inputField.addEventListener('blur', handleTemporaryStore);
-    inputField.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter') handleTemporaryStore();
-    });
+    function handleKeyDown(event) {
+        if (event.key === 'Enter') {
+            event.preventDefault(); // 기본 동작 방지
+            handleSave();
+        }
+    }
 
-    // 등록 시 다시 포커스 설정 보장
+    // 이벤트 리스너 등록
+    inputField.addEventListener('blur', handleSave);
+    inputField.addEventListener('keydown', handleKeyDown);
+
     inputField.focus();
 }
+
+
 
 
 
@@ -242,21 +337,61 @@ function loadExistingData() {
 }
 
 
+// 삭제된 부서를 추적하기 위한 객체
+const deletedDepartments = {};
+
 // 부서 삭제 함수
-function deleteDept(deptNo, li) {
+function deleteDept(deptNo, li, departments = []) {
+    // 이미 삭제된 부서라면 함수 종료
+    if (deletedDepartments[deptNo]) {
+        console.log(`Department with deptNo ${deptNo} has already been deleted.`);
+        return;
+    }
+
+    const deptData = departments.find(dept => dept.deptNo === deptNo);
+    if (!deptData) {
+        console.log(`Department with deptNo ${deptNo} not found. It may have been deleted already.`);
+        return;
+    }
+
+    const hasEmployees = deptData.empCnt > 0;
+    const hasChildDepartments = departments.some(dept => dept.parentDeptNo === deptNo);
+
+    if (hasEmployees) {
+        alert("부서에 소속된 사원이 있어 삭제할 수 없습니다.");
+        return;
+    }
+
+    if (hasChildDepartments) {
+        alert("하위 부서가 있어 삭제할 수 없습니다.");
+        return;
+    }
+
     fetch(`/dept/delete/${deptNo}`, { method: 'DELETE' })
         .then(response => response.text())
         .then(result => {
             if (result === 'success') {
                 alert('부서가 삭제되었습니다.');
                 li.remove();
-                refreshConnections(); // 삭제 후 연결선 갱신
+                refreshConnections();
+
+                // departments 배열에서 삭제된 부서 제거
+                const index = departments.findIndex(dept => dept.deptNo === deptNo);
+                if (index !== -1) {
+                    departments.splice(index, 1);
+                }
+
+                // 삭제된 부서 추적
+                deletedDepartments[deptNo] = true;
             } else {
                 alert('삭제에 실패했습니다.');
             }
         })
         .catch(error => console.error('Error deleting department:', error));
 }
+
+
+
 
 // 연결선을 다시 그리는 함수
 function refreshConnections() {
@@ -321,29 +456,49 @@ function openModal(deptNo) {
         .then(response => response.json())
         .then(data => {
 			let mgrInfo = data.deptMgrInfo;
-			console.log(mgrInfo);
 			const managerInfoItems = document.getElementById("managerInfoItems");
-            managerInfoItems.innerHTML = "";
-            const li = document.createElement("li");
-            li.innerHTML = `
-                ${mgrInfo.empName} (${mgrInfo.jobName} - ${mgrInfo.posiName})
-            `;
-            managerInfoItems.appendChild(li);
+			managerInfoItems.innerHTML = "";
+			
+			if (mgrInfo.empName != null) {
+			    const li = document.createElement("li");
+			    li.innerHTML = `
+			        ${mgrInfo.empName} (${mgrInfo.jobName} - ${mgrInfo.posiName})
+			    `;
+			    managerInfoItems.appendChild(li);
+			} else {
+			    const li = document.createElement("li");
+			    li.innerHTML = "등록된 부서장이 없습니다"; // No registered department manager
+			    managerInfoItems.appendChild(li);
+			}
 			
 			let employees = data.deptEmpList;
-            const employeeListItems = document.getElementById("employeeListItems");
-            employeeListItems.innerHTML = "";
+			if(employees.length > 0 && employees[0].empName != null){
+				const employeeListItems = document.getElementById("employeeListItems");
+				employeeListItems.innerHTML = "";
+				
+				employees.forEach(employee => {
+				    const li = document.createElement("li");
+				    li.innerHTML = `
+				        <input type="checkbox" name="emp" value="${employee.empNo}" onclick="selectOnlyThis(this)">
+				        ${employee.empName} (${employee.jobName} - ${employee.posiName})
+				    `;
+				    employeeListItems.appendChild(li);
+				});
+			} else {
+			    const li = document.createElement("li");
+			    li.innerHTML = "등록된 부서원이 없습니다"; // No registered department manager
+			    employeeListItems.appendChild(li);
+			}
 
-            employees.forEach(employee => {
-                const li = document.createElement("li");
-                li.innerHTML = `
-                    <input type="checkbox" name="emp" value="${employee.empNo}">
-                    ${employee.empName} (${employee.jobName} - ${employee.posiName})
-                `;
-                employeeListItems.appendChild(li);
-            });
         })
         .catch(error => console.error("Error fetching employees:", error));
+}
+
+function selectOnlyThis(checkbox) {
+    const checkboxes = document.querySelectorAll('input[name="emp"]');
+    checkboxes.forEach(cb => {
+        if (cb !== checkbox) cb.checked = false;
+    });
 }
 
 // 모달 닫기 함수

@@ -175,7 +175,8 @@ button {
 }
 
 
-/* 사이드바 관련 CSS */
+
+
 
 
 /*사이드바 캘린더추가 색깔*/
@@ -286,6 +287,7 @@ button {
 .calendar-item-wrapper {
     display: flex;
     align-items: center;
+    
 }
 
 /* 알림 필드 전체를 감싸는 컨테이너 */

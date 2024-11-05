@@ -1,6 +1,8 @@
 package com.collavore.app.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -88,4 +90,31 @@ public class HomeServiceImpl implements HomeService {
 		return homeMapper.selectTodoList(empNo);
 	}
 
+	// 프로젝트 상단 통계
+	@Override
+	public Map<String, Object> setStatInfo() {
+		
+		Map<String, Object> homeStat = new HashMap<>();
+
+		// 재직중인 사원 수
+		int empCnt = homeMapper.selectCountEmp();
+		homeStat.put("empCnt", empCnt);
+		
+		// 프로젝트 전체 수
+		int projCnt = homeMapper.selectCountProj();
+		homeStat.put("projCnt", projCnt);
+		
+		// 프로젝트 진행 수
+		int projIngCnt = homeMapper.selectCountProjIng();
+		homeStat.put("projIngCnt", projIngCnt);
+		
+		// 진행중인 업무 수
+		int pdwCnt = homeMapper.selectCountPdw();
+		homeStat.put("pdwCnt", pdwCnt);
+		
+		return homeStat;
+	}
+
+	
+	
 }

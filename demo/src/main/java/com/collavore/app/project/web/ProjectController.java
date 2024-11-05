@@ -1,4 +1,4 @@
-package com.collavore.app.project.web;
+ package com.collavore.app.project.web;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -39,7 +39,6 @@ import com.collavore.app.project.service.ProjectFilesVO;
 import com.collavore.app.project.service.ProjectFoldersVO;
 import com.collavore.app.project.service.ProjectTempVO;
 import com.collavore.app.project.service.ProjectVO;
-import com.collavore.app.project.service.ProjectWorkTempVO;
 import com.collavore.app.service.HomeService;
 import com.collavore.app.service.HomeVO;
 
@@ -76,11 +75,13 @@ public class ProjectController {
 		List<ProjectVO> list = pjService.projectList();
 		List<ProjectTempVO> templist = pjtempService.projecttempList();
 		List<ProjectVO> emplist = pjService.empList();
-
+		ProjectVO gitInfo = pjService.compGitInfo();
+		
 		model.addAttribute("empNo", empNo);
 		model.addAttribute("projects", list);
 		model.addAttribute("templist", templist);
 		model.addAttribute("emp", emplist);
+		model.addAttribute("gitInfo", gitInfo);
 		return "project/projectList";
 	}
 
@@ -171,8 +172,8 @@ public class ProjectController {
 	@DeleteMapping("project/projectdelete/{projNo}")
 	@ResponseBody
 	public String deleteProject(@PathVariable int projNo) {
-		
-		pjService.projectDelete(projNo);
+	
+		pjService.projectComtDel(projNo);
 		List<ProjectVO> projectVOList = pjService.projectwrkList(projNo);
 		pjService.projectwrkDelete(projNo);
 		for(ProjectVO info :  projectVOList) {
@@ -184,7 +185,9 @@ public class ProjectController {
 		for(ProjectVO fileinfo: projectfileList) {
 			pjService.projfiledel(fileinfo.getPfNo());
 		}
-		pjService.projectfolderDelete(projNo);	
+		pjService.projectfolderDelete(projNo);
+		
+		pjService.projectDelete(projNo);
 		return "삭제 완료";
 	}
 	
@@ -460,7 +463,7 @@ public class ProjectController {
 	@GetMapping("project/projectmgrlist/{jobNo}")
 	@ResponseBody
 	public List<ProjectVO> projectmgrInfo(@PathVariable int jobNo) {
-		// System.err.println(jobNo);
+		 System.err.println(jobNo);
 		return pjService.projectMgrListInfo(jobNo);
 	}
 
@@ -496,8 +499,11 @@ public class ProjectController {
 	public String cloneRepository(@RequestBody ProjectVO projectVO) throws InterruptedException {
 		String cloneGitUrl = projectVO.getProjectGitUrl();
 		String localPath = projectVO.getCloneLocalPath();
+		
+		//ProjectVO gitInfo = pjService.compGitInfo();
 
 		try {
+			//Process process = Runtime.getRuntime().exec(new String[] { "git", "clone", cloneGitUrl, localPath });
 			Process process = Runtime.getRuntime().exec(new String[] { "git", "clone", cloneGitUrl, localPath });
 			process.waitFor();
 
@@ -525,6 +531,14 @@ public class ProjectController {
 	@ResponseBody
 	public String deletedcomts(@PathVariable int pdwcNo) {
 		pjService.projectcomtsDelete(pdwcNo);
+		return "삭제 완료";
+	}
+	
+	// 프로젝트 상세업무 삭제(단건)
+	@DeleteMapping("project/projectdwrkdelete/{pdwNo}")
+	@ResponseBody
+	public String dwrkdelete(@PathVariable int pdwNo) {
+		pjService.projectdeteilworkDelete(pdwNo);
 		return "삭제 완료";
 	}
 

@@ -50,12 +50,11 @@ public class SpringSecurityConfig {
                 .loginProcessingUrl("/login")
                 .successHandler(customAuthenticationSuccessHandler())
                 .permitAll()
-                .failureUrl("/login?error=true") 
-	            .failureHandler((request, response, exception) -> {
-	                String errorMessage = "아이디 또는 비밀번호가 올바르지 않습니다.";
-	                request.getSession().setAttribute("loginError", errorMessage);
-	                response.sendRedirect("/login?error=true");
-	            })
+                .failureHandler((request, response, exception) -> {
+                    String errorMessage = "아이디 또는 비밀번호가 올바르지 않습니다.<br>등록되지 않은 사원은 관리자에게 문의해주세요.";
+                    request.getSession().setAttribute("loginError", errorMessage);
+                    response.sendRedirect("/login?error=true");
+                })
             )
             .logout(logout -> logout
                 .logoutUrl("/logout")

@@ -1,25 +1,25 @@
-document.addEventListener("DOMContentLoaded", function () {
-    loadDeptTree();
+document.addEventListener("DOMContentLoaded", function() {
+	loadDeptTree();
 });
 
 async function loadDeptTree() {
-    try {
-        const response = await fetch('/api/deptMgr');
-        const departments = await response.json();
+	try {
+		const response = await fetch('/api/deptMgr');
+		const departments = await response.json();
 
-        if (!Array.isArray(departments)) {
-            throw new Error("Invalid response format");
-        }
+		if (!Array.isArray(departments)) {
+			throw new Error("Invalid response format");
+		}
 
-        const deptMap = buildDeptMap(departments);
-        const container = document.getElementById('DeptTable');
-        renderDeptTree(deptMap, container);
+		const deptMap = buildDeptMap(departments);
+		const container = document.getElementById('DeptTable');
+		renderDeptTree(deptMap, container);
 
 
 
-    } catch (error) {
-        console.error('Error fetching department data:', error);
-    }
+	} catch (error) {
+		console.error('Error fetching department data:', error);
+	}
 }
 
 
@@ -63,23 +63,28 @@ function createDeptNode(dept) {
 	const deptHeader = document.createElement('div');
 	deptHeader.classList.add('dept-header');
 	deptHeader.innerHTML = `
-            <div class="dept-info">
-                <div class="dept-name">
-               		${dept.deptName}
-                </div>
-                <div class="mgr-info">
-                	<div class="mgr-image">
-                	
-                		<img class="profile-image" src="${dept.mgrImg ? `/imgs/${dept.mgrImg}` : '/assets/images/users/default.png'}" alt="부서장 이미지" width="40px">
-                	</div>
-                	<div class="mgr-basic">
-                		<div class="mgr-name">${dept.mgrName}</div>
-                		<div class="mgr-job">${dept.posiName}</div>
-                	</div>
-                </div>
-            </div>
-            
-        `;
+    <div class="dept-info">
+        <div class="dept-name">
+            ${dept.deptName}
+        </div>
+            ${dept.mgrName ? `
+        	<div class="mgr-info">
+	            <div class="mgr-image">
+	                <img class="profile-image" src="${dept.mgrImg ? `/imgs/${dept.mgrImg}` : '/assets/images/users/default.png'}" alt="부서장 이미지" width="40px">
+	            </div>
+	            <div class="mgr-basic">
+	                <div class="mgr-name">${dept.mgrName}</div>
+	                <div class="mgr-job">${dept.posiName}</div>
+	            </div>
+   			 </div>
+            ` : `
+       		<div class="mgr-noninfo">
+                등록된 부서장 없음
+		    </div>
+            `}
+        </div>
+`;
+
 
 	// 부서명을 클릭하면 부서원 목록을 토글
 	deptHeader.onclick = () => toggleEmployees(dept.deptNo, deptDiv);
@@ -135,26 +140,28 @@ async function toggleEmployees(deptNo, deptDiv) {
 		const employees = await response.json();
 
 		if (employees && employees.length > 0) {
-    employeeListDiv.innerHTML = `
-        <div class="employee-name">부서원</div>
-        ${employees.map(emp => `
-            <div class="employee-item" 
-                 data-tel="${emp.tel || 'Unknown'}" 
-                 data-email="${emp.email || 'Unknown'}">
-                <div class="mgr-info">
-                    <input type="hidden" name="empNo" value="${emp.empNo}">
-                    <div class="mgr-image">
-                        <img class="profile-image" src="${emp.img ? `/imgs/${emp.img}` : '/assets/images/users/default.png'}" alt="소속사원 이미지" width="40px">
-                    </div>
-                    <div class="mgr-basic">
-                        <div class="mgr-name">${emp.empName}</div>
-                        <div class="mgr-job">${emp.posiName}</div>
-                    </div>
-                </div>
-            </div>
-        `).join('')}
-    `;
-}
+			employeeListDiv.innerHTML = `
+		        <div class="employee-name">부서원</div>
+		        ${employees.map(emp => `
+		            <div class="employee-item" 
+		                 data-tel="${emp.tel || 'Unknown'}" 
+		                 data-email="${emp.email || 'Unknown'}">
+		                <div class="mgr-info">
+		                    <input type="hidden" name="empNo" value="${emp.empNo}">
+		                    <div class="mgr-image">
+		                        <img class="profile-image" src="${emp.img ? `/imgs/${emp.img}` : '/assets/images/users/default.png'}" alt="소속사원 이미지" width="40px">
+		                    </div>
+		                    <div class="mgr-basic">
+		                        <div class="mgr-name">${emp.empName}</div>
+		                        <div class="mgr-job">${emp.posiName}</div>
+		                    </div>
+		                </div>
+		            </div>
+		        `).join('')}
+		    `;
+		}else{
+			employeeListDiv.innerHTML = `  <div class="no-employee-info text-center">등록된 부서원이 없음</div>`;
+		}
 
 		// 위치 계산
 		const rect = deptDiv.getBoundingClientRect();
@@ -183,62 +190,69 @@ async function toggleEmployees(deptNo, deptDiv) {
 // 모달 열기 함수
 // 모달 열기 함수
 function openModal(empName, posiName, img, empNo, tel, email) {
-    const modal = document.getElementById("employeeModal");
-    var closeModal = document.querySelector(".modal-close");
-    
-    // 각 요소를 설정하기 전에 존재 여부를 확인
-    modal.querySelector("#profilePreview").src = img || "/assets/images/users/default.png";
-    modal.querySelector("#empNo").value = empNo;
+	console.log("asdfasdfadsf");
+	const modal = document.getElementById("employeeModal");
+	var closeModal = document.querySelector(".modal-close");
 
-    // 존재 여부를 콘솔에 출력
-    console.log(modal.querySelector(".modal-span.name"));
-    console.log(modal.querySelector(".modal-span.tel"));
-    console.log(modal.querySelector(".modal-span.email"));
-    console.log(modal.querySelector(".modal-span.position"));
+	// 각 요소를 설정하기 전에 존재 여부를 확인
+	modal.querySelector("#profilePreview").src = img || "/assets/images/users/default.png";
+	modal.querySelector("#empNo").value = empNo;
 
-    // 각 필드에 값 설정
-    const nameElement = modal.querySelector(".modal-span.name");
-    const telElement = modal.querySelector(".modal-span.tel");
-    const emailElement = modal.querySelector(".modal-span.email");
-    const positionElement = modal.querySelector(".modal-span.position");
+	// 존재 여부를 콘솔에 출력
+	console.log(modal.querySelector(".modal-span.name"));
+	console.log(modal.querySelector(".modal-span.tel"));
+	console.log(modal.querySelector(".modal-span.email"));
+	console.log(modal.querySelector(".modal-span.position"));
 
-    if (nameElement) nameElement.innerText = empName;
-    if (telElement) telElement.innerText = tel;
-    if (emailElement) emailElement.innerText = email;
-    if (positionElement) positionElement.innerText = posiName;
+	// 각 필드에 값 설정
+	const nameElement = modal.querySelector(".modal-span.name");
+	const telElement = modal.querySelector(".modal-span.tel");
+	const emailElement = modal.querySelector(".modal-span.email");
+	const positionElement = modal.querySelector(".modal-span.position");
 
-    modal.style.display = "block";
+	if (nameElement) nameElement.innerText = empName;
+	if (telElement) telElement.innerText = tel;
+	if (emailElement) emailElement.innerText = email;
+	if (positionElement) positionElement.innerText = posiName;
+
+	modal.style.display = "block";
+	overlay.style.display = "block"; // 오버레이 보이기
 }
 
 // 모달 닫기 함수
 function closeModal() {
-    const modal = document.getElementById("employeeModal");
-    modal.style.display = "none";
+	const modal = document.getElementById("employeeModal");
+	modal.style.display = "none";
+	overlay.style.display = "none"; // 오버레이 숨기기
 }
 
 // employee-item 클릭 이벤트 감지 (이벤트 위임 방식)
 document.addEventListener("click", function(event) {
-    const empItem = event.target.closest(".employee-item");
-    if (empItem) {
-        console.log("employee-item clicked!");
-        
-        // 데이터 추출
-        const empName = empItem.querySelector(".mgr-name") ? empItem.querySelector(".mgr-name").innerText : "Unknown";
-        const posiName = empItem.querySelector(".mgr-job") ? empItem.querySelector(".mgr-job").innerText : "Unknown";
-        const img = empItem.querySelector(".profile-image") ? empItem.querySelector(".profile-image").src : "/assets/images/users/default.png";
-        const empNo = empItem.querySelector("input[name='empNo']").value;
-        const tel = empItem.getAttribute("data-tel") || "Unknown"; // 연락처 데이터가 포함된 경우
-        const email = empItem.getAttribute("data-email") || "Unknown"; // 이메일 데이터가 포함된 경우
+	const empItem = event.target.closest(".employee-item");
+	console.log(empItem);
+	console.log(empItem.querySelector(".mgr-name").innerText);
+	if (empItem) {
+		console.log("employee-item clicked!");
 
-        // 모달 열기
-        openModal(empName, posiName, img, empNo, tel, email);
-    }
+		// 데이터 추출
+		const empName = empItem.querySelector(".mgr-name") ? empItem.querySelector(".mgr-name").innerText : "Unknown";
+		const posiName = empItem.querySelector(".mgr-job") ? empItem.querySelector(".mgr-job").innerText : "Unknown";
+		const img = empItem.querySelector(".profile-image") ? empItem.querySelector(".profile-image").src : "/assets/images/users/default.png";
+		const empNo = empItem.querySelector("input[name='empNo']").value;
+		const tel = empItem.getAttribute("data-tel") || "Unknown"; // 연락처 데이터가 포함된 경우
+		const email = empItem.getAttribute("data-email") || "Unknown"; // 이메일 데이터가 포함된 경우
+
+		// 모달 열기
+		openModal(empName, posiName, img, empNo, tel, email);
+	}
 });
 
 // 모달 외부 클릭 시 닫기
+const modal = document.getElementById("employeeModal");
+
+// 모달 바깥을 클릭하면 모달을 닫습니다.
 window.onclick = function(event) {
-    const modal = document.getElementById("employeeModal");
-    if (event.target == modal) {
-        closeModal();
-    }
+	if (event.target === overlay) {
+		closeModal();
+	}
 };

@@ -1,6 +1,7 @@
 package com.collavore.app;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -10,7 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.collavore.app.service.HomeService;
@@ -40,6 +40,7 @@ public class HomeController {
 		// 게시판목록
 		List<HomeVO> hvo = homeService.selBoardList(userGrade);
 		model.addAttribute("boards", hvo);
+		
 	    model.addAttribute("sidemenu", "default_sidebar");
 	}
 	
@@ -58,6 +59,10 @@ public class HomeController {
 		// 내 담당 프로젝트 상세업무 출력
 		List<HomeVO> todos = homeService.selTodoList(empNo);
 		model.addAttribute("todos", todos);
+		
+		// 상단 통계
+		Map<String, Object> stats = homeService.setStatInfo();
+		model.addAttribute("stats", stats);
 		
 		return "home";
 	}

@@ -117,4 +117,14 @@ public interface ProjectMapper {
 	public int fileDelete(int projFileNo);
 	
 	
+	// 깃 인포
+	public ProjectVO selectGitInfo();
+	
+	// 프로젝트 코멘트 삭제
+	public int projectcomtdel(int projNo);
+	
+	// 프로젝트 상세업문 삭제(단건)
+	public int projectdwrkdel(int pdwNo);
+	
+	
 }

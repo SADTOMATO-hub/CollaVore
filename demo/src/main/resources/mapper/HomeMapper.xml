@@ -149,4 +149,28 @@
 			WHERE ROWNUM <= 5
 		]]>
 	</select>
+	
+	<select id="selectCountEmp" resultType="int">
+		SELECT COUNT(emp_no)
+		FROM employees
+		WHERE work_type = '재직중'
+	</select>
+	
+	<select id="selectCountProj" resultType="int">
+		SELECT COUNT(proj_no)
+		FROM proj
+	</select>
+	
+	<select id="selectCountProjIng" resultType="int">
+		SELECT COUNT(proj_no)
+		FROM proj
+		WHERE status = 'j2'
+	</select>
+	
+	<select id="selectCountPdw" resultType="int">
+		SELECT COUNT(pdw_no)
+		FROM projdwrks
+		WHERE is_status = 'k2'
+	</select>
+	
 </mapper>

@@ -117,5 +117,13 @@ public interface PjService {
 	
 	// 프로젝트 파일 삭제
 	public int fileDelete(int projFileNo);
-
+	
+	// 회사 깃 정보 가져오기
+	public ProjectVO compGitInfo();
+	
+	// 프로젝트 코멘트 삭제
+	public int projectComtDel(int projNo);
+	
+	// 프로젝트 상세업무 삭제(단건)
+	public int projectdeteilworkDelete(int pdwNo);
 }

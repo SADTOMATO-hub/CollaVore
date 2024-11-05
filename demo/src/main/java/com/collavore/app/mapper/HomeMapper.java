@@ -37,5 +37,18 @@ public interface HomeMapper {
 	
 	// 내 업무 조회
 	public List<HomeVO> selectTodoList(int empNo);
+	
+	// 재직중인 사원 수
+	public int selectCountEmp();
+	
+	// 프로젝트 전체 수
+	public int selectCountProj();
+	
+	// 프로젝트 진행 수 
+	public int selectCountProjIng();
+	
+	// 진행중인 업무 수
+	public int selectCountPdw();
+		
 }
 
