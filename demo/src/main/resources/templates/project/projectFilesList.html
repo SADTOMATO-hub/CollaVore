@@ -271,6 +271,8 @@ button:active {
 .none {
 	display: none;
 }
+
+
 </style>
 	<div class="body-page-wrapper">
 		<div class="purple-background-container">
@@ -288,30 +290,34 @@ button:active {
 					<div class="row">
 						<div id="jstree">
 							<ul>
-								<th:block th:each="project : ${projects}">
-									<th:block th:if="${project.parentPfNo == 0}">
-										<li th:id="'node_' + ${project.pfNo}">[[${project.name}]]
-											<button id="Folderinsertbutton"
-												class="btn btn-info btn-lg no-border-button">
-												<i class="mdi mdi-plus-circle-outline" style="color: black;"></i>
-											</button>
-											<ul>
-												<th:block th:each="child : ${projects}"
-													th:if="${child.parentPfNo == project.pfNo}">
-													<li class="test" th:id="'node_' + ${child.pfNo}"
-														th:attr="data-pf-no=${child.pfNo}">[[${child.name}]]
-														<button id="Fileinsertbutton"
-															class="btn btn-info btn-lg no-border-button">
-															<i class="mdi mdi-plus-circle-outline"
-																style="color: black;"></i>
-														</button>
-													</li>
-												</th:block>
-											</ul>
-										</li>
-									</th:block>
-								</th:block>
-							</ul>
+						    <th:block th:each="project, iterStat : ${projects}">
+						        <th:block th:if="${project.parentPfNo == 0}">
+						            <li th:id="'node_' + ${project.pfNo}">[[${project.name}]]
+						                <th:block th:if="${iterStat.index != 0}">
+						                    <!-- 첫 번째 항목이 아니면 i 태그 추가 -->
+						                    <button id="Folderinsertbutton"
+						                        class="btn btn-info btn-lg no-border-button">
+						                        <i class="mdi mdi-plus-circle-outline" style="color: black;"></i>
+						                    </button>
+						                </th:block>
+						                <ul>
+						                    <th:block th:each="child : ${projects}"
+						                        th:if="${child.parentPfNo == project.pfNo}">
+						                        <li class="test" th:id="'node_' + ${child.pfNo}"
+						                            th:attr="data-pf-no=${child.pfNo}">[[${child.name}]]
+						                            <button id="Fileinsertbutton"
+						                                class="btn btn-info btn-lg no-border-button">
+						                                <i class="mdi mdi-plus-circle-outline"
+						                                    style="color: black;"></i>
+						                            </button>
+						                        </li>
+						                    </th:block>
+						                </ul>
+						            </li>
+						        </th:block>
+						    </th:block>
+						</ul>
+
 						</div>
 						<table class="table memberList_table" id="fileTable"
 							style="display: none;">
@@ -359,8 +365,6 @@ button:active {
 					</form>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary"
-						data-dismiss="modal">취소</button>
 					<button type="button" class="btn btn-primary" id="uploadButton">업로드</button>
 				</div>
 			</div>
@@ -518,6 +522,7 @@ button:active {
 	                    '<td>' + info.extension + '</td>' +
 	                    '<td>' +
 	                    '<button type="button" class="btn btn-info" data-proj-no="' + info.projNo + '">다운로드</button>' +
+	                    '<button type="button" class="btn btn-danger text-white" data-proj-no="' + info.projFileNo + '">  삭제</button>' +
 	                    '</td>' +
 	                    '</tr>'
 	                );

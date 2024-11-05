@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -51,7 +52,8 @@ public class ProjectController {
 	private final PjService pjService;
 	private final PjTempService pjtempService;
 	private final HomeService homeService;
-
+	@Value("${file.upload.path}") // 메모리에 올라가 있는 변수값을 가져오기 때문에 표현이 다름아아아아아
+	private String uploadPath;
 
 	@ModelAttribute
 	public void addAttributes(Model model, HttpSession session) {
@@ -246,7 +248,7 @@ public class ProjectController {
 
 		try {
 			// 파일 저장 경로 설정
-			String uploadDir = "fileuploads/"; // 실제 파일이 저장될 경로 설정
+			String uploadDir = uploadPath; // 실제 파일이 저장될 경로 설정
 			Path path = Paths.get(uploadDir + file.getOriginalFilename());
 			Files.createDirectories(path.getParent()); // 필요한 디렉토리 생성
 			Files.write(path, file.getBytes()); // 파일 저장
