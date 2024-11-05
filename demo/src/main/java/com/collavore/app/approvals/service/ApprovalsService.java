@@ -3,6 +3,10 @@ package com.collavore.app.approvals.service;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
+
+import com.collavore.app.hrm.service.HrmVO;
+
 public interface ApprovalsService {
 	// 템플릿 생성
 	public int createApprsTemp (ApprovalstempVO apprsVO);
@@ -15,33 +19,32 @@ public interface ApprovalsService {
 	// 템플릿 삭제
 	public int deleteTemplate(ApprovalstempVO apprsVO);
 		// 전자결재 생성
-			//전자결재 테이블에 데이터 넣기
+			// 전자결재 테이블에 데이터 넣기
 			public int insertApprsEa (ApprovalsVO approvalsVO);
-	 		//결재자 테이블에 데이터 넣기
+	 		// 결재자 테이블에 데이터 넣기
 			public int insertApprsEar (ApprovalsVO approvalsVO);
 	// 진행 중인 전자결재 목록 조회
 	public List<ApprovalsVO> myApprList (ApprovalsVO approvalsVo);
-	//문서함
+	// 문서함
 	public List<ApprovalsVO> approveList (ApprovalsVO approvalsVo);
 	// 전자결재 상세 조회
 	public ApprovalsVO approvalsInfo (ApprovalsVO approvalsVO);
-	//결재자 상세
+	// 결재자 상세
 	public List<Map<String,Object>> approversInfo (ApprovalsVO approvalsVo);
-	//결재하기
+	// 결재하기
 	public int updateApprStatus (ApprovalsVO approvalsVo);	
-		//전자결재 수정
+		// 전자결재 수정
 	public int updateApproval (ApprovalsVO approvalsVo);
-		//결재자 리스트
+		// 결재자 리스트
 	public List <ApprovalsVO> approvalsList (int eaNo);
-		//결재자 수정
-	public int updateApprover (ApprovalsVO approvalsVo);
 	// 전자결재 삭제
 	public void deleteApprovals (ApprovalsVO approvalsVo);
-//인사 테이블 조회
-	public List<Map<String,Object>> employeesInfo ();
-	
+  // 인사 테이블 조회
+	public List<HrmVO> employeesInfo (@Param("userEmpNo") int userEmpNo, @Param("deptNo") int deptNo);
 	// 결재자 삭제
 	public int deleteApprover(int eaNo);
+	// 부서 테이블 조회
+	public List <HrmVO> depts ();
 		
 }
 //4번째

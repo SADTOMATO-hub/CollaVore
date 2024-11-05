@@ -152,6 +152,8 @@
 			<when test="approvalStatus == 'a4'">
 				AND a.status = 'a4'
 			</when>
+			<when test="approvalStatus == 'a5'">
+			</when>
 		</choose>
 		ORDER BY a.reg_date
 	</select>
@@ -220,27 +222,20 @@
 	<select id="readApprovers" parameterType="Integer"
 		resultType="map">
 		SELECT
-		r.status as "approverStatus"
-		,e.name as "approverName"
-		,e.emp_no as "approverEmpNo"
-		,p.name as "positionTitle"
-		,r.sort as
-		"approverSort"
-		,r.ear_no as "earNumber"
-		FROM
-		approvals a JOIN approvers r
-		ON a.ea_no = r.ea_no
+				r.status as "approverStatus"
+		     	,e.name as "approverName"
+				,e.emp_no as "approverEmpNo"
+				,p.name as "positionTitle"
+				,r.sort as "approverSort"
+				,r.ear_no as "earNumber"
+		FROM approvals a JOIN approvers r
+			ON a.ea_no = r.ea_no
 		JOIN employees e
-		ON
-		r.emp_no = e.emp_no
-		JOIN
-		positions P
-		ON e.posi_no =
-		p.posi_no
-		WHERE
-		a.ea_no = #{eaNo}
-		ORDER BY
-		r.sort
+			ON r.emp_no = e.emp_no
+		JOIN positions P
+			ON e.posi_no = p.posi_no
+		WHERE a.ea_no = #{eaNo}
+		ORDER BY r.sort
 	</select>
 	<!-- -->
 
@@ -255,9 +250,8 @@
 	<!-- 전결수정 -->
 	<update id="updateApproval" parameterType="ApprovalsVO">
 		update approvals
-		set
-		content = #{content}
-		,title = #{title}
+		set content = #{content}
+			,title = #{title}
 		WHERE ea_no = #{eaNo}
 	</update>
 	<select id="approvalsList" parameterType="Integer">
@@ -276,24 +270,39 @@
 	<!-- -->
 
 	<!-- 인사 테이블 조회 -->
-	<select id="employees" resultType="HrmVO">
+	<select id="employees" parameterType="map" resultType="HrmVO">
 		SELECT
-				p.posi_no
+				 p.posi_no
 				,e.name as "empName"
 				,p.name as "posiName"
-				,e.emp_no
+				,e.emp_no as "empNo"
 				,d.name as "deptName"
 		FROM employees e JOIN positions p
-			ON e.posi_no = p.posi_no
+				ON e.posi_no = p.posi_no
 		JOIN departments d
-			ON e.dept_no = d.dept_no
+				ON e.dept_no = d.dept_no
+	<![CDATA[
+		WHERE e.emp_no <> #{userEmpNo} and d.dept_no = #{deptNo}
+    ]]>
 		ORDER by p.posi_no
 	</select>
 	<!-- -->
 	
+	<!-- 부서 테이블 조회  -->
+	<select id="depts" resultType="HrmVO" parameterType="int">
+		SELECT dept_no
+			   ,name as "deptName"
+		FROM departments
+        ORDER BY dept_no
+	</select>
+	<!--  -->
+	
+	<!-- 삭제 -->
 	<delete id="deleteApprover" parameterType="int">
 		DELETE FROM approvers
 		WHERE ea_no = #{eaNo}
 	</delete>
+	<!--  -->
+	
 </mapper>
 <!-- 3번째 -->
