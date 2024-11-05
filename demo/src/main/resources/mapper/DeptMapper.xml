@@ -34,7 +34,22 @@
 		positions WHERE posi_no = e.posi_no) AS posiName
 		FROM employees e
 		WHERE
-		e.dept_no = #{deptNo}
+			e.dept_no = #{deptNo}
+		<![CDATA[
+        	AND e.emp_no <> (SELECT mgr_no FROM departments WHERE dept_no = #{deptNo})
+		]]>
+	</select>
+
+	<!-- 부서 조직장 조회 -->
+	<select id="selectMgrByDept" parameterType="Integer"
+		resultType="com.collavore.app.hrm.service.HrmVO">
+		SELECT e.emp_no AS empNo,
+			e.name AS empName,
+			(SELECT name FROM jobs WHERE job_no = e.job_no) AS jobName,
+			(SELECT name FROM positions WHERE posi_no = e.posi_no) AS posiName
+		FROM employees e
+    		JOIN departments dept ON e.emp_no = dept.mgr_no
+		WHERE e.dept_no = #{deptNo}
 	</select>
 
 	<!-- 부서장 업데이트 -->

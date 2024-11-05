@@ -55,6 +55,10 @@ public class HomeController {
 		List<HomeVO> apps = homeService.selAppList(empNo);
 		model.addAttribute("apps", apps);
 		
+		// 내 담당 프로젝트 상세업무 출력
+		List<HomeVO> todos = homeService.selTodoList(empNo);
+		model.addAttribute("todos", todos);
+		
 		return "home";
 	}
 	

@@ -374,24 +374,33 @@ td {
 					</tr>
 				</table>
 			</div>
-
 			<div class="card_table">
-				<h4>전자결재 이력 OR 바로가기</h4>
+				<h4>나의 전자결재</h4>
 				<table>
 					<tr>
-						<th>우상이가</th>
-						<th>완료하면.....</th>
-						<th>근데언제</th>
-						<th>완료할려나</th>
-						<th>ㅠㅠ</th>
+						<th>전자결재번호</th>
+						<th>전자결재명</th>
+						<th>진행상태</th>
+						<th>기안일</th>
 					</tr>
-					<tr>
-						<td th:text="${member.workType}"></td>
-						<td th:text="${#dates.format(member.joinDate, 'yyyy-MM-dd')}"></td>
-						<td th:text="${member.deptName}"></td>
-						<td th:text="${member.jobName}"></td>
-						<td th:text="${member.posiName}"></td>
-					</tr>
+					<tbody>
+					    <tr th:each="app : ${appList}"  th:onclick="|window.location.href='/approvals/readApprInfo?eaNo=' + ${app.eaNo}|" style="cursor: pointer;">
+					        <td th:text="${app.eaNo}"></td>
+					        <td th:text="${app.appTitle}"></td>
+					        <td><span th:classappend="${app.appStatus == 'a1' ? 'btn btn-primary  rounded-pill' : 
+                                                  app.appStatus == 'a2' ? 'btn btn-info  rounded-pill' : 
+                                                  app.appStatus == 'a3' ? 'btn btn-success text-white  rounded-pill' : 
+                                                  app.appStatus == 'a4' ? 'btn btn-danger  rounded-pill' : ''}"
+                                    style="cursor: default;">
+                            <span th:text="${app.appStatus == 'a1' ? '대기' : 
+                                           app.appStatus == 'a2' ? '진행' : 
+                                           app.appStatus == 'a3' ? '승인완료' : 
+                                           app.appStatus == 'a4' ? '반려완료' : ''}"></span>
+                        </span>
+					        </td>
+					        <td th:text="${#dates.format(app.appRegDate, 'yyyy년 MM월 dd일')}"></td>
+					    </tr>
+					</tbody>
 				</table>
 			</div>
 			<!-- 모달 구조 -->

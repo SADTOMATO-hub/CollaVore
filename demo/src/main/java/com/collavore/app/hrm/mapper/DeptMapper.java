@@ -29,6 +29,9 @@ public interface DeptMapper {
 	// 부서별 사원 목록 조회
 	List<HrmVO> selectEmployeesByDept(@Param("deptNo") Integer deptNo);
 
+	// 부서 조직장 조회
+	HrmVO selectMgrByDept(@Param("deptNo") Integer deptNo);
+
 	// 부서장 업데이트
 	int updateManager(@Param("deptNo") Integer deptNo, @Param("empNo") Integer empNo);
 	

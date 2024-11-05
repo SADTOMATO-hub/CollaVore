@@ -61,6 +61,12 @@ public class DeptServiceImpl implements DeptService {
 		// 특정 부서별 사원 목록 조회
 		return deptMapper.selectEmployeesByDept(deptNo);
 	}
+	
+	@Override
+	public HrmVO getMgrByDept(Integer deptNo) {
+		// 부서 조직장 조회
+		return deptMapper.selectMgrByDept(deptNo);
+	}
 
 	@Override
 	public int updateManager(Integer deptNo, Integer empNo) {

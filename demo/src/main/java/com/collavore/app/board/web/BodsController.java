@@ -1,5 +1,6 @@
 package com.collavore.app.board.web;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -59,8 +60,10 @@ public class BodsController {
 		
 		String page = bodsVO.getPage() == null ? "1" : bodsVO.getPage();
 
-		String boardName = bodsService.boardNameSearch(bodsVO.getBoardNo());
-		model.addAttribute("boardName", boardName);
+		BodsCfigVO boardInfo = bodsService.boardNameSearch(bodsVO.getBoardNo());
+		boardInfo.setSubjectList(Arrays.asList(boardInfo.getSubject().split(",")));
+		
+		model.addAttribute("boardInfo", boardInfo);
 
 		BodsCfigVO bodsCfigVO = new BodsCfigVO();
 		bodsCfigVO.setBoardNo(bodsVO.getBoardNo());
@@ -95,6 +98,10 @@ public class BodsController {
 		BodsVO findVO = bodsService.bodsInfo(bodsVO);
 		model.addAttribute("bods", findVO);
 
+		BodsCfigVO boardInfo = bodsService.boardNameSearch(findVO.getBoardNo());
+		boardInfo.setSubjectList(Arrays.asList(boardInfo.getSubject().split(",")));
+		model.addAttribute("boardInfo", boardInfo);
+
 		BodsCfigVO bodsCfigVO = new BodsCfigVO();
 		bodsCfigVO.setBoardNo(findVO.getBoardNo());
 		bodsCfigVO = bodsService.bodsCfigInfo(bodsCfigVO);
@@ -109,8 +116,9 @@ public class BodsController {
 		Integer empNo = (Integer) session.getAttribute("userEmpNo");
 		model.addAttribute("empNo", empNo);
 
-		String boardName = bodsService.boardNameSearch(bodsVO.getBoardNo());
-		model.addAttribute("boardName", boardName);
+		BodsCfigVO boardInfo = bodsService.boardNameSearch(bodsVO.getBoardNo());
+		boardInfo.setSubjectList(Arrays.asList(boardInfo.getSubject().split(",")));
+		model.addAttribute("boardInfo", boardInfo);
 
 		return "/board/bodsInsert";
 	}
@@ -129,6 +137,11 @@ public class BodsController {
 	@GetMapping("/board/bodsUpdate")
 	public String boardUpdateForm(BodsVO bodsVO, Model model) {
 		BodsVO findVO = bodsService.bodsInfo(bodsVO);
+
+		BodsCfigVO boardInfo = bodsService.boardNameSearch(findVO.getBoardNo());
+		boardInfo.setSubjectList(Arrays.asList(boardInfo.getSubject().split(",")));
+		model.addAttribute("boardInfo", boardInfo);
+		
 		model.addAttribute("bods", findVO);
 		return "board/bodsUpdate";
 	}

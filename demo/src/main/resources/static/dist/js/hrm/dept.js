@@ -320,13 +320,24 @@ function openModal(deptNo) {
     fetch(`/employees/byDept/${deptNo}`)
         .then(response => response.json())
         .then(data => {
+			let mgrInfo = data.deptMgrInfo;
+			console.log(mgrInfo);
+			const managerInfoItems = document.getElementById("managerInfoItems");
+            managerInfoItems.innerHTML = "";
+            const li = document.createElement("li");
+            li.innerHTML = `
+                ${mgrInfo.empName} (${mgrInfo.jobName} - ${mgrInfo.posiName})
+            `;
+            managerInfoItems.appendChild(li);
+			
+			let employees = data.deptEmpList;
             const employeeListItems = document.getElementById("employeeListItems");
             employeeListItems.innerHTML = "";
 
-            data.forEach(employee => {
+            employees.forEach(employee => {
                 const li = document.createElement("li");
                 li.innerHTML = `
-                    <input type="checkbox" name="manager" value="${employee.empNo}">
+                    <input type="checkbox" name="emp" value="${employee.empNo}">
                     ${employee.empName} (${employee.jobName} - ${employee.posiName})
                 `;
                 employeeListItems.appendChild(li);
@@ -353,7 +364,7 @@ window.addEventListener("click", (event) => {
 // 부서장을 지정하는 버튼 클릭 이벤트
 document.getElementById("setManagerBtn").addEventListener("click", function() {
     const deptNo = document.getElementById("deptNo").textContent;
-    const selectedManager = document.querySelector('input[name="manager"]:checked');
+    const selectedManager = document.querySelector('input[name="emp"]:checked');
 
     if (!selectedManager) {
         alert("부서장을 지정할 사원을 선택해주세요.");

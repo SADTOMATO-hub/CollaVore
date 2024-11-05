@@ -839,8 +839,8 @@ document.addEventListener('DOMContentLoaded', function() {
 						var endTime = document.getElementById('endTime').value;
 
 						// 시작일과 종료일에 시간을 추가하여 하나의 datetime으로 변환
-						var startDateTime = new Date(startDate + ' ' + startTime); // ISO 형식으로 변환
-						var endDateTime = new Date(endDate + ' ' + endTime); // ISO 형식으로 변환
+						var startDateTime = startDate + ' ' + startTime; // ISO 형식으로 변환
+						var endDateTime = endDate + ' ' + endTime; // ISO 형식으로 변환
 
 						// schsData 변수 초기화 및 데이터 설정
 						var schsData = {

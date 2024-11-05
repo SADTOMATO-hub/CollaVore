@@ -370,4 +370,13 @@
 		E.DEPT_NO = D.DEPT_NO
 		LEFT JOIN POSITIONS P ON E.POSI_NO = P.POSI_NO
 	</select>
+	
+	<select id="selectAppList" parameterType="int" resultType="HrmVO">
+		SELECT ea_no
+			, title as appTitle
+			, status as appStatus
+			, reg_Date as appRegDate
+		FROM approvals
+		WHERE emp_no = #{empNo}
+	</select>
 </mapper>

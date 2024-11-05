@@ -107,8 +107,10 @@ public class DeptController {
 	// 부서별 사원 목록 조회
 	@GetMapping("/employees/byDept/{deptNo}")
 	@ResponseBody
-	public List<HrmVO> getEmployeesByDept(@PathVariable Integer deptNo) {
-		return deptService.getEmployeesByDept(deptNo);
+	public Map<String, Object> getEmployeesByDept(@PathVariable Integer deptNo) {
+		List<HrmVO> deptEmpList = deptService.getEmployeesByDept(deptNo);
+		HrmVO deptMgrInfo = deptService.getMgrByDept(deptNo);
+		return Map.of("deptEmpList", deptEmpList, "deptMgrInfo", deptMgrInfo);
 	}
 
 	// 부서장 업데이트

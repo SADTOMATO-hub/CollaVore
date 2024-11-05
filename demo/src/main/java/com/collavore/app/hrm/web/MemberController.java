@@ -105,8 +105,11 @@ public class MemberController {
 			model.addAttribute("errorMessage", "사원 정보를 찾을 수 없습니다.");
 			return "error"; // 오류 페이지로 이동
 		}
+		
+		List<HrmVO> appList = memberService.getAppList(empNo);
 
 		model.addAttribute("member", findVO);
+		model.addAttribute("appList", appList);
 		model.addAttribute("isMemberInfoPage", true); // 사이드바에서 active 클래스를 설정하기 위해 추가
 		return "member/memberInfo"; // memberInfo 페이지로 이동
 	}

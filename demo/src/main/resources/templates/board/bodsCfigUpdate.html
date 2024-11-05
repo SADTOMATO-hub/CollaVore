@@ -167,7 +167,8 @@ button:active {
 								class="col-sm-3 text-end control-label col-form-label">게시판명</label>
 							<div class="col-sm-9">
 								<input type="text" class="form-control" id="name" name="name"
-									th:field="*{name}" />
+									th:field="*{name}" 
+									th:disabled="${bodsCfig.boardNo == 1 or bodsCfig.boardNo == 2}" />
 							</div>
 						</div>
 
