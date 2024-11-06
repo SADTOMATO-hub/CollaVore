@@ -99,7 +99,7 @@ public class ProjectTempServiceImpl implements PjTempService{
 		return ProjecttempMapper.projectDwrktempUpdate(projectDworktempVO);
 	}
 	@Override
-	public List<ProjectTempVO> projectwrktemplistInfo(Integer projTempNo) {
+	public List<ProjectWorkTempVO> projectwrktemplistInfo(Integer projTempNo) {
 		return ProjecttempMapper.projectwrktemplistInfo(projTempNo);
 	}
 	
