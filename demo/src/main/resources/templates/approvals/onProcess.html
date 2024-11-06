@@ -304,12 +304,12 @@ button:active {
                     <td>[[${myAppr.drafterName}]]</td>
                     <td>[[${#dates.format(myAppr.regDate, "yyyy년 MM월 dd일")}]]</td>
                     <th:block>
-                        <td><span th:classappend="${myAppr.approvalStatus == 'a1' ? 'badge rounded-pill bg-primary' : 
+                        <td><span style="text-align: center; cursor: default;" th:classappend="${myAppr.approvalStatus == 'a1' ? 'badge rounded-pill bg-primary' : 
                                                   myAppr.approvalStatus == 'a2' ? 'badge rounded-pill bg-info' : 
                                                   myAppr.approvalStatus == 'a3' ? 'badge rounded-pill bg-success' : 
                                                   myAppr.approvalStatus == 'a4' ? 'badge rounded-pill bg-danger' : ''}"
-                                    style="cursor: default;">
-                            <span th:text="${myAppr.approvalStatus == 'a1' ? '대기' : 
+                                    >
+                            <span  th:text="${myAppr.approvalStatus == 'a1' ? '대기' : 
                                            myAppr.approvalStatus == 'a2' ? '진행 중' : 
                                            myAppr.approvalStatus == 'a3' ? '승인' : 
                                            myAppr.approvalStatus == 'a4' ? '반려' : ''}"></span>
