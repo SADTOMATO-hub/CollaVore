@@ -45,9 +45,9 @@ function addJob() {
         div.remove();
     };
 
-    input.onblur = function() {
+    input.addEventListener('blur', function() {
         const newName = input.value.trim();
-
+        
         // 기존 직무 이름과 중복 검사
         if (newName !== '' && !existingJobs.some(job => job.jobName === newName)) {
             existingJobs.push({ jobName: newName }); // 중복되지 않으면 추가
@@ -58,15 +58,17 @@ function addJob() {
         } else if (newName === '') {
             div.remove(); // 값이 없으면 입력 취소
         } else {
+            // 중복된 이름일 경우 알림 메시지 출력 후 다시 focus 유지
             alert("중복된 직무 이름은 사용할 수 없습니다.");
-            input.focus(); // 중복된 경우 입력 상태 유지
+            setTimeout(() => input.focus(), 0); // 경고 후 다시 focus
         }
-    };
+    });
 
     div.appendChild(button);
     container.appendChild(div);
     input.focus();
 }
+
 
 // 직무 저장 함수
 function saveJobs() {
@@ -122,7 +124,6 @@ function saveJobs() {
     }
 }
 
-// 직무 수정 함수 (span을 클릭했을 때 실행)
 // 직무 수정 함수 (span을 클릭했을 때 실행)
 function editJob(span, jobNo = null) {
     const jobName = span.textContent;
