@@ -253,6 +253,12 @@ public class SchsServiceImpl implements SchsService {
 	public List<SchsVO> trashList() {
 		return schsMapper.selectToTrash();
 	}
+	
+	// 프로젝트 리스트 조회
+	@Override
+	public List<SchsVO> projList(int empNo) {
+		return schsMapper.selectprojList(empNo);
+	}
 
 	// 캘린더를 휴지통으로 이동 (isDelete = 'h1')
 	@Override

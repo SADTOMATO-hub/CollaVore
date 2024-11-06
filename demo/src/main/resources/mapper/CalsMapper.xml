@@ -2,40 +2,47 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.collavore.app.cals.mapper.SchsMapper">
 
+	
 	<select id="selectSchsAll" resultType="SchsVO">
 		SELECT
-		schs.sch_no,
-		schs.title,
-		schs.start_date,
-		schs.end_date,
-		schs.cal_no,
-		cals.name AS cal_name,
-		cals.cal_type,
-		schs.is_alarm,
-		cals.color,
-		LISTAGG(calshares.emp_no, ',') WITHIN GROUP (ORDER BY
-		calshares.emp_no) AS empNos,   <!-- 사원 번호 집계 -->
-		LISTAGG(employees.name, ',') WITHIN GROUP (ORDER BY employees.name) AS
-		empNames,    <!-- 사원 이름 집계 -->
-		LISTAGG(departments.dept_no, ',') WITHIN GROUP (ORDER BY
-		departments.dept_no) AS deptNos,  <!-- 부서 번호 집계 -->
-		LISTAGG(departments.name, ',') WITHIN GROUP (ORDER BY
-		departments.name) AS deptNames  <!-- 부서 이름 집계 -->
+			schs.sch_no AS schNo,
+	        schs.title,
+	        schs.start_date AS startDate,
+	        schs.end_date AS endDate,
+	        schs.cal_no AS calNo,
+	        cals.name AS calName,
+	        cals.cal_type AS calType,
+	        schs.is_alarm AS isAlarm,
+	        cals.color,
+	        LISTAGG(calshares.emp_no, ',') WITHIN GROUP (ORDER BY calshares.emp_no) AS empNos, 
+	        LISTAGG(employees.name, ',') WITHIN GROUP (ORDER BY employees.name) AS empNames,  
+	        LISTAGG(departments.dept_no, ',') WITHIN GROUP (ORDER BY departments.dept_no) AS deptNos,
+	        LISTAGG(departments.name, ',') WITHIN GROUP (ORDER BY departments.name) AS deptNames,
+            'N' AS isProj 
 		FROM schs
-		JOIN cals ON schs.cal_no = cals.cal_no AND cals.is_delete =
-		'h2'
-		LEFT JOIN calshares ON schs.cal_no = calshares.cal_no
-		LEFT JOIN
-		employees ON calshares.emp_no = employees.emp_no
-		LEFT JOIN departments
-		ON employees.dept_no = departments.dept_no
+			JOIN cals ON schs.cal_no = cals.cal_no AND cals.is_delete = 'h2'
+			LEFT JOIN calshares ON schs.cal_no = calshares.cal_no
+			LEFT JOIN employees ON calshares.emp_no = employees.emp_no
+			LEFT JOIN departments ON employees.dept_no = departments.dept_no
 		WHERE schs.cal_no IN (SELECT cal_no FROM calshares WHERE emp_no = #{empNo})
-		GROUP BY
-		schs.sch_no,
-		schs.title, schs.start_date, schs.end_date, schs.cal_no, cals.name,
-		cals.cal_type, schs.is_alarm, cals.color
-		ORDER BY
-		schs.sch_no
+		GROUP BY schs.sch_no, schs.title, schs.start_date, schs.end_date, schs.cal_no, cals.name, cals.cal_type, schs.is_alarm, cals.color
+        UNION ALL
+        SELECT pdw.pdw_no AS schNo
+            , pdw.name AS title
+            , pdw.reg_date AS startDate
+            , CASE WHEN pdw.comp_date IS NULL THEN sysdate ELSE pdw.comp_date END AS endDate
+            , (SELECT proj_no FROM projwrks WHERE pw_no = pdw.pw_no) AS calNo
+            , (SELECT name FROM proj WHERE proj_no = (SELECT proj_no FROM projwrks WHERE pw_no = pdw.pw_no)) as calName
+            , 'g3' AS calType
+            , 'f2' AS isAlarm
+            , 'green' AS color
+            , TO_CHAR(pdw.mgr_no) AS empNos
+            , (SELECT name FROM employees WHERE emp_no = pdw.mgr_no) AS empNames
+            , TO_CHAR((SELECT dept_no FROM employees WHERE emp_no = pdw.mgr_no)) AS deptNos
+            , (SELECT name FROM departments WHERE dept_no = (SELECT dept_no FROM employees WHERE emp_no = pdw.mgr_no)) AS deptNames
+            , 'Y' AS isProj
+        FROM projdwrks pdw
+        WHERE pdw.mgr_no = #{empNo}
 	</select>
 	<!--풀캘린더에서 드롭으로 날짜 시간만 변경하기 -->
 	<update id="updateEventTime" parameterType="SchsVO">
@@ -390,9 +397,18 @@
 		WHERE
 		is_delete = 'h1'
 	</select>
-
-
-
+	
+	<select id="selectprojList" parameterType="int" resultType="CalsVO">
+	    SELECT proj_no AS calNo
+	        , name
+	        , 'g3' AS calType
+	        , start_date AS regDate
+	        , 'h1' AS isDelete
+	        , NULL AS deleteDate
+	        , 'green' AS color
+	    FROM proj
+	    WHERE proj_no IN ( SELECT DISTINCT proj_no FROM projwrks WHERE pw_no IN (SELECT pw_no FROM projdwrks WHERE mgr_no = #{empNo}))
+	</select>
 
 	<!-- 캘린더 완전 삭제1 -->
 	<delete id="permanentlyDeleteCal" parameterType="int">

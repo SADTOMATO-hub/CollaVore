@@ -87,7 +87,10 @@ public interface SchsMapper {
 	// 캘린더삭제
 	// 휴지통 리스트
 	public List<SchsVO> selectToTrash();
-
+	
+	// 프로젝트 리스트
+	public List<SchsVO> selectprojList(int empNo);
+	
 	public int updateCalToTrash(int calNo); // 캘린더를 휴지통으로 이동
 
 	public int restoreCalFromTrash(int calNo); // 캘린더 복원 (isDelete를 'h2'로 업데이트)
