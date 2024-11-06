@@ -44,6 +44,7 @@ import com.collavore.app.project.service.ProjectVO;
 import com.collavore.app.service.HomeService;
 import com.collavore.app.service.HomeVO;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
     
@@ -302,7 +303,7 @@ public class ProjectController {
 
 	// 프로젝트 리스트 출력
 	@GetMapping("project/projectworklist")
-	public String projectworkList(Model model) {
+	public String projectworkList(Model model, HttpServletRequest request) {
 		List<ProjectVO> list = pjService.projecttreeList();
 
 		List<ProjectVO> departments = pjService.departmentsList();
@@ -311,6 +312,13 @@ public class ProjectController {
 		model.addAttribute("projects", list);
 		model.addAttribute("jobs", jobs);
 		model.addAttribute("dept", departments);
+	    if ("XMLHttpRequest".equals(request.getHeader("X-Requested-With"))) {
+	        String fragment = request.getParameter("fragment");
+	        if ("reload".equals(fragment)) {
+	            return "project/projectWorkList :: reload";
+	        }
+	    }
+
 		return "project/projectWorkList";
 	}
 
@@ -434,7 +442,7 @@ public class ProjectController {
 	    
 	    ProjectVO projectManager = pjService.projectdwrkInfo(pdwNo);
 	    List<ProjectVO> selectmgrs = Collections.singletonList(projectManager);
-	    System.err.println(projectComments);
+	    //System.err.println(projectComments);
 	    
 	    // 결과를 하나의 Map으로 결합하여 반환
 	    Map<String, Object> response = new HashMap<>();
@@ -467,7 +475,7 @@ public class ProjectController {
 	@GetMapping("project/projectmgrlist/{jobNo}")
 	@ResponseBody
 	public List<ProjectVO> projectmgrInfo(@PathVariable int jobNo) {
-		 System.err.println(jobNo);
+		 //System.err.println(jobNo);
 		return pjService.projectMgrListInfo(jobNo);
 	}
 
