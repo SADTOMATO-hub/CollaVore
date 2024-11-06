@@ -457,51 +457,61 @@ function openModal(deptNo) {
 	const modal = document.getElementById("deptModal");
 	const deptNoSpan = document.getElementById("deptNo");
 
+	// 부서 번호 업데이트
 	deptNoSpan.textContent = deptNo;
+	
+	// 이전 모달 데이터를 초기화
+	const managerInfoItems = document.getElementById("managerInfoItems");
+	managerInfoItems.innerHTML = "";
+
+	const employeeListItems = document.getElementById("employeeListItems");
+	employeeListItems.innerHTML = "";
+
+	// 모달 표시
 	modal.style.display = "block";
+
+	// 부서에 속한 사원 목록 가져오기
 	findDeptEmp(deptNo);
 }
 
 // 부서에 속한 사원 목록을 가져와 모달에 표시
-function findDeptEmp(deptNo){
+function findDeptEmp(deptNo) {
 	fetch(`/employees/byDept/${deptNo}`)
 		.then(response => response.json())
 		.then(data => {
-			let mgrInfo = data.deptMgrInfo;
+			const mgrInfo = data.deptMgrInfo;
 			const managerInfoItems = document.getElementById("managerInfoItems");
-			managerInfoItems.innerHTML = "";
 
-			if (mgrInfo.empName != null) {
+			// 부서장 정보 표시
+			if (mgrInfo.empName) {
 				const li = document.createElement("li");
-				li.innerHTML = `
-			        ${mgrInfo.empName} (${mgrInfo.jobName} - ${mgrInfo.posiName})
-			    `;
+				li.innerHTML = `${mgrInfo.empName} (${mgrInfo.jobName} - ${mgrInfo.posiName})`;
 				managerInfoItems.appendChild(li);
 			} else {
 				const li = document.createElement("li");
-				li.innerHTML = "등록된 부서장이 없습니다"; // No registered department manager
+				li.textContent = "등록된 부서장이 없습니다"; // No registered department manager
 				managerInfoItems.appendChild(li);
 			}
 
-			let employees = data.deptEmpList;
-			if (employees.length > 0 && employees[0].empName != null) {
-				const employeeListItems = document.getElementById("employeeListItems");
-				employeeListItems.innerHTML = "";
+			// 부서 사원 목록 표시
+			const employees = data.deptEmpList;
+			const employeeListItems = document.getElementById("employeeListItems");
+			employeeListItems.innerHTML = ""; // 초기화
 
+			if (employees.length > 0 && employees[0].empName) {
 				employees.forEach(employee => {
 					const li = document.createElement("li");
 					li.innerHTML = `
-				        <input type="checkbox" name="emp" value="${employee.empNo}" onclick="selectOnlyThis(this)">
-				        ${employee.empName} (${employee.jobName} - ${employee.posiName})
-				    `;
+						<input type="checkbox" name="emp" value="${employee.empNo}" onclick="selectOnlyThis(this)">
+						${employee.empName} (${employee.jobName} - ${employee.posiName})
+					`;
 					employeeListItems.appendChild(li);
 				});
 			} else {
 				const li = document.createElement("li");
-				li.innerHTML = "등록된 부서원이 없습니다"; // No registered department manager
+				li.textContent = "등록된 부서원이 없습니다"; // No registered employees
 				employeeListItems.appendChild(li);
 			}
-
 		})
 		.catch(error => console.error("Error fetching employees:", error));
 }
