@@ -70,7 +70,7 @@ function createDeptNode(dept) {
             ${dept.mgrName ? `
         	<div class="mgr-info" style="cursor:pointer;">
 	            <div class="mgr-image">
-	                <img class="profile-image" src="${dept.mgrImg ? `/imgs/${dept.mgrImg}` : '/assets/images/users/default.png'}" alt="부서장 이미지" width="40px">
+	                <img class="profile-image" src="${dept.mgrImg ? `/upload/${dept.mgrImg}` : '/assets/images/users/default.png'}" alt="부서장 이미지" width="40px">
 	            </div>
 	            <div class="mgr-basic">
 	                <div class="mgr-name">${dept.mgrName}</div>
@@ -149,7 +149,7 @@ async function toggleEmployees(deptNo, deptDiv) {
 		                <div class="mgr-info" style="cursor:pointer;">
 		                    <input type="hidden" name="empNo" value="${emp.empNo}">
 		                    <div class="mgr-image">
-		                        <img class="profile-image" src="${emp.img ? `/imgs/${emp.img}` : '/assets/images/users/default.png'}" alt="소속사원 이미지" width="40px">
+		                        <img class="profile-image" src="${emp.img ? `/upload/${emp.img}` : '/assets/images/users/default.png'}" alt="소속사원 이미지" width="40px">
 		                    </div>
 		                    <div class="mgr-basic">
 		                        <div class="mgr-name">${emp.empName}</div>
