@@ -9,7 +9,7 @@
 		<version>3.2.9</version>
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.yedam</groupId>
+	<groupId>com.collavore.app</groupId>
 	<artifactId>app</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>boot_board</name>
