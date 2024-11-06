@@ -1167,6 +1167,7 @@ document.addEventListener('DOMContentLoaded', function() {
 									//location.reload();  // 새로고침하여 변경 사항 반영
 									editCalendarModal.style.display = 'none'; // 모달 닫기
 									loadSharedCalendars();
+									
 
 									trashList();
 								} else {
@@ -1461,6 +1462,7 @@ document.addEventListener('DOMContentLoaded', function() {
 						alert('캘린더가 휴지통으로 이동되었습니다.');
 						document.getElementById('editCalendarModal').style.display = 'none';
 						loadSharedCalendars();
+						calendarApi();
 						trashList();
 						//location.reload();  // 페이지 새로고침하여 변경 반영
 					} else {
@@ -1506,6 +1508,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					alert('캘린더가 복원되었습니다.');
 					document.getElementById('trashCalendarModal').style.display = 'none';
 					loadSharedCalendars();
+					calendarApi();
 					trashList();
 					//location.reload();  //페이지 새로고침
 				} else {
