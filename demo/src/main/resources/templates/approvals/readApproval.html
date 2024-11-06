@@ -188,18 +188,23 @@ button:active {
 								    <th:block th:each="appr, iter : ${approvers}">
 								        <td>
 								            <!-- 상태 표시 -->
+											    <div style="text-align: center;">
 								            <span class="status-image" th:if="${appr.displayStatus == '승인'}">
-								                <img class="approval-status-img" src="/assets/images/approveStatus/approved.png" alt="승인">
-								               	<span>[[${#dates.format(appr.PROC_DATE, 'yyyy-MM-dd HH:mm')}]]</span>
-								            </span>
-								            <span class="status-image" th:if="${appr.displayStatus == '반려'}">
-								                <img class="approval-status-img" src="/assets/images/approveStatus/rejected.png" alt="반려">
-								                <span>[[${#dates.format(appr.PROC_DATE, 'yyyy-MM-dd HH:mm')}]]</span>
-								            </span>
-								            <span class="status-image" th:if="${appr.displayStatus == '결재 대기'}">
-								                <img class="approval-status-img" src="/assets/images/approveStatus/standby.png" alt="결재 대기">
-								            </span>
-								
+											        <img class="approval-status-img" src="/assets/images/approveStatus/approved.png" alt="승인">
+											        <span style="display: block; margin-top: 5px;">[[${#dates.format(appr.PROC_DATE, 'yyyy-MM-dd HH:mm')}]]</span>
+											</span>
+											    </div>
+											    <div style="text-align: center;">
+											<span class="status-image" th:if="${appr.displayStatus == '반려'}">
+											        <img class="approval-status-img" src="/assets/images/approveStatus/rejected.png" alt="반려">
+											        <span style="display: block; margin-top: 5px;">[[${#dates.format(appr.PROC_DATE, 'yyyy-MM-dd HH:mm')}]]</span>
+											</span>
+											    </div>
+											    <div style="text-align: center;">
+											<span class="status-image" th:if="${appr.displayStatus == '결재 대기'}">
+											        <img class="approval-status-img" src="/assets/images/approveStatus/standby.png" alt="결재 대기">
+											</span>
+											    </div>
 								            <!-- 승인 및 반려 버튼 -->
 								            <button type="button"
 								                th:if="${session.userEmpNo == appr.approverEmpNo && appr.buttonEnabled}"
@@ -213,7 +218,6 @@ button:active {
 								                th:text="반려"></button>
 								        </td>
 								    </th:block>
-								
 								    <!-- 빈 td 추가 (4개의 칸을 맞추기 위해) -->
 								    <th:block th:if="${#lists.size(approvers) < 4}">
 								        <td th:each="i : ${#numbers.sequence(#lists.size(approvers) + 1, 4)}"></td>
@@ -267,6 +271,16 @@ $(".approveBtn").on('click', function(event) {
                 } else if (approveOrDenine === 'b3') {
                     $(event.target).parent().html('<img class="approval-status-img" src="/assets/images/approveStatus/rejected.png" alt="반려" />');
                 }
+                
+                // 결재 완료 날짜 출력
+                const formattedDate = new Date().toLocaleString('ko-KR', {
+                    year: 'numeric', month: '2-digit', day: '2-digit',
+                    hour: '2-digit', minute: '2-digit'
+                });
+                $(event.target).parent().html(
+                    `<span style="display: block; margin-top: 5px;">${formattedDate}</span>`
+                );
+                
                 statusSpan.text('');
             } else { //취소
                 return;

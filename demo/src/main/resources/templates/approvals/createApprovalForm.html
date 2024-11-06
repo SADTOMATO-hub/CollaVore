@@ -274,7 +274,7 @@ button:active {
 		<!-- 선택한 option의 seq를 저장하기 위한 태그 -->
 		<input type="hidden" id="seq">
 		<!-- --------------------------------- -->
-		<div class="modal-dialog">
+		<div class="modal-dialog" style="height: 500px;">
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title" id="modalLabel">결재자 선택</h5>
@@ -283,26 +283,31 @@ button:active {
 				</div>
 				<div class="modal-body">
 					<form id="apprForm">
-						<div class="mb-3">
+					  <div class="row">
+					    <div class="col">
+					    <div class="mb-3">
 							<label for="selectDept" class="form-label">부서 선택</label>
 						</div>
 						<div class="mb-3">
-							<select id="selectDept" class="form-select">
+							<select id="selectDept" style="height: 300px;" class="form-select" size="15">
 								<option selected value="" disabled>==부서 선택==</option>
 								<option th:each="deptsInfo : ${depts}"
 									th:value="${deptsInfo.deptNo}">[[${deptsInfo.deptName}]]</option>
 							</select>
 						</div>
-						<div class="mb-3">
+					    </div>
+					  	<div class="col">
+					  		<div class="mb-3">
 							<label for="selectApprovers" class="form-label">결재자 선택</label>
 						</div>
 						<div class="mb-3">
-							<select id="selectApprovers" class="form-select">
+							<select id="selectApprovers" class="form-select" style="height: 300px;" size="15">
 								<option selected value="" disabled>==결재자 선택==</option>
 							</select>
 						</div>
-						<button type="button" class="btn btn-primary" id="modalSubmit">결재자
-							선택</button>
+					  	</div>
+					  </div>
+						<button type="button" class="btn btn-primary" id="modalSubmit">결재자	선택</button>
 					</form>
 				</div>
 			</div>
