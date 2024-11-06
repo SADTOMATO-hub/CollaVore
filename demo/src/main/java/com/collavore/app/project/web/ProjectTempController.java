@@ -96,17 +96,10 @@ public class ProjectTempController {
     public String deleteProject(@PathVariable int projTempNo) {
     	// 프로젝트 상세업무 삭제
     	int ddelete = pjtempService.projectDwrktempdel(projTempNo);
-    	if (ddelete >0){
-    		// 프로젝트 업무 삭제 
 	        int wdelete = pjtempService.projectwrktempdel(projTempNo); 
-	        if(wdelete > 0) {
 	        	//  프로젝트 템플릿 삭제
 	        	pjtempService.projecttempDelete(projTempNo);
 	        	return "삭제 완료";
-        	}
-	        return "삭제 실패";
-    	}
-    	return "삭제 실패";
         
     }
     

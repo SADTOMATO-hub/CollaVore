@@ -41,6 +41,7 @@ import com.collavore.app.project.service.ProjectFilesVO;
 import com.collavore.app.project.service.ProjectFoldersVO;
 import com.collavore.app.project.service.ProjectTempVO;
 import com.collavore.app.project.service.ProjectVO;
+import com.collavore.app.project.service.ProjectWorkTempVO;
 import com.collavore.app.service.HomeService;
 import com.collavore.app.service.HomeVO;
 
@@ -103,8 +104,8 @@ public class ProjectController {
 		pjService.projectfolderinsert(projectVO);
 		if("i2".equals(projectVO.getIsTemplate())) {
 		//템플릿 업무 리스트 출력
-		List<ProjectTempVO> projwrklist = pjtempService.projectwrktemplistInfo(projectVO.getProjTempNo());
-		for (ProjectTempVO user : projwrklist) {
+		List<ProjectWorkTempVO> projwrklist = pjtempService.projectwrktemplistInfo(projectVO.getProjTempNo());
+		for (ProjectWorkTempVO user : projwrklist) {
 			projectVO.setName(user.getName());
 			projectVO.setContent(user.getContent());
 			projectVO.setProjTempNo(user.getProjTempNo());
@@ -132,7 +133,7 @@ public class ProjectController {
 		// pjService.projectwrkinsert(projectVO);
 
 		// pjService.projectdwrkinsert(projectVO);
-		System.err.println(job.getJobName());	
+		//System.err.println(job.getJobName());	
 		map.put("jobName", job.getJobName());
 		map.put("name", prjname);
 		map.put("type", "postAjax");
