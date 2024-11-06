@@ -384,41 +384,36 @@ button:active {
 						</div>
 
 						<div class="col-md-6">
-							<div class="insert-panel" id="insertPanelProjwrks"
-								style="display: none;">
-								<h4>Insert Project</h4>
-								<form id="insertFormProjwrks">
-									<div>
-										<label for="nameProjWrks" class="form-label">업무 이름</label> <input
-											type="text" id="nameProjWrks" name="name"
-											class="form-control" required>
-									</div>
-									<div>
-										<label class="form-label">업무 내용</label> <input type="text"
-											id="contentProjWrks" name="content" class="form-control"
-											required>
-									</div>
-									<div>
-										<label class="form-label">업무 타입</label> <select
-											class="form-select" name="jobNo" id="jobNoProjWrks" required>
-											<option value="0">선택하세요</option>
-											<option th:each="info : ${jobs}" th:value="${info.jobNo}">[[${info.name}]]</option>
-										</select>
-									</div>
-									<div>
-										<label class="form-label" id="wrklabel" style="display: none;">업무
-											담당자</label> <select class="form-select" name="mgrNo"
-											id="mgrNoProjWrks" style="display: none;" required>
-											<option value="0">선택하세요</option>
-											<option th:each="info : ${projmgriist}"
-												th:value="${info.empNo}">[[${info.name}]]</option>
-										</select>
-									</div>
-									<input type="hidden" id="projNo" name="projNo">
-									<div>
-										<button type="submit" class="btn btn-primary">생성</button>
-									</div>
-								</form>
+							<div class="insert-panel" id="insertPanelProjwrks" style="display: none;">
+							    <h4>Insert Project</h4>
+							    <form id="insertFormProjwrks">
+							        <div>
+							            <label for="nameProjWrks" class="form-label">업무 이름</label>
+							            <input type="text" id="nameProjWrks" name="name" class="form-control"   required>
+							        </div>
+							        <div>
+							            <label class="form-label">업무 내용</label>
+							            <input type="text" id="contentProjWrks" name="content" class="form-control" required>
+							        </div>
+							        <div>
+							            <label class="form-label">업무 타입</label>
+							            <select class="form-select" id="jobNoProjWrks" name="jobNo" required>
+							                <option value="0">선택하세요</option>
+							                <option th:each="info : ${jobs}" th:value="${info.jobNo}">[[${info.name}]]</option>
+							            </select>
+							        </div>
+							        <div>
+							            <label class="form-label" id="wrklabel" style="display: none;">업무 담당자</label>
+							            <select class="form-select" id="mgrNoProjWrks" name="mgrNo" style="display: none;" required>
+							                <option value="0">선택하세요</option>
+							                <option th:each="info : ${projmgriist}" th:value="${info.empNo}">[[${info.name}]]</option>
+							            </select>
+							        </div>
+							        <input type="hidden" id="projNo" name="projNo">
+							        <div>
+							            <button type="submit" class="btn btn-primary" id ="insertwrkbtn">생성</button>
+							        </div>
+							    </form>
 							</div>
 							<div class="insert-panel" id="insertPanelProjdwrks"
 								style="display: none;">
@@ -451,7 +446,7 @@ button:active {
 											id="startDate" name="startDate" class="form-control" required>
 									</div>
 									<div>
-										<label class="form-label">업무 종료일</label> <input type="date"
+										<label class="form-label">완료 예정일</label> <input type="date"
 											id="compDate" name="compDate" class="form-control" required>
 									</div>
 									<div>
@@ -836,9 +831,9 @@ button:active {
 		                e.preventDefault(); // 기본 제출 이벤트 방지
 
 		                const formData = $(this).serialize(); // 폼 데이터 직렬화
-
+					
 		                // 디버깅: 폼 데이터 확인
-		                //console.log('폼 데이터:', formData);
+		                console.log('폼 데이터:', formData);
 
 		                $.ajax({
 		                    type: 'POST',
@@ -1869,7 +1864,147 @@ button:active {
 		        });
 	        });
         }
+        function validateInput(input) {
+            // 허용된 문자: 영어, 공백, 언더바
+            const regex = /^[a-zA-Z_ ]*$/;
+
+            // 유효하지 않은 문자가 입력되었을 경우
+            if (!regex.test(input.value)) {
+                alert("영어, 띄어쓰기, 언더바(_)만 입력할 수 있습니다.");
+                // 유효하지 않은 문자는 자동으로 제거
+                input.value = input.value.replace(/[^a-zA-Z_ ]/g, '');
+            }
+
+            // 글자수 제한: 30글자 초과하면 alert 표시하고, 30자 이후 글자 잘라내기
+            if (input.value.length > 30) {
+                alert("프로젝트 이름은 30자를 초과할 수 없습니다.");
+                input.value = input.value.slice(0, 30); // 30자 이상이면 자르기
+            }
+        }
         
+        document.addEventListener("DOMContentLoaded", function() {
+            // 업무 시작일과 완료 예정일 요소
+            const startDateInput = document.getElementById("startDate");
+            const compDateInput = document.getElementById("compDate");
+
+            // 실시간으로 날짜 비교 처리
+            function validateDates() {
+                const startDate = startDateInput.value;
+                const compDate = compDateInput.value;
+
+                if (startDate && compDate) {
+                    if (startDate > compDate) {
+                        // 시작일이 완료 예정일을 초과하면 경고
+                        alert("업무 시작일은 완료 예정일을 넘을 수 없습니다.");
+                        // 완료 예정일을 시작일 이후로 설정하거나 초기화하는 등의 처리
+                        compDateInput.value = ''; // 예시로 완료 예정일을 초기화
+                    }
+                }
+            }
+
+            // 날짜 입력 시 실시간으로 유효성 검사
+            startDateInput.addEventListener("input", validateDates);
+            compDateInput.addEventListener("input", validateDates);
+        });
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            // 첫 번째 업무 이름 입력 요소
+            const nameInputProjWrks = document.getElementById("nameProjWrks");
+            // 두 번째 업무 이름 입력 요소
+            const nameInputProjDwrks = document.getElementById("nameProjDwrks");
+
+            // 실시간으로 문자 길이 검사 (첫 번째 입력란)
+            nameInputProjWrks.addEventListener("input", function() {
+                const maxLength = 30;
+
+                // 입력된 값의 길이가 30자를 초과하면
+                if (nameInputProjWrks.value.length > maxLength) {
+                    // 초과된 글자 제거
+                    nameInputProjWrks.value = nameInputProjWrks.value.slice(0, maxLength);
+
+                    // 경고 메시지 표시
+                    alert("업무 이름은 30자를 초과할 수 없습니다.");
+                }
+            });
+
+            // 실시간으로 문자 길이 검사 (두 번째 입력란)
+            nameInputProjDwrks.addEventListener("input", function() {
+                const maxLength = 30;
+
+                // 입력된 값의 길이가 30자를 초과하면
+                if (nameInputProjDwrks.value.length > maxLength) {
+                    // 초과된 글자 제거
+                    nameInputProjDwrks.value = nameInputProjDwrks.value.slice(0, maxLength);
+
+                    // 경고 메시지 표시
+                    alert("업무 이름은 30자를 초과할 수 없습니다.");
+                }
+            });
+        });
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            // 시작일과 마감일 요소
+            const startDateInput = document.getElementById("editProjStartDate");
+            const endDateInput = document.getElementById("editProjEndDate");
+
+            // 시작일과 마감일 값이 변경될 때마다 검사
+            startDateInput.addEventListener("input", validateDates);
+            endDateInput.addEventListener("input", validateDates);
+
+            function validateDates() {
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+
+                // 시작일이 마감일보다 늦으면 경고 메시지 표시
+                if (startDate && endDate && startDate > endDate) {
+                    alert("시작일은 마감일을 넘을 수 없습니다.");
+                    // 시작일이 마감일을 넘지 않도록 마감일을 시작일로 설정
+                    endDateInput.value = startDateInput.value;
+                }
+            }
+        });
+        //--------------------------------------------------------------------------------------
+  document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("insertFormProjwrks");
+    const submitButton = form.querySelector("button[type='submit']");
+
+    // 버튼 클릭 시 유효성 검사
+    submitButton.addEventListener("click", function(event) {
+        const jobTypeSelect = document.getElementById("jobNoProjWrks");
+        const mgrSelect = document.getElementById("mgrNoProjWrks");
+
+        // 업무 타입이 선택되지 않았을 경우
+        if (jobTypeSelect.value === "0") {
+            alert("업무 타입을 선택해주세요.");
+            event.preventDefault();  // 폼 제출을 막음
+            return;  // 추가적인 코드 실행을 막음
+        }
+
+        // 업무 담당자가 선택되지 않았을 경우
+        if (mgrSelect.value === "0") {
+            alert("업무 담당자를 선택해주세요.");
+            event.preventDefault();  // 폼 제출을 막음
+            return;  // 추가적인 코드 실행을 막음
+        }
+
+       
+    });
+});
+  document.addEventListener("DOMContentLoaded", function() {
+	    const form = document.getElementById("insertFormProjdwrks");
+	    const submitButton = form.querySelector("button[type='submit']");
+
+	    submitButton.addEventListener("click", function(event) {
+	        const mgrSelect = document.getElementById("mgrNoProjdWrks");
+
+	        // 업무 담당자가 선택되지 않은 경우
+	        if (mgrSelect.value === "0") {
+	            alert("업무 담당자를 선택해주세요.");
+	            event.preventDefault();  // 폼 제출을 막음
+	            return;  // 추가적인 코드 실행을 막음
+	        }
+	    });
+	});       
         
     </script>
 
