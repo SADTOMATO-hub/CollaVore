@@ -353,8 +353,13 @@ getGitCommit();
 
 			  // 커밋 메시지 td 생성
 			  const messageCell = document.createElement('td');
-			  messageCell.textContent = commit.commit.message;
-			  row.appendChild(messageCell);
+				const message = commit.commit.message;
+				
+				// 글자수가 50자 이상일 때 뒤에 '...' 붙이기
+				messageCell.textContent = message.length > 80 ? message.slice(0, 80) + '...' : message;
+				
+				row.appendChild(messageCell);
+
 			  
 			  // 날짜 문자열을 Date 객체로 변환
 			  const date = new Date(commit.commit.committer.date);
