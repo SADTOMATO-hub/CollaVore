@@ -36,7 +36,7 @@
 		WHERE
 			e.dept_no = #{deptNo}
 		<![CDATA[
-        	AND e.emp_no <> (SELECT mgr_no FROM departments WHERE dept_no = #{deptNo})
+        	AND e.emp_no <> NVL((SELECT mgr_no FROM departments WHERE dept_no = #{deptNo}), 0)
 		]]>
 	</select>
 
