@@ -812,7 +812,8 @@ function selectDirectory() {
       .then(data => console.log(data))
       .catch(error => console.error('Error:', error));
     alert('프로젝트가 로컬에 생성되었습니다!');
-    $('#git').hide(); 
+	 // 모달을 닫을 때
+	    $('#git').modal('hide');
   }
 function validateInput(input) {
     const regex = /^[a-zA-Z0-9_ ]*$/; // 영어, 숫자, 언더바, 공백 허용하는 정규 표현식
