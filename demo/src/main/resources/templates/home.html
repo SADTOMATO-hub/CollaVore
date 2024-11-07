@@ -91,7 +91,7 @@
 								style="cursor: pointer;">
 								<div class="p-2">
 									<img
-										th:src="${notice.profileImg != null ? '/imgs/' + notice.profileImg : '/assets/images/users/default.png'}"
+										th:src="${notice.profileImg != null ? '/upload/' + notice.profileImg : '/assets/images/users/default.png'}"
 										alt="user" width="50" class="rounded-circle" />
 								</div>
 								<div class="comment-text w-100">
@@ -131,7 +131,7 @@
 										class="todo-desc fw-normal" th:text="${todo.todoContent}">내용
 											없음</span> <!-- 중요도 표시 --> <span class="badge rounded-pill float-end"
 										th:switch="${todo.todoImportance}"> <span
-											th:case="'l1'" class="btn btn-success rounded-pill"
+											th:case="'l1'" class="btn btn-success text-white rounded-pill"
 											style="cursor: default;">낮음</span> <span th:case="'l2'"
 											class="btn btn-warning rounded-pill" style="cursor: default;">중간</span>
 											<span th:case="'l3'" class="btn btn-danger rounded-pill"

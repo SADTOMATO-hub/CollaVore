@@ -613,4 +613,38 @@ $(document).on('submit', '#editTemplateForm', function(event) {
         }
     });
 });
+// 선택된 값이 "선택하세요"일 때, 경고 메시지를 표시할 수도 있습니다.
+document.getElementById("inputJobType").addEventListener("change", function() {
+    const selectedValue = this.value;
+    if (selectedValue === "0") {
+        // "선택하세요"를 선택하면 경고 메시지 표시
+        console.log("업무 타입을 선택하세요.");
+    }
+});
+// 폼 제출 시 유효성 검사
+document.querySelector("form").addEventListener("submit", function(event) {
+    const jobTypeSelect = document.getElementById("inputJobType");
+    const selectedValue = jobTypeSelect.value;
+
+    // "선택하세요"가 선택되었으면 폼 제출을 막고 경고 메시지 표시
+    if (selectedValue === "0") {
+        alert("업무 타입을 선택해주세요.");
+        event.preventDefault();  // 폼 제출을 막음
+    }
+});
+
+// 버튼 클릭 시 유효성 검사
+const submitButton = document.querySelector("form button[type='submit']");
+if (submitButton) {
+    submitButton.addEventListener("click", function(event) {
+        const jobTypeSelect = document.getElementById("inputJobType");
+        const selectedValue = jobTypeSelect.value;
+
+        // "선택하세요"가 선택되었으면 폼 제출을 막고 경고 메시지 표시
+        if (selectedValue === "0") {
+            alert("업무 타입을 선택해주세요.");
+            event.preventDefault();  // 폼 제출을 막음
+        }
+    });
+}
 </script>

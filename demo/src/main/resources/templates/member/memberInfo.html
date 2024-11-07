@@ -377,7 +377,7 @@ td {
 				<div class="profile-section">
 					<div class="profile-photo">
 						<img id="imgPreview"
-							th:src="${member.img != null ? '/imgs/' + member.img : '/assets/images/users/default.png'}"
+							th:src="${member.img != null ? '/upload/' + member.img : '/assets/images/users/default.png'}"
 							alt="사용자 이미지">
 					</div>
 					<div class="profile-details">
@@ -470,7 +470,7 @@ td {
 							<!-- 현재 프로필 이미지 또는 기본 이미지 표시 -->
 							<div class="modal-profile-photo">
 								<img id="profilePreview"
-										th:src="${member.img != null ? '/imgs/' + member.img : '/assets/images/users/default.png'}"
+										th:src="${member.img != null ? '/upload/' + member.img : '/assets/images/users/default.png'}"
 										alt="이미지 미리보기" width="200" height="200" style="display: block;">
 							</div>
 

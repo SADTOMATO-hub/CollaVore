@@ -36,7 +36,7 @@
 		WHERE
 			e.dept_no = #{deptNo}
 		<![CDATA[
-        	AND e.emp_no <> (SELECT mgr_no FROM departments WHERE dept_no = #{deptNo})
+        	AND e.emp_no <> NVL((SELECT mgr_no FROM departments WHERE dept_no = #{deptNo}), 0)
 		]]>
 	</select>
 
@@ -108,7 +108,7 @@
 		d.name AS deptName,
 		e.name AS mgrName,
 		e.emp_no AS mgrNo,
-		e.img,
+		e.img AS mgrImg,
 		(SELECT name FROM positions WHERE posi_no = e.posi_no) AS posiName,
 		d.parent_dept_no,
 		LEVEL

@@ -120,7 +120,7 @@ public class BodsController {
 		boardInfo.setSubjectList(Arrays.asList(boardInfo.getSubject().split(",")));
 		model.addAttribute("boardInfo", boardInfo);
 
-		return "/board/bodsInsert";
+		return "board/bodsInsert";
 	}
 
 	// 등록 - 처리 : URI - boardInsert / PARAMETER - BoardVO(QueryString)
@@ -167,7 +167,7 @@ public class BodsController {
 	// 댓글등록 - 페이지 : URI - boardInsert / RETURN - board/boardInsert
 	@GetMapping("/board/bodsComts")
 	public String bodsComtsInsertForm(BodsComtsVO bodsComtsVO) {
-		return "/board/bodsComts";
+		return "board/bodsComts";
 
 	}
 
@@ -280,7 +280,7 @@ public class BodsController {
 		// 직위 조회
 		List<BodsCfigVO> posiList = bodsService.selPosiList();
 		model.addAttribute("posiList", posiList);
-		return "/board/bodsCfigUpdate";
+		return "board/bodsCfigUpdate";
 	}
 
 	// 수정 - 처리 : URI - boardUpdate / PARAMETER - BoardVO(JSON)
