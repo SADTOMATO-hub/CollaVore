@@ -600,10 +600,11 @@ $(document).on('submit', '#editTemplateForm', function(event) {
                 row.find('td:nth-child(2)').text(updatedData.name);
                 row.find('td:nth-child(3)').text(updatedData.content);
                 row.find('td:nth-child(5)').text(response.jobName);
-                row.find('td:nth-child(6)').text(currentDate); // 등록일 업데이트
+                row.find('td:nth-child(6)').text(getCurrentDate); // 등록일 업데이트
                 
                 alert('프로젝트가 성공적으로 수정되었습니다!');
                 $('#editTemplateModal').modal('hide');
+                $('#editTemplateModal')[0].reset();
             } else {
                 alert('수정에 실패했습니다: ' + response.message);
             }

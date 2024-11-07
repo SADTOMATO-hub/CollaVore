@@ -520,6 +520,7 @@ $(document).ready(function() {
             success: function(response) {
                 const newProject = response.data; 
                 const jobName = response.jobName; 
+                const prjName =  response.prjrName;
                 function formatDate(dateString) {
                     const date = new Date(dateString);
                     const year = date.getFullYear();
@@ -530,9 +531,9 @@ $(document).ready(function() {
                 
                 let statusClass;
                 let statusText;
-                //console.log(newProject);
-                //console.log(response);
-                
+                console.log(newProject);
+                console.log(response);
+                console.log(prjName);
                 switch (newProject.status) {
                     case 'j1':
                         statusClass = 'bg-secondary';
@@ -550,7 +551,7 @@ $(document).ready(function() {
                 $('table tbody').append(`
                     <tr data-no="${newProject.projNo}">
                         <td scope="row">${newProject.projNo}</td>
-                        <td>${name.name}</td>
+                        <td>${newProject.name}</td>
                         <td>
                         <span class="badge rounded-pill ${statusClass}">${statusText}</span>
                     	</td>

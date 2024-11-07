@@ -134,8 +134,9 @@ public class ProjectController {
 
 		// pjService.projectdwrkinsert(projectVO);
 		//System.err.println(job.getJobName());	
+		//System.err.println(prjname);
 		map.put("jobName", job.getJobName());
-		map.put("name", prjname);
+		map.put("prjrName", prjname);
 		map.put("type", "postAjax");
 		map.put("data", projectVO);
 		return map;
