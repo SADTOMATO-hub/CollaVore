@@ -3,8 +3,8 @@
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
 
-		<link rel="stylesheet" href="/dist/css/style.tree.css" />
-		<link rel="stylesheet" href="/dist/css/style.min.tree.css" />
+	<link rel="stylesheet" href="/dist/css/style.tree.css" />
+	<link rel="stylesheet" href="/dist/css/style.min.tree.css" />
 	<style>
 .no-border-button {
 	border: none;
@@ -75,7 +75,6 @@
 	position: relative;
 	top: -12px;
 }
-
 
 /* 검색 기능을 위한 컨테이너 */
 .search-container {
@@ -270,27 +269,89 @@ button:active {
 .none {
 	display: none;
 }
+
 .tree {
-    list-style-type: none;
-    padding-left: 20px;
+	list-style-type: none;
+	padding-left: 20px;
 }
 
 .subtree {
-    display: none; /* 기본적으로 서브트리는 숨김 */
+	display: none; /* 기본적으로 서브트리는 숨김 */
 }
 
 .node {
-    cursor: pointer;
-    padding: 5px;
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    margin: 2px;
+	cursor: pointer;
+	padding: 5px;
+	background-color: #f0f0f0;
+	border: 1px solid #ccc;
+	margin: 2px;
 }
 
 .node:hover {
-    background-color: #e0e0e0;
+	background-color: #e0e0e0;
+}
+/* 검색된 노드에 대한 스타일 */
+.jstree-search {
+	color: #212121; /* 어두운 검정색 텍스트 */
+	font-weight: 600; /* 텍스트를 더 굵게 */
+	letter-spacing: 0.5px; /* 문자 간격을 조금 넓혀서 가독성 향상 */
+	text-transform: uppercase; /* 텍스트를 대문자로 변환 */
+	font-size: 14px; /* 글자 크기 설정 */
+	transition: color 0.3s ease; /* 글자 색 변화 시 부드럽게 전환 */
 }
 
+/* 호버 효과: 하이라이트된 텍스트에 마우스를 올리면 색상 변경 */
+.jstree-search:hover {
+	color: #000000; /* 마우스를 올리면 텍스트 색상 좀 더 강조 */
+	transform: scale(1.1); /* 마우스를 올렸을 때 글자가 살짝 커지는 효과 */
+}
+
+.jstree-default .jstree-search {
+	font-style: italic;
+	color: #212121;
+	font-weight: bold;
+}
+/* 검색 입력 박스 디자인 */
+#search-container {
+	margin-bottom: 20px;
+	display: flex;
+	align-items: center;
+}
+
+#search-input {
+	width: 100%; /* 너비를 100%로 설정하여 부모 영역에 맞게 확장 */
+	max-width: 300px; /* 최대 너비 설정 */
+	padding: 7px 15px; /* 패딩을 설정하여 입력 영역을 넓힘 */
+	border: 2px solid #ddd; /* 연한 회색 테두리 */
+	border-radius: 30px; /* 둥근 모서리 */
+	font-size: 14px; /* 글자 크기 */
+	color: #333; /* 어두운 글자 색 */
+	outline: none; /* 포커스 시 기본 outline 제거 */
+	transition: border-color 0.3s ease, box-shadow 0.3s ease;
+	/* 부드러운 애니메이션 */
+}
+
+#search-input:focus {
+	border-color: #0066cc; /* 포커스 시 테두리 색상 */
+	box-shadow: 0 0 8px rgba(0, 102, 204, 0.3); /* 포커스 시 그림자 효과 */
+}
+
+/* 검색 아이콘 스타일 */
+#search-icon {
+	top: 50%;
+	font-size: 22px; /* 아이콘 크기 키우기 */
+	margin-right: 10px; /* 오른쪽 마진 추가 */
+	pointer-events: none; /* 클릭 이벤트를 받지 않도록 */
+	color: #666; /* 아이콘 색상 */
+}
+/* 검색 컨테이너가 화면의 반만 차지하도록 설정 */
+#search-container {
+	width: 50%; /* 화면 너비의 50%만 차지 */
+	max-width: 600px; /* 최대 너비를 600px로 제한 */
+	display: flex;
+	align-items: center;
+	position: relative; /* 아이콘을 절대 위치로 배치할 때 필요 */
+}
 </style>
 	<div class="body-page-wrapper">
 		<div class="purple-background-container">
@@ -304,10 +365,15 @@ button:active {
 				</div>
 			</div>
 			<div class="card_memberList">
+				<div id="search-container">
+					<i class="fas fa-search" id="search-icon"></i> <input type="text"
+						id="search-input" placeholder="업무 제목을 입력해주세요." />
+
+				</div>
 				<div class="container-fluid" th:data-current-table="${table}"
 					id="fluidDiv">
 					<div class="row">
-						<div id="jstree" class="col-md-6">
+						<div id="jstree" class="col-md-6" th:fragment="reload">
 							<ul>
 								<th:block th:each="project : ${projects}"
 									th:if="${project.parentNo == null}">
@@ -318,41 +384,36 @@ button:active {
 						</div>
 
 						<div class="col-md-6">
-							<div class="insert-panel" id="insertPanelProjwrks"
-								style="display: none;">
-								<h4>Insert Project</h4>
-								<form id="insertFormProjwrks">
-									<div>
-										<label for="nameProjWrks" class="form-label">업무 이름</label> <input
-											type="text" id="nameProjWrks" name="name"
-											class="form-control" required>
-									</div>
-									<div>
-										<label class="form-label">업무 내용</label> <input type="text"
-											id="contentProjWrks" name="content" class="form-control"
-											required>
-									</div>
-									<div>
-										<label class="form-label">업무 타입</label> <select
-											class="form-select" name="jobNo" id="jobNoProjWrks" required>
-											<option value="0">선택하세요</option>
-											<option th:each="info : ${jobs}" th:value="${info.jobNo}">[[${info.name}]]</option>
-										</select>
-									</div>
-									<div>
-										<label class="form-label" id="wrklabel" style="display: none;">업무
-											담당자</label> <select class="form-select" name="mgrNo"
-											id="mgrNoProjWrks" style="display: none;" required>
-											<option value="0">선택하세요</option>
-											<option th:each="info : ${projmgriist}"
-												th:value="${info.empNo}">[[${info.name}]]</option>
-										</select>
-									</div>
-									<input type="hidden" id="projNo" name="projNo">
-									<div>
-										<button type="submit" class="btn btn-primary">생성</button>
-									</div>
-								</form>
+							<div class="insert-panel" id="insertPanelProjwrks" style="display: none;">
+							    <h4>Insert Project</h4>
+							    <form id="insertFormProjwrks">
+							        <div>
+							            <label for="nameProjWrks" class="form-label">업무 이름</label>
+							            <input type="text" id="nameProjWrks" name="name" class="form-control"   required>
+							        </div>
+							        <div>
+							            <label class="form-label">업무 내용</label>
+							            <input type="text" id="contentProjWrks" name="content" class="form-control" required>
+							        </div>
+							        <div>
+							            <label class="form-label">업무 타입</label>
+							            <select class="form-select" id="jobNoProjWrks" name="jobNo" required>
+							                <option value="0">선택하세요</option>
+							                <option th:each="info : ${jobs}" th:value="${info.jobNo}">[[${info.name}]]</option>
+							            </select>
+							        </div>
+							        <div>
+							            <label class="form-label" id="wrklabel" style="display: none;">업무 담당자</label>
+							            <select class="form-select" id="mgrNoProjWrks" name="mgrNo" style="display: none;" required>
+							                <option value="0">선택하세요</option>
+							                <option th:each="info : ${projmgriist}" th:value="${info.empNo}">[[${info.name}]]</option>
+							            </select>
+							        </div>
+							        <input type="hidden" id="projNo" name="projNo">
+							        <div>
+							            <button type="submit" class="btn btn-primary" id ="insertwrkbtn">생성</button>
+							        </div>
+							    </form>
 							</div>
 							<div class="insert-panel" id="insertPanelProjdwrks"
 								style="display: none;">
@@ -385,7 +446,7 @@ button:active {
 											id="startDate" name="startDate" class="form-control" required>
 									</div>
 									<div>
-										<label class="form-label">업무 종료일</label> <input type="date"
+										<label class="form-label">완료 예정일</label> <input type="date"
 											id="compDate" name="compDate" class="form-control" required>
 									</div>
 									<div>
@@ -511,20 +572,15 @@ button:active {
 								<form id="editProjectForm">
 									<div>
 										<label for="nameProjDwrks" class="form-label">프로젝트 이름</label>
-										<input
-									        type="text"
-									        class="form-control"
-									        name="name"
-									        id="editProjName"
-									        required
-									        oninput="validateInput(this)"
-									        placeholder="영어만 입력해주세요."
-									    >
+										<input type="text" class="form-control" name="name"
+											id="editProjName" required oninput="validateInput(this)"
+											placeholder="영어만 입력해주세요.">
 									</div>
 									<div>
-										<label class="form-label">프로젝트 내용</label> 
-										<input type="text"id="editProjContent" name="content" class="form-control" required>
-										
+										<label class="form-label">프로젝트 내용</label> <input type="text"
+											id="editProjContent" name="content" class="form-control"
+											required>
+
 									</div>
 									<div>
 
@@ -582,7 +638,7 @@ button:active {
 											th:if="${isStatus == 'k2'}">진행중</span> <span
 											class="badge rounded-pill bg-success"
 											th:if="${isStatus == 'k3'}">완 료</span>
-									
+
 										<!--chat Row -->
 										<ul class="chat-list" id="chat-list">
 											<!--chat Row -->
@@ -730,8 +786,6 @@ button:active {
 	</div>
 
 	<!-- Include jQuery library -->
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
 	<!-- Include jsTree -->
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
@@ -749,74 +803,69 @@ button:active {
 
         return `${year}-${month}-${day}`;
     }
-    
-        $(document).ready(function() {
-            $('#jstree').jstree(); 
+		    
+		    $(document).ready(function() {
+		        // jsTree 초기화 및 검색 플러그인 활성화
+		        
+		        $('#jstree').jstree({
+		            'plugins': ['search']  // search 플러그인 활성화
+		        });
+		        // 'no-border-button' 클릭 시 자식 노드 토글
+		        $('#jstree').on('click', '.no-border-button', function(e) {
+		            e.stopPropagation();
+		            $(this).siblings('ul').toggle(); 
+		        });
 
-            $('#jstree').on('click', '.no-border-button', function(e) {
-                e.stopPropagation(); 
-                $(this).siblings('ul').toggle(); 
-            });
+		        $(document).ready(function() {
+		            // jsTree 초기화
+		            $('#jstree').jstree();
 
-            $(document).ready(function() {
-                $('#insertFormProjwrks').on('submit', function(e) {
-                    e.preventDefault(); // 기본 제출 이벤트 방지
+		            // refresh.jstree 이벤트 리스너
+		            $('#jstree').on('refresh.jstree', function() {
+		                //console.log('트리가 새로 고쳐졌습니다!');
+		                // 트리가 새로 고쳐진 후 필요한 작업
+		            });
 
-                    const formData = $(this).serialize(); // 폼 데이터 직렬화
+		            // 폼 제출 시 새 노드 추가
+		            $('#insertFormProjwrks').on('submit', function(e) {
+		                e.preventDefault(); // 기본 제출 이벤트 방지
 
-                    // 디버깅: 폼 데이터 확인
-                    console.log(formData);
+		                const formData = $(this).serialize(); // 폼 데이터 직렬화
+					
+		                // 디버깅: 폼 데이터 확인
+		                console.log('폼 데이터:', formData);
 
-                    $.ajax({
-                        type: 'POST',
-                        url: '/project/projectwrkinsert', // 폼의 action URL
-                        data: formData,
-                        dataType: 'json', // 서버에서 반환하는 데이터 형식 확인
-                        success: function(response) {
-                            // 응답 로그 출력
-                            console.log(response);
+		                $.ajax({
+		                    type: 'POST',
+		                    url: '/project/projectwrkinsert',
+		                    data: formData,
+		                    dataType: 'json',
+		                    success: function(response) {
+		                        //console.log('응답 데이터:', response);
 
-                            if (response && response.data) {
-                                alert('프로젝트가 성공적으로 추가되었습니다.');
+		                        if (response && response.data) {
+		                            alert('프로젝트가 성공적으로 추가되었습니다.');
+		                        	let pwNo = response.data.pwNo;
+		                            //tree.open_all();
+		                            // 특정 노드만 새로 고침하기 위한 함수 호출
+		                            resetJstree('#node_W' + pwNo);
 
-                                // 새 노드 데이터 준비
-                                const newNode = {
-                                    id: 'node_' + response.data.projNo, // 새 노드의 ID
-                                    text: response.data.name, // 새 노드의 텍스트
-                                    children: [] // 자식 노드 초기화
-                                };
+		                            // 폼 초기화
+		                            $('#insertFormProjwrks')[0].reset();
+		                        } else {
+		                            alert('서버에서 올바른 데이터를 받지 못했습니다.');
+		                        }
+		                    },
+		                    error: function(xhr, status, error) {
+		                        //console.log('오류:', xhr.responseText);
+		                        alert('오류가 발생했습니다: ' + error);
+		                    }
+		                });
+		            });
+		        });
 
-                                // 부모 ID 결정 (부모가 없으면 루트)
-                                const parentId = response.data.parentNo ? 'node_' + response.data.parentNo : '#';
 
-                                // jsTree에서 트리 데이터 업데이트
-                                const tree = $('#jstree').jstree();
 
-                                // 새 노드를 추가할 부모 노드 찾기
-                                const parentNode = tree.get_node(parentId);
-
-                                // 새 노드 추가
-                                tree.create_node(parentNode, newNode, 'last', function(new_node) {
-                                    console.log('새 노드가 추가되었습니다:', new_node);
-                                });
-
-                                // 트리 상태 새로 고침
-                                tree.refresh(); // 트리 전체를 새로고침
-
-                                // 폼 초기화
-                                $('#insertFormProjwrks')[0].reset();
-                            } else {
-                                alert('서버에서 올바른 데이터를 받지 못했습니다.');
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            // 디버깅: 오류 로그
-                            console.log(xhr.responseText);
-                            alert('오류가 발생했습니다: ' + error);
-                        }
-                    });
-                });
-            });
 
 
             $('#insertFormProjdwrks').on('submit', function(e) {
@@ -829,7 +878,7 @@ button:active {
                     data: formData,
                     success: function(response) {
                         alert('상세 업무가 성공적으로 추가되었습니다: ');
-                        console.log(response);
+                        //console.log(response);
                         // jsTree에 새 상세 업무 노드 추가
                         const parentNodeId = 'node_' + response.data.parentNo; // 부모 노드 ID
                         const newDetailNode = {
@@ -841,11 +890,14 @@ button:active {
                      // jsTree에 노드 추가
                         const tree = $('#jstree').jstree();
                         tree.create_node(parentNodeId, newDetailNode, 'last', function(newNode) {
-                            console.log('새 상세 업무 노드가 추가되었습니다:', newNode);
+                            //console.log('새 상세 업무 노드가 추가되었습니다:', newNode);
                         });
 
                         // 새로 추가된 노드만 새로 고침
                         tree.refresh(true);
+                        //tree.open_all();
+                        // 특정 노드만 새로 고침하기 위한 함수 호출
+                        resetJstree();
                         //location.reload(true); // 페이지 새로고침
                         // 폼 초기화
                         $('#insertFormProjdwrks')[0].reset();
@@ -928,7 +980,7 @@ button:active {
                     type: 'GET',
                     success: function(response) {
                     	// 옵션값 함수 호출
-                    	console.log(response);
+                    	//console.log(response);
                     	handleJobNoChange(response.jobNo);
                        
                       	
@@ -1059,7 +1111,11 @@ button:active {
                     alert('프로젝트가 성공적으로 수정되었습니다!');
 
                     $('#editProjectModal').hide(); // 수정 모달 닫기
-                    location.reload(true); // 페이지 새로고침
+                    //location.reload(true); // 페이지 새로고침
+                    let pwNo = response.data.pwNo;
+                    //tree.open_all();
+                    // 특정 노드만 새로 고침하기 위한 함수 호출
+                    resetJstree();
                 },
                 error: function(xhr, status, error) {
                     alert('프로젝트 수정에 실패했습니다: ' + error);
@@ -1088,7 +1144,10 @@ button:active {
                     alert('프로젝트가 성공적으로 수정되었습니다!');
 
                     $('#updateFormProjdwrks').hide();
-                    location.reload(true); // 페이지 새로고침
+                    //location.reload(true); // 페이지 새로고침
+                    //tree.open_all();
+                    // 특정 노드만 새로 고침하기 위한 함수 호출
+                    resetJstree();
                 },
                 error: function(xhr, status, error) {
                     alert('프로젝트 수정에 실패했습니다: ' + error);
@@ -1120,7 +1179,10 @@ button:active {
                     alert('상세업무가 성공적으로 수정되었습니다!');
 
                     $('#dwrkInfo').hide(); // 수정 모달 닫기
-                    location.reload(true); // 페이지 새로고침
+                    //location.reload(true); // 페이지 새로고침
+                    //tree.open_all();
+                    // 특정 노드만 새로 고침하기 위한 함수 호출
+                    resetJstree();
                 },
                 error: function(xhr, status, error) {
                     alert('프로젝트 수정에 실패했습니다: ' + error);
@@ -1151,7 +1213,7 @@ button:active {
                 	    success: function(response) {
                 	        // 옵션값 함수 호출
                 	        handleJobNoChange(response.jobNo); // 여기서 비동기 작업이 시작됨
-                	        console.log(response);
+                	        //console.log(response);
                 	        
                 	        $('#projinfodel').show();
                 	        $('#editProjectModal').hide();
@@ -1199,7 +1261,7 @@ button:active {
                     dataType: 'json', 
                     success: function(response) {
                         // 응답 확인
-                        console.log('Response:', response);
+                        //console.log('Response:', response);
                         handleJobNoChange(response.jobNo, response.mgrNo);
                         
                         // DOM 요소에 값 설정
@@ -1212,7 +1274,7 @@ button:active {
                     },
                     error: function(xhr, status, error) {
                         alert('프로젝트 정보를 가져오는 데 실패했습니다: ' + error);
-                        console.error(`Error: ${status} - ${error}`);
+                        //console.error(`Error: ${status} - ${error}`);
                     }
                 });
 
@@ -1259,7 +1321,7 @@ button:active {
                         }
                      // 남은 일수에 따른 배지 색상 변경
                         let remainingDaysClass = '';
-                        let remainingDaysText = `D-${remainingDays}일`;
+                        let remainingDaysText = `D-${remainingDays}`;
                         
                         if (remainingDays < 0) {
                             remainingDaysClass = 'bg-dark'; // 기간 종료는 다크 색상으로 표시
@@ -1271,7 +1333,7 @@ button:active {
                         } else if (remainingDays >= 8) {
                             remainingDaysClass = 'bg-success'; // 8일 이상
                         }
-                        console.log(remainingDaysClass);
+                        //console.log(remainingDaysClass);
                         switch (importance) {
                             case 'l1':
                                 statusClass = 'bg-secondary';
@@ -1321,7 +1383,7 @@ button:active {
                                     }
                                 } else if (projectManager.isStatus === 'k3') {
                                     statusBadge = '<span class="badge rounded-pill bg-info">컨펌중</span>';
-                                    console.log(projectManager.directboss);
+                                    //console.log(projectManager.directboss);
                                     if(sessionUserEmpNo ==  projectManager.directboss){
                                     	actionButton = `
                                             <button type="button" class="btn btn-outline-success status-button" onclick="updateStatus('k4', '${managerEmpNo}')" style="float: right;">
@@ -1567,7 +1629,7 @@ button:active {
                     pdwNo: pdwNo, isStatus : isStatus 
                     }),
                     success: function(response) {
-                    	console.log(response);
+                    	//console.log(response);
                     	let buttonElement = $(`button[onclick="updateStatus('k1')"]`);
                     	 $('#chat .badge').remove();
                     	 $('.status-button').remove();
@@ -1643,8 +1705,8 @@ button:active {
 		        const pwNo = $('#wrkNumber').val();
 		        const pdwNo = $('#pdwNumber').val();
 		        
-		        console.log	(pwNo);
-		        console.log	(pdwNo);
+		        //console.log	(pwNo);
+		        //console.log	(pdwNo);
 		        let url;
 		        if (type === 'project') {
 		            url = `/project/projectdelete/${projNo}`; // 프로젝트 삭제 URL
@@ -1663,7 +1725,10 @@ button:active {
 		                type: 'DELETE', 
 		                success: function(response) {
 		                    alert('삭제되었습니다.');
-		                    location.reload(true); // 페이지 새로고침
+		                    //location.reload(true); // 페이지 새로고침
+                            //tree.open_all();
+                            // 특정 노드만 새로 고침하기 위한 함수 호출
+                            resetJstree();
 		                },
 		                error: function(xhr, status, error) {
 		                    alert('삭제 중 오류가 발생했습니다: ' + error);
@@ -1678,7 +1743,7 @@ button:active {
 		    const chatItem = $(this).closest('.chat-item');
 		    //const pdwcNo = $(pdwcNumber).val();
 		    const pdwcNo = chatItem.find('input[name="pdwcNo"]').val();
-			console.log(pdwcNo);
+			//console.log(pdwcNo);
 		    if (confirm('이 메시지를 삭제하시겠습니까?')) {
 		        $.ajax({
 		            url: `/project/projectcomtsdel/${pdwcNo}`, // 삭제 요청을 보낼 엔드포인트
@@ -1764,7 +1829,183 @@ button:active {
 		        });
 		    }
 		});
+        $('#search-input').on('input', function() {
+            const query = $(this).val().trim(); // 입력값 가져오기
+            if (query) {
+                const tree = $('#jstree').jstree(true); // jsTree 인스턴스 가져오기
+                tree.search(query); // 검색어로 검색 실행
+            } else {
+                const tree = $('#jstree').jstree(true);
+                tree.clear_search(); // 입력 필드가 비었을 때 검색 초기화
+            }
+        });
+        
+        function resetJstree(){
+        	fetch(`/project/projectworklist?fragment=reload`, { headers: { "X-Requested-With": "XMLHttpRequest" } })
+	        .then(response => response.text())
+	        .then(html => {
+	            $("#jstree").replaceWith(html);
+	            
+		        $('#jstree').jstree({
+		            'plugins': ['search']  // search 플러그인 활성화
+		        });
+		        
+		        // jsTree 초기화 후 트리의 모든 노드를 열기
+		        $('#jstree').on('ready.jstree', function () {
+		            // jstree 인스턴스 가져오기
+		            const tree = $('#jstree').jstree(true);
+		            
+		            // setTimeout을 사용하여 트리가 완전히 초기화된 후 open_all 호출
+		            setTimeout(function() {
+		                // 모든 노드를 펼침
+		                tree.open_all();
 
+		            }, 0); // 0ms로 설정하여 즉시 호출 (트리 초기화 후)
+		        });
+	        });
+        }
+        function validateInput(input) {
+            // 허용된 문자: 영어, 공백, 언더바
+            const regex = /^[a-zA-Z_ ]*$/;
+
+            // 유효하지 않은 문자가 입력되었을 경우
+            if (!regex.test(input.value)) {
+                alert("영어, 띄어쓰기, 언더바(_)만 입력할 수 있습니다.");
+                // 유효하지 않은 문자는 자동으로 제거
+                input.value = input.value.replace(/[^a-zA-Z_ ]/g, '');
+            }
+
+            // 글자수 제한: 30글자 초과하면 alert 표시하고, 30자 이후 글자 잘라내기
+            if (input.value.length > 30) {
+                alert("프로젝트 이름은 30자를 초과할 수 없습니다.");
+                input.value = input.value.slice(0, 30); // 30자 이상이면 자르기
+            }
+        }
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            // 업무 시작일과 완료 예정일 요소
+            const startDateInput = document.getElementById("startDate");
+            const compDateInput = document.getElementById("compDate");
+
+            // 실시간으로 날짜 비교 처리
+            function validateDates() {
+                const startDate = startDateInput.value;
+                const compDate = compDateInput.value;
+
+                if (startDate && compDate) {
+                    if (startDate > compDate) {
+                        // 시작일이 완료 예정일을 초과하면 경고
+                        alert("업무 시작일은 완료 예정일을 넘을 수 없습니다.");
+                        // 완료 예정일을 시작일 이후로 설정하거나 초기화하는 등의 처리
+                        compDateInput.value = ''; // 예시로 완료 예정일을 초기화
+                    }
+                }
+            }
+
+            // 날짜 입력 시 실시간으로 유효성 검사
+            startDateInput.addEventListener("input", validateDates);
+            compDateInput.addEventListener("input", validateDates);
+        });
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            // 첫 번째 업무 이름 입력 요소
+            const nameInputProjWrks = document.getElementById("nameProjWrks");
+            // 두 번째 업무 이름 입력 요소
+            const nameInputProjDwrks = document.getElementById("nameProjDwrks");
+
+            // 실시간으로 문자 길이 검사 (첫 번째 입력란)
+            nameInputProjWrks.addEventListener("input", function() {
+                const maxLength = 30;
+
+                // 입력된 값의 길이가 30자를 초과하면
+                if (nameInputProjWrks.value.length > maxLength) {
+                    // 초과된 글자 제거
+                    nameInputProjWrks.value = nameInputProjWrks.value.slice(0, maxLength);
+
+                    // 경고 메시지 표시
+                    alert("업무 이름은 30자를 초과할 수 없습니다.");
+                }
+            });
+
+            // 실시간으로 문자 길이 검사 (두 번째 입력란)
+            nameInputProjDwrks.addEventListener("input", function() {
+                const maxLength = 30;
+
+                // 입력된 값의 길이가 30자를 초과하면
+                if (nameInputProjDwrks.value.length > maxLength) {
+                    // 초과된 글자 제거
+                    nameInputProjDwrks.value = nameInputProjDwrks.value.slice(0, maxLength);
+
+                    // 경고 메시지 표시
+                    alert("업무 이름은 30자를 초과할 수 없습니다.");
+                }
+            });
+        });
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            // 시작일과 마감일 요소
+            const startDateInput = document.getElementById("editProjStartDate");
+            const endDateInput = document.getElementById("editProjEndDate");
+
+            // 시작일과 마감일 값이 변경될 때마다 검사
+            startDateInput.addEventListener("input", validateDates);
+            endDateInput.addEventListener("input", validateDates);
+
+            function validateDates() {
+                const startDate = new Date(startDateInput.value);
+                const endDate = new Date(endDateInput.value);
+
+                // 시작일이 마감일보다 늦으면 경고 메시지 표시
+                if (startDate && endDate && startDate > endDate) {
+                    alert("시작일은 마감일을 넘을 수 없습니다.");
+                    // 시작일이 마감일을 넘지 않도록 마감일을 시작일로 설정
+                    endDateInput.value = startDateInput.value;
+                }
+            }
+        });
+        //--------------------------------------------------------------------------------------
+  document.addEventListener("DOMContentLoaded", function() {
+    const form = document.getElementById("insertFormProjwrks");
+    const submitButton = form.querySelector("button[type='submit']");
+
+    // 버튼 클릭 시 유효성 검사
+    submitButton.addEventListener("click", function(event) {
+        const jobTypeSelect = document.getElementById("jobNoProjWrks");
+        const mgrSelect = document.getElementById("mgrNoProjWrks");
+
+        // 업무 타입이 선택되지 않았을 경우
+        if (jobTypeSelect.value === "0") {
+            alert("업무 타입을 선택해주세요.");
+            event.preventDefault();  // 폼 제출을 막음
+            return;  // 추가적인 코드 실행을 막음
+        }
+
+        // 업무 담당자가 선택되지 않았을 경우
+        if (mgrSelect.value === "0") {
+            alert("업무 담당자를 선택해주세요.");
+            event.preventDefault();  // 폼 제출을 막음
+            return;  // 추가적인 코드 실행을 막음
+        }
+
+       
+    });
+});
+  document.addEventListener("DOMContentLoaded", function() {
+	    const form = document.getElementById("insertFormProjdwrks");
+	    const submitButton = form.querySelector("button[type='submit']");
+
+	    submitButton.addEventListener("click", function(event) {
+	        const mgrSelect = document.getElementById("mgrNoProjdWrks");
+
+	        // 업무 담당자가 선택되지 않은 경우
+	        if (mgrSelect.value === "0") {
+	            alert("업무 담당자를 선택해주세요.");
+	            event.preventDefault();  // 폼 제출을 막음
+	            return;  // 추가적인 코드 실행을 막음
+	        }
+	    });
+	});       
+        
     </script>
 
 	<!-- 재귀 함수 정의 -->
@@ -1772,9 +2013,9 @@ button:active {
 		th:fragment="renderNode(projno, projname, parentNo, table, level, jobNo)"
 		th:data-current-table="${table}" id="'test'+${status.index}"
 		th:data-index="${status.index}">
-		
-		 <li th:id="'node_' + ${projno}" style="display: none;" oncontextmenu="toggleSubTree(event, this); return false;">
-		<span
+
+		<li th:id="'node_' + ${projno}" style="display: none;"
+			oncontextmenu="toggleSubTree(event, this); return false;"><span
 			th:onclick="'toggleChat(this, ' + ${level} + ', ' + ${pdwNo} + ')'">[[${projname}]]</span>
 			<button class="btn btn-info btn-lg no-border-button"
 				th:onclick="'event.stopPropagation(); myFunction(this, ' + ${level} + ', ' + ${jobNo} + ')'"

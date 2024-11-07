@@ -461,6 +461,15 @@ public class SchsController {
 	public List<SchsVO> trashList() {
 		return schsService.trashList(); // 휴지통에 있는 캘린더 목록 조회
 	}
+	
+	@GetMapping("/cal/projList")
+	@ResponseBody
+	public List<SchsVO> projList(HttpSession session) {
+		Integer empNo = (Integer) session.getAttribute("userEmpNo");
+		return schsService.projList(empNo); // 휴지통에 있는 캘린더 목록 조회
+	}
+	
+	
 
 //	// 완전삭제1
 //	@PostMapping("/cal/calDel")

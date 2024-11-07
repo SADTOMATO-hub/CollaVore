@@ -21,7 +21,6 @@ import com.collavore.app.service.HomeService;
 import com.collavore.app.service.HomeVO;
 
 import jakarta.servlet.http.HttpSession;
-import jakarta.websocket.Session;
 import lombok.RequiredArgsConstructor;
 
 @Controller
@@ -177,14 +176,16 @@ public class ApprovalsController {
 	    // 결재 및 결재자 정보 조회
 	    ApprovalsVO approvals = approvalsService.approvalsInfo(apprVO);
 	    List<Map<String, Object>> approvers = approvalsService.approversInfo(apprVO);
+        String documentStatus = approvals.getApprovalStatus(); // 문서 상태 가져오기
 
-	    // 버튼 활성화 여부 및 상태 표시 설정
+	 // 버튼 활성화 여부 및 상태 표시 설정
 	    for (int i = 0; i < approvers.size(); i++) {
 	        Map<String, Object> approver = approvers.get(i);
 	        
 	        // 상태값 초기화
 	        String approverStatus = (String) approver.get("approverStatus");
 	        String displayStatus;
+
 	        // 현재 결재자의 기본 상태 설정
 	        if ("b2".equals(approverStatus)) {
 	            displayStatus = "승인";
@@ -193,30 +194,42 @@ public class ApprovalsController {
 	        } else {
 	            displayStatus = "결재 대기"; // 기본값 설정
 	        }
+
 	        // 버튼 활성화 여부 설정
 	        boolean buttonEnabled = false; // 기본적으로 비활성화
-	        if (i == 0) {
-	            // 첫 번째 결재자는 approverStatus가 b1일 때만 버튼 활성화
-	            buttonEnabled = "b1".equals(approverStatus) && userEmpNo == ((Number) approver.get("approverEmpNo")).intValue();
+            boolean previousApprovedOrRejected = false;
+
+	        // 결재문서 상태가 a3 또는 a4일 경우 버튼을 비활성화
+	        if ("a3".equals(documentStatus) || "a4".equals(documentStatus)) {
+	            buttonEnabled = false;
+	            previousApprovedOrRejected = false;
 	        } else {
-	            // 두 번째 결재자부터는 이전 결재자들이 모두 승인(b3) 또는 반려(b2) 상태일 때만 버튼 활성화
-	            boolean previousApprovedOrRejected = true;
-	            for (int j = 0; j < i; j++) {
-	                String previousStatus = (String) approvers.get(j).get("approverStatus");
-	                if (!"b2".equals(previousStatus) && !"b3".equals(previousStatus)) {
-	                    previousApprovedOrRejected = false;
-	                    break;
+	            if (i == 0) {
+	                // 첫 번째 결재자는 approverStatus가 b1일 때만 버튼 활성화
+	                buttonEnabled = "b1".equals(approverStatus) && userEmpNo == ((Number) approver.get("approverEmpNo")).intValue();
+	            } else {
+	                // 두 번째 결재자부터는 이전 결재자들이 모두 승인(b3) 또는 반려(b2) 상태일 때만 버튼 활성화
+	                previousApprovedOrRejected = true;
+	                for (int j = 0; j < i; j++) {
+	                    String previousStatus = (String) approvers.get(j).get("approverStatus");
+	                    if (!"b2".equals(previousStatus) && !"b3".equals(previousStatus)) {
+	                        previousApprovedOrRejected = false;
+	                        break;
+	                    }
 	                }
+	                buttonEnabled = previousApprovedOrRejected && "b1".equals(approverStatus) && userEmpNo == ((Number) approver.get("approverEmpNo")).intValue();
 	            }
-	            buttonEnabled = previousApprovedOrRejected && "b1".equals(approverStatus) && userEmpNo == ((Number) approver.get("approverEmpNo")).intValue();
 	        }
+
 	        // 버튼이 활성화된 경우 "결재 대기" 상태 표시를 숨김
 	        if (buttonEnabled && "결재 대기".equals(displayStatus)) {
 	            displayStatus = ""; // 버튼이 활성화된 경우 상태를 빈 문자열로 설정
 	        }
+
 	        approver.put("buttonEnabled", buttonEnabled);
 	        approver.put("displayStatus", displayStatus);
 	    }
+
 	    // 모델에 결재 정보 추가
 	    model.addAttribute("approvals", approvals);
 	    model.addAttribute("approvers", approvers);

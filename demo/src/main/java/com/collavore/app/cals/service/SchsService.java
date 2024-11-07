@@ -68,6 +68,9 @@ public interface SchsService {
 	// 휴지통 리스트
 	// 조회
 	public List<SchsVO> trashList();
+	// 프로젝트 리스트
+	// 조회
+	public List<SchsVO> projList(int empNo);
 
 	// 캘린더 삭제
 	public int moveTrash(int schsVO); // 캘린더 휴지통으로 이동

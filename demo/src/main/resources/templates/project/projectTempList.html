@@ -543,5 +543,12 @@ button:active {
             }
         });
     });
-    
+    document.addEventListener("DOMContentLoaded", function() {
+        const periodDateInput = document.getElementById("periodDate");
+
+        periodDateInput.addEventListener("input", function(event) {
+            // 입력 값에서 숫자가 아닌 문자를 모두 제거
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    });
 </script>

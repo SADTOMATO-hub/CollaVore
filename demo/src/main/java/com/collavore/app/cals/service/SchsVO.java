@@ -47,6 +47,7 @@ public class SchsVO {
 	private String isAlarm;
 
 	private Integer calNo; // 캘린더 넘버 cals schs calshares
+	private String isProj; // 프로젝트 캘린더 여부
 
 	// 테이블 cals
 	private String name; // 캘린더 이름

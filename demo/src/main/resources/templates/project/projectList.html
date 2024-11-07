@@ -816,10 +816,76 @@ function selectDirectory() {
 function validateInput(input) {
     const regex = /^[a-zA-Z0-9_ ]*$/; // 영어, 숫자, 언더바, 공백 허용하는 정규 표현식
     
+    // 유효한 문자 검증
     if (!regex.test(input.value)) {
         alert("영어, 숫자, 공백, 언더바만 입력할 수 있습니다.");
         input.value = input.value.replace(/[^a-zA-Z0-9_ ]/g, ''); // 유효하지 않은 문자 제거
     }
-}
 
+    // 글자수 제한: 30글자 이하만 허용
+    if (input.value.length > 30) {
+        alert("입력된 글자 수는 30자를 초과할 수 없습니다.");
+        input.value = input.value.slice(0, 20); // 20자 이상이면 자르기
+    }
+}
+document.getElementById("projStartDate").addEventListener("change", function() {
+    const startDate = document.getElementById("projStartDate").value;
+    const endDate = document.getElementById("projEndDate").value;
+
+    // 시작일이 마감일보다 늦으면 마감일을 시작일로 설정
+    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+        alert("시작일은 마감일보다 늦을 수 없습니다.");
+        document.getElementById("projStartDate").value = endDate; // 시작일을 마감일로 설정
+    }
+});
+
+document.getElementById("projEndDate").addEventListener("change", function() {
+    const startDate = document.getElementById("projStartDate").value;
+    const endDate = document.getElementById("projEndDate").value;
+
+    // 마감일이 시작일보다 앞서면 마감일을 시작일로 설정
+    if (startDate && endDate && new Date(endDate) < new Date(startDate)) {
+        alert("마감일은 시작일보다 앞설 수 없습니다.");
+        document.getElementById("projEndDate").value = startDate; // 마감일을 시작일로 설정
+    }
+});
+// 시작일과 마감일 검증 및 날짜 수정
+document.getElementById("editProjStartDate").addEventListener("change", function() {
+    const startDate = document.getElementById("editProjStartDate").value;
+    const endDate = document.getElementById("editProjEndDate").value;
+
+    // 시작일이 마감일보다 늦으면 마감일을 시작일로 설정
+    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+        alert("시작일은 마감일보다 늦을 수 없습니다.");
+        document.getElementById("editProjStartDate").value = endDate; // 시작일을 마감일로 설정
+    }
+});
+
+document.getElementById("editProjEndDate").addEventListener("change", function() {
+    const startDate = document.getElementById("editProjStartDate").value;
+    const endDate = document.getElementById("editProjEndDate").value;
+
+    // 마감일이 시작일보다 앞서면 마감일을 시작일로 설정
+    if (startDate && endDate && new Date(endDate) < new Date(startDate)) {
+        alert("마감일은 시작일보다 앞설 수 없습니다.");
+        document.getElementById("editProjEndDate").value = startDate; // 마감일을 시작일로 설정
+    }
+});
+
+// 입력된 값에 대한 유효성 검사 (영어, 숫자, 공백, 언더바만 허용하고 20글자 이하로 제한)
+function validateInput(input) {
+    const regex = /^[a-zA-Z0-9_ ]*$/; // 영어, 숫자, 언더바, 공백 허용하는 정규 표현식
+
+    // 유효하지 않은 문자 처리
+    if (!regex.test(input.value)) {
+        alert("영어, 숫자, 공백, 언더바만 입력할 수 있습니다.");
+        input.value = input.value.replace(/[^a-zA-Z0-9_ ]/g, ''); // 유효하지 않은 문자 제거
+    }
+
+    // 글자수 제한: 20글자 이하로 설정
+    if (input.value.length > 30) {
+        alert("입력된 글자 수는 30자를 초과할 수 없습니다.");
+        input.value = input.value.slice(0, 20); // 20자 이상이면 자르기
+    }
+}
 </script>

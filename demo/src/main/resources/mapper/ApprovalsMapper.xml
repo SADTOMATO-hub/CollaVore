@@ -175,21 +175,24 @@
 		INNER JOIN approvers ar
 			ON a.ea_no = ar.ea_no
 		LEFT JOIN employees E
-			ON ar.emp_no = e.emp_no
 		<choose>
 			<when test="listStatus == 'all'">
+				ON ar.emp_no = e.emp_no
 				WHERE a.status IN ('a3','a4')
 				AND (a.emp_no = #{userEmpNo} OR ar.emp_no = #{userEmpNo})
 			</when>
 			<when test="listStatus == 'drafted'">
+				ON a.emp_no = e.emp_no
 				WHERE a.status IN ('a3','a4')
 				AND (a.emp_no = #{userEmpNo})
 			</when>
 			<when test="listStatus == 'approved'">
+				ON a.emp_no = e.emp_no
 				WHERE a.status IN ('a3','a4')
 				AND (ar.emp_no = #{userEmpNo})
 			</when>
 			<when test="listStatus == 'denied'">
+				ON ar.emp_no = e.emp_no
 				WHERE a.status IN ('a4')
    				AND (a.emp_no = #{userEmpNo} OR ar.emp_no = #{userEmpNo})
 			</when>
@@ -208,7 +211,7 @@
 				,a.comp_date
 				,a.emp_no as "drafterEmpNo"
 				,e.name as "drafterName"
-				,a.status as "approverStatus"
+				,a.status as "approvalStatus"
 				,a.ea_no
 				,a.eat_no
 		FROM approvals a LEFT JOIN employees e

@@ -489,10 +489,12 @@ button:hover {
 
 #employeeListItems li {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    align-items: center; /* 세로 중앙 정렬 */
+    justify-content: center; /* 가로 중앙 정렬 */
     padding: 10px;
     border-bottom: 1px solid #ddd;
+    height: 40px;
+    line-height: 40px;
 }
 
 #employeeListItems li:last-child {
