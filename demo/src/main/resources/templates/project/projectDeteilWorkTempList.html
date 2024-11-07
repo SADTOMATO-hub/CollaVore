@@ -570,7 +570,6 @@ $(document).ready(function() {
             url: `/project/projectDwrktempinfo/${pdwtNo}`, 
             type: 'GET',
             success: function(response) {
-               // console.log(response); 
                
                 $('#editPdwtNo').val(response.pdwtNo); 
                 $('#editPwtNo').val(response.pwtNo);
