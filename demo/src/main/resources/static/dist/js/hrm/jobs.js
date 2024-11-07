@@ -2,6 +2,7 @@
 let existingJobs = [];
 let modifiedJobs = []; // 수정된 직무를 저장할 배열
 let nonDeletableJobs = []; // 사원에 등록된 직무 번호 목록을 저장
+let jobsToSave = []; // 서버에 전송할 직무 목록
 
 // 직무 데이터 로드
 function loadExistingJobs() {
@@ -50,9 +51,10 @@ function addJob() {
 
 		// 기존 직무 이름과 중복 검사
 		if (newName !== '' && !existingJobs.some(job => job.jobName === newName)) {
-			existingJobs.push({ jobName: newName }); // 중복되지 않으면 추가
+			//existingJobs.push({ jobName: newName }); // 중복되지 않으면 추가
+			jobsToSave.push({ jobName: newName });
 			div.innerHTML = `
-                <span onclick="editJob(this)">${newName}</span>
+                <span onclick="editJob(this)" class="newName">${newName}</span>
                 <button onclick="removeJob(this)">X</button>
             `;
 		} else if (newName === '') {
@@ -72,25 +74,22 @@ function addJob() {
 
 // 직무 저장 함수
 function saveJobs() {
-	const jobsToSave = []; // 서버에 전송할 직무 목록
 	const container = document.getElementById('jobsTable');
 
 	// 직무 데이터 수집
 	container.querySelectorAll('div').forEach(div => {
-		const input = div.querySelector('input');
+		const spanElement = div.querySelector('span.newName');
+		let input = '';
+		if (spanElement) {
+			input = spanElement.textContent.trim();
+		}
 		const span = div.querySelector('span');
-
-		if (input && input.value.trim() !== '') {
-			// 새로 추가된 직무 수집
-			if (!existingJobs.some(job => job.jobName === input.value.trim())) {
-				jobsToSave.push({ jobName: input.value.trim() });
-			}
-		} else if (span) {
+		console.log(input);
+		if (span) {
 			// 기존 직무 중 수정된 직무만 수집
 			const jobNo = parseInt(span.getAttribute('data-job-no'));
 			const newName = span.textContent.trim();
 			const originalJob = existingJobs.find(job => job.jobNo === jobNo);
-
 			if (originalJob && originalJob.jobName !== newName) {
 				jobsToSave.push({ jobNo, jobName: newName });
 			}
@@ -98,6 +97,8 @@ function saveJobs() {
 	});
 
 	// 서버에 저장 요청
+		
+		console.log(jobsToSave);
 	if (jobsToSave.length > 0) {
 		fetch('/jobs/save', {
 			method: 'POST',
