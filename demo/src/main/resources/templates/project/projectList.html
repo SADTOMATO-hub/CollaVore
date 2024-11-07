@@ -316,7 +316,8 @@ button:active {
 										class="btn btn-danger text-white delete-btn"
 										th:attr="data-proj-no=${info.projNo}">삭제</button>
 									<button type="button" class="btn btn-success text-white"
-										 data-bs-toggle="modal" data-bs-target="#git" th:data-project-git-url="${info.projectGitUrl}">내려받기</button>
+										data-bs-toggle="modal" data-bs-target="#git"
+										th:data-project-git-url="${info.projectGitUrl}">내려받기</button>
 								</td>
 							</tr>
 						</th:block>
@@ -345,19 +346,11 @@ button:active {
 				<div class="modal-body">
 					<form id="projectForm">
 						<div class="mb-3">
-							<label for="projName" class="form-label">프로젝트 이름</label>     
-							    <input
-							        type="text"
-							        
-							        class="form-control"
-							        name="name"
-							        id="projName"
-							        required
-							        oninput="validateInput(this)"
-							        placeholder="영어만 입력해주세요."
-							    >
+							<label for="projName" class="form-label">프로젝트 이름</label> <input
+								type="text" class="form-control" name="name" id="projName"
+								required oninput="validateInput(this)" placeholder="영어만 입력해주세요.">
 						</div>
-						
+
 						<div class="mb-3">
 							<label for="projContent" class="form-label">프로젝트 개요</label>
 							<textarea class="form-control" name="content" id="projContent"
@@ -403,7 +396,7 @@ button:active {
 								type="date" class="form-control" name="endDate" id="projEndDate"
 								required>
 						</div>
-						
+
 						<button type="submit" class="btn btn-primary">생성</button>
 					</form>
 				</div>
@@ -424,16 +417,9 @@ button:active {
 					<form id="editProjectForm">
 						<input type="hidden" name="projNo" id="editProjNo">
 						<div class="mb-3">
-							<label for="editProjName" class="form-label">프로젝트 이름</label> 
-								<input
-							        type="text"
-							        class="form-control"
-							        name="name"
-							        id="editProjName"
-							        required
-							        oninput="validateInput(this)"
-							        placeholder="영어만 입력해주세요."
-							    >
+							<label for="editProjName" class="form-label">프로젝트 이름</label> <input
+								type="text" class="form-control" name="name" id="editProjName"
+								required oninput="validateInput(this)" placeholder="영어만 입력해주세요.">
 						</div>
 						<div class="mb-3">
 							<label for="editProjContent" class="form-label">프로젝트 개요</label>
@@ -484,18 +470,21 @@ button:active {
 						aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-						<div class="mb-3">
-							<label for="giturl" class="form-label">내려받을 경로</label>
-							<textarea class="form-control" name="localUrl"
-								id="localUrls" rows="5"  required></textarea>
-						</div>
-						 <input type="hidden" id="gitUrlInput" name="projectGitUrl" value="">
-						<button type="button" class="btn btn-success text-white" th:onclick="selectDirectory('${info.projNo}')">내려받기</button>
+					<div class="mb-3">
+						<label for="giturl" class="form-label">내려받을 경로</label>
+						<textarea class="form-control" name="localUrl" id="localUrls"
+							rows="5" required></textarea>
+					</div>
+					<input type="hidden" id="gitUrlInput" name="projectGitUrl" value="">
+					<button type="button" class="btn btn-success text-white"
+						th:onclick="selectDirectory('${info.projNo}')">내려받기</button>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
+<script
+	src="https://cdn.jsdelivr.net/npm/@octokit/rest/dist/octokit-rest.min.js"></script>
 <script>
 const empNo = '[[${empNo}]]';
 const compGitUrl = '[[${gitInfo.compGitUrl}]]';
@@ -791,6 +780,8 @@ function gitReadMECommit(projName, owner, repo){
 }
 
 // 로컬폴더 입력받아서 git clone 실행
+        
+  /*
 function selectDirectory() {
 	let localUrl = $('#localUrls').val().replace(/\\/g, "/");
 	let cloneUrl= document.getElementById('gitUrlInput').value;
@@ -814,6 +805,7 @@ function selectDirectory() {
     alert('프로젝트가 로컬에 생성되었습니다!');
     $('#git').hide(); 
   }
+  */
 function validateInput(input) {
     const regex = /^[a-zA-Z0-9_ ]*$/; // 영어, 숫자, 언더바, 공백 허용하는 정규 표현식
     
@@ -889,4 +881,55 @@ function validateInput(input) {
         input.value = input.value.slice(0, 20); // 20자 이상이면 자르기
     }
 }
+
 </script>
+
+<script type="module">
+        import { Octokit } from 'https://cdn.skypack.dev/@octokit/core';
+
+        // GitHub Token 등 환경변수를 설정하는 전역 변수
+
+        async function selectDirectory() {
+            const localUrl = document.getElementById('localUrls').value.replace(/\\/g, "/");
+            const cloneUrl = document.getElementById('gitUrlInput').value;
+            console.log(cloneUrl);
+
+            const extractUrl = extractOwnerAndRepo(cloneUrl);
+
+            let owner = extractUrl.owner;
+            let repo = extractUrl.repo;
+
+            // Octokit 인스턴스 생성
+            const octokit = new Octokit({
+                auth: compGitToken
+            });
+
+           fetch(`http://api.github.com/repos/${owner}/${repo}/zipball/master`, {  mode: 'no-cors' })
+				.then(response => response.blob())
+				.then(blob => {
+  					const url = URL.createObjectURL(blob);
+    				const link = document.createElement('a');
+    				link.href = url;
+    				link.download = `${repo}.zip`;
+    				document.body.appendChild(link);
+    				link.click();
+    				document.body.removeChild(link);
+				})
+				.catch(error => console.error('Error:', error));
+            	document.getElementById('git').style.display = 'none';
+        }
+
+        function extractOwnerAndRepo(cloneUrl) {
+            const match = cloneUrl.match(/https:\/\/github\.com\/([^\/]+)\/([^\/]+)\.git/);
+            if (match) {
+                const owner = match[1];
+                const repo = match[2];
+                return { owner, repo };
+            } else {
+                return null;
+            }
+        }
+
+        // 전역 함수로 설정하여 HTML 요소의 이벤트에서 접근할 수 있도록 함
+        window.selectDirectory = selectDirectory;
+    </script>
