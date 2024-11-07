@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -78,6 +80,24 @@ public class ProjectController {
 	public String projectList(Model model, HttpSession session) {
 		Integer empNo = (Integer) session.getAttribute("userEmpNo");
 		List<ProjectVO> list = pjService.projectList();
+		
+		for (ProjectVO project : list) {
+		    String cloneUrl = project.getProjectGitUrl();
+		    Pattern pattern = Pattern.compile("https://github\\.com/([^/]+)/([^/]+)\\.git");
+		    Matcher matcher = pattern.matcher(cloneUrl);
+		    
+		    if (matcher.find()) {
+		        String owner = matcher.group(1);
+		        String repo = matcher.group(2);
+		        project.setOwner(owner); // ProjectVO에 owner 필드가 있다고 가정
+		        project.setRepo(repo);   // ProjectVO에 repo 필드가 있다고 가정
+		    } else {
+		        // URL 형식이 맞지 않는 경우 null 또는 기본값 설정
+		        project.setOwner(null);
+		        project.setRepo(null);
+		    }
+		}
+		
 		List<ProjectTempVO> templist = pjtempService.projecttempList();
 		List<ProjectVO> emplist = pjService.empList();
 		ProjectVO gitInfo = pjService.compGitInfo();
