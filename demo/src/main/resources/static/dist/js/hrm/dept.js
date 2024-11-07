@@ -481,7 +481,7 @@ function findDeptEmp(deptNo) {
 		.then(data => {
 			const mgrInfo = data.deptMgrInfo;
 			const managerInfoItems = document.getElementById("managerInfoItems");
-
+			managerInfoItems.innerHTML = ""; // 초기화
 			// 부서장 정보 표시
 			if (mgrInfo.empName) {
 				const li = document.createElement("li");

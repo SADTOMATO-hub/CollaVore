@@ -211,7 +211,7 @@
 				,a.comp_date
 				,a.emp_no as "drafterEmpNo"
 				,e.name as "drafterName"
-				,a.status as "approverStatus"
+				,a.status as "approvalStatus"
 				,a.ea_no
 				,a.eat_no
 		FROM approvals a LEFT JOIN employees e
