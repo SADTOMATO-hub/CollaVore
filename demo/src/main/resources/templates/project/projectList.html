@@ -550,7 +550,7 @@ $(document).ready(function() {
                 $('table tbody').append(`
                     <tr data-no="${newProject.projNo}">
                         <td scope="row">${newProject.projNo}</td>
-                        <td>${newProject.name}</td>
+                        <td>${name.name}</td>
                         <td>
                         <span class="badge rounded-pill ${statusClass}">${statusText}</span>
                     	</td>
@@ -793,8 +793,8 @@ function gitReadMECommit(projName, owner, repo){
 function selectDirectory() {
 	let localUrl = $('#localUrls').val().replace(/\\/g, "/");
 	let cloneUrl= document.getElementById('gitUrlInput').value;
-	console.log(localUrl);
-	console.log(cloneUrl);
+	//console.log(localUrl);
+	//console.log(cloneUrl);
     const data = {
             projectGitUrl: `${cloneUrl}`,
             cloneLocalPath: `${localUrl}`
