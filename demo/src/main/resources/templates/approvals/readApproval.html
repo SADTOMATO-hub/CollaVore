@@ -242,7 +242,7 @@ button:active {
                 </div>
                 <div class="insert-btn">
                     <button type="button" class="btn btn-primary" id="updateBtn"
-                        th:if="${session.userEmpNo == approvals.drafterEmpNo and approvals.approverStatus == 'a1'}"
+                        th:if="${session.userEmpNo == approvals.drafterEmpNo and approvals.approvalStatus == 'a1'}"
                         th:onclick="|location.href='@{/approvals/updateApprInfoForm(eaNo=${approvals.eaNo})}'|">수정하기</button>
                 </div>
             </div>
