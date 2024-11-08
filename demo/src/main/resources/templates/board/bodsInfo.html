@@ -214,7 +214,8 @@ button:active {
 							th:value="${bods.postNo}"> <input type="hidden"
 							name="writer" th:value="${empNo}">
 						<div class="form-group row">
-							<label for="content" class="col-sm-2 text-end control-label col-form-label">댓글</label>
+							<label for="content"
+								class="col-sm-2 text-end control-label col-form-label">댓글</label>
 							<div class="col-sm-9">
 								<input type="text" class="form-control" id="content"
 									name="content" placeholder="내용 입력" />
@@ -226,7 +227,8 @@ button:active {
 					</form>
 				</div>
 				<div class="card_memberInsert" style="margin-top: 20px;">
-					<table id="table table-striped table-hover table-bordered commentsTable">
+					<table
+						id="table table-striped table-hover table-bordered commentsTable">
 						<thead>
 							<tr>
 								<th class="col-sm-1">댓글 번호</th>
@@ -303,7 +305,10 @@ button:active {
 		function updateBodsComtsform(cmtNo, writer, content, regDate) {
 		    // 이미 수정 중인 댓글이 있는지 확인
 		    if ($('#cmtNo').val() != null) {
-		        alert("이미 수정 중인 댓글이 있습니다.");
+		        	Toast.fire({
+		        	  icon: "warning",
+		        	  title: "이미 수정 중인 댓글이 있습니다."
+		        	});
 		        return;
 		    }
 		
@@ -352,7 +357,10 @@ button:active {
 			var updateContent = $('#updateContent' + cmtNo).val();
 
 			if (updateContent == '') {
-				alert("수정 할 내용을 입력하세요");
+					Toast.fire({
+					  icon: "warning",
+					  title: "수정 할 내용을 입력하세요."
+					});
 				return;
 			}
 
@@ -367,68 +375,70 @@ button:active {
 				contentType : 'application/json',
 				success : function(data) {
 					if (data.result === true) {
-						alert('댓글이 수정되었습니다!');
-
+	                    Toast.fire({
+	                      icon: "success",
+	                      title: "댓글이 수정되었습니다!"
+	                    });
 						getCommentList();
 					} else {
-						alert('댓글 수정에 실패했습니다.');
+							Toast.fire({
+							  icon: "error",
+							  title: "댓글 수정에 실패했습니다."
+							});
 					}
 				},
 				error : function() {
-					alert('통신실패');
+					Toast.fire({
+						  icon: "error",
+						  title: "통신실패!!."
+						});
 				}
 			});
-
 		};
-
-		/*let contentUpdate = $('form [name="content"]');
-		if (contentUpdate.val() == '') {
-			alert('내용이 입력되지 않았습니다.');
-			contentUpdate.focus();
-			return;
-		}*/
-		// 수정 아작스
-		/*$.ajax({
-			type : 'post',
-			url : '/board/bodsComtsUpdate',
-			data : {'content' : contentUpdate.val() },
-			success : function(data) {						
-					//getCommentList();
-					content.val("");
-					alert('댓글이 수정되었습니다.');
-			},
-			error : function(request, status, error) {
-				alert("댓글 수정 중 오류가 발생했습니다.");
-			}
-
-		});
-
-		}*/
-
+		
 		// 댓글 삭제 
 		$("#comtsdelete").on('click', deletebodsComts);
 		function deletebodsComts(cmtNo) {
-			if (confirm("정말 삭제하시겠습니까?") == true) {
-				// 삭제 아작스
-				$.ajax({
-					type : 'post',
-					url : '/board/bodsComtsDelete',
-					data : {
-						cmtNo : cmtNo
-					},
-					success : function(response) {
-						if (response) {
-							alert("댓글이 성공적으로 삭제되었습니다.");
-							getCommentList();
-						} else {
-							alert("댓글 삭제 실패.");
+			Swal.fire({
+			  title: "정말 삭제하시겠습니까?",
+			  icon: "warning",
+			  showCancelButton: true,
+			  confirmButtonColor: "#3085d6",
+			  cancelButtonColor: "#d33",
+			  confirmButtonText: "예",
+			  cancelButtonText:"아니요"
+			}).then((result) => {
+			  if (result.isConfirmed) {
+				  // 삭제 아작스
+					$.ajax({
+						type : 'post',
+						url : '/board/bodsComtsDelete',
+						data : {
+							cmtNo : cmtNo
+						},
+						success : function(response) {
+							if (response) {
+								Toast.fire({
+									  icon: "success",
+									  title: "댓글이 성공적으로 삭제되었습니다!"
+									});
+								getCommentList();
+							} else {
+								Toast.fire({
+									  icon: "error",
+									  title: "댓글 삭제 실패."
+									});
+							}
+						},
+						error : function() {
+							Toast.fire({
+								  icon: "error",
+								  title: "서버 오류가 발생했습니다."
+								});
 						}
-					},
-					error : function() {
-						alert('서버 오류가 발생했습니다.');
-					}
-				});
-			}
+					});
+			  }
+			});
 		}
 
 		// 댓글 등록
@@ -437,14 +447,20 @@ button:active {
 
 			let writer = $('form [name="writer"]');
 			if (writer.val() == '') {
-				alert('작성자가 입력되지 않았습니다.');
+				Toast.fire({
+					  icon: "warning",
+					  title: "작성자가 입력되지 않았습니다."
+					});
 				writer.focus();
 				return;
 			}
 
 			let content = $('form [name="content"]');
 			if (content.val() == '') {
-				alert('내용이 입력되지 않았습니다.');
+				Toast.fire({
+					  icon: "warning",
+					  title: "내용이 입력되지 않았습니다."
+					});
 				content.focus();
 				return;
 			}
@@ -467,7 +483,10 @@ button:active {
 				}
 
 			});
-			alert('댓글이 등록되었습니다.');
+			Toast.fire({
+				  icon: "success",
+				  title: "댓글이 등록되었습니다."
+				});
 		}
 	</script>
 </div>

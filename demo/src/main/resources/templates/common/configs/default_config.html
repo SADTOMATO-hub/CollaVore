@@ -1,12 +1,13 @@
 <th:block xmlns:th="https://www.thymeleaf.org/" th:fragment="ConfigFrag">
 	<link href="/assets/libs/flot/css/float-chart.css" rel="stylesheet" />
 	<link href="/dist/css/style.min.css" rel="stylesheet" />
+	<!-- SweetAlert2 CSS -->
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 	<script src="/assets/libs/jquery/dist/jquery.min.js"></script>
 	<script src="/dist/js/jquery.ui.touch-punch-improved.js"></script>
 	<script src="/dist/js/jquery-ui.min.js"></script>
 	<script src="/assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-	<script
-		src="/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
+	<script src="/assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
 	<script src="/assets/extra-libs/sparkline/sparkline.js"></script>
 	<script src="/dist/js/waves.js"></script>
 	<script src="/dist/js/sidebarmenu.js"></script>
@@ -14,4 +15,19 @@
 	<script src="/assets/libs/moment/min/moment.min.js"></script>
 	<script src="/assets/libs/fullcalendar/dist/fullcalendar.min.js"></script>
 	<script src="/dist/js/pages/calendar/cal-init.js"></script>
+	<!-- SweetAlert2 JavaScript -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script>
+		const Toast = Swal.mixin({
+	        toast: true,
+	        position: "top-end",
+	        showConfirmButton: false,
+	        timer: 2000,
+	        timerProgressBar: true,
+	        didOpen: (toast) => {
+	          toast.onmouseenter = Swal.stopTimer;
+	          toast.onmouseleave = Swal.resumeTimer;
+	        }
+	      });
+	</script>
 </th:block>

@@ -180,7 +180,10 @@ function editDeptName(nameSpan, dept) {
 
 		// 중복된 이름 확인, 현재 부서를 제외
 		if (isDeptNameDuplicate(newName, dept.deptNo)) {
-			alert("이미 존재하는 부서 이름입니다. 다른 이름을 사용해주세요.");
+            Toast.fire({
+              icon: "warning",
+              title: "이미 존재하는 부서 이름입니다. <br>다른 이름을 사용해주세요."
+            });
 			input.value = nameSpan.textContent; // 기존 이름으로 유지
 			input.focus();
 			updateExecuted = false; // 플래그 초기화
@@ -240,7 +243,10 @@ function addSubDept(parentDeptNo, li) {
 
 		// 중복된 이름 확인
 		if (isDeptNameDuplicate(deptName)) {
-			alert("이미 존재하는 부서 이름입니다. 다른 이름을 사용해주세요.");
+            Toast.fire({
+              icon: "warning",
+              title: "이미 존재하는 부서 이름입니다. <br>다른 이름을 사용해주세요."
+            });
 			inputField.value = ''; // 중복된 이름일 경우 필드 초기화
 			inputField.focus();
 
@@ -303,7 +309,10 @@ function addSubDept(parentDeptNo, li) {
 // 저장 버튼을 클릭했을 때만 서버에 저장하는 함수
 function saveDept() {
 	if (modifiedDepartments.length === 0) {
-		alert('변경 사항이 없습니다.');
+            Toast.fire({
+              icon: "warning",
+              title: "변경 사항이 없습니다."
+            });
 		return;
 	}
 
@@ -315,13 +324,19 @@ function saveDept() {
 		.then(response => response.text())
 		.then(result => {
 			if (result.trim() === 'success') {
-				alert('변경 사항이 저장되었습니다.');
+            Toast.fire({
+              icon: "success",
+              title: "변경 사항이 저장되었습니다."
+            });
 				modifiedDepartments = []; // 수정 기록 초기화
 
 				// 전체 트리를 새로 불러와 새로고침 없이 갱신
 				loadExistingData(); // 새로 등록된 부서와 수정 사항 반영
 			} else {
-				alert('저장에 실패했습니다.');
+	            Toast.fire({
+	              icon: "error",
+	              title: "저장에 실패했습니다."
+	            });
 			}
 		})
 		.catch(error => console.error('Error saving departments:', error));
@@ -367,12 +382,18 @@ function deleteDept(deptNo, li, departments = []) {
 	const hasChildDepartments = departments.some(dept => dept.parentDeptNo === deptNo);
 
 	if (hasEmployees) {
-		alert("부서에 소속된 사원이 있어 삭제할 수 없습니다.");
+		Toast.fire({
+		  icon: "warning",
+		  title: "부서에 소속된 사원이 있어<br>삭제할 수 없습니다."
+		});
 		return;
 	}
 
 	if (hasChildDepartments) {
-		alert("하위 부서가 있어 삭제할 수 없습니다.");
+		Toast.fire({
+		  icon: "warning",
+		  title: "하위 부서가 있어 삭제할 수 없습니다."
+		});
 		return;
 	}
 
@@ -380,7 +401,10 @@ function deleteDept(deptNo, li, departments = []) {
 		.then(response => response.text())
 		.then(result => {
 			if (result === 'success') {
-				alert('부서가 삭제되었습니다.');
+				Toast.fire({
+				  icon: "success",
+				  title: "부서가 삭제되었습니다."
+				});
 				li.remove();
 				refreshConnections();
 
@@ -393,7 +417,10 @@ function deleteDept(deptNo, li, departments = []) {
 				// 삭제된 부서 추적
 				deletedDepartments[deptNo] = true;
 			} else {
-				alert('삭제에 실패했습니다.');
+				Toast.fire({
+				  icon: "error",
+				  title: "삭제에 실패했습니다."
+				});
 			}
 		})
 		.catch(error => console.error('Error deleting department:', error));
@@ -544,7 +571,10 @@ document.getElementById("setManagerBtn").addEventListener("click", function() {
 	const selectedManager = document.querySelector('input[name="emp"]:checked');
 
 	if (!selectedManager) {
-		alert("부서장을 지정할 사원을 선택해주세요.");
+				Toast.fire({
+				  icon: "warning",
+				  title: "부서장을 지정할 사원을 선택해주세요."
+				});
 		return;
 	}
 
@@ -558,10 +588,16 @@ document.getElementById("setManagerBtn").addEventListener("click", function() {
 		.then(response => response.text())
 		.then(result => {
 			if (result === "success") {
-				alert("부서장이 지정되었습니다.");
+				Toast.fire({
+				  icon: "success",
+				  title: "부서장이 지정되었습니다."
+				});
 				findDeptEmp(deptNo);
 			} else {
-				alert("부서장 지정에 실패했습니다.");
+				Toast.fire({
+				  icon: "warning",
+				  title: "부서장 지정에 실패했습니다."
+				});
 			}
 		})
 		.catch(error => console.error("Error updating manager:", error));

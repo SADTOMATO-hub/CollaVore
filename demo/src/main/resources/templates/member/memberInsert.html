@@ -524,7 +524,10 @@ document.addEventListener("DOMContentLoaded", function () {
         let isValid = validateRequiredFields();  // 필수 입력 필드 검증
 
         if (!isValid) {
-            alert("필수 항목을 확인해주세요.");
+            Toast.fire({
+            	  icon: "warning",
+            	  title: "필수 항목을 확인해주세요."
+            	});
             return;
         }
         
@@ -533,7 +536,10 @@ document.addEventListener("DOMContentLoaded", function () {
             const [telIsValid, emailIsValid] = results;
 
             if (!telIsValid || !emailIsValid) {
-                alert("중복된 연락처나 이메일이 있습니다.");  // 중복 오류 메시지 표시
+                Toast.fire({
+              	  icon: "warning",
+              	  title: "중복된 연락처나 이메일이 있습니다."
+              	});
             } else {
                 document.querySelector('#memberForm').submit();  // 폼 제출 재시도
             }

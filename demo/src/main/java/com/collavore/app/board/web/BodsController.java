@@ -164,13 +164,6 @@ public class BodsController {
 		return "redirect:bodsList?boardNo=" + boardNo; 
 	}
 
-	// 댓글등록 - 페이지 : URI - boardInsert / RETURN - board/boardInsert
-	@GetMapping("/board/bodsComts")
-	public String bodsComtsInsertForm(BodsComtsVO bodsComtsVO) {
-		return "board/bodsComts";
-
-	}
-
 	// 댓글등록 - 처리 : URI - boardInsert / PARAMETER - BoardVO(QueryString)
 	// RETURN - 단건조회 다시 호출
 	@PostMapping("/board/bodsComts")

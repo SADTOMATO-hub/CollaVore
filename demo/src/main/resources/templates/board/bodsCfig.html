@@ -383,35 +383,50 @@ button:active {
 
 			let name = $('form [name="name"]');
 			if (name.val() == '') {
-				alert('게시판이름이 입력되지 않았습니다.');
+				Toast.fire({
+				  icon: "warning",
+				  title: "게시판이름이 입력되지 않았습니다."
+				});
 				content.focus();
 				return;
 			}
 
 			let subject = $('form [name="subject"]');
 			if (subject.val() == '') {
-				alert('말머리가 입력되지 않았습니다.');
+				Toast.fire({
+					  icon: "warning",
+					  title: "말머리가 입력되지 않았습니다."
+					});
 				content.focus();
 				return;
 			}
 
 			let readAuth = $('form [name="readAuth"]');
 			if (readAuth.val() == '') {
-				alert('읽기권한이 입력되지 않았습니다.');
+				Toast.fire({
+					  icon: "warning",
+					  title: "읽기권한이 입력되지 않았습니다."
+					});
 				readAuth.focus();
 				return;
 			}
 
 			let writeAuth = $('form [name="writeAuth"]');
 			if (writeAuth.val() == '') {
-				alert('쓰기권한이 입력되지 않았습니다.');
+				Toast.fire({
+					  icon: "warning",
+					  title: "쓰기권한이 입력되지 않았습니다."
+					});
 				writeAuth.focus();
 				return;
 			}
 
 			let commentAuth = $('form [name="commentAuth"]');
 			if (commentAuth.val() == '') {
-				alert('댓글권한이 입력되지 않았습니다.');
+				Toast.fire({
+					  icon: "warning",
+					  title: "댓글권한이 입력되지 않았습니다."
+					});
 				commentAuth.focus();
 				return;
 			}
@@ -425,7 +440,11 @@ button:active {
 				url : '/board/bodsCfig',
 				data : $(document.insertBodsCfig).serialize(),
 				success : function(data) {
-					location.reload()
+		            Toast.fire({
+		                icon: "success",
+		                title: "게시판이 등록되었습니다."
+		              });
+					location.reload();
 
 				},
 				error : function(request, status, error) {
@@ -433,7 +452,6 @@ button:active {
 				}
 
 			});
-			alert('게시판이 등록되었습니다.');
 		}
 	</script>
 </div>

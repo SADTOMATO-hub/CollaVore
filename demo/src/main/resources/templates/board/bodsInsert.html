@@ -140,7 +140,6 @@ button:active {
 	height : 500px !important;
 }
 */
-
 </style>
 	<div class="body-page-wrapper">
 		<div class="purple-background-container">
@@ -155,30 +154,35 @@ button:active {
 			</div>
 			<div class="card_memberInsert">
 				<div class="col-md-9">
-					<form class="form-horizontal" name="insertForm" th:action="@{/board/bodsInsert}" method="post">
+					<form class="form-horizontal" name="insertForm"
+						th:action="@{/board/bodsInsert}" method="post">
 						<input type="hidden" name="boardNo" th:value="${param.boardNo}" />
 						<input type="hidden" name="writer" th:value="${empNo}" />
-	
+
 						<div class="form-group row">
-							<label for="title" class="col-sm-3 text-end control-label col-form-label">제목</label>
+							<label for="title"
+								class="col-sm-3 text-end control-label col-form-label">제목</label>
 							<div class="col-sm-9">
-								<input type="text" class="form-control" id="title" name="title" placeholder="게시글 제목" />
+								<input type="text" class="form-control" id="title" name="title"
+									placeholder="게시글 제목" />
 							</div>
 						</div>
 						<div class="form-group row">
-						    <label for="title" class="col-sm-3 text-end control-label col-form-label">머리글</label>
-						    <div class="col-sm-9">
-						        <select class="form-select" id="subject" name="subject">
-						            <th:block th:each="subject : ${boardInfo.subjectList}">
-						                <option th:value="${subject}" th:text="${subject}"></option>
-						            </th:block>
-						        </select>
-						    </div>
+							<label for="title"
+								class="col-sm-3 text-end control-label col-form-label">머리글</label>
+							<div class="col-sm-9">
+								<select class="form-select" id="subject" name="subject">
+									<th:block th:each="subject : ${boardInfo.subjectList}">
+										<option th:value="${subject}" th:text="${subject}"></option>
+									</th:block>
+								</select>
+							</div>
 						</div>
 						<div class="form-group row">
-							<label for="content" class="col-sm-3 text-end control-label col-form-label">내용</label>
+							<label for="content"
+								class="col-sm-3 text-end control-label col-form-label">내용</label>
 							<div class="col-sm-9">
-								<textarea class="form-control" id="content" name="content" ></textarea>
+								<textarea class="form-control" id="content" name="content"></textarea>
 							</div>
 						</div>
 						<!-- 등록 버튼 -->
@@ -219,7 +223,10 @@ button:active {
 			let content = document.getElementById("content").value;
 
 			if (title == '' || title == null) {
-				alert("제목을 입력해주세요.");
+					Toast.fire({
+					  icon: "warning",
+					  title: "제목을 입력해주세요."
+					});
 				document.getElementById("title").focus();
 				return;
 			}
@@ -227,15 +234,21 @@ button:active {
 			if (content == "" || content == null || content == '&nbsp;'
 					|| content == '<br>' || content == '<br/>'
 					|| content == '<p>&nbsp;</p>' || content == '<p></p>') {
-				alert("내용을 주세요.");
+					Toast.fire({
+					  icon: "warning",
+					  title: "내용을 입력하지 않았습니다. <br>입력 후 다시 시도해주세요."
+					});
 				oEditors.getById["content"].exec("FOCUS"); //포커싱
 				return;
 			} else {
-				alert('게시글이 등록되었습니다.');
-				console.log(content);
+					Toast.fire({
+					  icon: "success",
+					  title: "게시글이 등록되었습니다."
+					});
 				insertForm.submit();
 			}
 		}
 	</script>
-	<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
+	<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js"
+		charset="utf-8"></script>
 </div>

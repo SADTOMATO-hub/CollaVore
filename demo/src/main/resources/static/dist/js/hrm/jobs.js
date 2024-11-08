@@ -62,6 +62,11 @@ function addJob() {
 		} else {
 			// 중복된 이름일 경우 알림 메시지 출력 후 다시 focus 유지
 			alert("중복된 직무 이름은 사용할 수 없습니다.");
+
+			Toast.fire({
+				icon: "warning",
+				title: "부서장 지정에 실패했습니다."
+			});
 			setTimeout(() => input.focus(), 0); // 경고 후 다시 focus
 		}
 	});
@@ -97,8 +102,8 @@ function saveJobs() {
 	});
 
 	// 서버에 저장 요청
-		
-		console.log(jobsToSave);
+
+	console.log(jobsToSave);
 	if (jobsToSave.length > 0) {
 		fetch('/jobs/save', {
 			method: 'POST',
@@ -110,18 +115,30 @@ function saveJobs() {
 			.then(response => response.text())
 			.then(data => {
 				if (data === 'success') {
-					alert('직무가 성공적으로 저장되었습니다.');
+					Toast.fire({
+						icon: "success",
+						title: "직무가 성공적으로 저장되었습니다."
+					});
 					loadExistingJobs(); // 저장 후 직무 목록 다시 로드
 				} else {
-					alert('저장에 실패했습니다.');
+					Toast.fire({
+						icon: "warning",
+						title: "저장에 실패했습니다."
+					});
 				}
 			})
 			.catch(error => {
 				console.error('Error saving jobs:', error);
-				alert('저장 중 오류가 발생했습니다.');
+				Toast.fire({
+					icon: "error",
+					title: "저장 중 오류가 발생했습니다."
+				});
 			});
 	} else {
-		alert('저장할 새로운 직무가 없습니다.');
+		Toast.fire({
+			icon: "warning",
+			title: "저장할 새로운 직무가 없습니다."
+		});
 	}
 }
 
@@ -150,7 +167,10 @@ function editJob(span, jobNo = null) {
 			span.textContent = jobName; // 변경되지 않았으면 기존 값 유지
 		} else if (existingJobs.some(job => job.jobName === newName)) {
 			if (!alertShown) { // 한 번만 실행되도록 설정
-				alert("중복된 직무 이름은 사용할 수 없습니다.");
+				Toast.fire({
+					icon: "warning",
+					title: "중복된 직무 이름은 사용할 수 없습니다."
+				});
 				alertShown = true;
 			}
 			input.focus(); // 중복된 경우 입력 상태 유지
@@ -171,30 +191,53 @@ function editJob(span, jobNo = null) {
 
 // 직무 삭제 함수
 function removeJob(button, jobNo = null) {
-	if (confirm('정말로 삭제하시겠습니까?')) {
-		if (jobNo) {
-			fetch(`/jobs/delete/${jobNo}`, {
-				method: 'DELETE'
-			})
-				.then(response => response.text())
-				.then(result => {
-					if (result === 'success') {
-						alert('직위가 성공적으로 삭제되었습니다.');
-						button.parentElement.remove();
-					} else if (result === 'cannot_delete') {
-						alert('해당 직위가 사원에게 할당되어 있어 삭제할 수 없습니다.');
-					} else {
-						alert('삭제에 실패했습니다.');
-					}
+	Swal.fire({
+		title: "정말로 삭제하시겠습니까?",
+		icon: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#3085d6",
+		cancelButtonColor: "#d33",
+		confirmButtonText: "예",
+		cancelButtonText: "아니요"
+	}).then((result) => {
+		if (result.isConfirmed) {
+			// 아작스
+			if (jobNo) {
+				fetch(`/jobs/delete/${jobNo}`, {
+					method: 'DELETE'
 				})
-				.catch(error => {
-					console.error('Error deleting job:', error);
-					alert('삭제 중 오류가 발생했습니다.');
-				});
-		} else {
-			button.parentElement.remove(); // 새로 추가된 직위는 화면에서만 삭제
+					.then(response => response.text())
+					.then(result => {
+						if (result === 'success') {
+							Toast.fire({
+								icon: "success",
+								title: "직위가 성공적으로 삭제되었습니다."
+							});
+							button.parentElement.remove();
+						} else if (result === 'cannot_delete') {
+							Toast.fire({
+								icon: "warning",
+								title: "해당 직위가 사원에게<br> 할당되어 있어 삭제할 수 없습니다."
+							});
+						} else {
+							Toast.fire({
+								icon: "error",
+								title: "삭제에 실패했습니다."
+							});
+						}
+					})
+					.catch(error => {
+						console.error('Error deleting job:', error);
+							Toast.fire({
+								icon: "error",
+								title: "삭제 중 오류가 발생했습니다."
+							});
+					});
+			} else {
+				button.parentElement.remove(); // 새로 추가된 직위는 화면에서만 삭제
+			}
 		}
-	}
+	});
 }
 
 // 페이지 로드 시 기존 데이터 불러오기
