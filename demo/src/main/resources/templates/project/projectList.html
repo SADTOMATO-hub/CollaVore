@@ -283,7 +283,7 @@ button:active {
 			</div>
 
 			<div class="card_memberList">
-				<table class="memberList_table">
+				<table class="table table-striped table-hover table-bordered memberList_table">
 					<thead>
 						<tr>
 							<th scope="col">프로젝트번호</th>
@@ -315,8 +315,9 @@ button:active {
 									<button type="button"
 										class="btn btn-danger text-white delete-btn"
 										th:attr="data-proj-no=${info.projNo}">삭제</button>
-									<button type="button" class="btn btn-success text-white"
-										 data-bs-toggle="modal" data-bs-target="#git" th:data-project-git-url="${info.projectGitUrl}">내려받기</button>
+								    <a class="btn btn-success text-white" th:href="@{|https://api.github.com/repos/${info.owner}/${info.repo}/zipball/master|}">
+								        내려받기
+								    </a>
 								</td>
 							</tr>
 						</th:block>
@@ -345,19 +346,11 @@ button:active {
 				<div class="modal-body">
 					<form id="projectForm">
 						<div class="mb-3">
-							<label for="projName" class="form-label">프로젝트 이름</label>     
-							    <input
-							        type="text"
-							        
-							        class="form-control"
-							        name="name"
-							        id="projName"
-							        required
-							        oninput="validateInput(this)"
-							        placeholder="영어만 입력해주세요."
-							    >
+							<label for="projName" class="form-label">프로젝트 이름</label> <input
+								type="text" class="form-control" name="name" id="projName"
+								required oninput="validateInput(this)" placeholder="영어만 입력해주세요.">
 						</div>
-						
+
 						<div class="mb-3">
 							<label for="projContent" class="form-label">프로젝트 개요</label>
 							<textarea class="form-control" name="content" id="projContent"
@@ -403,7 +396,7 @@ button:active {
 								type="date" class="form-control" name="endDate" id="projEndDate"
 								required>
 						</div>
-						
+
 						<button type="submit" class="btn btn-primary">생성</button>
 					</form>
 				</div>
@@ -424,16 +417,9 @@ button:active {
 					<form id="editProjectForm">
 						<input type="hidden" name="projNo" id="editProjNo">
 						<div class="mb-3">
-							<label for="editProjName" class="form-label">프로젝트 이름</label> 
-								<input
-							        type="text"
-							        class="form-control"
-							        name="name"
-							        id="editProjName"
-							        required
-							        oninput="validateInput(this)"
-							        placeholder="영어만 입력해주세요."
-							    >
+							<label for="editProjName" class="form-label">프로젝트 이름</label> <input
+								type="text" class="form-control" name="name" id="editProjName"
+								required oninput="validateInput(this)" placeholder="영어만 입력해주세요.">
 						</div>
 						<div class="mb-3">
 							<label for="editProjContent" class="form-label">프로젝트 개요</label>
@@ -473,29 +459,9 @@ button:active {
 			</div>
 		</div>
 	</div>
-	<!--  -->
-	<div class="modal fade" id="git" tabindex="-1"
-		aria-labelledby="gitModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="giturls">프로젝트 내려받기</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-						<div class="mb-3">
-							<label for="giturl" class="form-label">내려받을 경로</label>
-							<textarea class="form-control" name="localUrl"
-								id="localUrls" rows="5"  required></textarea>
-						</div>
-						 <input type="hidden" id="gitUrlInput" name="projectGitUrl" value="">
-						<button type="button" class="btn btn-success text-white" th:onclick="selectDirectory('${info.projNo}')">내려받기</button>
-				</div>
-			</div>
-		</div>
-	</div>
 </div>
+<script
+	src="https://cdn.jsdelivr.net/npm/@octokit/rest/dist/octokit-rest.min.js"></script>
 <script>
 const empNo = '[[${empNo}]]';
 const compGitUrl = '[[${gitInfo.compGitUrl}]]';
@@ -503,14 +469,7 @@ const compGitToken = '[[${gitInfo.compGitToken}]]';
 
 //프로젝트생성 모달폼 
 $(document).ready(function() {
-    // 모달이 열릴 때 Git URL을 설정하는 이벤트
-    document.getElementById('git').addEventListener('show.bs.modal', function (event) {
-        // 이벤트 발생 요소 (버튼)에서 Git URL 가져오기
-        const button = event.relatedTarget;
-        const projectGitUrl = button.getAttribute('data-project-git-url');
-        // Hidden input과 표시 텍스트에 Git URL 설정
-        document.getElementById('gitUrlInput').value = projectGitUrl;
-    });
+  
     $('#projectForm').on('submit', function(event) {
         event.preventDefault(); 
         $.ajax({
@@ -790,6 +749,7 @@ function gitReadMECommit(projName, owner, repo){
 		  .catch(error => console.error('Error:', error));
 }
 
+
 // 로컬폴더 입력받아서 git clone 실행
 function selectDirectory() {
 	let localUrl = $('#localUrls').val().replace(/\\/g, "/");
@@ -815,6 +775,7 @@ function selectDirectory() {
 	 // 모달을 닫을 때
 	    $('#git').modal('hide');
   }
+
 function validateInput(input) {
     const regex = /^[a-zA-Z0-9_ ]*$/; // 영어, 숫자, 언더바, 공백 허용하는 정규 표현식
     
@@ -874,20 +835,6 @@ document.getElementById("editProjEndDate").addEventListener("change", function()
     }
 });
 
-// 입력된 값에 대한 유효성 검사 (영어, 숫자, 공백, 언더바만 허용하고 20글자 이하로 제한)
-function validateInput(input) {
-    const regex = /^[a-zA-Z0-9_ ]*$/; // 영어, 숫자, 언더바, 공백 허용하는 정규 표현식
 
-    // 유효하지 않은 문자 처리
-    if (!regex.test(input.value)) {
-        alert("영어, 숫자, 공백, 언더바만 입력할 수 있습니다.");
-        input.value = input.value.replace(/[^a-zA-Z0-9_ ]/g, ''); // 유효하지 않은 문자 제거
-    }
 
-    // 글자수 제한: 20글자 이하로 설정
-    if (input.value.length > 30) {
-        alert("입력된 글자 수는 30자를 초과할 수 없습니다.");
-        input.value = input.value.slice(0, 20); // 20자 이상이면 자르기
-    }
-}
 </script>
