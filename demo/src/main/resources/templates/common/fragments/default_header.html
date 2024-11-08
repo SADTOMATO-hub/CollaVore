@@ -28,18 +28,22 @@
 					href="javascript:void(0)"> <i class="ti-menu ti-close"></i>
 				</a>
 			</div>
-			<a class="nav-link sidebartoggler waves-effect waves-light"
-				href="javascript:void(0)" data-sidebartype="mini-sidebar"><i
-				class="mdi mdi-menu font-24"></i></a>
 			<div class="navbar-collapse collapse" id="navbarSupportedContent"
 				data-navbarbg="skin5">
 				<ul class="navbar-nav float-start me-auto" style="margin: 0 auto;">
-					<li class="nav-item d-none d-lg-block"></li>
-					<li class="nav-item dropdown"><a
-						class="nav-link dropdown-toggle" href="#" id="navbarDropdown_hrm"
-						role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<span class="d-none d-md-block">인사관리 <i
-								class="fa fa-angle-down"></i></span>
+					<li class="nav-item d-none d-lg-block">
+					    <button type="button" id="fontDecrease" class="btn btn-secondary">-</button>
+					    <button type="button" id="fontIncrease" class="btn btn-secondary">+</button>
+					</li>
+					<li class="nav-item d-none d-lg-block">
+						<a class="nav-link sidebartoggler waves-effect waves-light" href="javascript:void(0)" data-sidebartype="mini-sidebar">
+							<i class="mdi mdi-menu font-24"></i>
+						</a>
+					</li>
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown_hrm" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							<span class="d-none d-md-block">인사관리 
+							<i class="fa fa-angle-down"></i></span>
 					</a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown_hrm">
 							<li><a class="dropdown-item" th:href="@{/memberInfo}">나의
@@ -116,18 +120,6 @@
 				</ul>
 				<ul class="navbar-nav float-end">
 					<li class="nav-item dropdown"><a
-						class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
-						role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							<i class="mdi mdi-bell font-24"></i>
-					</a>
-						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<li><a class="dropdown-item" href="#">Action</a></li>
-							<li><a class="dropdown-item" href="#">Another action</a></li>
-							<li><hr class="dropdown-divider" /></li>
-							<li><a class="dropdown-item" href="#">Something else
-									here</a></li>
-						</ul></li>
-					<li class="nav-item dropdown"><a
 						class="nav-link dropdown-toggle text-muted waves-effect waves-dark pro-pic"
 						href="#" id="navbarDropdown" role="button"
 						data-bs-toggle="dropdown" aria-expanded="false"> <img
@@ -197,28 +189,24 @@
 
 
 					<!-- Department and Employee Select Boxes -->
-					<div class="form-group row m-2">
-						<label for="departmentSelect"
-							class="col-sm-3 text-center control-label col-form-label">부서
-							선택</label>
-						<div class="col-sm-9">
-							<select id="departmentSelect" class="form-select">
-								<option value="">부서를 선택하세요</option>
-								<!-- 부서 목록은 서버에서 동적으로 추가 -->
-							</select>
-						</div>
-					</div>
-					<div class="form-group row m-2">
-						<label for="employeeSelect"
-							class="col-sm-3 text-center control-label col-form-label">사원
-							조회</label>
-						<div class="col-sm-9">
-							<select id="employeeSelect" class="form-select">
-								<option value="">사원을 선택하세요</option>
-								<!-- 선택된 부서와 메뉴 탭에 맞는 사원 목록이 동적으로 추가 -->
-							</select>
-						</div>
-					</div>
+					<div class="form-group row m-2 p-3" style="background-color: #f0f0f0;">
+    <label for="departmentSelect" class="col-sm-2 text-center control-label col-form-label">부서 선택</label>
+    <div class="col-sm-4">
+        <select id="departmentSelect" class="form-select">
+            <option value="">부서를 선택하세요</option>
+            <!-- 부서 목록은 서버에서 동적으로 추가 -->
+        </select>
+    </div>
+
+    <label for="employeeSelect" class="col-sm-2 text-center control-label col-form-label">사원 조회</label>
+    <div class="col-sm-4">
+        <select id="employeeSelect" class="form-select">
+            <option value="">사원을 선택하세요</option>
+            <!-- 선택된 부서와 메뉴 탭에 맞는 사원 목록이 동적으로 추가 -->
+        </select>
+    </div>
+</div>
+
 
 
 
@@ -309,9 +297,34 @@
 			</div>
 		</div>
 	</div>
-	
-	
 	<script>
+		    // 초기 폰트 크기 설정
+		    let fontSize = 1.1;
+		
+		    // 폰트 크기 조정 함수
+		    function adjustFontSize() {
+		        document.body.style.fontSize = fontSize + 'em';
+		    }
+		
+		    // 폰트 감소 버튼 이벤트
+		    document.getElementById("fontDecrease").addEventListener("click", function() {
+		        if (fontSize > 1.1) { // 최소 크기 제한
+		            fontSize -= 0.1;
+		            adjustFontSize();
+		        }
+		    });
+		
+		    // 폰트 증가 버튼 이벤트
+		    document.getElementById("fontIncrease").addEventListener("click", function() {
+		        if (fontSize < 1.7) { // 최대 크기 제한
+		            fontSize += 0.1;
+		            adjustFontSize();
+		        }
+		    });
+		
+		    // 초기 폰트 크기 적용
+		    adjustFontSize();
+		    
 		// 초기 로드 시 부서 목록 가져오기
 		window.onload = function() {
 		    deptList();
