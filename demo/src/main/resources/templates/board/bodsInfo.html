@@ -149,7 +149,7 @@ button:active {
 					<p>[[${boardInfo.name}]] - 게시글 상세 페이지 입니다.</p>
 				</div>
 				<div class="breadcrumb-right">
-					<span>게시판 > [[${boardInfo.name}]] - 게시글 상세</span>
+					<span>게시판 > 게시글 상세</span>
 				</div>
 			</div>
 			<div class="card_memberInsert">
@@ -214,26 +214,27 @@ button:active {
 							th:value="${bods.postNo}"> <input type="hidden"
 							name="writer" th:value="${empNo}">
 						<div class="form-group row">
-							<label for="content"
-								class="col-sm-3 text-end control-label col-form-label">제목</label>
+							<label for="content" class="col-sm-2 text-end control-label col-form-label">댓글</label>
 							<div class="col-sm-9">
 								<input type="text" class="form-control" id="content"
-									name="content" placeholder="댓글 내용" />
+									name="content" placeholder="내용 입력" />
 							</div>
-						</div>
-						<div class="insert-btn">
-							<button type="button" class="btn btn-primary" id="btninsert">댓글작성</button>
+							<div class=" col-sm-1">
+								<button type="button" class="btn btn-primary" id="btninsert">댓글작성</button>
+							</div>
 						</div>
 					</form>
 				</div>
 				<div class="card_memberInsert" style="margin-top: 20px;">
-					<table id="commentsTable">
+					<table id="table table-striped table-hover table-bordered commentsTable">
 						<thead>
 							<tr>
-								<th>댓글 번호</th>
-								<th>작성자</th>
-								<th>내용</th>
-								<th>등록 날짜</th>
+								<th class="col-sm-1">댓글 번호</th>
+								<th class="col-sm-2">작성자</th>
+								<th class="col-sm-4">내용</th>
+								<th class="col-sm-1">등록 날짜</th>
+								<th class="col-sm-1"></th>
+								<th class="col-sm-1"></th>
 							</tr>
 						</thead>
 						<tbody id="commentsBody">
@@ -311,13 +312,15 @@ button:active {
 		        <tr id="cmtNo${cmtNo}">
 		            <td>${cmtNo}</td>
 		            <td>${writer}</td>
-		            <td>
+		            <td colspan="2">
 		                <input type="hidden" id="cmtNo" name="cmtNo" value="${cmtNo}">
 		                <input type="text" id="updateContent${cmtNo}" value="${content}" style="width:100%;" maxlength="300" autofocus>
 		            </td>
-		            <td colspan="2">
-		                <button type="button" onclick="updateBodsComts(${cmtNo})" class="btn btn-success text-white">수정 완료</button>
-		                <button type="button" onclick="cancelUpdate(${cmtNo}, '${content}', '${writer}', '${regDate}')" class="btn btn-secondary">취소</button>
+		            <td>
+	                	<button type="button" onclick="cancelUpdate(${cmtNo}, '${content}', '${writer}', '${regDate}')" class="btn btn-secondary">취소</button>
+	            	</td>
+		            <td>
+		                <button type="button" onclick="updateBodsComts(${cmtNo})" class="btn btn-success text-white">수정완료</button>
 		            </td>
 		        </tr>`;
 		

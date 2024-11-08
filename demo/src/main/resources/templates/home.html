@@ -36,45 +36,59 @@
 		<div class="row">
 			<!-- Column -->
 			<div class="col-md-6 col-lg-3">
-				<div class="card card-hover">
-					<div class="box bg-cyan text-center">
-						<h1 class="font-light text-white">
-							<i class="mdi mdi-account"></i>
-						</h1>
-						<h6 class="text-white">사원 수 : [[${stats.empCnt}]]명</h6>
-					</div>
-				</div>
+			    <div class="card card-hover">
+			        <div class="box bg-cyan text-center d-flex align-items-center justify-content-between p-3">
+			            <div class="d-flex align-items-center">
+			                <h1 class="font-light text-white m-0">
+			                    <i class="mdi mdi-account"></i>
+			                </h1>
+			                <h6 class="text-white m-0 ms-2">사원 수</h6>
+			            </div>
+			            <h3 class="text-dark m-0">[[${stats.empCnt}]]명</h3>
+			        </div>
+			    </div>
 			</div>
 			<div class="col-md-6 col-lg-3">
-				<div class="card card-hover">
-					<div class="box bg-success text-center">
-						<h1 class="font-light text-white">
-							<i class="mdi mdi-collage"></i>
-						</h1>
-						<h6 class="text-white">프로젝트 수 : [[${stats.projCnt}]]건</h6>
-					</div>
-				</div>
+			    <div class="card card-hover">
+			        <div class="box bg-success d-flex align-items-center justify-content-between p-3">
+			            <div class="d-flex align-items-center">
+			                <h1 class="font-light text-white m-0">
+			                    <i class="mdi mdi-collage"></i>
+			                </h1>
+			                <h6 class="text-white m-0 ms-2">프로젝트 수</h6>
+			            </div>
+			            <h3 class="text-dark m-0">[[${stats.projCnt}]]건</h3>
+			        </div>
+			    </div>
 			</div>
 			<div class="col-md-6 col-lg-3">
-				<div class="card card-hover">
-					<div class="box bg-warning text-center">
-						<h1 class="font-light text-white">
-							<i class="mdi mdi-file-document-box"></i>
-						</h1>
-						<h6 class="text-white">진행중 프로젝트 수 : [[${stats.projIngCnt}]]건</h6>
-					</div>
-				</div>
+			    <div class="card card-hover">
+			        <div class="box bg-warning d-flex align-items-center justify-content-between p-3">
+			            <div class="d-flex align-items-center">
+			                <h1 class="font-light text-white m-0">
+			                    <i class="mdi mdi-file-document-box"></i>
+			                </h1>
+			                <h6 class="text-white m-0 ms-2">진행중 프로젝트 수</h6>
+			            </div>
+			            <h3 class="text-dark m-0">[[${stats.projIngCnt}]]건</h3>
+			        </div>
+			    </div>
 			</div>
 			<div class="col-md-6 col-lg-3">
-				<div class="card card-hover">
-					<div class="box bg-danger text-center">
-						<h1 class="font-light text-white">
-							<i class="mdi mdi-github-box"></i>
-						</h1>
-						<h6 class="text-white">진행중 업무 수 : [[${stats.pdwCnt}]]건</h6>
-					</div>
-				</div>
+			    <div class="card card-hover">
+			        <div class="box bg-danger d-flex align-items-center justify-content-between p-3">
+			            <div class="d-flex align-items-center">
+			                <h1 class="font-light text-white m-0">
+			                    <i class="mdi mdi-github-box"></i>
+			                </h1>
+			                <h6 class="text-white m-0 ms-2">진행중 업무 수</h6>
+			            </div>
+			            <h3 class="text-dark m-0">[[${stats.pdwCnt}]]건</h3>
+			        </div>
+			    </div>
 			</div>
+
+			
 		</div>
 		<div class="row">
 			<div class="col-md-6">
