@@ -286,8 +286,9 @@ button:active {
 				<table class="table table-striped table-hover table-bordered memberList_table">
 					<thead>
 						<tr>
-							<th scope="col">프로젝트번호</th>
-							<th scope="col">프로젝트명</th>
+							<th scope="col">프로젝트 번호</th>
+							<th scope="col">프로젝트 명</th>
+							<th scope="col">프로젝트 개요</th>
 							<th scope="col">진행상태</th>
 							<th scope="col">시작일</th>
 							<th scope="col">마감일</th>
@@ -300,6 +301,9 @@ button:active {
 							<tr>
 								<td scope="row">[[${info.projNo}]]</td>
 								<td>[[${info.name}]]</td>
+								<td>
+								    <span th:text="${#strings.length(info.content) > 20 ? #strings.substring(info.content, 0, 20) + '...' : info.content}"></span>
+								</td>
 								<td><span class="badge rounded-pill bg-secondary"
 									th:if="${info.status == 'j1'}">진행전</span> <span
 									class="badge rounded-pill bg-info"
@@ -490,9 +494,12 @@ $(document).ready(function() {
                 
                 let statusClass;
                 let statusText;
-                console.log(newProject);
-                console.log(response);
-                console.log(prjName);
+                //console.log(newProject);
+                //console.log(response);
+                //console.log(prjName);
+                var content = response.data.content; // 서버에서 content 값을 받아오기
+                var truncatedContent = content.length > 20 ? content.substring(0, 20) + '...' : content;
+
                 switch (newProject.status) {
                     case 'j1':
                         statusClass = 'bg-secondary';
@@ -511,6 +518,9 @@ $(document).ready(function() {
                     <tr data-no="${newProject.projNo}">
                         <td scope="row">${newProject.projNo}</td>
                         <td>${newProject.name}</td>
+                        <td>
+                        <span>${truncatedContent}</span>
+                        </td>
                         <td>
                         <span class="badge rounded-pill ${statusClass}">${statusText}</span>
                     	</td>

@@ -628,6 +628,9 @@ button:active {
 									</div>
 								</form>
 							</div>
+							<div id="chattitle" style="display: none;">
+							<h4>상세업무 코멘트</h4>
+							</div>
 							<div class="card" id="chat" style="display: none;">
 								<div class="card-body">
 									<h4 class="card-title">Chat Option</h4>
@@ -736,7 +739,7 @@ button:active {
 										<input type="hidden" name="projNo" id="projNumber">
 										<button type="button"
 											class="btn btn-danger text-white delete-btn"
-											data-type="project">삭제</button>
+											data-type="project" style="margin-top:5px;">삭제</button>
 									</div>
 								</form>
 							</div>
@@ -772,7 +775,7 @@ button:active {
 									<div>
 										<input type="hidden" name="pwNo" id="wrkNumber">
 										<button type="button"
-											class="btn btn-danger text-white delete-btn" data-type="work">삭제</button>
+											class="btn btn-danger text-white delete-btn" data-type="work"style="margin-top:5px;">삭제</button>
 									</div>
 								</form>
 							</div>
@@ -942,6 +945,7 @@ button:active {
                 $('#chat').hide();
                 $('#wrkInfodel').hide();
                 $('#projinfodel').hide();
+                $('#chattitle').hide();
                 
             } else {
                 $('#insertPanelProjdwrks h4').text(projectName + ' 상세업무 등록');
@@ -955,6 +959,7 @@ button:active {
                 $('#chat').hide();
                 $('#wrkInfodel').hide();
                 $('#projinfodel').hide();
+                $('#chattitle').hide();
             }
 
             $('#projNo').val(projNo.replace(/^[PW]/, ''));
@@ -992,6 +997,7 @@ button:active {
                         $('#chat').hide();
                         $('#wrkInfodel').hide();
                         $('#projinfodel').hide();
+                        $('#chattitle').hide();
                         
                         $('#editProjName').val(response.name);
                         $('#editProjContent').val(response.content);
@@ -1019,6 +1025,7 @@ button:active {
                 $('#chat').hide();
                 $('#wrkInfodel').hide();
                 $('#projinfodel').hide();
+                $('#chattitle').hide();
                 
                 $.ajax({
                     url: `/project/projectwrklistinfo/${pwNo}`, 
@@ -1047,6 +1054,7 @@ button:active {
                 $('#chat').hide();
                 $('#wrkInfodel').hide();
                 $('#projinfodel').hide();
+                $('#chattitle').hide();
                 
                 $.ajax({
                     url: `/project/projectdwrkinfo/${pwNo}`, 
@@ -1205,6 +1213,7 @@ button:active {
                  $('#insertPanelProjdwrks').hide();
                  $('#insertPanelProjwrks').hide();
                  $('#wrkInfodel').hide();
+                 $('#chattitle').hide();
                  
                  
                  $.ajax({
@@ -1252,6 +1261,7 @@ button:active {
                 $('#dwrkInfo').hide();
                 $('#insertPanelProjdwrks').hide();
                 $('#insertPanelProjwrks').hide();
+                $('#chattitle').hide();
                 
                 
 
@@ -1280,6 +1290,7 @@ button:active {
 
             }else {
                 $('#chat').show();
+                $('#chattitle').show();
                 $('#editProjectModal').hide();
                 $('#wrkInfo').hide();
                 $('#dwrkInfo').hide();
@@ -1288,7 +1299,7 @@ button:active {
                 $('#projinfodel').hide();
                 $('#wrkInfodel').hide();
                 
-                $('#chat h4').text(projectName + ' 상세업무 코멘트');
+                $('#chat h4').text(projectName);
                 $('#pdwNode').val(pdwNo);
                 $.ajax({
                     url: '/project/projecdwrkcomtstinfo/' + pdwNo,
@@ -1389,7 +1400,7 @@ button:active {
                                             <button type="button" class="btn btn-outline-success status-button" onclick="updateStatus('k4', '${managerEmpNo}')" style="float: right;">
                                                 컨펌완료
                                             </button>
-                                            <button type="button" class="btn btn-outline-danger" id="delbtn" onclick="updateStatus('k5', '${managerEmpNo}')" style="float: right;">
+                                            <button type="button" class="btn btn-outline-danger" id="delbtn" onclick="updateStatus('k5', '${managerEmpNo}')" style="float: right; margin-right:5px;">
                                                 반려
                                             </button>`;
                                     }
