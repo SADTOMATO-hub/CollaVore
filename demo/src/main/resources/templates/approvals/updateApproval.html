@@ -376,7 +376,10 @@ button:active {
 									$('#content').val(response.content);
 								},
 								error : function(xhr, status, error) {
-									alert('데이터 호출 실패: ' + error);
+				                    Toast.fire({
+				                      icon: "error",
+				                      title: '데이터 호출 실패: ' + error
+				                    });
 								}
 							});
 						});
@@ -441,7 +444,10 @@ $(document).ready(function() {
                 });
             },
             error: function(xhr, status, error) {
-                alert("결재자 정보를 불러오는 중 오류가 발생했습니다.");
+                Toast.fire({
+                  icon: "error",
+                  title: "결재자 정보를 불러오는 중 오류가 발생했습니다."
+                });
             }
         });
     });
@@ -492,7 +498,10 @@ $(document).ready(function() {
 		var approvalTitle = $('#approvalTitle').val();	
 		
 		if(approvalTitle == ''){
-			alert('전자결재명이 없습니다. 입력 후 다시 시도해주세요.');
+            Toast.fire({
+                icon: "warning",
+                title: "전자결재명이 없습니다.<br>입력 후 다시 시도해주세요."
+              });
 			return;
 		}
 		
@@ -507,7 +516,10 @@ $(document).ready(function() {
 	    }
 	
 		if (allEmpty) {
-		    alert("결재자는 최소 1명이상 등록해야 합니다. 결재자 추가 후 다시 시도해주세요.");
+            Toast.fire({
+              icon: "warning",
+              title: "결재자는 최소 1명이상 등록해야 합니다.<br> 결재자 추가 후 다시 시도해주세요."
+            });
 		    return;
 		}
 		oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
@@ -516,7 +528,10 @@ $(document).ready(function() {
 				|| content == '&nbsp;'
 				|| content == '<br>' 
 				|| content == '<p>&nbsp;</p>'){
-			alert("템플릿을 정해주세요.");
+            Toast.fire({
+                icon: "warning",
+                title: "템플릿을 정해주세요."
+              });
 			oEditors.getById["content"].exec("FOCUS");
 			return;
 		}else{

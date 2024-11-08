@@ -1,4 +1,3 @@
-
 <div class="page-wrapper" xmlns:th="https://www.thymeleaf.org/"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}"
@@ -220,12 +219,18 @@ button:active {
 		let content = document.getElementById("content").value;
 
 		if (title === '' || title == null) {
-			alert("제목을 입력해주세요.");
+            Toast.fire({
+                icon: "warning",
+                title: "제목을 입력해주세요."
+              });
 			document.getElementById("title").focus();
 		} else if (content == "" || content == null || content == '&nbsp;'
 				|| content == '<br>' || content == '<br/>'
 				|| content == '<p>&nbsp;</p>' || content == '<p></p>') {
-			alert("템플릿을 정해주세요.");
+            Toast.fire({
+                icon: "warning",
+				title : "템플릿을 정해주세요."
+              });
 			oEditors.getById["content"].exec("FOCUS"); //포커싱
 			return;
 		} else {

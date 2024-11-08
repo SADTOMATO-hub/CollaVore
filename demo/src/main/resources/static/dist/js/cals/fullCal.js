@@ -124,15 +124,24 @@ document.addEventListener('DOMContentLoaded', function() {
 							.then(data => {
 								console.log(data); // 여기서 응답을 출력
 								if (data === "success") {
-									alert('일정이 성공적으로 업데이트되었습니다.');
+									Toast.fire({
+										icon: "success",
+										title: "일정이 성공적으로 업데이트되었습니다."
+									});
 								} else {
-									alert('일정 업데이트에 실패했습니다.');
+									Toast.fire({
+										icon: "warning",
+										title: "일정 업데이트에 실패했습니다."
+									});
 									info.revert(); // 서버 응답이 실패한 경우 일정 위치 복구
 								}
 							})
 							.catch(error => {
 								console.error('Error updating event:', error);
-								alert('일정 업데이트 중 오류가 발생했습니다.');
+								Toast.fire({
+									icon: "error",
+									title: "일정 업데이트 중 오류가 발생했습니다."
+								});
 								info.revert(); // 오류 발생 시 일정 위치 복구
 							});
 					},
@@ -150,7 +159,10 @@ document.addEventListener('DOMContentLoaded', function() {
 						var eventId = info.event.id;
 						let isProj = info.event._def.extendedProps.isProj;
 						if (isProj == 'Y') {
-							alert("프로젝트일정은 상세조회를 할 수 없습니다.")
+							Toast.fire({
+								icon: "warning",
+								title: "프로젝트일정은 상세조회를 할 수 없습니다."
+							});
 						} else {
 							fetch(`/sch/schInfo?schNo=${eventId}`)
 								.then(response => response.json())
@@ -381,7 +393,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 												var title = document.getElementById('viewTitle').value.trim();
 												if (!title) {
-													alert("일정 제목을 입력해 주세요.");
+													Toast.fire({
+														icon: "warning",
+														title: "일정 제목을 입력해 주세요."
+													});
 													return;
 												}
 
@@ -392,7 +407,10 @@ document.addEventListener('DOMContentLoaded', function() {
 													if (alarmTypeInput.value === 'd1') { // 매일 알림 예외 처리
 														const dailyRepeat = document.getElementById('viewDailyRepeat').value;
 														if (!dailyRepeat || dailyRepeat < 1 || dailyRepeat > 24) {
-															alert("매일 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
+															Toast.fire({
+																icon: "warning",
+																title: "매일 알림의 '시 마다' 설정을<br>1~24 사이의 숫자로 입력해주세요."
+															});
 															return;
 														}
 													} else if (alarmTypeInput.value === 'd2') { // 매주 알림 예외 처리
@@ -400,11 +418,17 @@ document.addEventListener('DOMContentLoaded', function() {
 														const selectedDays = getSelectedWeeklyDays();
 
 														if (selectedDays.length === 0) {
-															alert("매주 알림의 요일을 선택해주세요.");
+															Toast.fire({
+																icon: "warning",
+																title: "매주 알림의 요일을 선택해주세요."
+															});
 															return;
 														}
 														if (!weeklyRepeat || weeklyRepeat < 1 || weeklyRepeat > 24) {
-															alert("매주 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
+															Toast.fire({
+																icon: "warning",
+																title: "매주 알림의 '시 마다' 설정을<br>1~24 사이의 숫자로 입력해주세요."
+															});
 															return;
 														}
 													} else if (alarmTypeInput.value === 'd3') { // 매달 알림 예외 처리
@@ -412,11 +436,17 @@ document.addEventListener('DOMContentLoaded', function() {
 														const monthlyHour = document.getElementById('viewMonthlyHour').value;
 
 														if (!monthlyDay || monthlyDay < 1 || monthlyDay > 31) {
-															alert("매달 알림의 '일' 설정을 1~31 사이의 숫자로 입력해주세요.");
+															Toast.fire({
+																icon: "warning",
+																title: "매달 알림의 '일' 설정을<br>1~31 사이의 숫자로 입력해주세요."
+															});
 															return;
 														}
 														if (!monthlyHour || monthlyHour < 1 || monthlyHour > 24) {
-															alert("매달 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
+															Toast.fire({
+																icon: "warning",
+																title: "매달 알림의 '시 마다' 설정을<br>1~24 사이의 숫자로 입력해주세요."
+															});
 															return;
 														}
 													}
@@ -446,7 +476,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 												// 시작 날짜와 종료 날짜 비교 예외 처리
 												if (startDateTime > endDateTime) {
-													alert("종료 날짜는 시작 날짜보다 이후여야 합니다.");
+													Toast.fire({
+														icon: "warning",
+														title: "종료 날짜는 시작 날짜보다 이후여야 합니다."
+													});
 													return;  // 함수를 종료하여 제출을 막음
 												}
 
@@ -478,7 +511,10 @@ document.addEventListener('DOMContentLoaded', function() {
 													.then(response => response.json())
 													.then(data => {
 														if (data.success) {
-															alert('일정이 성공적으로 수정되었습니다.');
+															Toast.fire({
+																icon: "success",
+																title: "일정이 성공적으로 수정되었습니다."
+															});
 															console.log(updatedData);
 
 															// UI 초기화
@@ -493,25 +529,37 @@ document.addEventListener('DOMContentLoaded', function() {
 															calendarApi();
 															//location.reload();
 														} else {
-															alert('일정 수정에 실패했습니다.');
+															Toast.fire({
+																icon: "warning",
+																title: "일정 수정에 실패했습니다."
+															});
 														}
 													})
 													.catch(error => {
 														console.log(updatedData);
 
 														console.error('Error updating schedule:', error);
-														alert('일정 수정 중 오류가 발생했습니다.');
+														Toast.fire({
+															icon: "error",
+															title: "일정 수정 중 오류가 발생했습니다."
+														});
 													});
 											};
 										};
 										//====================================END 수정 ====================================
 									} else {
-										alert('일정 상세 정보를 불러올 수 없습니다.');
+										Toast.fire({
+											icon: "error",
+											title: "일정 상세 정보를 불러올 수 없습니다."
+										});
 									}
 								})
 								.catch(error => {
 									console.error('Error fetching event details:', error);
-									alert('일정 조회 중 오류가 발생했습니다.');
+									Toast.fire({
+										icon: "error",
+										title: "일정 조회 중 오류가 발생했습니다."
+									});
 								});
 						}
 
@@ -522,27 +570,43 @@ document.addEventListener('DOMContentLoaded', function() {
 						var viewScheduleDeleteBtn = document.getElementById('viewScheduleDeleteBtn');
 						if (viewScheduleDeleteBtn) {
 							viewScheduleDeleteBtn.onclick = function() {
-								if (confirm('정말로 이 일정을 삭제하시겠습니까?')) {
-									console.log("Deleting schNo:", info.event.id);
-									fetch('/sch/schDelete', {  // 삭제 API 호출
-										method: 'POST',
-										headers: { 'Content-Type': 'application/json' },
-										body: JSON.stringify({ schNo: info.event.id })
-									})
-										.then(response => response.json()) // JSON으로 파싱
-										.then(data => {
-											alert(data.message); // 서버에서 받은 메시지 표시
-											if (data.success) {
-												/*
-												location.reload();
-												info.event.remove();  // FullCalendar에서 삭제
-												*/
-												viewScheduleModal.style.display = 'none'; // 모달 닫기
-												calendarApi();
-											}
+								Swal.fire({
+									title: "정말 삭제하시겠습니까?",
+									icon: "warning",
+									showCancelButton: true,
+									confirmButtonColor: "#3085d6",
+									cancelButtonColor: "#d33",
+									confirmButtonText: "예",
+									cancelButtonText: "아니요"
+								}).then((result) => {
+									if (result.isConfirmed) {
+										// 아작스
+										console.log("Deleting schNo:", info.event.id);
+										fetch('/sch/schDelete', {  // 삭제 API 호출
+											method: 'POST',
+											headers: { 'Content-Type': 'application/json' },
+											body: JSON.stringify({ schNo: info.event.id })
 										})
-										.catch(error => console.error('Error:', error));
-								}
+											.then(response => response.json()) // JSON으로 파싱
+											.then(data => {
+												if (data.success) {
+													viewScheduleModal.style.display = 'none'; // 모달 닫기
+													Toast.fire({
+														icon: "success",
+														title: data.message
+													});
+													calendarApi();
+												} else {
+
+													Toast.fire({
+														icon: "warning",
+														title: data.message
+													});
+												}
+											})
+											.catch(error => console.error('Error:', error));
+									}
+								});
 							};
 						} else {
 							console.error('삭제 버튼을 찾을 수 없습니다.');
@@ -769,7 +833,10 @@ document.addEventListener('DOMContentLoaded', function() {
 							// 제목 필드 확인
 							var title = document.getElementById('title').value;
 							if (!title.trim()) {  // 제목이 비어있을 경우
-								alert('일정 제목을 입력해주세요.');
+								Toast.fire({
+									icon: "warning",
+									title: "일정 제목을 입력해주세요."
+								});
 								return;  // 함수를 종료하여 제출을 막음
 							}
 
@@ -796,7 +863,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 							// f1일 때 alarmType이 설정되지 않은 경우 예외 처리
 							if (isAlarm === 'f1' && !alarmType) {
-								alert("알림을 사용하려면 매일, 매주, 매달 중 하나를 선택해주세요.");
+								Toast.fire({
+									icon: "warning",
+									title: "알림을 사용하려면 매일, 매주, 매달<br> 중 하나를 선택해주세요."
+								});
 								return;
 							}
 
@@ -805,7 +875,10 @@ document.addEventListener('DOMContentLoaded', function() {
 								if (alarmType === 'd1') { // 매일 알림 예외 처리
 									const dailyRepeat = document.getElementById('dailyInterval').value;
 									if (!dailyRepeat || dailyRepeat < 1 || dailyRepeat > 24) {
-										alert("매일 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
+										Toast.fire({
+											icon: "warning",
+											title: "매일 알림의 '시 마다' 설정을<br>1~24 사이의 숫자로 입력해주세요."
+										});
 										return;
 									}
 								} else if (alarmType === 'd2') { // 매주 알림 예외 처리
@@ -813,11 +886,17 @@ document.addEventListener('DOMContentLoaded', function() {
 									const selectedDays = Array.from(document.querySelectorAll('.weekly-checkbox:checked')).map(cb => cb.value);
 
 									if (selectedDays.length === 0) {
-										alert("매주 알림의 요일을 선택해주세요.");
+										Toast.fire({
+											icon: "warning",
+											title: "매주 알림의 요일을 선택해주세요."
+										});
 										return;
 									}
 									if (!weeklyRepeat || weeklyRepeat < 1 || weeklyRepeat > 24) {
-										alert("매주 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
+										Toast.fire({
+											icon: "warning",
+											title: "매주 알림의 '시 마다' 설정을<br>1~24 사이의 숫자로 입력해주세요."
+										});
 										return;
 									}
 								} else if (alarmType === 'd3') { // 매달 알림 예외 처리
@@ -825,11 +904,17 @@ document.addEventListener('DOMContentLoaded', function() {
 									const monthlyHour = document.getElementById('monthlyHour').value;
 
 									if (!monthlyDay || monthlyDay < 1 || monthlyDay > 31) {
-										alert("매달 알림의 '일' 설정을 1~31 사이의 숫자로 입력해주세요.");
+										Toast.fire({
+											icon: "warning",
+											title: "매달 알림의 '일' 설정을<br>1~31 사이의 숫자로 입력해주세요."
+										});
 										return;
 									}
 									if (!monthlyHour || monthlyHour < 1 || monthlyHour > 24) {
-										alert("매달 알림의 '시 마다' 설정을 1~24 사이의 숫자로 입력해주세요.");
+										Toast.fire({
+											icon: "warning",
+											title: "매달 알림의 '시 마다' 설정을<br>1~24 사이의 숫자로 입력해주세요."
+										});
 										return;
 									}
 								}
@@ -899,18 +984,17 @@ document.addEventListener('DOMContentLoaded', function() {
 										console.log("isAlarm 값:", isAlarm);  // 'f1' 또는 'f2'인지 확인
 
 										if (data.success) {
-											alert('일정 등록에 성공했습니다.');
+											Toast.fire({
+												icon: "success",
+												title: "일정 등록에 성공했습니다."
+											});
 											addScheduleModal.style.display = 'none'; // 모달 닫기
-											/*
-											//location.reload(); //화면엔 바로뜨는데 값같은거 바로 안들어가서 그냥 새로고침 
-											// 추가된 이벤트가 전체 일정을 갱신하도록 이벤트 재로딩
-											calendar.refetchEvents();
-											calendar.unselect(); // FullCalendar의 선택 해제
-											*/
 											calendarApi();
 										} else {
-											console.log(data); // 데이터를 확인하기 위한 로그 출력
-											alert('일정 등록에 실패했습니다.');
+											Toast.fire({
+												icon: "warning",
+												title: "일정 등록에 실패했습니다."
+											});
 										}
 									})
 									.catch(error => console.error('Error:', error));
@@ -1005,7 +1089,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					applyFilters();
 				};
 				// g2 클릭 이벤트 (하위 리스트 표시 토글)				
-				document.getElementById('sharedCalendar').onclick = (event) => {				
+				document.getElementById('sharedCalendar').onclick = (event) => {
 					const sharedCalendar = $('#sharedCalendar');
 					const sharedCalendar_a = $('#sharedCalendar > a:not(#addSharedCalendarBtn)');
 					const g2List = document.getElementById('sharedCalendarList'); // 이 부분은 그대로 사용
@@ -1066,7 +1150,7 @@ document.addEventListener('DOMContentLoaded', function() {
 					console.log(`g3 filter is now ${isFiltered.g3}`);
 					applyFilters();
 				};
-				*/				
+				*/
 				// g3 클릭 이벤트 (하위 리스트 표시 토글)				
 				document.getElementById('projectCalendar').onclick = (event) => {
 					const projectCalendar = $('#projectCalendar');
@@ -1160,24 +1244,6 @@ document.addEventListener('DOMContentLoaded', function() {
 			.then(data => {
 				const sharedCalendarList = document.getElementById('sharedCalendarList');
 				sharedCalendarList.innerHTML = '';  // 기존 목록 초기화
-				/*
-				const newCalItem = document.createElement('a');
-				newCalItem.classList.add('sidebar-link', 'waves-effect', 'waves-dark');
-				newCalItem.href = 'javascript:void(0)';
-				newCalItem.id = 'addSharedCalendarBtn';
-
-				// 아이콘 요소 추가
-				const icon = document.createElement('i');
-				icon.classList.add('mdi', 'mdi-plus-circle-outline');
-				newCalItem.appendChild(icon);
-
-				// 텍스트 추가
-				const textNode = document.createTextNode(' 공유 캘린더 추가');
-				newCalItem.appendChild(textNode);
-
-				// 원하는 위치에 삽입 (예: 사이드바에 추가)
-				sharedCalendarList.appendChild(newCalItem);
-				*/
 				data.forEach(calendar => {
 					const newCalendarItem = document.createElement('li');
 					newCalendarItem.classList.add('sidebar-item', 'calendar-item-wrapper');
@@ -1265,7 +1331,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 								console.log(color);
 								if (data.result) {
-									alert('캘린더 수정이 성공적으로 완료되었습니다.');
+									Toast.fire({
+										icon: "success",
+										title: "캘린더 수정이 성공적으로 완료되었습니다."
+									});
 									//location.reload();  // 새로고침하여 변경 사항 반영
 									editCalendarModal.style.display = 'none'; // 모달 닫기
 									loadSharedCalendars();
@@ -1274,7 +1343,10 @@ document.addEventListener('DOMContentLoaded', function() {
 									trashList();
 								} else {
 									console.log(data);
-									alert('캘린더 수정에 실패했습니다.');
+									Toast.fire({
+										icon: "warning",
+										title: "캘린더 수정에 실패했습니다."
+									});
 								}
 							})
 							.catch(error => console.error('Error:', error));
@@ -1487,17 +1559,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
 		// 예외 처리: 필수 입력 확인
 		if (!sharedCalendarName) {
-			alert('캘린더 이름을 입력해주세요.');
+			Toast.fire({
+				icon: "warning",
+				title: "캘린더 이름을 입력해주세요."
+			});
 			return;
 		}
 
 		if (!selectedColor) {
-			alert('캘린더 색상을 선택해주세요.');
+			Toast.fire({
+				icon: "warning",
+				title: "캘린더 색상을 선택해주세요."
+			});
 			return;
 		}
 
 		if (members.length === 0) {
-			alert('캘린더 참여자를 선택해주세요.');
+			Toast.fire({
+				icon: "warning",
+				title: "캘린더 참여자를 선택해주세요."
+			});
 			return;
 		}
 
@@ -1517,7 +1598,10 @@ document.addEventListener('DOMContentLoaded', function() {
 			.then(data => {
 
 				if (data.success) {
-					alert('캘린더가 생성되었습니다.');
+					Toast.fire({
+						icon: "success",
+						title: "캘린더가 생성되었습니다."
+					});
 					/*
 					const sharedCalendarList = document.getElementById('sharedCalendarList');
 					const newCalendarItem = document.createElement('li');
@@ -1531,12 +1615,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
 				} else {
 					console.log(data);
-					alert('캘린더 추가에 실패했습니다: ' + data.message);
+					Toast.fire({
+						icon: "warning",
+						title: "캘린더 추가에 실패했습니다: " + data.message
+					});
 				}
 			})
 			.catch(error => {
 				console.error('Error:', error);
-				alert('서버와 통신 중 문제가 발생했습니다.');
+				Toast.fire({
+					icon: "error",
+					title: "서버와 통신 중 문제가 발생했습니다."
+				});
 			});
 
 		// 모달 닫기
@@ -1551,28 +1641,44 @@ document.addEventListener('DOMContentLoaded', function() {
 	// 삭제 버튼 클릭 시 이벤트 
 	document.getElementById('deleteBtn').onclick = function() {
 		const calNo = parseInt(document.getElementById('selectedCalNo').value); // 문자열을 숫자로 변환
-
-		if (confirm('정말로 이 캘린더를 삭제하시겠습니까?')) {
-			fetch('/cal/calTrash', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ calNo: calNo }) // 선택된 캘린더 번호를 전송
-			})
-				.then(response => response.json())
-				.then(data => {
-					if (data.success) {
-						alert('캘린더가 휴지통으로 이동되었습니다.');
-						document.getElementById('editCalendarModal').style.display = 'none';
-						loadSharedCalendars();
-						calendarApi();
-						trashList();
-						//location.reload();  // 페이지 새로고침하여 변경 반영
-					} else {
-						alert('캘린더 삭제에 실패했습니다.');
-					}
+		Swal.fire({
+			title: "정말 삭제하시겠습니까?",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "예",
+			cancelButtonText: "아니요"
+		}).then((result) => {
+			if (result.isConfirmed) {
+				// 아작스
+				fetch('/cal/calTrash', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ calNo: calNo }) // 선택된 캘린더 번호를 전송
 				})
-				.catch(error => console.error('Error:', error));
-		}
+					.then(response => response.json())
+					.then(data => {
+						if (data.success) {
+							Toast.fire({
+								icon: "success",
+								title: "캘린더가 휴지통으로 이동되었습니다."
+							});
+							document.getElementById('editCalendarModal').style.display = 'none';
+							loadSharedCalendars();
+							calendarApi();
+							trashList();
+							//location.reload();  // 페이지 새로고침하여 변경 반영
+						} else {
+							Toast.fire({
+								icon: "warning",
+								title: "캘린더 삭제에 실패했습니다."
+							});
+						}
+					})
+					.catch(error => console.error('Error:', error));
+			}
+		});
 	};
 	//============ 사이드바 휴지통 보내기   ===========
 
@@ -1607,14 +1713,20 @@ document.addEventListener('DOMContentLoaded', function() {
 			.then(response => response.json())
 			.then(data => {
 				if (data.success) {
-					alert('캘린더가 복원되었습니다.');
+					Toast.fire({
+						icon: "success",
+						title: "캘린더가 복원되었습니다."
+					});
 					document.getElementById('trashCalendarModal').style.display = 'none';
 					loadSharedCalendars();
 					calendarApi();
 					trashList();
 					//location.reload();  //페이지 새로고침
 				} else {
-					alert('복원에 실패했습니다.');
+					Toast.fire({
+						icon: "warning",
+						title: "복원에 실패했습니다."
+					});
 				}
 			})
 			.catch(error => console.error('Error:', error));
@@ -1637,27 +1749,43 @@ document.addEventListener('DOMContentLoaded', function() {
 	// 삭제 처리 함수
 	function handlePermanentlyDelete() {
 		const calNo = parseInt(document.getElementById('trashSelectedCalNo').value);  // 선택된 캘린더 번호 가져오기
-
-		if (confirm('정말로 이 캘린더를 완전히 삭제하시겠습니까?')) {
-			fetch('/cal/calDel', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ calNo: calNo })  // JSON 데이터로 전송
-			})
-				.then(response => response.text())
-				.then(data => {
-					if (data === "캘린더가 완전히 삭제되었습니다.") {
-						alert('캘린더가 영구적으로 삭제되었습니다.');
-						document.getElementById('trashCalendarModal').style.display = 'none';
-						loadSharedCalendars();
-						trashList();
-						//location.reload();  //페이지 새로고침
-					} else {
-						alert('캘린더 삭제에 실패했습니다.');
-					}
+		Swal.fire({
+			title: "정말로 이 캘린더를 완전히 삭제하시겠습니까?",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "예",
+			cancelButtonText: "아니요"
+		}).then((result) => {
+			if (result.isConfirmed) {
+				// 아작스
+				fetch('/cal/calDel', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/json' },
+					body: JSON.stringify({ calNo: calNo })  // JSON 데이터로 전송
 				})
-				.catch(error => console.error('Error:', error));
-		}
+					.then(response => response.text())
+					.then(data => {
+						if (data === "캘린더가 완전히 삭제되었습니다.") {
+							Toast.fire({
+								icon: "success",
+								title: "캘린더가 영구적으로 삭제되었습니다."
+							});
+							document.getElementById('trashCalendarModal').style.display = 'none';
+							loadSharedCalendars();
+							trashList();
+							//location.reload();  //페이지 새로고침
+						} else {
+							Toast.fire({
+								icon: "warning",
+								title: "캘린더 삭제에 실패했습니다."
+							});
+						}
+					})
+					.catch(error => console.error('Error:', error));
+			}
+		});
 	}
 
 	// 영구 삭제 버튼 클릭 이벤트 등록

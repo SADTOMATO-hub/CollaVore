@@ -271,8 +271,6 @@ button:active {
 .none {
 	display: none;
 }
-
-
 </style>
 	<div class="body-page-wrapper">
 		<div class="purple-background-container">
@@ -290,37 +288,39 @@ button:active {
 					<div class="row">
 						<div id="jstree">
 							<ul>
-						    <th:block th:each="project, iterStat : ${projects}">
-						        <th:block th:if="${project.parentPfNo == 0}">
-						            <li th:id="'node_' + ${project.pfNo}">[[${project.name}]]
-						                <th:block th:if="${iterStat.index != 0}">
-						                    <!-- 첫 번째 항목이 아니면 i 태그 추가 -->
-						                    <button id="Folderinsertbutton"
-						                        class="btn btn-info btn-lg no-border-button">
-						                        <i class="mdi mdi-plus-circle-outline" style="color: black;"></i>
-						                    </button>
-						                </th:block>
-						                <ul>
-						                    <th:block th:each="child : ${projects}"
-						                        th:if="${child.parentPfNo == project.pfNo}">
-						                        <li class="test" th:id="'node_' + ${child.pfNo}"
-						                            th:attr="data-pf-no=${child.pfNo}">[[${child.name}]]
-						                            <button id="Fileinsertbutton"
-						                                class="btn btn-info btn-lg no-border-button">
-						                                <i class="mdi mdi-plus-circle-outline"
-						                                    style="color: black;"></i>
-						                            </button>
-						                        </li>
-						                    </th:block>
-						                </ul>
-						            </li>
-						        </th:block>
-						    </th:block>
-						</ul>
+								<th:block th:each="project, iterStat : ${projects}">
+									<th:block th:if="${project.parentPfNo == 0}">
+										<li th:id="'node_' + ${project.pfNo}">[[${project.name}]]
+											<th:block th:if="${iterStat.index != 0}">
+												<!-- 첫 번째 항목이 아니면 i 태그 추가 -->
+												<button id="Folderinsertbutton"
+													class="btn btn-info btn-lg no-border-button">
+													<i class="mdi mdi-plus-circle-outline"
+														style="color: black;"></i>
+												</button>
+											</th:block>
+											<ul>
+												<th:block th:each="child : ${projects}"
+													th:if="${child.parentPfNo == project.pfNo}">
+													<li class="test" th:id="'node_' + ${child.pfNo}"
+														th:attr="data-pf-no=${child.pfNo}">[[${child.name}]]
+														<button id="Fileinsertbutton"
+															class="btn btn-info btn-lg no-border-button">
+															<i class="mdi mdi-plus-circle-outline"
+																style="color: black;"></i>
+														</button>
+													</li>
+												</th:block>
+											</ul>
+										</li>
+									</th:block>
+								</th:block>
+							</ul>
 
 						</div>
-						<table class="table table-striped table-hover table-bordered memberList_table" id="fileTable"
-							style="display: none;">
+						<table
+							class="table table-striped table-hover table-bordered memberList_table"
+							id="fileTable" style="display: none;">
 							<thead>
 								<tr>
 									<th scope="col">번호</th>
@@ -371,14 +371,14 @@ button:active {
 		</div>
 	</div>
 </div>
-	<!-- Include jQuery library -->
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
-	<!-- Include jsTree -->
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+<!-- Include jQuery library -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.1/jquery.min.js"></script>
+<!-- Include jsTree -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
 
-	<script>
+<script>
 	$(document).ready(function() {
 	    $('#jstree').jstree();
 
@@ -439,7 +439,10 @@ button:active {
 	        var fileInput = $('#fileInput')[0];
 
 	        if (fileInput.files.length === 0) {
-	            alert('파일을 선택해 주세요.');
+                Toast.fire({
+                    icon: "warning",
+                    title: '파일을 선택해 주세요.'
+                  });
 	            return;
 	        }
 
@@ -447,7 +450,10 @@ button:active {
 	        var maxSize = 50 * 1024 * 1024; 
 
 	        if (fileSize > maxSize) {
-	            alert('파일 크기는 50MB를 초과할 수 없습니다.');
+                Toast.fire({
+                    icon: "warning",
+                    title: '파일 크기는 50MB를 초과할 수 없습니다.'
+                  });
 	            return;
 	        }
 
@@ -459,13 +465,19 @@ button:active {
 	            processData: false, 
 	            success: function(response) {
 	                $('#fileUploadModal').modal('hide'); 
-	                alert('파일이 성공적으로 업로드되었습니다!'); 
+	                Toast.fire({
+	                    icon: "success",
+	                    title: '파일이 성공적으로 업로드되었습니다!'
+	                  });
 
 	                updateFileList(pfNo);
 	            },
 	            error: function(xhr, status, error) {
 	                console.error("파일 업로드 오류: ", error);
-	                alert('파일 업로드에 실패했습니다.');
+	                Toast.fire({
+	                    icon: "warning",
+	                    title: '파일 업로드에 실패했습니다.'
+	                  });
 	            }
 	        });
 	    });
@@ -479,21 +491,36 @@ button:active {
     // 다운로드 버튼 클릭 시 파일 삭제
     $(document).on('click', '.btn-danger[data-proj-no]', function() {
     	var projFileNo = $(this).data('proj-no');
-
-        if (confirm('정말로 이 파일을 삭제하시겠습니까?')) {
-        	
-            $.ajax({
-                url: `/project/fileDelete/${projFileNo}`, 
-                type: 'DELETE',
-                success: function(response) {
-                    alert('파일이 성공적으로 삭제되었습니다!');
-                    $(`button[data-proj-no="${projFileNo}"]`).closest('tr').remove();
-                },
-                error: function(xhr, status, error) {
-                    alert('파일 삭제에 실패했습니다: ' + error);
-                }
-            });
-        }
+    	Swal.fire({
+            title: "정말 삭제하시겠습니까?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "예",
+            cancelButtonText:"아니요"
+          }).then((result) => {
+            if (result.isConfirmed) {
+                // 아작스
+            	$.ajax({
+                    url: `/project/fileDelete/${projFileNo}`, 
+                    type: 'DELETE',
+                    success: function(response) {
+                        Toast.fire({
+                            icon: "success",
+                            title: '파일이 성공적으로 삭제되었습니다!'
+                          });
+                        $(`button[data-proj-no="${projFileNo}"]`).closest('tr').remove();
+                    },
+                    error: function(xhr, status, error) {
+                        Toast.fire({
+                            icon: "warning",
+                            title: '파일 삭제에 실패했습니다: ' + error
+                          });
+                    }
+                });
+            }
+          });
     });
 	// 파일 리스트 갱신 함수
 	function updateFileList(pfNo) {
@@ -535,4 +562,3 @@ button:active {
 	}
 	
 	</script>
-</div>

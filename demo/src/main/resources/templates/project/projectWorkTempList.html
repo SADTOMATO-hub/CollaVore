@@ -288,7 +288,8 @@ button:active {
 				<div class="search-container">
 					<input type="text" id="searchBox" placeholder="검색어를 입력하세요">
 				</div>
-				<table class="table table-striped table-hover table-bordered memberList_table">
+				<table
+					class="table table-striped table-hover table-bordered memberList_table">
 					<thead>
 						<tr>
 							<th scope="col">업무 템플릿 번호</th>
@@ -512,12 +513,18 @@ $('#createTemplateForm').on('submit', function(event) {
                     </td>
                 </tr>
             `);
-            alert('프로젝트가 성공적으로 생성되었습니다!');
+            Toast.fire({
+                icon: "success",
+                title: '프로젝트가 성공적으로 생성되었습니다!'
+              });
             $('#createTemplateModal').modal('hide');
             $('#createTemplateForm')[0].reset();
         },
         error: function(xhr, status, error) {
-            alert('프로젝트 생성에 실패했습니다: ' + error);
+            Toast.fire({
+                icon: "error",
+                title: '프로젝트 생성에 실패했습니다: ' + error
+              });
         }
     });
 });
@@ -525,20 +532,37 @@ $('#createTemplateForm').on('submit', function(event) {
 // 프로젝트 삭제 AJAX
 $(document).on('click', '.delete-btn', function() {
     const pwtNo = $(this).data('proj-temp-no');
-
-    if (confirm('정말로 이 프로젝트를 삭제하시겠습니까?')) {
-        $.ajax({
-            url: `/project/projectwrktempdelete/${pwtNo}`,
-            type: 'DELETE',
-            success: function(response) {
-                alert('프로젝트가 성공적으로 삭제되었습니다!');
-                $(`button[data-proj-temp-no="${pwtNo}"]`).closest('tr').remove();
-            },
-            error: function(xhr, status, error) {
-                alert('프로젝트 삭제에 실패했습니다: ' + error);
-            }
-        });
-    }
+    Swal.fire({
+        title: "정말 삭제하시겠습니까?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "예",
+        cancelButtonText:"아니요"
+      }).then((result) => {
+        if (result.isConfirmed) {
+            // 아작스
+            $.ajax({
+                url: `/project/projectwrktempdelete/${pwtNo}`,
+                type: 'DELETE',
+                success: function(response) {
+                    Toast.fire({
+                        icon: "success",
+                        title: '프로젝트가 성공적으로 삭제되었습니다!'
+                      });
+                    $(`button[data-proj-temp-no="${pwtNo}"]`).closest('tr').remove();
+                },
+                error: function(xhr, status, error) {
+                    Toast.fire({
+                        icon: "error",
+                        title: '프로젝트 삭제에 실패했습니다: ' + error
+                      });
+                }
+            });
+              
+        }
+      });
 });
 
 //수정 모달 폼
@@ -560,11 +584,17 @@ $(document).on('click', '.edit-btn', function() {
 
                 $('#editTemplateModal').modal('show');
             } else {
-                alert('프로젝트 정보를 가져오는 데 실패했습니다: 응답이 비어있습니다.');
+                Toast.fire({
+                    icon: "warning",
+                    title: "프로젝트 정보를 가져오는 데 실패했습니다: 응답이 비어있습니다."
+                  });
             }
         },
         error: function(xhr, status, error) {
-            alert('프로젝트 정보를 가져오는 데 실패했습니다: ' + error);
+            Toast.fire({
+                icon: "error",
+                title: '프로젝트 정보를 가져오는 데 실패했습니다: ' + error
+              });
         }
     });
 });
@@ -602,15 +632,24 @@ $(document).on('submit', '#editTemplateForm', function(event) {
                 row.find('td:nth-child(5)').text(response.jobName);
                 row.find('td:nth-child(6)').text(getCurrentDate); // 등록일 업데이트
                 
-                alert('프로젝트가 성공적으로 수정되었습니다!');
+                Toast.fire({
+                    icon: "success",
+                    title: '프로젝트가 성공적으로 수정되었습니다!'
+                  });
                 $('#editTemplateModal').modal('hide');
                 $('#editTemplateModal')[0].reset();
             } else {
-                alert('수정에 실패했습니다: ' + response.message);
+                Toast.fire({
+                    icon: "warning",
+                    title: '수정에 실패했습니다: ' + response.message
+                  });
             }
         },
         error: function(xhr, status, error) {
-            alert('수정 요청에 실패했습니다: ' + error);
+            Toast.fire({
+                icon: "error",
+                title: '수정 요청에 실패했습니다: ' + error
+              });
         }
     });
 });
@@ -629,7 +668,10 @@ document.querySelector("form").addEventListener("submit", function(event) {
 
     // "선택하세요"가 선택되었으면 폼 제출을 막고 경고 메시지 표시
     if (selectedValue === "0") {
-        alert("업무 타입을 선택해주세요.");
+        Toast.fire({
+            icon: "warning",
+            title: "업무 타입을 선택해주세요."
+          });
         event.preventDefault();  // 폼 제출을 막음
     }
 });
@@ -643,7 +685,10 @@ if (submitButton) {
 
         // "선택하세요"가 선택되었으면 폼 제출을 막고 경고 메시지 표시
         if (selectedValue === "0") {
-            alert("업무 타입을 선택해주세요.");
+            Toast.fire({
+                icon: "warning",
+                title: "업무 타입을 선택해주세요."
+              });
             event.preventDefault();  // 폼 제출을 막음
         }
     });

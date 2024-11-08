@@ -288,7 +288,8 @@ button:active {
 				<div class="search-container">
 					<input type="text" id="searchBox" placeholder="검색어를 입력하세요">
 				</div>
-				<table class="table table-striped table-hover table-bordered memberList_table">
+				<table
+					class="table table-striped table-hover table-bordered memberList_table">
 					<thead>
 						<tr>
 							<th scope="col">템플릿 번호</th>
@@ -431,39 +432,37 @@ button:active {
 	</div>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const searchBox = document.getElementById('searchBox');
-    
     const resetButton = document.querySelector('button');
-    resetButton.addEventListener('click', function() {
-        location.reload(); 
-    });
-    
-	function updateTableData() {
-	    const searchText = searchBox.value.trim();
-	    
-	    const baseParams = `searchText=${encodeURIComponent(searchText)}`;
 
-	    fetch(`/project/projectDwrktemplist?${baseParams}&fragment=projDetailWorkTempListBody`, { headers: { "X-Requested-With": "XMLHttpRequest" } })
-	        .then(response => response.text())
-	        .then(html => {
-	            const doc = new DOMParser().parseFromString(html, 'text/html');
-	            const tableBody = document.querySelector('.memberList_table tbody');
-	            const newBody = doc.querySelector('.memberList_table tbody');
+    // 새로고침 버튼 클릭 시 페이지 새로고침
+    resetButton.addEventListener('click', () => location.reload());
 
-	            if (newBody && newBody.children.length > 0) {
-	                // 결과가 있는 경우 테이블에 결과를 표시합니다.
-	                tableBody.innerHTML = newBody.innerHTML;
-	            } else {
-	                // 결과가 없는 경우 안내 메시지를 표시합니다.
-	                tableBody.innerHTML = `<tr><td colspan="7">검색 결과가 없습니다.</td></tr>`;
-	            }
-	        });
-	}
+    // 테이블 데이터 업데이트 함수
+    function updateTableData() {
+        const searchText = searchBox.value.trim();
+        const baseParams = `searchText=${encodeURIComponent(searchText)}`;
 
+        fetch(`/project/projectDwrktemplist?${baseParams}&fragment=projDetailWorkTempListBody`, { 
+            headers: { "X-Requested-With": "XMLHttpRequest" } 
+        })
+        .then(response => response.text())
+        .then(html => {
+            const doc = new DOMParser().parseFromString(html, 'text/html');
+            const tableBody = document.querySelector('.memberList_table tbody');
+            const newBody = doc.querySelector('.memberList_table tbody');
 
+            if (newBody && newBody.children.length > 0) {
+                tableBody.innerHTML = newBody.innerHTML;
+            } else {
+                tableBody.innerHTML = `<tr><td colspan="7">검색 결과가 없습니다.</td></tr>`;
+            }
+        });
+    }
+
+    // 디바운스 설정
     const debounce = (func, delay) => {
         let timeout;
         return (...args) => {
@@ -471,10 +470,13 @@ document.addEventListener('DOMContentLoaded', function() {
             timeout = setTimeout(() => func.apply(this, args), delay);
         };
     };
-
     const debouncedUpdateTableData = debounce(updateTableData, 300);
+
+    // 검색 입력 시 테이블 데이터 업데이트
     searchBox.addEventListener('input', debouncedUpdateTableData);
 });
+
+// 현재 날짜 형식 반환 함수
 function formatCurrentDate() {
     const now = new Date();
     const year = now.getFullYear();
@@ -485,6 +487,7 @@ function formatCurrentDate() {
 }
 
 $(document).ready(function() {
+    // 폼 제출 처리
     $('#projectForm').on('submit', function(event) {
         event.preventDefault();
 
@@ -496,25 +499,22 @@ $(document).ready(function() {
                 pwtNo: $('#pwtNo').val(),
                 name: $('#name').val(), 
                 content: $('#content').val(), 
-                pwtNo: $('#pwtNo').val(), 
                 importance: $('#importance').val() 
             }),
-            
             success: function(response) {
-                let statusClass;
-                let statusText;
+                let statusClass, statusText;
                 switch (response.importance) {
                     case 'l1':
                         statusClass = 'bg-secondary';
-                        statusText = '낮 음';
+                        statusText = '낮음';
                         break;
                     case 'l2':
                         statusClass = 'bg-info';
-                        statusText = '중 간';
+                        statusText = '중간';
                         break;
                     case 'l3':
                         statusClass = 'bg-success';
-                        statusText = '높 음';
+                        statusText = '높음';
                         break;
                 }
                 $('table tbody').append(`
@@ -523,55 +523,59 @@ $(document).ready(function() {
                         <td>${response.name}</td>
                         <td>${response.content}</td>
                         <td>${response.pwtNo}</td>
-                        <td>
-                        <span class="badge rounded-pill ${statusClass}">${statusText}</span>
-                    	</td>
+                        <td><span class="badge rounded-pill ${statusClass}">${statusText}</span></td>
                         <td>${formatCurrentDate()}</td>
                         <td>
-                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal" th:attr= data-proj-temp-no='${response.pdwtNo}'>수정</button>
+                            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal" data-proj-temp-no="${response.pdwtNo}">수정</button>
                             <button type="button" class="btn btn-danger text-white delete-btn" data-proj-temp-no="${response.pdwtNo}">삭제</button>
                         </td>
                     </tr>
                 `);
-                alert('상세업무 템플릿이 성공적으로 생성되었습니다!');
+                Toast.fire({ icon: "success", title: '상세업무 템플릿이 성공적으로 생성되었습니다!' });
                 $('#projectModal').modal('hide');
-                $('#projectForm')[0].reset(); // 폼 리셋
+                $('#projectForm')[0].reset();
             },
             error: function(xhr, status, error) {
-                alert('상세업무 템플릿 생성에 실패했습니다: ' + error);
+                Toast.fire({ icon: "error", title: '상세업무 템플릿 생성에 실패했습니다: ' + error });
             }
         });
     });
-});
-    // 프로젝트 삭제 AJAX
+
+    // 삭제 버튼 클릭 시 처리
     $(document).on('click', '.delete-btn', function() {
         const pdwtNo = $(this).data('proj-temp-no');
-
-        if (confirm('정말로 이 프로젝트를 삭제하시겠습니까?')) {
-            $.ajax({
-                url: `/project/projectdwrktempdelete/${pdwtNo}`,
-                type: 'DELETE',
-                success: function(response) {
-                    alert('프로젝트가 성공적으로 삭제되었습니다!');
-                    $(`button[data-proj-temp-no="${pdwtNo}"]`).closest('tr').remove();
-                },
-                error: function(xhr, status, error) {
-                    alert('프로젝트 삭제에 실패했습니다: ' + error);
-                }
-            });
-        }
+        Swal.fire({
+            title: "정말 삭제하시겠습니까?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "예",
+            cancelButtonText: "아니요"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: `/project/projectdwrktempdelete/${pdwtNo}`,
+                    type: 'DELETE',
+                    success: function(response) {
+                        Toast.fire({ icon: "success", title: '프로젝트가 성공적으로 삭제되었습니다!' });
+                        $(`button[data-proj-temp-no="${pdwtNo}"]`).closest('tr').remove();
+                    },
+                    error: function(xhr, status, error) {
+                        Toast.fire({ icon: "error", title: '프로젝트 삭제에 실패했습니다: ' + error });
+                    }
+                });
+            }
+        });
     });
-    //수정 모달 폼
+
+    // 수정 모달 폼 데이터 불러오기
     $(document).on('click', '.btn-warning', function() {
         const pdwtNo = $(this).data('proj-temp-no');
-        //console.log(pdwtNo); 
 
         $.ajax({
             url: `/project/projectDwrktempinfo/${pdwtNo}`, 
             type: 'GET',
             success: function(response) {
-               
-                $('#editPdwtNo').val(response.pdwtNo); 
+                $('#editPdwtNo').val(response.pdwtNo);
                 $('#editPwtNo').val(response.pwtNo);
                 $('#editName').val(response.name);
                 $('#editContent').val(response.content);
@@ -580,23 +584,16 @@ $(document).ready(function() {
                 $('#editTemplateModal').modal('show');
             },
             error: function(xhr, status, error) {
-                alert('프로젝트 정보를 가져오는 데 실패했습니다: ' + error);
+                Toast.fire({ icon: "error", title: '프로젝트 정보를 가져오는 데 실패했습니다: ' + error });
             }
         });
     });
-    function getCurrentDate() {
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = String(today.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
-        const day = String(today.getDate()).padStart(2, '0');
-        return `${year}년 ${month}월 ${day}일`;
-    }
- // 수정 처리 AJAX
+
+    // 수정 폼 제출 처리
     $(document).on('submit', '#editTemplateForm', function(event) {
-        event.preventDefault(); 
+        event.preventDefault();
 
         const pdwtNo = $('#editPdwtNo').val();
-        
         const updatedData = {
             pdwtNo: pdwtNo,
             pwtNo: $('#editPwtNo').val(),
@@ -611,51 +608,29 @@ $(document).ready(function() {
             contentType: 'application/json',
             data: JSON.stringify(updatedData),
             success: function(response) {
-                let statusClass;
-                let statusText;
-                
-                switch (response.importance) {
-                    case 'l1':
-                        statusClass = 'bg-secondary';
-                        statusText = '낮 음';
-                        break;
-                    case 'l2':
-                        statusClass = 'bg-info';
-                        statusText = '중 간';
-                        break;
-                    case 'l3':
-                        statusClass = 'bg-success';
-                        statusText = '높 음';
-                        break;
-                    default:
-                        statusClass = '';
-                        statusText = '';
-                }
                 if (response.status === 'success') {
+                    Toast.fire({ icon: "success", title: '수정에 성공했습니다: '});
                     const row = $(`button[data-proj-temp-no="${pdwtNo}"]`).closest('tr');
                     row.find('td:nth-child(2)').text(updatedData.name);
                     row.find('td:nth-child(3)').text(updatedData.content);
                     row.find('td:nth-child(4)').text(updatedData.pwtNo);
+
+                    const statusClass = response.importance === 'l1' ? 'bg-secondary' : response.importance === 'l2' ? 'bg-info' : 'bg-success';
+                    const statusText = response.importance === 'l1' ? '낮음' : response.importance === 'l2' ? '중간' : '높음';
+                    row.find('td:nth-child(5)').html(`<span class="badge rounded-pill ${statusClass}">${statusText}</span>`);
                     
-                    // HTML 업데이트 부분 수정
-                    const badgeHtml = `<span class="badge rounded-pill ${statusClass}">${statusText}</span>`;
-                    console.log("Badge HTML:", badgeHtml); // 디버깅 로그 추가
-                    row.find('td:nth-child(5)').html(badgeHtml);
-                    const currentDate = getCurrentDate();
-                    row.find('td:nth-child(6)').html(currentDate); // 등록일 업데이트
-                    
-                    alert('프로젝트가 성공적으로 수정되었습니다!');
+                    row.find('td:nth-child(6)').text(formatCurrentDate());
+
                     $('#editTemplateModal').modal('hide');
-                    $('#editTemplateModal')[0].reset();
+                    $('#editTemplateForm')[0].reset();
                 } else {
-                    alert('수정에 실패했습니다: ' + response.message);
+                    Toast.fire({ icon: "warning", title: '수정에 실패했습니다: ' + response.message });
                 }
             },
             error: function(xhr, status, error) {
-                alert('수정 요청에 실패했습니다: ' + error);
+                Toast.fire({ icon: "error", title: '수정 요청에 실패했습니다: ' + error });
             }
         });
     });
-
-
+});
 </script>

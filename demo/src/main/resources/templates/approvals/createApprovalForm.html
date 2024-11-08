@@ -178,23 +178,27 @@ button:active {
 											<td></td>
 											<!-- ------------------- -->
 											<td style="text-align: center;">
-												<button type="button" class="btn btn-warning modalBtn" data-seq="1"
-													data-bs-target="#approversSelect" data-bs-toggle="modal">선택</button>
+												<button type="button" class="btn btn-warning modalBtn"
+													data-seq="1" data-bs-target="#approversSelect"
+													data-bs-toggle="modal">선택</button>
 											</td>
 											<!-- ------------------- -->
 											<td style="text-align: center;">
-												<button type="button" class="btn btn-warning modalBtn" data-seq="2"
-													data-bs-target="#approversSelect" data-bs-toggle="modal">선택</button>
+												<button type="button" class="btn btn-warning modalBtn"
+													data-seq="2" data-bs-target="#approversSelect"
+													data-bs-toggle="modal">선택</button>
 											</td>
 											<!-- ------------------- -->
 											<td style="text-align: center;">
-												<button type="button" class="btn btn-warning modalBtn" data-seq="3"
-													data-bs-target="#approversSelect" data-bs-toggle="modal">선택</button>
+												<button type="button" class="btn btn-warning modalBtn"
+													data-seq="3" data-bs-target="#approversSelect"
+													data-bs-toggle="modal">선택</button>
 											</td>
 											<!-- ------------------- -->
 											<td style="text-align: center;">
-												<button type="button" class="btn btn-warning modalBtn" data-seq="4"
-													data-bs-target="#approversSelect" data-bs-toggle="modal">선택</button>
+												<button type="button" class="btn btn-warning modalBtn"
+													data-seq="4" data-bs-target="#approversSelect"
+													data-bs-toggle="modal">선택</button>
 											</td>
 										</tr>
 									</thead>
@@ -229,14 +233,13 @@ button:active {
 						</div>
 						<div class="form-group row">
 							<label for="selectContent"
-								class="col-sm-3 text-end control-label col-form-label">템플릿 선택</label>
+								class="col-sm-3 text-end control-label col-form-label">템플릿
+								선택</label>
 							<div class="col-sm-9">
-									<select id="selectContent" class="form-select">
-										<option selected disabled>==템플릿 선택==</option>
-										<option th:each="temps : ${tempInfo}"
-											th:value="${temps.eatNo}">[[${temps.title}]]</option>
-									</select>
-								<input type="hidden" id="eatNo" name="eatNo" />
+								<select id="selectContent" class="form-select">
+									<option selected disabled>==템플릿 선택==</option>
+									<option th:each="temps : ${tempInfo}" th:value="${temps.eatNo}">[[${temps.title}]]</option>
+								</select> <input type="hidden" id="eatNo" name="eatNo" />
 							</div>
 						</div>
 						<div class="form-group row">
@@ -283,31 +286,34 @@ button:active {
 				</div>
 				<div class="modal-body">
 					<form id="apprForm">
-					  <div class="row">
-					    <div class="col">
-					    <div class="mb-3">
-							<label for="selectDept" class="form-label">부서 선택</label>
+						<div class="row">
+							<div class="col">
+								<div class="mb-3">
+									<label for="selectDept" class="form-label">부서 선택</label>
+								</div>
+								<div class="mb-3">
+									<select id="selectDept" style="height: 300px;"
+										class="form-select" size="15">
+										<option selected value="" disabled>==부서 선택==</option>
+										<option th:each="deptsInfo : ${depts}"
+											th:value="${deptsInfo.deptNo}">[[${deptsInfo.deptName}]]</option>
+									</select>
+								</div>
+							</div>
+							<div class="col">
+								<div class="mb-3">
+									<label for="selectApprovers" class="form-label">결재자 선택</label>
+								</div>
+								<div class="mb-3">
+									<select id="selectApprovers" class="form-select"
+										style="height: 300px;" size="15">
+										<option selected value="" disabled>==결재자 선택==</option>
+									</select>
+								</div>
+							</div>
 						</div>
-						<div class="mb-3">
-							<select id="selectDept" style="height: 300px;" class="form-select" size="15">
-								<option selected value="" disabled>==부서 선택==</option>
-								<option th:each="deptsInfo : ${depts}"
-									th:value="${deptsInfo.deptNo}">[[${deptsInfo.deptName}]]</option>
-							</select>
-						</div>
-					    </div>
-					  	<div class="col">
-					  		<div class="mb-3">
-							<label for="selectApprovers" class="form-label">결재자 선택</label>
-						</div>
-						<div class="mb-3">
-							<select id="selectApprovers" class="form-select" style="height: 300px;" size="15">
-								<option selected value="" disabled>==결재자 선택==</option>
-							</select>
-						</div>
-					  	</div>
-					  </div>
-						<button type="button" class="btn btn-primary" id="modalSubmit">결재자	선택</button>
+						<button type="button" class="btn btn-primary" id="modalSubmit">결재자
+							선택</button>
 					</form>
 				</div>
 			</div>
@@ -354,7 +360,10 @@ button:active {
 									$('#content').val(response.content);
 								},
 								error : function(xhr, status, error) {
-									alert('데이터 호출 실패: ' + error);
+									Toast.fire({
+									  icon: "error",
+									  title: '데이터 호출 실패: ' + error
+									});
 								}
 							});
 						});
@@ -420,7 +429,10 @@ $(document).ready(
                     });
                 },
                 error: function(xhr, status, error) {
-                    alert("결재자 정보를 불러오는 중 오류가 발생했습니다.");
+					Toast.fire({
+					  icon: "error",
+					  title: "결재자 정보를 불러오는 중 오류가 발생했습니다."
+					});
                 }
             });
         });
@@ -472,7 +484,10 @@ function submitPost(event) {
     // approvalTitle 검증
     var approvalTitle = $('#approvalTitle').val();
     if (!approvalTitle) {
-        alert("제목을 입력해주세요.");
+		Toast.fire({
+		  icon: "warning",
+		  title: "제목을 입력해주세요."
+		});
         $('#approvalTitle').focus();
         return;
     }
@@ -480,7 +495,10 @@ function submitPost(event) {
     // approvers[].empNo 배열 값 검증
     var approvers = $('input[name^="approvers["][name$=".empNo"]').map(function() { return $(this).val(); }).get();
     if (approvers.length === 0 || approvers.every(val => !val)) {
-        alert("결재자를 최소 1명 이상 지정해주세요.");
+		Toast.fire({
+			  icon: "warning",
+			  title: "결재자를 최소 1명 이상 지정해주세요."
+			});
         return;
     }
 
@@ -488,7 +506,10 @@ function submitPost(event) {
     oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []); // content 업데이트
     var content = $('#content').val();
     if (content == null || content.trim() == '' || content == '&nbsp;' || content == '<br>' || content == '<p>&nbsp;</p>') {
-        alert("템플릿을 정해주세요.");
+		Toast.fire({
+			  icon: "warning",
+			  title: "템플릿을 정해주세요."
+			});
         oEditors.getById["content"].exec("FOCUS");
         return;
     }

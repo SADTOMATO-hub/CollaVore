@@ -66,36 +66,59 @@ function addLevel() {
 
 // 레벨 삭제 함수
 function removeLevel(button, posiNo = null) {
-	if (confirm('정말로 삭제하시겠습니까?')) {
-		if (posiNo) {
-			// 서버로 삭제 요청
-			fetch(`/positions/delete/${posiNo}`, {
-				method: 'DELETE'
-			})
-				.then(response => response.text())
-				.then(result => {
-					if (result === 'success') {
-						alert('직위가 성공적으로 삭제되었습니다.');
-						const row = button.closest('tr'); // 삭제할 행을 찾음
-						row.remove(); // 행 삭제
-						reorderLevels();
-					} else if (result === 'cannot_delete') {
-						alert('해당 직위가 사원에게 할당되어 있어 삭제할 수 없습니다.');
-					} else {
-						alert('삭제에 실패했습니다.');
-					}
+	Swal.fire({
+		title: "정말 삭제하시겠습니까?",
+		icon: "warning",
+		showCancelButton: true,
+		confirmButtonColor: "#3085d6",
+		cancelButtonColor: "#d33",
+		confirmButtonText: "예",
+		cancelButtonText: "아니요"
+	}).then((result) => {
+		if (result.isConfirmed) {
+			// 아작스
+			if (posiNo) {
+				// 서버로 삭제 요청
+				fetch(`/positions/delete/${posiNo}`, {
+					method: 'DELETE'
 				})
-				.catch(error => {
-					console.error('Error deleting position:', error);
-					alert('삭제 중 오류가 발생했습니다. 관리자에게 문의하세요.');
-				});
-		} else {
-			// 새로 추가된 레벨의 경우 화면에서만 삭제
-			const row = button.closest('tr'); // 삭제할 행을 찾음
-			row.remove();
-			reorderLevels();
+					.then(response => response.text())
+					.then(result => {
+						if (result === 'success') {
+							Toast.fire({
+								icon: "success",
+								title: "직위가 성공적으로 삭제되었습니다."
+							});
+							const row = button.closest('tr'); // 삭제할 행을 찾음
+							row.remove(); // 행 삭제
+							reorderLevels();
+						} else if (result === 'cannot_delete') {
+							Toast.fire({
+								icon: "warning",
+								title: "해당 직위가 사원에게 <br>할당되어 삭제할 수 없습니다."
+							});
+						} else {
+							Toast.fire({
+								icon: "error",
+								title: "삭제에 실패했습니다."
+							});
+						}
+					})
+					.catch(error => {
+						console.error('Error deleting position:', error);
+						Toast.fire({
+							icon: "warning",
+							title: "삭제 중 오류가 발생했습니다. <br>관리자에게 문의하세요."
+						});
+					});
+			} else {
+				// 새로 추가된 레벨의 경우 화면에서만 삭제
+				const row = button.closest('tr'); // 삭제할 행을 찾음
+				row.remove();
+				reorderLevels();
+			}
 		}
-	}
+	});
 }
 
 
@@ -142,7 +165,10 @@ function saveData() {
 	});
 
 	if (nonName) {
-		alert("직위명이 입력되지 않았습니다. 확인 후 다시 시도해주세요.");
+		Toast.fire({
+			icon: "warning",
+			title: "직위명이 입력되지 않았습니다. <br>확인 후 다시 시도해주세요."
+		});
 		return;
 	}
 
@@ -161,15 +187,24 @@ function saveData() {
 		.then(response => response.text())
 		.then(result => {
 			if (result === 'success') {
-				alert('저장되었습니다.');
+				Toast.fire({
+					icon: "success",
+					title: "저장되었습니다."
+				});
 				loadExistingData();
 			} else {
-				alert('저장에 실패했습니다.');
+				Toast.fire({
+					icon: "warning",
+					title: "저장에 실패했습니다."
+				});
 			}
 		})
 		.catch(error => {
 			console.error('Error:', error);
-			alert('에러 발생! 관리자에게 문의하세요.');
+			Toast.fire({
+				icon: "error",
+				title: "에러 발생! 관리자에게 문의하세요."
+			});
 		});
 }
 

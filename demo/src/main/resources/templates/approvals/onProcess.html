@@ -289,36 +289,42 @@ button:active {
 							<th>처리</th>
 						</tr>
 					</thead>
-        <tbody>
-            <th:block th:if="${#lists.isEmpty(myApprList)}">
-                <tr>
-                    <td colspan="7" style="text-align: center; color: #666;">등록된 전자결재가 없습니다</td>
-                </tr>
-            </th:block>
-            
-            <th:block th:if="${!#lists.isEmpty(myApprList)}" th:each="myAppr, sts : ${myApprList}">
-                <tr class="approval-row" th:data-ea-no="${myAppr.eaNo}">
-                    <td>[[${sts.count}]]</td>
-                    <td><span th:text="${session.userEmpNo == myAppr.drafterEmpNo ? '기안함' : '결재 요청 받음'}"></span></td>
-                    <td>[[${myAppr.title}]]</td>
-                    <td>[[${myAppr.drafterName}]]</td>
-                    <td>[[${#dates.format(myAppr.regDate, "yyyy년 MM월 dd일")}]]</td>
-                    <th:block>
-                        <td><span style="text-align: center; cursor: default;" th:classappend="${myAppr.approvalStatus == 'a1' ? 'badge rounded-pill bg-primary' : 
+					<tbody>
+						<th:block th:if="${#lists.isEmpty(myApprList)}">
+							<tr>
+								<td colspan="7" style="text-align: center; color: #666;">등록된
+									전자결재가 없습니다</td>
+							</tr>
+						</th:block>
+
+						<th:block th:if="${!#lists.isEmpty(myApprList)}"
+							th:each="myAppr, sts : ${myApprList}">
+							<tr class="approval-row" th:data-ea-no="${myAppr.eaNo}">
+								<td>[[${sts.count}]]</td>
+								<td><span
+									th:text="${session.userEmpNo == myAppr.drafterEmpNo ? '기안함' : '결재 요청 받음'}"></span></td>
+								<td>[[${myAppr.title}]]</td>
+								<td>[[${myAppr.drafterName}]]</td>
+								<td>[[${#dates.format(myAppr.regDate, "yyyy년 MM월 dd일")}]]</td>
+								<th:block>
+									<td><span style="text-align: center; cursor: default;"
+										th:classappend="${myAppr.approvalStatus == 'a1' ? 'badge rounded-pill bg-primary' : 
                                                   myAppr.approvalStatus == 'a2' ? 'badge rounded-pill bg-info' : 
                                                   myAppr.approvalStatus == 'a3' ? 'badge rounded-pill bg-success' : 
-                                                  myAppr.approvalStatus == 'a4' ? 'badge rounded-pill bg-danger' : ''}"
-                                    >
-                            <span  th:text="${myAppr.approvalStatus == 'a1' ? '대기' : 
+                                                  myAppr.approvalStatus == 'a4' ? 'badge rounded-pill bg-danger' : ''}">
+											<span
+											th:text="${myAppr.approvalStatus == 'a1' ? '대기' : 
                                            myAppr.approvalStatus == 'a2' ? '진행 중' : 
                                            myAppr.approvalStatus == 'a3' ? '승인' : 
                                            myAppr.approvalStatus == 'a4' ? '반려' : ''}"></span>
-                        </span></td>
-                    </th:block>
-                    <td><button  th:if="${session.userEmpNo == myAppr.drafterEmpNo && #strings.equals(myAppr.approvalStatus, 'a1')}" type="button" class="btn btn-danger delete-button">삭제</button></td>
-                </tr>
-            </th:block>
-        </tbody>
+									</span></td>
+								</th:block>
+								<td><button
+										th:if="${session.userEmpNo == myAppr.drafterEmpNo && #strings.equals(myAppr.approvalStatus, 'a1')}"
+										type="button" class="btn btn-danger delete-button">삭제</button></td>
+							</tr>
+						</th:block>
+					</tbody>
 				</table>
 			</div>
 		</div>
@@ -344,10 +350,22 @@ button:active {
 											"click",
 											function(event) {
 												const eaNo = event.currentTarget.parentElement.parentElement.dataset.eaNo;
-												if (confirm("해당 전자결재를 삭제하시겠습니까?")) {
-													location.href = '/approvals/deleteAppr?eaNo='
-															+ eaNo;
-												}
+												Swal.fire({
+										              title: "해당 전자결재를 삭제하시겠습니까?",
+										              icon: "warning",
+										              showCancelButton: true,
+										              confirmButtonColor: "#3085d6",
+										              cancelButtonColor: "#d33",
+										              confirmButtonText: "예",
+										              cancelButtonText:"아니요"
+										            }).then((result) => {
+										              if (result.isConfirmed) {
+										                  // 아작스
+															location.href = '/approvals/deleteAppr?eaNo='
+																+ eaNo;
+										                    
+										              }
+										            });
 											});
 						});
 	</script>

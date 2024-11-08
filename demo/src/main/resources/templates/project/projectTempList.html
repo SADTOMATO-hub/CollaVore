@@ -288,7 +288,8 @@ button:active {
 				<div class="search-container">
 					<input type="text" id="searchBox" placeholder="검색어를 입력하세요">
 				</div>
-				<table class="table table-striped table-hover table-bordered memberList_table">
+				<table
+					class="table table-striped table-hover table-bordered memberList_table">
 					<thead>
 						<tr>
 							<th scope="col">템플릿 번호</th>
@@ -320,12 +321,12 @@ button:active {
 				<div class="insert-btn-container">
 					<button type="button" class="btn btn-info btn-lg"
 						data-bs-toggle="modal" data-bs-target="#projectModal"
-						style="float: right;margin-top:10px;">프로젝트 템플릿 생성</button>
+						style="float: right; margin-top: 10px;">프로젝트 템플릿 생성</button>
 				</div>
 			</div>
 		</div>
 	</div>
-	
+
 	<!-- 모달 폼 -->
 	<div class="modal fade" id="projectModal" tabindex="-1"
 		aria-labelledby="projectModalLabel" aria-hidden="true">
@@ -394,8 +395,8 @@ button:active {
 		</div>
 	</div>
 </div>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
 	document.addEventListener('DOMContentLoaded', function() {
 	    const searchBox = document.getElementById('searchBox');
 	    
@@ -460,11 +461,17 @@ button:active {
                             </td>
                         </tr>
                     `);
-                    alert('프로젝트가 성공적으로 생성되었습니다!');
+                    Toast.fire({
+                        icon: "success",
+                        title: '프로젝트가 성공적으로 생성되었습니다!'
+                      });
                     $('#projectModal').modal('hide');
                 },
                 error: function(xhr, status, error) {
-                    alert('프로젝트 생성에 실패했습니다: ' + error);
+                    Toast.fire({
+                        icon: "error",
+                        title: '프로젝트 생성에 실패했습니다: ' + error
+                      });
                 }
             });
         });
@@ -472,20 +479,36 @@ button:active {
     // 프로젝트 삭제 AJAX
     $(document).on('click', '.delete-btn', function() {
         const projTempNo = $(this).data('proj-temp-no');
-
-        if (confirm('정말로 이 프로젝트를 삭제하시겠습니까?')) {
-            $.ajax({
-                url: `/project/projecttempdelete/${projTempNo}`,
-                type: 'DELETE',
-                success: function(response) {
-                    alert('프로젝트가 성공적으로 삭제되었습니다!');
-                    $(`button[data-proj-temp-no="${projTempNo}"]`).closest('tr').remove();
-                },
-                error: function(xhr, status, error) {
-                    alert('프로젝트 삭제에 실패했습니다: ' + error);
-                }
-            });
-        }
+        Swal.fire({
+            title: "정말 삭제하시겠습니까?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "예",
+            cancelButtonText:"아니요"
+          }).then((result) => {
+            if (result.isConfirmed) {
+                // 아작스
+            	$.ajax({
+                    url: `/project/projecttempdelete/${projTempNo}`,
+                    type: 'DELETE',
+                    success: function(response) {
+                        Toast.fire({
+                            icon: "success",
+                            title: '프로젝트가 성공적으로 삭제되었습니다!'
+                          });
+                        $(`button[data-proj-temp-no="${projTempNo}"]`).closest('tr').remove();
+                    },
+                    error: function(xhr, status, error) {
+                        Toast.fire({
+                            icon: "error",
+                            title: '프로젝트 삭제에 실패했습니다: ' + error
+                          });
+                    }
+                });
+            }
+          });
     });
  // 프로젝트 수정 모달 폼
     $(document).on('click', '.btn-warning', function() {
@@ -503,7 +526,10 @@ button:active {
                 $('#editProjectModal').modal('show');
             },
             error: function(xhr, status, error) {
-                alert('프로젝트 정보를 가져오는 데 실패했습니다: ' + error);
+                Toast.fire({
+                    icon: "error",
+                    title: '프로젝트 정보를 가져오는 데 실패했습니다: ' + error
+                  });
             }
         });
     });    
@@ -532,14 +558,23 @@ button:active {
                     row.find('td:nth-child(3)').text(updatedData.content);
                     row.find('td:nth-child(4)').text(updatedData.periodDate);
 
-                    alert('프로젝트가 성공적으로 수정되었습니다!');
+                    Toast.fire({
+                        icon: "success",
+                        title: '프로젝트가 성공적으로 수정되었습니다!'
+                      });
                     $('#editProjectModal').modal('hide');
                 } else {
-                    alert('수정에 실패했습니다: ' + response.message);
+                    Toast.fire({
+                        icon: "warning",
+                        title: '수정에 실패했습니다: ' + response.message
+                      });
                 }
             },
             error: function(xhr, status, error) {
-                alert('수정 요청에 실패했습니다: ' + error);
+                Toast.fire({
+                    icon: "error",
+                    title: '수정 요청에 실패했습니다: ' + error
+                  });
             }
         });
     });

@@ -537,11 +537,17 @@ $(document).ready(function() {
                 // gitRepo 생성
                 gitAddRepos(newProject.projNo, newProject.name, newProject.content, empNo);
      
-                alert('프로젝트가 성공적으로 생성되었습니다!');
+                Toast.fire({
+                    icon: "success",
+                    title: '프로젝트가 성공적으로 생성되었습니다!'
+                  });
                 $('#projectModal').modal('hide'); 
             },
-            error: function(xhr, status, error) {
-                alert('프로젝트 생성에 실패했습니다: ' + error);
+            error: function(xhr, status, error) {              
+                Toast.fire({
+                    icon: "error",
+                    title: '프로젝트 생성에 실패했습니다: ' + error
+                  });
             }
         });
     });
@@ -553,21 +559,37 @@ $(document).ready(function() {
 	// 프로젝트 삭제 ajax
     $(document).on('click', '.delete-btn', function() {
         const projNo = $(this).data('proj-no'); 
-
-        if (confirm('정말로 이 프로젝트를 삭제하시겠습니까?(삭제 시 업무 및 파일이     모두 삭제됩니다!!)')) {
-            $.ajax({
-                url: `/project/projectdelete/${projNo}`, 
-                type: 'DELETE',
-                success: function(response) {
-                    alert('프로젝트가 성공적으로 삭제되었습니다!');
-                    $(`button[data-proj-no="${projNo}"]`).closest('tr').remove();
-                },
-                error: function(xhr, status, error) {
-                	console.log(`${projNo}`);
-                    alert('프로젝트 삭제에 실패했습니다: ' + error);
-                }
-            });
-        }
+        Swal.fire({
+            title: "정말로 이 프로젝트를 삭제하시겠습니까?(삭제 시 업무 및 파일이 모두 삭제됩니다!!)",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "예",
+            cancelButtonText:"아니요"
+          }).then((result) => {
+            if (result.isConfirmed) {
+                // 아작스
+                $.ajax({
+                    url: `/project/projectdelete/${projNo}`, 
+                    type: 'DELETE',
+                    success: function(response) {
+                        Toast.fire({
+                            icon: "success",
+                            title: '프로젝트가 성공적으로 삭제되었습니다!'
+                          });
+                        $(`button[data-proj-no="${projNo}"]`).closest('tr').remove();
+                    },
+                    error: function(xhr, status, error) {
+                    	console.log(`${projNo}`);
+                        Toast.fire({
+                            icon: "error",
+                            title: '프로젝트 삭제에 실패했습니다: ' + error
+                          });
+                    }
+                });
+            }
+          });
     });
 	
 	//프로젝트 수정 모달 폼
@@ -595,7 +617,10 @@ $(document).on('click', '.btn-warning', function() {
             $('#editProjectModal').modal('show');
         },
         error: function(xhr, status, error) {
-            alert('프로젝트 정보를 가져오는 데 실패했습니다: ' + error);
+            Toast.fire({
+                icon: "error",
+                title: '프로젝트 정보를 가져오는 데 실패했습니다: ' + error
+              });
         }
     });
 });
@@ -618,7 +643,10 @@ $('#editProjectForm').on('submit', function(e) {
             endDate: $('#editProjEndDate').val()
         }),
         success: function(response) {
-            alert('프로젝트가 성공적으로 수정되었습니다!');
+            Toast.fire({
+                icon: "success",
+                title: '프로젝트가 성공적으로 수정되었습니다!'
+              });
 
             // 상태에 따라 배지 결정
             const status = $('#editProjStatus').val();
@@ -759,45 +787,24 @@ function gitReadMECommit(projName, owner, repo){
 		  .catch(error => console.error('Error:', error));
 }
 
-
-// 로컬폴더 입력받아서 git clone 실행
-function selectDirectory() {
-	let localUrl = $('#localUrls').val().replace(/\\/g, "/");
-	let cloneUrl= document.getElementById('gitUrlInput').value;
-	//console.log(localUrl);
-	//console.log(cloneUrl);
-    const data = {
-            projectGitUrl: `${cloneUrl}`,
-            cloneLocalPath: `${localUrl}`
-    };
-	
-    fetch('/project/gitClone', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    })
-      .then(response => response.text())
-      .then(data => console.log(data))
-      .catch(error => console.error('Error:', error));
-    alert('프로젝트가 로컬에 생성되었습니다!');
-	 // 모달을 닫을 때
-	    $('#git').modal('hide');
-  }
-
 function validateInput(input) {
     const regex = /^[a-zA-Z0-9_ ]*$/; // 영어, 숫자, 언더바, 공백 허용하는 정규 표현식
     
     // 유효한 문자 검증
     if (!regex.test(input.value)) {
-        alert("영어, 숫자, 공백, 언더바만 입력할 수 있습니다.");
+        Toast.fire({
+            icon: "warning",
+            title: "영어, 숫자, 공백, 언더바만 입력할 수 있습니다."
+          });
         input.value = input.value.replace(/[^a-zA-Z0-9_ ]/g, ''); // 유효하지 않은 문자 제거
     }
 
     // 글자수 제한: 30글자 이하만 허용
     if (input.value.length > 30) {
-        alert("입력된 글자 수는 30자를 초과할 수 없습니다.");
+        Toast.fire({
+            icon: "warning",
+            title: "입력된 글자 수는 30자를 초과할 수 없습니다."
+          });
         input.value = input.value.slice(0, 20); // 20자 이상이면 자르기
     }
 }
@@ -807,7 +814,10 @@ document.getElementById("projStartDate").addEventListener("change", function() {
 
     // 시작일이 마감일보다 늦으면 마감일을 시작일로 설정
     if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
-        alert("시작일은 마감일보다 늦을 수 없습니다.");
+        Toast.fire({
+            icon: "warning",
+            title: '시작일은 마감일보다 늦을 수 없습니다.'
+          });
         document.getElementById("projStartDate").value = endDate; // 시작일을 마감일로 설정
     }
 });
@@ -818,7 +828,10 @@ document.getElementById("projEndDate").addEventListener("change", function() {
 
     // 마감일이 시작일보다 앞서면 마감일을 시작일로 설정
     if (startDate && endDate && new Date(endDate) < new Date(startDate)) {
-        alert("마감일은 시작일보다 앞설 수 없습니다.");
+        Toast.fire({
+            icon: "warning",
+            title: '마감일은 시작일보다 앞설 수 없습니다.'
+          });
         document.getElementById("projEndDate").value = startDate; // 마감일을 시작일로 설정
     }
 });
@@ -829,7 +842,10 @@ document.getElementById("editProjStartDate").addEventListener("change", function
 
     // 시작일이 마감일보다 늦으면 마감일을 시작일로 설정
     if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
-        alert("시작일은 마감일보다 늦을 수 없습니다.");
+        Toast.fire({
+            icon: "warning",
+            title: '시작일은 마감일보다 늦을 수 없습니다.'
+          });
         document.getElementById("editProjStartDate").value = endDate; // 시작일을 마감일로 설정
     }
 });
@@ -840,7 +856,10 @@ document.getElementById("editProjEndDate").addEventListener("change", function()
 
     // 마감일이 시작일보다 앞서면 마감일을 시작일로 설정
     if (startDate && endDate && new Date(endDate) < new Date(startDate)) {
-        alert("마감일은 시작일보다 앞설 수 없습니다.");
+        Toast.fire({
+            icon: "warning",
+            title: '마감일은 시작일보다 앞설 수 없습니다.'
+          });
         document.getElementById("editProjEndDate").value = startDate; // 마감일을 시작일로 설정
     }
 });
