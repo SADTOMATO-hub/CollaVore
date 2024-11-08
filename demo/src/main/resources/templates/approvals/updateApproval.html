@@ -248,13 +248,13 @@ button:active {
 						</div>
 						<div class="form-group row">
 							<label for="selectContent"
-								class="col-sm-3 text-end control-label col-form-label">템플릿[[${approvals.eatNo}]]
+								class="col-sm-3 text-end control-label col-form-label">템플릿
 								선택</label>
 							<div class="col-sm-9">
 								<select id="selectContent" class="form-select">
 									<option selected disabled>==템플릿 선택==</option>
 									<option th:each="temps : ${tempInfo}" th:value="${temps.eatNo}"
-										th:selected="${temps.eatNo == approvals.eatNo}">[[${temps.eatNo}]]/[[${temps.title}]]</option>
+										th:selected="${temps.eatNo == approvals.eatNo}">[[${temps.title}]]</option>
 								</select>
 							</div>
 						</div>
@@ -299,35 +299,37 @@ button:active {
 					aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-					<form id="apprForm">
-						  <div class="row">
-					    <div class="col">
-					    <div class="mb-3">
-							<label for="selectDept" class="form-label">부서 선택</label>
+				<form id="apprForm">
+					<div class="row">
+						<div class="col">
+							<div class="mb-3">
+								<label for="selectDept" class="form-label">부서 선택</label>
+							</div>
+							<div class="mb-3">
+								<select id="selectDept" style="height: 300px;"
+									class="form-select" size="15">
+									<option selected value="" disabled>==부서 선택==</option>
+									<option th:each="deptsInfo : ${depts}"
+										th:value="${deptsInfo.deptNo}">[[${deptsInfo.deptName}]]</option>
+								</select>
+							</div>
 						</div>
-						<div class="mb-3">
-							<select id="selectDept" style="height: 300px;" class="form-select" size="15">
-								<option selected value="" disabled>==부서 선택==</option>
-								<option th:each="deptsInfo : ${depts}"
-									th:value="${deptsInfo.deptNo}">[[${deptsInfo.deptName}]]</option>
-							</select>
+						<div class="col">
+							<div class="mb-3">
+								<label for="selectApprovers" class="form-label">결재자 선택</label>
+							</div>
+							<div class="mb-3">
+								<select id="selectApprovers" class="form-select"
+									style="height: 300px;" size="15">
+									<option selected value="" disabled>==결재자 선택==</option>
+								</select>
+							</div>
 						</div>
-					    </div>
-					  	<div class="col">
-					  		<div class="mb-3">
-							<label for="selectApprovers" class="form-label">결재자 선택</label>
-						</div>
-						<div class="mb-3">
-							<select id="selectApprovers" class="form-select" style="height: 300px;" size="15">
-								<option selected value="" disabled>==결재자 선택==</option>
-							</select>
-						</div>
-					  	</div>
-					  </div>
-						<button type="button" class="btn btn-primary" id="modalSubmit">결재자
-							선택</button>
-					</form>
-				</div>
+					</div>
+					<button type="button" class="btn btn-primary" id="modalSubmit">결재자
+						선택</button>
+				</form>
+			</div>
 		</div>
 	</div>
 </div>
@@ -485,8 +487,29 @@ $(document).ready(function() {
 	//
 //수정버튼을 누르면 form의 데이터를 전부 넘김
 	function submitPost(event) {
-	var drafterEmpNo = $('input[name=drafterEmpNo]').val(userEmpNo);	
 		event.preventDefault(); // 폼 제출 방지
+		var drafterEmpNo = $('input[name=drafterEmpNo]').val(userEmpNo);	
+		var approvalTitle = $('#approvalTitle').val();	
+		
+		if(approvalTitle == ''){
+			alert('전자결재명이 없습니다. 입력 후 다시 시도해주세요.');
+			return;
+		}
+		
+		var allEmpty = true;
+		
+	    for (var i = 0; i <= 3; i++) {
+	        var apprEmpNo = document.querySelector('input[name="approvers[' + i + '].empNo"]').value;
+	        if (apprEmpNo != '') {
+	            allEmpty = false;
+	            break;
+	        }
+	    }
+	
+		if (allEmpty) {
+		    alert("결재자는 최소 1명이상 등록해야 합니다. 결재자 추가 후 다시 시도해주세요.");
+		    return;
+		}
 		oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
 		if ( 	content  == null
 				|| content == '' 
