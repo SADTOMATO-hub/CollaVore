@@ -121,6 +121,7 @@ public class ProjectController {
 		System.err.println(projectVO.getIsTemplate());
 		pjService.projectinsert(projectVO);
 		String prjname = projectVO.getName();
+		String prjcontent = projectVO.getContent();
 		pjService.projectfolderinsert(projectVO);
 		if("i2".equals(projectVO.getIsTemplate())) {
 		//템플릿 업무 리스트 출력
@@ -154,9 +155,10 @@ public class ProjectController {
 
 		// pjService.projectdwrkinsert(projectVO);
 		//System.err.println(job.getJobName());	
-		//System.err.println(prjname);
+		System.err.println(prjname);
 		map.put("jobName", job.getJobName());
 		map.put("prjrName", prjname);
+		map.put("prjrContent", prjcontent);
 		map.put("type", "postAjax");
 		map.put("data", projectVO);
 		return map;
