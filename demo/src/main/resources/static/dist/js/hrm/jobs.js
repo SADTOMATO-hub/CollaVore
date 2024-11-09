@@ -61,11 +61,9 @@ function addJob() {
 			div.remove(); // 값이 없으면 입력 취소
 		} else {
 			// 중복된 이름일 경우 알림 메시지 출력 후 다시 focus 유지
-			alert("중복된 직무 이름은 사용할 수 없습니다.");
-
 			Toast.fire({
 				icon: "warning",
-				title: "부서장 지정에 실패했습니다."
+				title: "중복된 직무 이름은 사용할 수 없습니다."
 			});
 			setTimeout(() => input.focus(), 0); // 경고 후 다시 focus
 		}

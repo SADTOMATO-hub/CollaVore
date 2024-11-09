@@ -151,7 +151,10 @@ function saveData() {
 
 		// 중복 검사
 		if (nameSet.has(posiName)) {
-			alert("중복된 직위명이 있습니다. 확인 후 다시 시도해주세요.");
+			Toast.fire({
+				icon: "warning",
+				title: "중복된 직위명이 있습니다. <br>확인 후 다시 시도해주세요."
+			});
 			hasDuplicate = true;
 			return; // 중복이 발견되면 즉시 종료
 		}
