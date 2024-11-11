@@ -283,7 +283,8 @@ button:active {
 			</div>
 
 			<div class="card_memberList">
-				<table class="table table-striped table-hover table-bordered memberList_table">
+				<table
+					class="table table-striped table-hover table-bordered memberList_table">
 					<thead>
 						<tr>
 							<th scope="col">프로젝트 번호</th>
@@ -301,8 +302,8 @@ button:active {
 							<tr>
 								<td scope="row">[[${info.projNo}]]</td>
 								<td>[[${info.name}]]</td>
-								<td>
-								    <span th:text="${#strings.length(info.content) > 20 ? #strings.substring(info.content, 0, 20) + '...' : info.content}"></span>
+								<td><span
+									th:text="${#strings.length(info.content) > 20 ? #strings.substring(info.content, 0, 20) + '...' : info.content}"></span>
 								</td>
 								<td><span class="badge rounded-pill bg-secondary"
 									th:if="${info.status == 'j1'}">진행전</span> <span
@@ -318,10 +319,16 @@ button:active {
 										data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
 									<button type="button"
 										class="btn btn-danger text-white delete-btn"
-										th:attr="data-proj-no=${info.projNo}">삭제</button>
-								    <a class="btn btn-success text-white" th:href="@{|https://api.github.com/repos/${info.owner}/${info.repo}/zipball/master|}">
-								        내려받기
-								    </a>
+										th:attr="data-proj-no=${info.projNo}">삭제</button> <a
+									class="btn btn-success text-white"
+									th:if="${info.projNo >= 1001 && info.projNo <= 1005}"
+									th:href="@{|https://api.github.com/repos/${info.owner}/${info.repo}/zipball/master|}">
+										내려받기 </a> <a class="btn btn-success text-white"
+									th:unless="${info.projNo >= 1001 && info.projNo <= 1005}"
+									th:href="@{|https://api.github.com/repos/${info.owner}/${info.repo}/zipball/main|}">
+										내려받기 </a>
+
+
 								</td>
 							</tr>
 						</th:block>
@@ -470,20 +477,20 @@ button:active {
 const empNo = '[[${empNo}]]';
 const compGitUrl = '[[${gitInfo.compGitUrl}]]';
 const compGitToken = '[[${gitInfo.compGitToken}]]';
-
 //프로젝트생성 모달폼 
 $(document).ready(function() {
   
-    $('#projectForm').on('submit', function(event) {
+    $('#projectForm').on('submit', async function(event) { // async 함수로 변경
         event.preventDefault(); 
         $.ajax({
             url: '/project/projectinsert', 
             type: 'POST',
             data: $(this).serialize(), 
-            success: function(response) {
+            success: async function(response) { // async 콜백 함수
                 const newProject = response.data; 
                 const jobName = response.jobName; 
-                const prjName =  response.prjrName;
+                const prjName = response.prjrName;
+                
                 function formatDate(dateString) {
                     const date = new Date(dateString);
                     const year = date.getFullYear();
@@ -494,9 +501,6 @@ $(document).ready(function() {
                 
                 let statusClass;
                 let statusText;
-                //console.log(newProject);
-                //console.log(response);
-                //console.log(prjName);
                 var content = response.prjrContent;
                 var truncatedContent = content.length > 20 ? content.substring(0, 20) + '...' : content;
 
@@ -514,6 +518,16 @@ $(document).ready(function() {
                         statusText = '완료';
                         break;
                 }
+
+                // gitRepo 생성 (await 사용)
+                let gitCloneUrl = await gitAddRepos(newProject.projNo, prjName, content, empNo);
+
+                console.log(gitCloneUrl);
+
+                // gitCloneUrl이 정상적으로 반환되었는지 확인
+                const extractUrl = gitCloneUrl ? extractOwnerAndRepo(gitCloneUrl) : null;
+                console.log(extractUrl);
+                
                 $('table tbody').append(`
                     <tr data-no="${newProject.projNo}">
                         <td scope="row">${newProject.projNo}</td>
@@ -523,39 +537,51 @@ $(document).ready(function() {
                         </td>
                         <td>
                         <span class="badge rounded-pill ${statusClass}">${statusText}</span>
-                    	</td>
+                        </td>
                         <td>${formatDate(newProject.startDate)}</td>	
                         <td>${formatDate(newProject.endDate)}</td>
                         <td>${jobName}</td>
                         <td>
                         <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProjectModal">수정</button>
                         <button type="button" class="btn btn-danger text-white delete-btn" data-proj-no="${newProject.projNo}">삭제</button>
-                        <button type="button" class="btn btn-success text-white btn-down" >내려받기</button>
+                        ${extractUrl ? `<a class="btn btn-success text-white" href="https://api.github.com/repos/${extractUrl.owner}/${extractUrl.repo}/zipball/main">내려받기</a>` : ''}
                         </td>
                     </tr>
                 `);
-                // gitRepo 생성
-                gitAddRepos(newProject.projNo, prjName, content, empNo);
      
                 Toast.fire({
                     icon: "success",
                     title: '프로젝트가 성공적으로 생성되었습니다!'
-                  });
+                });
                 $('#projectModal').modal('hide'); 
             },
             error: function(xhr, status, error) {              
                 Toast.fire({
                     icon: "error",
                     title: '프로젝트 생성에 실패했습니다: ' + error
-                  });
+                });
             }
         });
     });
+
     // 모달이 숨겨질 때 입력 필드 초기화
     $('#projectModal').on('hide.bs.modal', function() {
         $('#projectForm')[0].reset(); // 폼의 모든 필드를 초기화
     });
 });
+
+function extractOwnerAndRepo(cloneUrl) {
+	  // 정규 표현식을 사용하여 owner와 repo를 추출
+	  const match = cloneUrl.match(/https:\/\/github\.com\/([^\/]+)\/([^\/]+)\.git/);
+
+	  if (match) {
+	    const owner = match[1];
+	    const repo = match[2];
+	    return { owner, repo };
+	  } else {
+	    return null; // 형식이 맞지 않을 경우 null 반환
+	  }
+	}	
 	// 프로젝트 삭제 ajax
     $(document).on('click', '.delete-btn', function() {
         const projNo = $(this).data('proj-no'); 
@@ -591,7 +617,6 @@ $(document).ready(function() {
             }
           });
     });
-	
 	//프로젝트 수정 모달 폼
 $(document).on('click', '.btn-warning', function() {
     const projNo = $(this).closest('tr').find('.delete-btn').data('proj-no'); 
@@ -701,46 +726,48 @@ $(document).ready(function() {
 });
 
 // gitRepo 생성
-function gitAddRepos(projNo, projName, projContent, empNo){
+async function gitAddRepos(projNo, projName, projContent, empNo) {
+	try {
+		// 요청 데이터 설정
+		const data = {
+			name: projName, // 리포지토리 이름
+			description: projContent,
+			private: false // 공개 리포지토리 여부 (true: private, false: public)
+		};
 
-	// 요청 데이터 설정
-	const data = {
-	  name: `${projName}`, // 리포지토리 이름
-	  description: `${projContent}`,
-	  private: false // 공개 리포지토리 여부 (true: private, false: public)
-	};
+		// API 호출
+		const response = await fetch('https://api.github.com/user/repos', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `token ${compGitToken}` // 글로벌 변수로 설정 필요
+			},
+			body: JSON.stringify(data)
+		});
 
-	// API 호출
-	fetch('https://api.github.com/user/repos', {
-	  method: 'POST',
-	  headers: {
-	    'Content-Type': 'application/json',
-	    Authorization: `token ${compGitToken}`
-	  },
-	  body: JSON.stringify(data)
-	})
-	  .then(response => {
-	    if (response.status === 201) {
-	        return response.json();
-	    } else {
-	      throw new Error(`Failed to create repository: ${response.statusText}`);
-	    }
-	  })
-	  .then(data => {
-		    // JSON 객체에서 'git_url' 값 가져오기
-		    const gitUrl = data.clone_url;
-		    const repoName = data.name;
-		    const owner = data.owner.login;
-		    gitReadMECommit(projName, owner, repoName);
-		    gitCloneUrlUpdate(projNo, gitUrl);
-		    
-		    $(`[data-no=${projNo}]`).find('.btn-down').attr("data-project-git-url", gitUrl);
-	           
-		    
-	  })
-	  .catch(error => console.error('Error:', error));
+		// 응답 확인
+		if (response.status === 201) {
+			const data = await response.json();
+			const gitUrl = data.clone_url;
+			const repoName = data.name;
+			const owner = data.owner.login;
 
+			// 추가 작업 수행
+			gitReadMECommit(projName, owner, repoName);
+			gitCloneUrlUpdate(projNo, gitUrl);
+
+			// 버튼의 데이터 속성 업데이트
+			$(`[data-no=${projNo}]`).find('.btn-down').attr("data-project-git-url", gitUrl);
+
+			return gitUrl; // 필요한 경우 gitUrl 반환
+		} else {
+			throw new Error(`Failed to create repository: ${response.statusText} (${response.status})`);
+		}
+	} catch (error) {
+		console.error('Error:', error);
+	}
 }
+
 
 /* git Url 변경 */
 function gitCloneUrlUpdate(projNo, cloneUrl){
