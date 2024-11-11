@@ -949,7 +949,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 							// 시작 날짜와 종료 날짜 비교 예외 처리
 							if (startDateTime > endDateTime) {
-								alert("종료 날짜는 시작 날짜보다 이후여야 합니다.");
+								Toast.fire({
+									icon: "warning",
+									title: "종료 날짜는 시작 날짜보다<br> 이후여야 합니다."
+								});
 								return;  // 함수를 종료하여 제출을 막음
 							}
 
