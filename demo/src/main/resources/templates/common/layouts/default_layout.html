@@ -8,8 +8,58 @@ q
 <meta name="msapplication-TileColor" content="#ffffff">
 <meta name="theme-color" content="#ffffff">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<th:block th:replace="~{common/configs/default_config :: ConfigFrag}"></th:block>
 <title>CollaVore : 그룹협업툴</title>
+<style>
+/* 기본 스타일 */
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+/* 클릭 효과 스타일 */
+.click-effect {
+    position: absolute;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    animation: ripple 0.6s ease-out;
+    background: rgba(108,78,255, 0.5);
+    width: 20px;
+    height: 20px;
+    z-index: 9999; /* 맨 위로 나오도록 설정 */
+}
+
+/* 효과 애니메이션 */
+@keyframes ripple {
+    0% {
+        opacity: 1;
+        width: 20px;
+        height: 20px;
+    }
+    100% {
+        opacity: 0;
+        width: 150px;
+        height: 150px;
+    }
+}
+</style>
+<script>
+//모든 클릭 이벤트에 효과 추가
+document.addEventListener('click', function(e) {
+    // 클릭 효과 요소 생성
+    const effect = document.createElement('div');
+    effect.classList.add('click-effect');
+    effect.style.left = `${e.pageX}px`;
+    effect.style.top = `${e.pageY}px`;
+    document.body.appendChild(effect);
+
+    // 애니메이션 종료 후 요소 제거
+    effect.addEventListener('animationend', () => {
+        effect.remove();
+    });
+});
+</script>
+<th:block th:replace="~{common/configs/default_config :: ConfigFrag}"></th:block>
 </head>
 <body>
 	<div id="main-wrapper" data-layout="vertical" data-navbarbg="skin5"
