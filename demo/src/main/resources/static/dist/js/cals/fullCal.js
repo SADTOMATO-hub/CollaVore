@@ -91,8 +91,6 @@ document.addEventListener('DOMContentLoaded', function() {
 					editable: true,
 					dayMaxEvents: true,
 
-
-
 					// 서버로 업데이트된 일정 데이터 전송
 					eventDrop: function(info) {
 						// 이동 후의 시작일과 종료일을 Oracle에서 이해할 수 있는 'YYYY-MM-DD HH:MM:SS' 형식으로 변환
@@ -684,18 +682,20 @@ document.addEventListener('DOMContentLoaded', function() {
 						var hours = now.getHours().toString().padStart(2, '0'); // 2자리로 맞추기
 						var minutes = now.getMinutes().toString().padStart(2, '0'); // 2자리로 맞추기
 						var currentTime = hours + ':' + minutes; // HH:MM 형식으로
-
+						
+						let endDate = new Date(arg.endStr);
+						
+						// 하루(24시간)를 빼기
+						endDate.setDate(endDate.getDate() - 1);
+						
+						// Date 객체를 다시 "YYYY-MM-DD" 형식의 문자열로 변환
+						let newDateStr = endDate.toISOString().split('T')[0];
+						
 						// 시작 시간과 종료 시간에 현재 시간 설정
 						document.getElementById('startDate').value = arg.startStr;
 						document.getElementById('startTime').value = currentTime;
-						document.getElementById('endDate').value = arg.endStr || arg.startStr;
+						document.getElementById('endDate').value = newDateStr || arg.startStr;
 						document.getElementById('endTime').value = currentTime;
-
-
-
-
-
-
 						// 알림 빈도 처리
 						var alarmFrequency = document.getElementById('alarmFrequency').value;
 						var alarmData = null;
@@ -759,8 +759,6 @@ document.addEventListener('DOMContentLoaded', function() {
 							document.getElementById('monthlyRepeat').style.display = 'none';
 						}
 
-
-
 						//========================== 특정 입력 필드에서 24를 초과하면 24로 제한하는 함수
 						function enforceMaxValue(inputField) {
 							inputField.addEventListener('input', function() {
@@ -810,21 +808,11 @@ document.addEventListener('DOMContentLoaded', function() {
 						}
 						//======================= end 월에 상관없이 1~31 제한 ===========================	
 
-
-
-
-
 						// 종일 체크 여부
 						var isAllDay = document.getElementById('allDay').checked;
 						if (isAllDay) {
 							endTime = '23:59:59'; // 자정까지
 						}
-
-
-
-
-
-
 
 						//							일정양식      제출
 						document.getElementById('scheduleForm').onsubmit = function(e) {
