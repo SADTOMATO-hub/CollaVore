@@ -87,23 +87,32 @@
 	margin-right: 10px;
 }
 
-/* 테이블 스타일 */
-.memberList_table {
-	width: 100%;
-	border-collapse: collapse;
-	font-size: 14px;
-	text-align: left;
-	margin-bottom: 5px;
+/* form-select 기본 스타일 재설정 */
+.form-select {
+    border: none;
+    background-color: transparent;
+    font-size: inherit; /* 부모 요소의 폰트 크기 상속 */
+    font-weight: bold; /* 폰트 굵게 설정 */
+    color: inherit; /* 부모 요소의 폰트 색상 상속 */
+    text-align: center; /* 중앙 정렬 */
+    appearance: none; /* 기본 화살표 제거 */
+    padding: 0;
+    margin: 0;
+    width: 100%; /* 부모 th의 너비에 맞춤 */
+    max-width: 120px; /* 최대 너비 설정 */
 }
 
+/* thead 스타일 */
 .memberList_table thead th {
-	text-align: center;
-	font-weight: bold;
-	color: #555;
-	padding: 12px;
-	border-bottom: 2px solid #ddd;
-	font-weight: bold;
+    text-align: center;
+    font-weight: bold;
+    color: #555;
+    padding: 12px;
+    font-size: 14px;
+    border-bottom: 2px solid #ddd;
+    width: 120px; /* 고정 너비 설정 */
 }
+
 
 .memberList_table tbody td {
 	text-align: center;
@@ -117,12 +126,14 @@
 	text-overflow: ellipsis; /* 넘친 텍스트는 "..."으로 표시됩니다 */
 }
 
-.memberList_table tbody tr:hover {
-	background-color: #f9f9f9; /* 마우스 오버 시 행 배경색 변경 */
+/* tbody의 짝수 줄에 연한 보라색 배경색 적용 */
+.memberList_table tbody tr:nth-child(even) {
+    background-color: #fbfaff; /* 연한 보라색 */
 }
 
-.form-select {
-	border: none;
+/* 모든 줄에 마우스 호버 효과 적용 */
+.memberList_table tbody tr:hover {
+    background-color: rgba(229, 228, 255, 0.6); /* 마우스 오버 시 60% 투명도 보라색 */
 }
 
 .pagination-and-insert-wrapper {
@@ -263,6 +274,8 @@ button:active {
 .none {
 	display: none;
 }
+
+
 </style>
 
 <div class="body-page-wrapper">
@@ -281,7 +294,7 @@ button:active {
 				<div class="search-container">
 					<input type="text" id="searchBox" placeholder="검색어를 입력하세요">
 				</div>
-				<table class="table table-striped memberList_table">
+				<table class="memberList_table">
 					<thead>
 						<tr>
 							<th scope="col">이름</th>
