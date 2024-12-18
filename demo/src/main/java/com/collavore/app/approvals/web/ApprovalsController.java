@@ -45,7 +45,7 @@ public class ApprovalsController {
 		model.addAttribute("sidemenu", "approvals_sidebar");
 	}
 
-	// 템플릿 리스트 페이지
+	// テンプレートリストページ
 	@GetMapping("/tempList")
 	public String approvalTemplateList(Model model) {
 		List<ApprovalstempVO> templateInfo = approvalsService.apprTempList();
@@ -53,7 +53,7 @@ public class ApprovalsController {
 		return "approvals/templateList";
 	}
 
-	// 템플릿 상세 페이지
+	// テンプレート詳細ページ
 	@GetMapping("/readTempInfo")
 	public String tmepInfo(ApprovalstempVO apprVO, Model model) {
 		ApprovalstempVO tempInfo = approvalsService.apprInfo(apprVO);
@@ -61,13 +61,13 @@ public class ApprovalsController {
 		return "approvals/readTemplate";
 	}
 
-	// 템플릿 생성 페이지 폼
+	// テンプレート生成フォロー
 	@GetMapping("/createTempForm")
 	public String createTemplatePage() {
 		return "approvals/createTemplateFrom";
 	}
 
-	// 템플릿 생성 데이터를 받는 곳
+	// テンプレート生成フォローからデータ受信する
 	@PostMapping("/createTemp")
 	public String createTemplate(ApprovalstempVO apprTempVO) {
 		int eatNo = approvalsService.createApprsTemp(apprTempVO);
