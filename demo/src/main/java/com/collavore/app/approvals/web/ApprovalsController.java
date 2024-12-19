@@ -75,7 +75,7 @@ public class ApprovalsController {
 		return url + eatNo;
 	}
 
-	// 템플릿 수정 페이지
+	// テンプレート修正フォロー
 	@GetMapping("/updateTempForm")
 	public String updateTemplateForm(ApprovalstempVO apprTempVO, Model model) {
 		ApprovalstempVO apprInfo = approvalsService.apprInfo(apprTempVO);
@@ -83,7 +83,7 @@ public class ApprovalsController {
 		return "approvals/updateTemplateForm";
 	}
 
-	// 템플릿 수정 데이터를 받는 곳
+	// テンプレート修正フォローからデータ受信する
 	@PostMapping("/updateTemp")
 	public String updateTemplate(ApprovalstempVO apprTempVO) {
 		int result = approvalsService.updateTemplate(apprTempVO);
@@ -96,7 +96,7 @@ public class ApprovalsController {
 		}
 	}
 
-	// 템플릿 삭제 기능
+	// テンプレート削除
 	@GetMapping("/deleteTemp")
 	public String deleteTemplate(ApprovalstempVO apprVO) {
 		int eatNo = approvalsService.deleteTemplate(apprVO);
@@ -108,7 +108,7 @@ public class ApprovalsController {
 		return urlFailed + eatNo;
 	}
 
-	// 전자결재 생성 폼
+	// 電子決裁生成フォロー
 	@GetMapping("/createApprForm")
 	public String createApprovals(Model model, HrmVO hrmVO,  HttpSession session ) {
 		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
@@ -121,22 +121,22 @@ public class ApprovalsController {
 		return "approvals/createApprovalForm";
 	}
 	
-	//부서가 선택되면 인사테이블을 호출
+	//部署が選択されると人事テーブルを呼び出す
 	@PostMapping("/selectEmps/{deptNo}")
 	@ResponseBody
 	public List<HrmVO> employeeList(@PathVariable("deptNo") int deptNo, HttpSession session){
-		//인사 테이블 조회
+		//人事テーブル取得
 		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
 		List<HrmVO> employeesInfo = approvalsService.employeesInfo(userEmpNo, deptNo);
 		return employeesInfo;
 	}
 
-	// 전자결재 생성 시, 데이터를 받는 곳
+	// 電子決裁生成時、データを受信する
 	@PostMapping("/createAppr")
 	public String createAppr(ApprovalsVO apprVO) {
 		approvalsService.insertApprsEa(apprVO);
 		if (apprVO.getEaNo() >= 0) {
-			int resultOfEar = approvalsService.insertApprsEar(apprVO); // 전자결재 //원래 없던 ea가 들어감
+			int resultOfEar = approvalsService.insertApprsEar(apprVO); // 전자결재
 			if (resultOfEar >= 0) {
 				return "redirect:/approvals/myApprList/a5";
 			}
@@ -262,8 +262,6 @@ public class ApprovalsController {
 		model.addAttribute("tempInfo", tempInfo);
 		return "approvals/updateApproval";
 	}
-	
-	//부서가 선택되면 인사테이블을 호출 
 
 	// 전결 업데이트 데이터 받는 곳
 	@PostMapping("/updateApprInfo")
