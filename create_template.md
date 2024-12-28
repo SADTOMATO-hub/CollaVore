@@ -1,2 +1,35 @@
-![smartEditor](https://github.com/leewoosang-hub/CollaVore/blob/master/images/static.png)
+### Naver smart editor 2.0の使用目的
+- Naver smart editor apiはTEXTAREAタグを拡張し、様々な機能を提供します。その中で、HTML5のタグをそのままデータベースに格納する機能を活用します。
 
+---
+
+### API配置
+|staticフォルダにnaver edior 2.0 apiを配置します。| 
+|------------------|
+|![smartEditor](https://github.com/leewoosang-hub/CollaVore/blob/master/images/static.png)  | 
+  
+---
+
+### API適用
+|このようなコードを入力する事でIDがCONTENTである全てのTEXTAREAタグを変更されます。|
+|------------------|
+|![api適用](https://github.com/leewoosang-hub/CollaVore/blob/master/images/textarea-code.png)|
+
+---
+
+### TEXTAREA変更
+|変更前|
+|------------------|
+|![textarea変更前](https://github.com/leewoosang-hub/CollaVore/blob/master/images/textarea.png)|
+
+|変更後|
+|------------------|
+|![textarea変更後](https://github.com/leewoosang-hub/CollaVore/blob/master/images/smarteditor.png)|
+
+---
+
+### HTML5　コード入力
+|HTML5コード|
+|---|
+|![HTML5コード入力](https://github.com/leewoosang-hub/CollaVore/blob/master/images/html-code.png)|
+|-----------------|
