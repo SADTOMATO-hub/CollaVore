@@ -20,7 +20,7 @@
 ### TEXTAREA変更
 |変更前|
 |------------------|
-|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/textarea.png" width="400" height="100"/>|
+|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/textarea.png" width="800" height="200"/>|
 
 |変更後|
 |------------------|
