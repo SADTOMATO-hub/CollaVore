@@ -20,7 +20,7 @@
 ### TEXTAREA変更
 |変更前|
 |------------------|
-|![textarea変更前](https://github.com/leewoosang-hub/CollaVore/blob/master/images/textarea.png)|
+|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/textarea.png" width="400" height="100"/>|
 
 |変更後|
 |------------------|
@@ -29,7 +29,10 @@
 ---
 
 ### HTML5　コード入力
-|HTML5コード|
+|HTML5コードを入力する事でテーブルが実装されます。|
 |---|
 |![HTML5コード入力](https://github.com/leewoosang-hub/CollaVore/blob/master/images/html-code.png)|
+
+|テーブル|
 |-----------------|
+|![テーブル](https://github.com/leewoosang-hub/CollaVore/blob/master/images/table.png)|
