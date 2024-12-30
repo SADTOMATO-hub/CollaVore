@@ -4,7 +4,7 @@
 ---
 
 ### API配置
-|staticフォルダにnaver edior 2.0 apiを配置します。| 
+|staticフォルダにNaver smart editor 2.0 apiを配置します。| 
 |------------------|
 |![smartEditor](https://github.com/leewoosang-hub/CollaVore/blob/master/images/static.png)  | 
   
