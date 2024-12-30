@@ -24,15 +24,15 @@
 
 |変更後|
 |------------------|
-|![textarea変更後](https://github.com/leewoosang-hub/CollaVore/blob/master/images/smarteditor.png)|
+|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/smarteditor.png" width="800" height="200"/>|
 
 ---
 
-### HTML5　コード入力
+### HTML5コード入力
 |HTML5コードを入力する事でテーブルが実装されます。|
 |---|
-|![HTML5コード入力](https://github.com/leewoosang-hub/CollaVore/blob/master/images/html-code.png)|
+|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/html-code.png" width="800" height="480"/>|
 
-|テーブル|
+|HTML5の通りテーブルが実装されました。このテーブルが電子決裁のテンプレートになります。|
 |-----------------|
-|![テーブル](https://github.com/leewoosang-hub/CollaVore/blob/master/images/table.png)|
+|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/table.png" width="800" height="480"/>|
