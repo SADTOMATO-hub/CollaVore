@@ -11,7 +11,7 @@
 ---
 
 ### API適用
-|このようなコードを入力する事でIDがCONTENTである全てのTEXTAREAタグを変更されます。|
+|このようなコードを入力する事でIDがCONTENTである全てのTEXTAREAタグが変更されます。|
 |------------------|
 |![api適用](https://github.com/leewoosang-hub/CollaVore/blob/master/images/textarea-code.png)|
 
