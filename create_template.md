@@ -43,3 +43,7 @@
 |登録ボタンをクリックする事でテンプレートをデータベースに登録します。|
 |---|
 |<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/insert_temp.PNG" width="780" height="450"/>|
+
+---
+
+### <a href="https://github.com/leewoosang-hub/CollaVore">トップページに戻る
