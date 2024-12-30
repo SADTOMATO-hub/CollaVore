@@ -31,8 +31,15 @@
 ### HTML5コード入力
 |HTML5コードを入力する事でテーブルが実装されます。|
 |---|
-|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/html-code.png" width="800" height="480"/>|
+|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/html-code.png" width="780" height="450"/>|
 
 |HTML5の通りテーブルが実装されました。このテーブルが電子決裁のテンプレートになります。|
 |-----------------|
-|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/Leave%20Application.PNG" width="800" height="480"/>|
+|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/Leave%20Application.PNG" width="780" height="450"/>|
+
+---
+
+### テンプレート登録
+|登録ボタンをクリックする事でテンプレートをデータベースに登録します。|
+|---|
+|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/insert_temp.PNG" width="780" height="450"/>|
