@@ -13,18 +13,18 @@
 ### API適用
 |このようなコードを入力する事でIDがCONTENTである全てのTEXTAREAタグが変更されます。|
 |------------------|
-|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/textarea-code.png" width="450" height="200"/>|
+|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/textarea-code.png">|
 
 ---
 
 ### TEXTAREA変更
 |変更前|
 |------------------|
-|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/textarea_normal.PNG" width="750" height="200"/>|
+|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/textarea_normal.PNG"/>|
 
 |変更後|
 |------------------|
-|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/smarteditorENG.PNG" width="850" height="250"/>|
+|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/smarteditorENG.PNG" />|
 
 ---
 
