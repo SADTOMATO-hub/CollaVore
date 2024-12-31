@@ -1,4 +1,5 @@
-# 決裁者選択
+# 🖋電子決裁起案
+ - タイトルを決めます。
  - 결재자는 최대 4명까지 선택 가능합니다.
  - 결재자의 모든 정보는 배열로 저장되어집니다.
 
@@ -58,28 +59,38 @@
 
  ```
 <thead>
-		<tr>
-			<td></td>
-					<td style="text-align: center;">
-						<button type="button" class="btn btn-warning modalBtn" data-seq="1" data-bs-target="#approversSelect" data-bs-toggle="modal">선택</button>
-					</td>
-					
-					<td style="text-align: center;">
-	          <button type="button" class="btn btn-warning modalBtn" data-seq="2" data-bs-target="#approversSelect" data-bs-toggle="modal">선택</button>
-					</td>
-				
-					<td style="text-align: center;">
-	          <button type="button" class="btn btn-warning modalBtn" data-seq="3" data-bs-target="#approversSelect" data-bs-toggle="modal">선택</button>
-					</td>
-
-					<td style="text-align: center;">
-	          <button type="button" class="btn btn-warning modalBtn" data-seq="4" data-bs-target="#approversSelect" data-bs-toggle="modal">선택</button>
-          </td
-      </tr>
+  <tr>
+    <td></td>
+	<-first->
+     <td style="text-align: center;">
+       <button type="button" class="btn btn-warning modalBtn"
+        data-seq="1" data-bs-target="#approversSelect"
+        data-bs-toggle="modal">선택</button>
+     </td>
+	<-second->			
+     <td style="text-align: center;">
+       <button type="button" class="btn btn-warning modalBtn"
+        data-seq="2" data-bs-target="#approversSelect"
+        data-bs-toggle="modal">선택</button>
+     </td>
+	<-third->		
+     <td style="text-align: center;">
+       <button type="button" class="btn btn-warning modalBtn"
+        data-seq="3" data-bs-target="#approversSelect"
+        data-bs-toggle="modal">선택</button>
+     </td>
+	<-fourth->
+     <td style="text-align: center;">
+       <button type="button" class="btn btn-warning modalBtn"
+        data-seq="4" data-bs-target="#approversSelect"
+        data-bs-toggle="modal">선택</button>
+     </td
+   </tr>
 </thead>
  ```
-
 - 각 각의 버튼엔 data-set 속성을 부여하여 이벤트를 발생시킨 버튼을 구별합니다.
-  
-5. drop-down으로 기안하려는 전자결재 양식에 맞는 템플릿을 호출하여 내용을 정합니다.
+
+## テンプレート選択
+
+1. drop-down으로 기안하려는 전자결재 양식에 맞는 템플릿을 호출하여 내용을 정합니다.
    <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/template.PNG">
