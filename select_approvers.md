@@ -138,6 +138,6 @@ function submitPost(event) {
   }	
 }
 ```
-7. 전자결재가 성공적으로 기안하게 되면, 진행 중인 전자결재 항목으로 이동합니다. 電子決裁が
+7. 電子決裁が正常に起案されると、進行中の電子決裁項目に移動します。
   <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/approval_list.PNG">
     
