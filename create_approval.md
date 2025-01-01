@@ -51,7 +51,7 @@ $('#selectDept').on('change', function() {
   <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/approver.PNG">
 
 4. 承認者選択ボタンをクリックすると、イベントを発生させたボタンの直下にあるtr, tdに選択した承認者の情報が反映されます。
-  <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/selected_approver.PNG">
+  <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/selected_approvers.PNG">
 
 - 各ボタンにdata-set属性を設定することで、イベントを発生させたボタンを識別します。
  ```
@@ -140,4 +140,9 @@ function submitPost(event) {
 ```
 7. 電子決裁が正常に起案されると、進行中の電子決裁項目に移動します。
   <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/approval_list.PNG">
-    
+  - ログインセッションの社員が作成した起案書および申請された起案書を全て閲覧できます。
+  - ログインセッションの社員が作成した起案書のうち、電子決裁が進行していない文書にはボタンが表示され、削除することができます。
+
+----
+### トップページに戻る
+	
