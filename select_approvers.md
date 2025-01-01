@@ -1,62 +1,59 @@
 # 🖋電子決裁起案
- - タイトルを決めます。
- - 결재자는 최대 4명까지 선택 가능합니다.
- - 결재자의 모든 정보는 배열로 저장되어집니다.
-
-## 決裁者選択
-
-1. 결재자 선택 버튼을 클릭하면 모달창이 활성화되어 부서를 선택할 수 있게 됩니다.
-  <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/select_approvers.PNG">
+- タイトルを決定します。
+- 承認者は最大4名まで選択可能です。
+- 電子決裁に使用するテンプレートを選択し、内容を入力します。
+	
+## 承認者選択
+1. 選択ボタンをクリックすると、モーダルウィンドウが表示され、部署を選択できます。
+  <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/selecting_approver.PNG">
   
-2. 부서를 선택하면 비동기 작업이 실행됩니다.
+2. 部署を選択すると非同期処理が実行されます。
 
 ```
- 
- // 부서 선택 시, 해당 부서에 소속된 결재자 목록을 동적으로 불러오는 AJAX
-        $('#selectDept').on('change', function() {
-            var deptNo = $(this).val(); // 선택된 부서 번호
+ // 部署選択時、該当部署に所属する承認者リストを動的に取得するAJAX
+$('#selectDept').on('change', function() {
+    var deptNo = $(this).val(); // 選択された部署番号
 
-            // 부서 번호가 없으면 리턴
-            if (!deptNo) return;
+    // 部署番号がない場合は処理を終了
+    if (!deptNo) return;
 
-            // 결재자 선택 드롭다운 초기화
-            $('#selectApprovers').empty();
-            $('#selectApprovers').append('<option selected value="" disabled>==결재자 선택==</option>');
+    // 承認者選択ドロップダウンを初期化
+    $('#selectApprovers').empty();
+    $('#selectApprovers').append('<option selected value="" disabled>==承認者を選択==</option>');
 
-            // AJAX 요청: 해당 부서의 결재자 목록을 받아옴
-            $.ajax({
-                url: '/approvals/selectEmps/' + deptNo,
-                type: 'POST',
-                success: function(response) {
-                    if (response.length === 0) {
-                        $('#selectApprovers').append('<option value="">결재자 없음</option>');
-                        return;
-                    }
-                    // 응답 받은 결재자 목록을 드롭다운에 추가
-                    $.each(response, function(index, employeesInfo) {
-                        $('#selectApprovers').append(
-                            `<option value="${employeesInfo.empNo}">${employeesInfo.empName} / ${employeesInfo.posiName}</option>`
-                        );
-                    });
-                },
-                error: function(xhr, status, error) {
-					Toast.fire({
-					  icon: "error",
-					  title: "결재자 정보를 불러오는 중 오류가 발생했습니다."
-					});
-                }
+    // AJAXリクエスト: 該当部署の承認者リストを取得
+    $.ajax({
+        url: '/approvals/selectEmps/' + deptNo,
+        type: 'POST',
+        success: function(response) {
+            if (response.length === 0) {
+                $('#selectApprovers').append('<option value="">承認者がいません</option>');
+                return;
+            }
+            // 取得した承認者リストをドロップダウンに追加
+            $.each(response, function(index, employeesInfo) {
+                $('#selectApprovers').append(
+                    `<option value="${employeesInfo.empNo}">${employeesInfo.empName} / ${employeesInfo.posiName}</option>`
+                );
             });
-        });
+        },
+        error: function(xhr, status, error) {
+			Toast.fire({
+			  icon: "error",
+			  title: "承認者情報の取得中にエラーが発生しました。"
+	 });
+       }
     });
-    
+}); 
 ```
 
-3. 선택된 부서에 소속된 사원이 출력됩니다.
-  <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/approvers.png">
+3. 選択した部署に所属している社員が表示されます。
+  <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/approver.PNG">
 
-4. 결재자 선택 버튼을 클릭하면 이벤트를 발생시킨 버튼의 하위 tr,td에 정보가 입력됩니다.
-　<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/selected_approvers.PNG">
+4. 承認者選択ボタンをクリックすると、イベントを発生させたボタンの直下にあるtr, tdに選択した承認者の情報が反映されます。
+  <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/selected_approver.PNG">
 
+- 各ボタンにdata-set属性を設定することで、イベントを発生させたボタンを識別します。
  ```
 <thead>
   <tr>
@@ -88,9 +85,59 @@
    </tr>
 </thead>
  ```
-- 각 각의 버튼엔 data-set 속성을 부여하여 이벤트를 발생시킨 버튼을 구별합니다.
 
 ## テンプレート選択
+5. ドロップダウンから起案する電子決裁に対応するテンプレートを選択して、内容を入力します。
+  <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/template.PNG">
 
-1. drop-down으로 기안하려는 전자결재 양식에 맞는 템플릿을 호출하여 내용을 정합니다.
-   <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/template.PNG">
+## 起案
+6. バリデーションを通過し、データが正常に格納されます。
+
+```
+// 起案ボタンを押すとフォームのデータをすべて送信します。
+function submitPost(event) {
+    event.preventDefault(); // フォーム送信を防止
+    
+    // drafterEmpNoの値をuserEmpNoに設定
+    var drafterEmpNo = $('input[name=drafterEmpNo]').val(userEmpNo);
+
+    // approvalTitleの検証
+    var approvalTitle = $('#approvalTitle').val();
+    if (!approvalTitle) {
+        Toast.fire({
+            icon: "warning",
+            title: "タイトルを入力してください。"
+        });
+        $('#approvalTitle').focus();
+        return;
+    }
+
+    // approvers[].empNo配列の値を検証
+    var approvers = $('input[name^="approvers["][name$=".empNo"]').map(function() { return $(this).val(); }).get();
+    if (approvers.length === 0 || approvers.every(val => !val)) {
+        Toast.fire({
+            icon: "warning",
+            title: "承認者を最低1人以上指定してください。"
+        });
+        return;
+    }
+    // contentの検証
+    oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []); // contentを更新
+    var content = $('#content').val();
+    if (content == null || content.trim() == '' || content == '&nbsp;' || content == '<br>' || content == '<p>&nbsp;</p>') {
+        Toast.fire({
+            icon: "warning",
+            title: "テンプレートを設定してください。"
+        });
+        oEditors.getById["content"].exec("FOCUS");
+        return;
+    }
+
+    // 全ての検証を通過した場合、フォームを送信
+    insertForm.submit(); // フォームを送信
+  }	
+}
+```
+7. 전자결재가 성공적으로 기안하게 되면, 진행 중인 전자결재 항목으로 이동합니다. 電子決裁が
+  <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/approval_list.PNG">
+    
