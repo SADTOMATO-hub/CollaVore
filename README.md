@@ -15,6 +15,7 @@
 ### API
   - <a href="https://naver.github.io/smarteditor2/demo/">naver smart editor 2.0 demo
   - <a href="https://naver.github.io/smarteditor2/user_guide/"> naver smart editor 2.0 guide
+  - <a href="https://ui.toast.com/tui-editor"> toast ui
 
 ### 主要機能
   - <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/create_template.md">テンプレート生成</a>
