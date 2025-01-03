@@ -78,8 +78,12 @@
   
 - 프로시저를 거쳐 승인자의 결재상태가 '승인'으로 변경되었습니다. 그에 맞는 이미지가 표시됩니다.
 
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/processed_approval.PNG">
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/approval_process.PNG">
 
-- 승인자의 결재가 진행됨에 따라 전자결재의 상태가 갱신됨을 알 수 있다.
+- 승인자의 결재가 진행됨에 따라 전자결재의 상태가 갱신됨을 알 수 있습니다.
 
 ## 선결기능
+
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/not_yet.PNG">
+
+- 현재 로그인 중인 세션으로 접속, 본인의 앞순서가 결재를 진행하지 않아 승인 버튼이 표시되지 않고, '대기' 이미지가 표되었습니다.
