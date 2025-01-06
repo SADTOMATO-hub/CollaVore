@@ -38,7 +38,8 @@
 	</update>
 ```
 
-- MyBatisでプロシージャを呼び出し、決裁を要求した電子決裁番号と、ボタンを通じて受信した決裁状態をパラメーターとして使用します。
+- MyBatisでプロシージャを呼び出し、決裁を要求した電子決裁番号と、
+  ボタンを通じて受信した決裁状態をパラメーターとして使用します。
 
  <br>
 
@@ -52,7 +53,7 @@
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure3.PNG">
 
 - 決裁が進行する際に、電子決裁の状態を更新するために必要な変数を宣言しました。
-- 
+  
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure2.PNG">
 
 - パラメーターとして渡された決裁状態の値を基に電子決裁の状態を更新します。
