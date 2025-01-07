@@ -4,6 +4,16 @@
   <h1>✉<i>&nbsp 電子決裁</i></h1>
 </div>  
 
+### 開発環境
+
+|  種類     |                   名                        |
+|-----------|-------------------------------------------|
+| O/S       | windows 10                                |
+| DB        | oracle DB                                 |
+| Tools     | Github, Eclipse IDE                      |
+| Language  | JAVA, JAVASCRIPT, CSS3, HTML5             |
+| Framework | Spring framework, Spring security, Jquery |
+
 ### 電子決裁詳細機能
   - 電子決裁テンプレート生成
   - 電子決裁起案
