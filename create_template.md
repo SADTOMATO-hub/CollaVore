@@ -1,6 +1,6 @@
 # 📋テンプレート生成
 
- - naver smart editor 2.0で電子決裁のテンプレートを生成
+ - Naver smart editor apiで電子決裁のテンプレートを生成
 
 #### Naver smart editor 2.0の使用目的
 - Naver smart editor apiはTEXTAREAタグを拡張し、様々な機能を提供します。その中で、HTML5のタグをそのままデータベースに格納する機能を活用します。
