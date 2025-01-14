@@ -7,10 +7,9 @@
 
 
 ## API配置
-|staticフォルダにNaver smart editor 2.0 apiを配置します。| 
-|------------------|
-|![smartEditor](https://github.com/leewoosang-hub/CollaVore/blob/master/images/static.png)  | 
+![smartEditor](https://github.com/leewoosang-hub/CollaVore/blob/master/images/static.png)  
   
+- staticフォルダにNaver smart editor 2.0 apiを配置します。
 
 ## API適用
 
@@ -34,19 +33,20 @@
 
 
 ## TEXTAREA変更
-|変更前|
-|------------------|
-|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/textarea_normal.PNG"/>|
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/textarea_normal.PNG"/>
 
-|変更後|
-|------------------|
-|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/smarteditorENG.PNG" />|
+- 変更前
+
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/smarteditorENG.PNG" />
+
+- 変更後
 
 
 ## HTML5コード入力
-|HTML5コードを入力する事でテーブルが実装されます。|
-|---|
-|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/html-code.png" width="780" height="450"/>|
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/html-code.png" width="780" height="450"/>
+
+- HTML5コードを入力する事でテーブルが実装されます。
+  
 
 |HTML5の通りテーブルが実装されました。このテーブルが電子決裁のテンプレートになります。|
 |-----------------|
