@@ -11,9 +11,24 @@
   
 
 ## API適用
-|このようなコードを入力する事でIDがCONTENTである全てのTEXTAREAタグが変更されます。|
-|------------------|
-|<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/textarea-code.png">|
+
+```
+// SmartEditor 참조를 위한 배열
+	var oEditors = [];
+	function smartEditor() {
+		console.log("Naver SmartEditor");
+		nhn.husky.EZCreator.createInIFrame({
+			oAppRef : oEditors,
+			elPlaceHolder : "content",
+			sSkinURI : "/smarteditor/SmartEditor2Skin.html",
+			fCreator : "createSEditor2"
+		});
+	}
+```
+
+- このようなコードを入力する事でIDがCONTENTである全てのTEXTAREAタグが変更されます。
+
+
 
 
 ## TEXTAREA変更
