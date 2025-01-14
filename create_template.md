@@ -1,8 +1,9 @@
 # 📋テンプレート生成
-#### Naver smart editor 2.0の使用目的
-- 네이버 스마트 에디터의 기능 : Naver smart editor apiはTEXTAREAタグを拡張し、様々な機能を提供します。その中で、HTML5のタグをそのままデータベースに格納する機能を活用します。
+### Naver smart editor 2.0
+- Naver smart editor 2.0とわ？ : SmartEditor2는 JavaScript로 구현된 웹 기반의 WYSIWYG 편집기이다. 글꼴, 글자 크기, 줄 간격 등을 자유롭게 설정할 수 있으며, 단어 찾기/바꾸기와 같은 편리한 기능을 제공한다.
+
 - 何故Naver smart editor 2.0を使用したのか？
- 	1. 뛰어난 접근성 : 한국인들의 대부분은 네이버라는 포탈 사이트를 이용합니다. 
+1. 뛰어난 접근성 : 한국인들의 대부분은 네이버라는 포탈 사이트를 이용합니다. 
 
 
 ## API配置
