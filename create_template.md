@@ -1,5 +1,9 @@
 # 📋テンプレート生成
 
+#### デモ映像
+
+- <a href="https://youtu.be/YwlYMtGN2Go">テンプレート生成ビデオデモ映像</a>
+
 ## Naver smart editor 2.0
 
 #### Naver smart editor 2.0とは？
