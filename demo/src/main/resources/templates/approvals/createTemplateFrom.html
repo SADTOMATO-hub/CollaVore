@@ -145,8 +145,8 @@ button:active {
 		<div class="purple-background-container">
 			<div class="breadcrumb">
 				<div class="breadcrumb-left">
-					<h4>전자결재 템플릿 생성</h4>
-					<p>전자결재 템플릿 생성 페이지 입니다.</p>
+					<h4>電子決裁テンプレート生成</h4>
+					<p>電子決裁テンプレート生成ページです。</p>
 				</div>
 				<div class="breadcrumb-right">
 					<span>템플릿 관리 > 전자결재 템플릿 생성</span>
@@ -162,23 +162,22 @@ button:active {
 
 						<div class="form-group row">
 							<label for="title"
-								class="col-sm-3 text-end control-label col-form-label">제목</label>
+								class="col-sm-3 text-end control-label col-form-label">タイトル</label>
 							<div class="col-sm-9">
 								<input type="text" class="form-control" id="insertTitle"
-									name="title" placeholder="템플릿 제목을 정해주세요" />
+									name="title" placeholder="テンプレートのタイトルを決めてください" />
 							</div>
 						</div>
 						<div class="form-group row">
 							<label for="content"
-								class="col-sm-3 text-end control-label col-form-label">내용</label>
+								class="col-sm-3 text-end control-label col-form-label">内容</label>
 							<div class="col-sm-9">
 								<textarea class="form-control" id="content" name="content"></textarea>
 							</div>
 						</div>
 						<!-- 등록 버튼 -->
 						<div class="insert-btn">
-							<button type="button" id="createButton" class="btn btn-primary">템플릿
-								등록</button>
+							<button type="button" id="createButton" class="btn btn-primary">テンプレート登録</button>
 						</div>
 					</form>
 				</div>
@@ -218,7 +217,7 @@ button:active {
 			if (title == '' || title == null) {
 				Toast.fire({
 					icon : "warning",
-					title : "제목을 입력해주세요."
+					title : "タイトルを入力してください。"
 				});
 				document.getElementById("insertTitle").focus();
 			}
@@ -227,7 +226,7 @@ button:active {
 					|| content == '<p>&nbsp;</p>' || content == '<p></p>') {
 				Toast.fire({
 					icon : "warning",
-					title : "템플릿을 정해주세요."
+					title : "内容を入力してください"
 				});
 				oEditors.getById["content"].exec("FOCUS"); //포커싱
 				return;

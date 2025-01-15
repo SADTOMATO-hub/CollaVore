@@ -252,7 +252,7 @@ function loadExistingData() {
 			const tree = buildDeptTree(data.departments, rootDept);
 			container.appendChild(tree);
 			addConnections(container, data.departments); // 부모-자식 간 연결선 추가
-			
+
 
 			container.addEventListener('click', (event) => {
 				if (event.target.classList.contains('delete-dept')) {

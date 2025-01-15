@@ -146,8 +146,8 @@ button:active {
 		<div class="purple-background-container">
 			<div class="breadcrumb">
 				<div class="breadcrumb-left">
-					<h4>전자결재 템플릿 상세</h4>
-					<p>전자결재 템플릿 상세 페이지 입니다.</p>
+					<h4>電子決裁テンプレート詳細</h4>
+					<p>電子決裁テンプレート詳細ページです。</p>
 				</div>
 				<div class="breadcrumb-right">
 					<span>템플릿 관리 > 전자결재 템플릿 상세</span>
@@ -157,16 +157,15 @@ button:active {
 				<div class="col-md-9">
 					<div class="form-group row">
 						<label for="empName"
-							class="col-sm-3 text-end control-label col-form-label">템플릿
-							명</label>
+							class="col-sm-3 text-end control-label col-form-label">タイトル</label>
 						<div class="col-sm-9">
 							<input type="text" class="form-control" id="title" name="title"
-								placeholder="이름" th:value="${tempInfo.title}" readonly />
+								placeholder="タイトル" th:value="${tempInfo.title}" readonly />
 						</div>
 					</div>
 					<div class="form-group row">
 						<label for="content"
-							class="col-sm-3 text-end control-label col-form-label">내용</label>
+							class="col-sm-3 text-end control-label col-form-label">内容</label>
 						<div class="col-sm-9">
 							<div th:fragment="contents" th:utext="${tempInfo.content}"></div>
 						</div>
@@ -174,11 +173,9 @@ button:active {
 					<!-- 등록 버튼 -->
 					<div class="insert-btn">
 						<button type="button" class="btn btn-danger" id="deleteButton"
-							th:onclick="|location.href='@{/approvals/deleteTemp(eatNo=${tempInfo.eatNo})}'|">템플릿
-							삭제</button>
+							th:onclick="|location.href='@{/approvals/deleteTemp(eatNo=${tempInfo.eatNo})}'|">削除</button>
 						<button type="button" class="btn btn-warning"
-							th:onclick="|location.href='@{/approvals/updateTempForm(eatNo=${tempInfo.eatNo})}'|">템플릿
-							수정</button>
+							th:onclick="|location.href='@{/approvals/updateTempForm(eatNo=${tempInfo.eatNo})}'|">修正</button>
 					</div>
 				</div>
 			</div>
