@@ -114,7 +114,7 @@
 		LEVEL
 		FROM departments d
 		LEFT JOIN employees e ON d.MGR_NO = e.EMP_NO
-		START WITH d.parent_dept_no = 0
+		START WITH d.parent_dept_no = 1
 		CONNECT BY PRIOR d.dept_no = d.parent_dept_no
 		ORDER SIBLINGS BY d.dept_no
 	</select>

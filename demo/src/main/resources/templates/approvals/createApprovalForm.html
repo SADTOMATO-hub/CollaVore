@@ -144,11 +144,11 @@ button:active {
 		<div class="purple-background-container">
 			<div class="breadcrumb">
 				<div class="breadcrumb-left">
-					<h4>전자결재 기안</h4>
-					<p>전자결재 기안 페이지 입니다.</p>
+					<h4>電子決裁起案</h4>
+					<p>電子決裁起案ページです。</p>
 				</div>
 				<div class="breadcrumb-right">
-					<span>전자결재관리 > 전자결재 기안</span>
+					<span>電子決裁管理 > 電子決裁起案</span>
 				</div>
 			</div>
 			<div class="card_memberInsert">
@@ -161,15 +161,15 @@ button:active {
 
 						<div class="form-group row">
 							<label for="title"
-								class="col-sm-3 text-end control-label col-form-label">제목</label>
+								class="col-sm-3 text-end control-label col-form-label">タイトル</label>
 							<div class="col-sm-9">
 								<input type="text" class="form-control" id="approvalTitle"
-									name="title" placeholder="전자결재 제목을 입력해주세요" />
+									name="title" placeholder="電子決裁のタイトルを入力してください" />
 							</div>
 						</div>
 						<div class="form-group row table-responsive">
 							<label for="apprerTable"
-								class="col-sm-3 text-end control-label col-form-label">결재자</label>
+								class="col-sm-3 text-end control-label col-form-label">承認者</label>
 							<div class="col-sm-9">
 								<table id="apprerTable"
 									class="table table-striped table-bordered">
@@ -180,38 +180,38 @@ button:active {
 											<td style="text-align: center;">
 												<button type="button" class="btn btn-warning modalBtn"
 													data-seq="1" data-bs-target="#approversSelect"
-													data-bs-toggle="modal">선택</button>
+													data-bs-toggle="modal">選択</button>
 											</td>
 											<!-- ------------------- -->
 											<td style="text-align: center;">
 												<button type="button" class="btn btn-warning modalBtn"
 													data-seq="2" data-bs-target="#approversSelect"
-													data-bs-toggle="modal">선택</button>
+													data-bs-toggle="modal">選択</button>
 											</td>
 											<!-- ------------------- -->
 											<td style="text-align: center;">
 												<button type="button" class="btn btn-warning modalBtn"
 													data-seq="3" data-bs-target="#approversSelect"
-													data-bs-toggle="modal">선택</button>
+													data-bs-toggle="modal">選択</button>
 											</td>
 											<!-- ------------------- -->
 											<td style="text-align: center;">
 												<button type="button" class="btn btn-warning modalBtn"
 													data-seq="4" data-bs-target="#approversSelect"
-													data-bs-toggle="modal">선택</button>
+													data-bs-toggle="modal">選択</button>
 											</td>
 										</tr>
 									</thead>
 									<tbody>
 										<tr style="text-align: center;">
-											<td>이름</td>
+											<td>氏名</td>
 											<td><span></span></td>
 											<td><span></span></td>
 											<td><span></span></td>
 											<td><span></span></td>
 										</tr>
 										<tr style="text-align: center;">
-											<td>직함</td>
+											<td>役職</td>
 											<td><span></span></td>
 											<td><span></span></td>
 											<td><span></span></td>
@@ -233,25 +233,25 @@ button:active {
 						</div>
 						<div class="form-group row">
 							<label for="selectContent"
-								class="col-sm-3 text-end control-label col-form-label">템플릿
-								선택</label>
+								class="col-sm-3 text-end control-label col-form-label">テンプレート選択
+								</label>
 							<div class="col-sm-9">
 								<select id="selectContent" class="form-select">
-									<option selected disabled>==템플릿 선택==</option>
+									<option selected disabled>==テンプレート選択==</option>
 									<option th:each="temps : ${tempInfo}" th:value="${temps.eatNo}">[[${temps.title}]]</option>
 								</select> <input type="hidden" id="eatNo" name="eatNo" />
 							</div>
 						</div>
 						<div class="form-group row">
 							<label for="content"
-								class="col-sm-3 text-end control-label col-form-label">내용</label>
+								class="col-sm-3 text-end control-label col-form-label">内容</label>
 							<div class="col-sm-9">
 								<textarea class="form-control" id="content" name="content"></textarea>
 							</div>
 						</div>
 						<!-- 등록 버튼 -->
 						<div class="insert-btn">
-							<button type="button" id="createButton" class="btn btn-primary">기안</button>
+							<button type="button" id="createButton" class="btn btn-primary">起案</button>
 						</div>
 					</form>
 				</div>
@@ -280,7 +280,7 @@ button:active {
 		<div class="modal-dialog" style="height: 500px;">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="modalLabel">결재자 선택</h5>
+					<h5 class="modal-title" id="modalLabel">承認者選択</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
 						aria-label="Close"></button>
 				</div>
@@ -289,12 +289,12 @@ button:active {
 						<div class="row">
 							<div class="col">
 								<div class="mb-3">
-									<label for="selectDept" class="form-label">부서 선택</label>
+									<label for="selectDept" class="form-label">部署選択</label>
 								</div>
 								<div class="mb-3">
 									<select id="selectDept" style="height: 300px;"
 										class="form-select" size="15">
-										<option selected value="" disabled>==부서 선택==</option>
+										<option selected value="" disabled>==部署選択==</option>
 										<option th:each="deptsInfo : ${depts}"
 											th:value="${deptsInfo.deptNo}">[[${deptsInfo.deptName}]]</option>
 									</select>
@@ -302,18 +302,17 @@ button:active {
 							</div>
 							<div class="col">
 								<div class="mb-3">
-									<label for="selectApprovers" class="form-label">결재자 선택</label>
+									<label for="selectApprovers" class="form-label">承認者選択</label>
 								</div>
 								<div class="mb-3">
 									<select id="selectApprovers" class="form-select"
 										style="height: 300px;" size="15">
-										<option selected value="" disabled>==결재자 선택==</option>
+										<option selected value="" disabled>==承認者選択==</option>
 									</select>
 								</div>
 							</div>
 						</div>
-						<button type="button" class="btn btn-primary" id="modalSubmit">결재자
-							선택</button>
+						<button type="button" class="btn btn-primary" id="modalSubmit">承認者選択</button>
 					</form>
 				</div>
 			</div>
@@ -410,7 +409,7 @@ $(document).ready(
 
             // 결재자 선택 드롭다운 초기화
             $('#selectApprovers').empty();
-            $('#selectApprovers').append('<option selected value="" disabled>==결재자 선택==</option>');
+            $('#selectApprovers').append('<option selected value="" disabled>==承認者選択==</option>');
 
             // AJAX 요청: 해당 부서의 결재자 목록을 받아옴
             $.ajax({
@@ -418,7 +417,7 @@ $(document).ready(
                 type: 'POST',
                 success: function(response) {
                     if (response.length === 0) {
-                        $('#selectApprovers').append('<option value="">결재자 없음</option>');
+                        $('#selectApprovers').append('<option value="">承認者選択なし</option>');
                         return;
                     }
                     // 응답 받은 결재자 목록을 드롭다운에 추가
@@ -431,7 +430,7 @@ $(document).ready(
                 error: function(xhr, status, error) {
 					Toast.fire({
 					  icon: "error",
-					  title: "결재자 정보를 불러오는 중 오류가 발생했습니다."
+					  title: "承認者データ取得中エラーが発生しました。"
 					});
                 }
             });
@@ -486,7 +485,7 @@ function submitPost(event) {
     if (!approvalTitle) {
 		Toast.fire({
 		  icon: "warning",
-		  title: "제목을 입력해주세요."
+		  title: "タイトルを決めてください。"
 		});
         $('#approvalTitle').focus();
         return;
@@ -497,7 +496,7 @@ function submitPost(event) {
     if (approvers.length === 0 || approvers.every(val => !val)) {
 		Toast.fire({
 			  icon: "warning",
-			  title: "결재자를 최소 1명 이상 지정해주세요."
+			  title: "最小一名の承認者を指定してください。"
 			});
         return;
     }
@@ -508,7 +507,7 @@ function submitPost(event) {
     if (content == null || content.trim() == '' || content == '&nbsp;' || content == '<br>' || content == '<p>&nbsp;</p>') {
 		Toast.fire({
 			  icon: "warning",
-			  title: "템플릿을 정해주세요."
+			  title: "テンプレート選択してください。"
 			});
         oEditors.getById["content"].exec("FOCUS");
         return;
