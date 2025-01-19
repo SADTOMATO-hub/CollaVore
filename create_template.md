@@ -16,7 +16,7 @@ Naver Smart Editor 2.0はJavaScriptで実装されたウェブベースのWYSIWY
   *出典 : Naver smart editor 2.0の<a href="https://naver.github.io/smarteditor2/user_guide/1_intro/">取り扱い説明書</a>*
 
 #### 何故Naver smart editor 2.0を使用したのか？
-1. **無料 API** <br> Naver smart editor 2.0は株式会社NAVERから提供しているOPEN APIです。開発予算を節約できるため、本APIを選定しました。
+1. **無料 API** <br> Naver smart editor 2.0は株式会社NAVERから提供しているOPEN APIです。開発予算が節約できるため、本APIを選定しました。
 2. **ユーザーが使いやすい** <br> 韓国人の多くは、過去から現在に至るまで、"NAVER"というポータルサイトを利用してきました。該当サイトでは、ブログ投稿やメール作成の際に本APIが活用されており、ユーザーにとって馴染み深いことを考慮し、本APIを選定しました。 
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/naver.png">
 
