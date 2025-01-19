@@ -299,7 +299,7 @@ button:active {
 
 <script>
 	$('.eatNo').on('click', function() {
-		let eatNo = event.currentTarget/*이벤트가 걸려 있는 타겟*/.dataset.no; // $('.col-md-4').children.eq(2).text();
+		let eatNo = event.currentTarget/*이벤트가 걸려 있는 타겟*/.dataset.no;
 		let url = '/approvals/readTempInfo?eatNo=' + eatNo;
 		location.href = url
 	})
