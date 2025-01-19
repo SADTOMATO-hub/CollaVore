@@ -1,16 +1,16 @@
 # 📝決裁
-- ログイン中のセッションに基づいて電子決裁の項目が表示されます。
-- ログイン中のセッションの決裁順序に基づいて、決裁ボタンが表示されます。
+- ログイン中のセッションの決裁順番に基づいて、決裁ボタンが表示されます。
 - 承認者の中で1名以上が承認した場合、電子決裁の状態が「進行中」になります。
 - 承認者の中で1名でも「否認」した場合、電子決裁の状態が「否認」になります。
 - 全ての承認者が「承認」した場合、電子決裁の状態が「承認」になります。
+- 
 
 ## プロシージャを通じて承認を進行。
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/accepctOrDenine.PNG">
 
-- ログイン中のセッションが含まれる電子決裁の詳細ページで、自分の承認順序の場合、「待機」イメージの代わりに承認・否認ボタンが表示されます。
+- ログイン中のセッションが含まれる電子決裁の詳細ページで、自分の承認順番の場合、「待機」イメージの代わりに承認・否認ボタンが表示されます。
   
-- 承認ボタンをクリックすると、AJAXを通じて電子決裁の状態を更新します。
+- 承認ボタンをクリックすると、AJAXを通じてControllerにデータ（承認者の社員番号、承認可否）を送信します。
   
 ```
   $(".approveBtn").on('click', function(event) {
@@ -38,8 +38,7 @@
 	</update>
 ```
 
-- MyBatisでプロシージャを呼び出し、決裁を要求した電子決裁番号と、
-  ボタンを通じて受信した決裁状態をパラメーターとして使用します。
+- MyBatisからプロシージャを呼び出します。
 
  <br>
 
@@ -48,7 +47,7 @@
 
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure1.PNG">
  
-- パラメーターで電子決裁の番号と電子決裁の状態を受信します。
+- パラメーターで承認者の社員番号、承認可否を受信します。
   
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure3.PNG">
 
@@ -56,7 +55,7 @@
   
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure2.PNG">
 
-- パラメーターとして渡された決裁状態の値を基に電子決裁の状態を更新します。
+- パラメーターとして渡された承認可否の値を基に電子決裁の状態を更新します。
 
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure4.PNG">
 
@@ -64,7 +63,7 @@
 
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure6-2.PNG">
 
-- 承認者の決裁状態は「b1/待機」、「b2/承認」、「b3/否認」の3つです。
+- 承認者の承認可否は「b1/待機」、「b2/承認」、「b3/否認」の3つです。
 
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure6.PNG">
 
@@ -76,14 +75,14 @@
 
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/approval_process.PNG">
 
-- プロシージャを通過して承認者の決裁状態が「承認」に更新され、それに応じたイメージが表示されます。
+- プロシージャを通過して承認者の承認可否が「承認」に更新され、それに応じたイメージが表示されます。
 - 承認者の決裁が進行するにつれて、電子決裁の状態が更新されることが確認できます。
 
 ## 先決
 
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/not_yet.PNG">
 
-- 現在ログイン中のセッションで、自分の前の順番が決裁を進行していないため、承認ボタンが表示されず、「待機」イメージが表示されました。
+- 現在ログイン中のセッションの前の順番の決裁が進行されていないため、承認ボタンが表示されず、「待機」イメージが表示されました。
 
 ```
 // 電子決裁詳細ページ
