@@ -1,5 +1,7 @@
 # 📋テンプレート生成
 
+- Naver smart editor 2.0にHTML5コードを入力し、テンプレート生成します。
+
 #### デモ映像
 
 - <a href="https://youtu.be/YwlYMtGN2Go">テンプレート生成ビデオデモ映像</a>
