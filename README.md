@@ -36,7 +36,6 @@
   1. HTML5のインデントを改善しました。
      
  ```
-
     $(document)
 				.ready(
 						function() {
@@ -73,18 +72,15 @@
 										              }
 										            });
 											});
-						});
-      
+						});      
 ```
     
   - 改善前
 
 ````
-
     $(document).ready(function () {
       $(".approval-row").on("click", function (event) {
-        if (!$(event.target).hasClass("delete-button")) {
-          //대상이 delete-button 클래스가 없는 경우 경우 코드 실행
+        if (!$(event.target).hasClass("delete-button")) { // 対象にdelete-buttonクラスがない場合、こーどを実行
           const eaNo = event.currentTarget.dataset.eaNo;
           location.href = "/approvals/readApprInfo?eaNo=" + eaNo;
         }
@@ -93,13 +89,13 @@
         const eaNo =
           event.currentTarget.parentElement.parentElement.dataset.eaNo;
         Swal.fire({
-          title: "해당 전자결재를 삭제하시겠습니까?",
+          title: "削除しますか",
           icon: "warning",
           showCancelButton: true,
           confirmButtonColor: "#3085d6",
           cancelButtonColor: "#d33",
-          confirmButtonText: "예",
-          cancelButtonText: "아니요",
+          confirmButtonText: "はい",
+          cancelButtonText: "いいえ",
         }).then((result) => {
           if (result.isConfirmed) {
             location.href = "/approvals/deleteAppr?eaNo=" + eaNo;
@@ -107,7 +103,6 @@
         });
       });
     });
- 
 ````
     
 - 改善後
