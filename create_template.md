@@ -19,6 +19,9 @@ Naver Smart Editor 2.0はJavaScriptで実装されたウェブベースのWYSIWY
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/naver.png">
 
  ***韓国人のポータルサイト利用率統計***
+ 
+*出典 : <a href="https://www.infocubic.co.jp/blog/archives/6789/">韓国の検索エンジン「NAVER」とは？</a>*
+
 
 ## テンプレート生成の流れ
 
