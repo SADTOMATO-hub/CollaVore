@@ -109,7 +109,7 @@
 				,sort
 				)
 				VALUES (
-				FIND_APPROVERS_SEQ()
+				 FIND_APPROVERS_SEQ()
 				,#{approvers.eaNo}
 				,#{approvers.empNo}
 				,#{approvers.sort}
