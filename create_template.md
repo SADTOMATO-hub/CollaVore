@@ -51,11 +51,11 @@ Naver Smart Editor 2.0はJavaScriptで実装されたウェブベースのWYSIWY
 - このようなコードを入力する事でIDがCONTENTである全てのTEXTAREAタグが変更されます。
 
 ### 3. textarea変更
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/textarea_normal.PNG"/>
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/textarea_normal.png"/>
 
 - 変更前のTEXTAREA
 
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/smarteditorENG.PNG" />
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/smarteditorENG.png" />
 
 - 変更後のtextarea
 
@@ -70,7 +70,7 @@ Naver Smart Editor 2.0はJavaScriptで実装されたウェブベースのWYSIWY
 - HTML5の通りテーブルが実装されました。このテーブルが電子決裁のテンプレートになります。
 
 ### 5. テンプレート登録
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/insert_temp.PNG" width="780" height="450"/>
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/insert_temp.png" width="780" height="450"/>
 
 - 登録ボタンをクリックする事でテンプレートをデータベースに登録します。
 
