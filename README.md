@@ -25,9 +25,12 @@
   - 電子決裁文書削除
   - 電子決裁文書項目整列
 
+
 ### 利用 API
   - <a href="https://naver.github.io/smarteditor2/demo/">naver smart editor 2.0 demo
   - <a href="https://ui.toast.com/tui-editor"> toast ui
+
+***
 
 ### コードレビュー後修正項目 
 
