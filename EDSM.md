@@ -69,7 +69,7 @@
 
 - 承認者の承認可否は「b1/待機」、「b2/承認」、「b3/否認」の3つです。
 
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure6.PNG">
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure6.png">
 
 - 電子決裁の状態は「a1/承認待機」、「a2/進行中」、「a3/承認終了」、「a4/否認終了」の4つです。
 
