@@ -5,6 +5,10 @@
 - 全ての承認者が「承認」した場合、電子決裁の状態が「承認」になります。
 - 先決。
 
+#### デモ映像
+
+- <a href="https://youtu.be/hfSzDxm3IJk">電子決裁決裁・先決デモ映像</a>
+
 ## プロシージャを通じて承認を進行。
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/accepctOrDenine.PNG">
 
