@@ -54,7 +54,7 @@ public class ApprovalsController {
 	}
 
 	// テンプレート詳細ページ
-	@GetMapping("/readTempInfo")
+	@GetMapping("/read-temp-info")
 	public String tmepInfo(ApprovalstempVO apprVO, Model model) {
 		ApprovalstempVO tempInfo = approvalsService.apprInfo(apprVO);
 		model.addAttribute("tempInfo", tempInfo);
@@ -62,13 +62,13 @@ public class ApprovalsController {
 	}
 
 	// テンプレート生成フォロー
-	@GetMapping("/createTempForm")
+	@GetMapping("/create-temp-form")
 	public String createTemplatePage() {
 		return "approvals/createTemplateFrom";
 	}
 
 	// テンプレート生成フォローからデータ受信する
-	@PostMapping("/createTemp")
+	@PostMapping("/create-temp")
 	public String createTemplate(ApprovalstempVO apprTempVO) {
 		int eatNo = approvalsService.createApprsTemp(apprTempVO);
 		String url = "redirect:/approvals/readTempInfo?eatNo=";
@@ -76,7 +76,7 @@ public class ApprovalsController {
 	}
 
 	// テンプレート修正フォロー
-	@GetMapping("/updateTempForm")
+	@GetMapping("/update-temp-form")
 	public String updateTemplateForm(ApprovalstempVO apprTempVO, Model model) {
 		ApprovalstempVO apprInfo = approvalsService.apprInfo(apprTempVO);
 		model.addAttribute("apprInfo", apprInfo);
@@ -84,7 +84,7 @@ public class ApprovalsController {
 	}
 
 	// テンプレート修正フォローからデータ受信する
-	@PostMapping("/updateTemp")
+	@PostMapping("/update-temp")
 	public String updateTemplate(ApprovalstempVO apprTempVO) {
 		int result = approvalsService.updateTemplate(apprTempVO);
 		int eatNo = apprTempVO.getEatNo();
@@ -97,7 +97,7 @@ public class ApprovalsController {
 	}
 
 	// テンプレート削除
-	@GetMapping("/deleteTemp")
+	@GetMapping("/delete-temp")
 	public String deleteTemplate(ApprovalstempVO apprVO) {
 		int eatNo = approvalsService.deleteTemplate(apprVO);
 		String urlSucss = "redirect:/approvals/tempList";
@@ -109,7 +109,7 @@ public class ApprovalsController {
 	}
 
 	// 電子決裁生成フォロー
-	@GetMapping("/createApprForm")
+	@GetMapping("/create-appr-form")
 	public String createApprovals(Model model, HrmVO hrmVO,  HttpSession session ) {
 		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
 		List<ApprovalstempVO> tempInfo = approvalsService.apprTempList();
@@ -122,7 +122,7 @@ public class ApprovalsController {
 	}
 	
 	//部署が選択されると人事テーブルを呼び出す
-	@PostMapping("/selectEmps/{deptNo}")
+	@PostMapping("/select-emps/{deptNo}")
 	@ResponseBody
 	public List<HrmVO> employeeList(@PathVariable("deptNo") int deptNo, HttpSession session){
 		//人事テーブル取得
@@ -132,7 +132,7 @@ public class ApprovalsController {
 	}
 
 	// 電子決裁生成時、データを受信する
-	@PostMapping("/createAppr")
+	@PostMapping("/create-appr")
 	public String createAppr(ApprovalsVO apprVO) {
 		approvalsService.insertApprsEa(apprVO);
 		if (apprVO.getEaNo() >= 0) {
@@ -145,7 +145,7 @@ public class ApprovalsController {
 	}
 
 	// 진행 중인 전자결재 목록
-	@GetMapping("/myApprList/{approvalStatus}")
+	@GetMapping("/my-appr-list/{approvalStatus}")
 	public String myApprList(ApprovalsVO apprVO, @PathVariable String approvalStatus, Model model,
 			HttpSession session) {
 		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
@@ -158,7 +158,7 @@ public class ApprovalsController {
 	}
 
 	// 문서함
-	@GetMapping("/approveList/{listStatus}")
+	@GetMapping("/approve-list/{listStatus}")
 	public String approveList(ApprovalsVO apprVO, Model model, @PathVariable String listStatus, HttpSession session) {
 		int userEmpNo = (Integer) session.getAttribute("userEmpNo");
 		apprVO.setUserEmpNo(userEmpNo);
@@ -168,7 +168,7 @@ public class ApprovalsController {
 	}
 
 	// 전자결재 상세페이지
-	@GetMapping("/readApprInfo")
+	@GetMapping("/read-appr-info")
 	public String readapprinfo(Model model, ApprovalsVO apprVO, HttpSession session) {
 	    int userEmpNo = (Integer) session.getAttribute("userEmpNo");
 	    apprVO.setUserEmpNo(userEmpNo);
@@ -188,11 +188,11 @@ public class ApprovalsController {
 
 	        // 현재 결재자의 기본 상태 설정
 	        if ("b2".equals(approverStatus)) {
-	            displayStatus = "승인";
+	            displayStatus = "承認";
 	        } else if ("b3".equals(approverStatus)) {
-	            displayStatus = "반려";
+	            displayStatus = "否認";
 	        } else {
-	            displayStatus = "결재 대기"; // 기본값 설정
+	            displayStatus = "待機"; // 기본값 설정
 	        }
 
 	        // 버튼 활성화 여부 설정
@@ -222,7 +222,7 @@ public class ApprovalsController {
 	        }
 
 	        // 버튼이 활성화된 경우 "결재 대기" 상태 표시를 숨김
-	        if (buttonEnabled && "결재 대기".equals(displayStatus)) {
+	        if (buttonEnabled && "待機".equals(displayStatus)) {
 	            displayStatus = ""; // 버튼이 활성화된 경우 상태를 빈 문자열로 설정
 	        }
 
@@ -237,7 +237,7 @@ public class ApprovalsController {
 	}
 
 	// 결재하기
-	@PostMapping("/updateAppr")
+	@PostMapping("/update-appr")
 	@ResponseBody
 	public String updateApprove(@RequestBody ApprovalsVO apprVO) {
 		int updateApprStatus = approvalsService.updateApprStatus(apprVO);
@@ -248,7 +248,7 @@ public class ApprovalsController {
 	}
 
 	// 전결 업데이트 폼
-	@GetMapping("/updateApprInfoForm")
+	@GetMapping("/update-appr-info-form")
 	public String updateApprovalInfoForm(ApprovalsVO apprVO, Model model, HttpSession session) {
 		ApprovalsVO apprInfo = approvalsService.approvalsInfo(apprVO);
 		List<Map<String, Object>> approvers = approvalsService.approversInfo(apprVO);
@@ -264,7 +264,7 @@ public class ApprovalsController {
 	}
 
 	// 전결 업데이트 데이터 받는 곳
-	@PostMapping("/updateApprInfo")
+	@PostMapping("/update-appr-info")
 	public String updateApprovalInfo(ApprovalsVO apprVO) {
 		// 전자결재 업데이트
 		approvalsService.updateApproval(apprVO);
@@ -284,7 +284,7 @@ public class ApprovalsController {
 	}
 
 	// 전자결재 삭제
-	@GetMapping("/deleteAppr")
+	@GetMapping("/delete-appr")
 	public String deleteAppr(ApprovalsVO apprVO) {
 		approvalsService.deleteApprovals(apprVO);
 		if (apprVO.getResultCode() >= 0) {

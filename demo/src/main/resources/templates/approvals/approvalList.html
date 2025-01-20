@@ -268,11 +268,11 @@ button:active {
 		<div class="purple-background-container">
 			<div class="breadcrumb">
 				<div class="breadcrumb-left">
-					<h4>문서함</h4>
-					<p>결재처리가 완료된 전자결재 목록 페이지 입니다.</p>
+					<h4>終了文書</h4>
+					<p>決裁済みの文書項目のページです。</p>
 				</div>
 				<div class="breadcrumb-right">
-					<span>문서함 > 목록조회</span>
+					<span>電子決裁管理 > 終了文書項目</span>
 				</div>
 			</div>
 
@@ -281,10 +281,10 @@ button:active {
 					<thead>
 						<tr>
 							<td></td>
-							<td>전자결재 제목</td>
-							<td>기안자</td>
-							<td>기안일</td>
-							<td>종료일</td>
+							<td>電子決裁タイトル</td>
+							<td>起案者</td>
+							<td>起案日時</td>
+							<td>終了日時</td>
 						</tr>
 					</thead>
 					<tbody>
@@ -294,8 +294,8 @@ button:active {
 								<td>[[${sts.count}]]</td>
 								<td>[[${approve.title}]]</td>
 								<td>[[${approve.drafterName}]]</td>
-								<td>[[${#dates.format(approve.regDate, "yyyy년 MM월 dd일")}]]</td>
-								<td>[[${#dates.format(approve.compDate, "yyyy년 MM월 dd일")}]]</td>
+								<td>[[${#dates.format(approve.regDate, "yyyy年 MM月 dd日")}]]</td>
+								<td>[[${#dates.format(approve.compDate, "yyyy年 MM月 dd日")}]]</td>
 							</tr>
 						</th:block>
 					</tbody>
