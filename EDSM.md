@@ -10,7 +10,7 @@
 - <a href="https://youtu.be/hfSzDxm3IJk">電子決裁決裁・先決デモ映像</a>
 
 ## プロシージャを通じて承認を進行
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/accepctOrDenine.PNG">
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/accepctOrDenine.png">
 
 - ログイン中のセッションが含まれている電子決裁の詳細ページで、自分の承認順番の場合、「待機」イメージの代わりに承認・否認ボタンが表示されます。
   
@@ -49,23 +49,23 @@
  <!-- 프로시저 상세 -->
  > プロシージャ詳細
 
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure1.PNG">
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure1.png">
  
 - パラメーターで承認者の社員番号、承認可否を受信します。
   
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure3.PNG">
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure3.png">
 
 - 決裁が進行する際に、電子決裁の状態を更新するために必要な変数を宣言しました。
   
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure2.PNG">
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure2.png">
 
 - パラメーターとして渡された承認可否の値を基に電子決裁の状態を更新します。
 
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure4.PNG">
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure4.png">
 
 - 更新される電子決裁の番号を照会します。
 
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure6-2.PNG">
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure6-2.png">
 
 - 承認者の承認可否は「b1/待機」、「b2/承認」、「b3/否認」の3つです。
 
@@ -77,14 +77,14 @@
 
 <br>
 
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/approval_process.PNG">
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/approval_process.png">
 
 - プロシージャを通過して承認者の承認可否が「承認」に更新され、それに応じたイメージが表示されます。
 - 承認者の決裁が進行するにつれて、電子決裁の状態が更新されることが確認できます。
 
 ## 先決
 
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/not_yet.PNG">
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/not_yet.png">
 
 - 現在ログイン中のセッションの前の順番の決裁が進行されていないため、承認ボタンが表示されず、「待機」イメージが表示されました。
 
