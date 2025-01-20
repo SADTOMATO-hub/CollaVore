@@ -9,7 +9,7 @@
 
 - <a href="https://youtu.be/hfSzDxm3IJk">電子決裁決裁・先決デモ映像</a>
 
-## プロシージャを通じて承認を進行。
+## プロシージャを通じて承認を進行
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/accepctOrDenine.PNG">
 
 - ログイン中のセッションが含まれている電子決裁の詳細ページで、自分の承認順番の場合、「待機」イメージの代わりに承認・否認ボタンが表示されます。
