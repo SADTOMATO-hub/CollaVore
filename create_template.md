@@ -65,7 +65,7 @@ Naver Smart Editor 2.0はJavaScriptで実装されたウェブベースのWYSIWY
 
 - HTML5コードを入力する事でテーブルが実装されます。
   
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/Leave%20Application.PNG" width="780" height="450"/>
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/Leave%20Application.png" width="780" height="450"/>
 
 - HTML5の通りテーブルが実装されました。このテーブルが電子決裁のテンプレートになります。
 
