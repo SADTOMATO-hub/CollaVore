@@ -4,7 +4,7 @@
 
 #### デモ映像
 
-- <a href="https://youtu.be/v9N_6WpRXqg">テンプレート生成ビデオデモ映像</a>
+- <a href="https://youtu.be/v9N_6WpRXqg">テンプレート生成デモ映像</a>
 
 ## Naver smart editor 2.0
 
