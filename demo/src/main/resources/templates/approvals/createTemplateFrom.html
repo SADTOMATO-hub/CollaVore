@@ -155,7 +155,7 @@ button:active {
 			<div class="card_memberInsert">
 				<div class="col-md-9">
 					<form class="form-horizontal" name="insertForm"
-						th:action="@{/approvals/createTemp}" method="post">
+						th:action="@{/approvals/create-temp}" method="post">
 						<!-- 세큐리티 cors를 방지하는 기능  -->
 						<input type="hidden" name="${_csrf.parameterName}"
 							value="${_csrf.token}" />

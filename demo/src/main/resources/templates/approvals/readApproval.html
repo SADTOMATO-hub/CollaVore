@@ -255,7 +255,7 @@ button:active {
 					<div class="insert-btn">
 						<button type="button" class="btn btn-primary" id="updateBtn"
 							th:if="${session.userEmpNo == approvals.drafterEmpNo and approvals.approvalStatus == 'a1'}"
-							th:onclick="|location.href='@{/approvals/updateApprInfoForm(eaNo=${approvals.eaNo})}'|">修正する</button>
+							th:onclick="|location.href='@{/approvals/update-appr-info-form(eaNo=${approvals.eaNo})}'|">修正する</button>
 					</div>
 				</div>
 			</div>
@@ -268,7 +268,7 @@ $(".approveBtn").on('click', function(event) {
     const buttonText = $(this).text();
     const statusSpan = $(this).siblings('.display-status');
     $.ajax({
-        url: "/approvals/updateAppr",
+        url: "/approvals/update-appr",
         type: 'POST',
         contentType: "application/json",
         data: JSON.stringify({

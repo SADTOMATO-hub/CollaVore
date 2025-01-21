@@ -173,9 +173,9 @@ button:active {
 					<!-- 등록 버튼 -->
 					<div class="insert-btn">
 						<button type="button" class="btn btn-danger" id="deleteButton"
-							th:onclick="|location.href='@{/approvals/deleteTemp(eatNo=${tempInfo.eatNo})}'|">削除</button>
+							th:onclick="|location.href='@{/approvals/delete-temp(eatNo=${tempInfo.eatNo})}'|">削除</button>
 						<button type="button" class="btn btn-warning"
-							th:onclick="|location.href='@{/approvals/updateTempForm(eatNo=${tempInfo.eatNo})}'|">修正</button>
+							th:onclick="|location.href='@{/approvals/update-temp-form(eatNo=${tempInfo.eatNo})}'|">修正</button>
 					</div>
 				</div>
 			</div>

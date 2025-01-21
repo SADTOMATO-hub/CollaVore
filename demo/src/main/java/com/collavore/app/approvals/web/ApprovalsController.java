@@ -46,7 +46,7 @@ public class ApprovalsController {
 	}
 
 	// テンプレートリストページ
-	@GetMapping("/tempList")
+	@GetMapping("/temp-list")
 	public String approvalTemplateList(Model model) {
 		List<ApprovalstempVO> templateInfo = approvalsService.apprTempList();
 		model.addAttribute("tempInfo", templateInfo);
@@ -71,7 +71,7 @@ public class ApprovalsController {
 	@PostMapping("/create-temp")
 	public String createTemplate(ApprovalstempVO apprTempVO) {
 		int eatNo = approvalsService.createApprsTemp(apprTempVO);
-		String url = "redirect:/approvals/readTempInfo?eatNo=";
+		String url = "redirect:/approvals/read-temp-info?eatNo=";
 		return url + eatNo;
 	}
 
@@ -89,7 +89,7 @@ public class ApprovalsController {
 		int result = approvalsService.updateTemplate(apprTempVO);
 		int eatNo = apprTempVO.getEatNo();
 		if (result > 0) {
-			String url = "redirect:/approvals/readTempInfo?eatNo=";
+			String url = "redirect:/approvals/read-temp-info?eatNo=";
 			return url + eatNo;
 		} else {
 			return "updateTemplateForm?eatNo=" + eatNo;
@@ -100,8 +100,8 @@ public class ApprovalsController {
 	@GetMapping("/delete-temp")
 	public String deleteTemplate(ApprovalstempVO apprVO) {
 		int eatNo = approvalsService.deleteTemplate(apprVO);
-		String urlSucss = "redirect:/approvals/tempList";
-		String urlFailed = "redirect:/approvals/tempInfo?eatNo=";
+		String urlSucss = "redirect:/approvals/temp-list";
+		String urlFailed = "redirect:/approvals/temp-info?eatNo=";
 		if (eatNo >= 1) {
 			return urlSucss;
 		}
@@ -134,11 +134,11 @@ public class ApprovalsController {
 	// 電子決裁生成時、データを受信する
 	@PostMapping("/create-appr")
 	public String createAppr(ApprovalsVO apprVO) {
-		approvalsService.insertApprsEa(apprVO);
+		approvalsService.insertApprsEa(apprVO); //전자결재
 		if (apprVO.getEaNo() >= 0) {
-			int resultOfEar = approvalsService.insertApprsEar(apprVO); // 전자결재
+			int resultOfEar = approvalsService.insertApprsEar(apprVO); //결재자
 			if (resultOfEar >= 0) {
-				return "redirect:/approvals/myApprList/a5";
+				return "redirect:/approvals/my-appr-list/a5";
 			}
 		}
 		return null;
@@ -272,7 +272,7 @@ public class ApprovalsController {
 		approvalsService.deleteApprover(apprVO.getEaNo());
 		// 새로 받은 전자결재자 등록
 		approvalsService.insertApprsEar(apprVO);
-		return "redirect:/approvals/myApprList/a5";
+		return "redirect:/approvals/my-appr-list/a5";
 	}
 
 	// 전자결재 템플릿 내용만 호출하는 기능
@@ -288,7 +288,7 @@ public class ApprovalsController {
 	public String deleteAppr(ApprovalsVO apprVO) {
 		approvalsService.deleteApprovals(apprVO);
 		if (apprVO.getResultCode() >= 0) {
-			return "redirect:/approvals/myApprList/a5";
+			return "redirect:/approvals/my-appr-list/a5";
 		}
 		return null;
 	}

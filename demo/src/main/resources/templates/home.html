@@ -170,7 +170,7 @@
 			</div>
 			<ul class="list-style-none">
 				<li th:each="app : ${apps}" class="d-flex no-block card-body"
-					th:onclick="|window.location.href='/approvals/readApprInfo?eaNo=' + ${app.eaNo}|" 
+					th:onclick="|window.location.href='/approvals/read-appr-info?eaNo=' + ${app.eaNo}|" 
 					        style="cursor: pointer;">
 					<div th:switch="${app.appStatus}">
 						<span th:case="'a1'"
@@ -180,7 +180,7 @@
 						<span th:case="'a4'" class="btn btn-danger status-btn text-white">반려</span>
 					</div>
 					<div class="app-title">
-						<a th:href="|@{/approvals/readApprInfo(eaNo=${app.eaNo})}|"
+						<a th:href="|@{/approvals/read-appr-info(eaNo=${app.eaNo})}|"
 							class="mb-0 font-medium p-0" th:text="${app.appTitle}">앱 제목</a>
 					</div>
 					<div class="ms-auto">

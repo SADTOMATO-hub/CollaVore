@@ -153,8 +153,7 @@ button:active {
 			</div>
 			<div class="card_memberInsert">
 				<div class="col-md-9">
-					<form class="form-horizontal" name="insertForm" action="createAppr"
-						method="post">
+					<form class="form-horizontal" name="insertForm" action="create-appr" method="post">
 						<input type="hidden" name="${_csrf.parameterName}"
 							value="${_csrf.token}" /> <input type="hidden"
 							name="drafterEmpNo" value="">
@@ -237,7 +236,7 @@ button:active {
 								</label>
 							<div class="col-sm-9">
 								<select id="selectContent" class="form-select">
-									<option selected disabled>==テンプレート選択==</option>
+									<option selected value="" disabled>==テンプレート選択==</option>
 									<option th:each="temps : ${tempInfo}" th:value="${temps.eatNo}">[[${temps.title}]]</option>
 								</select> <input type="hidden" id="eatNo" name="eatNo" />
 							</div>
@@ -345,7 +344,7 @@ button:active {
 		smartEditor();
 				// 템플릿 선택 시 내용 불러오기
 				$("#selectContent").on("change",
-						function(event) {
+ 						function(event) {
 							var selectedVal = $(this).val();
 							var eatNo = $("#eatNo").val(selectedVal);
 							$.ajax({
@@ -366,6 +365,7 @@ button:active {
 								}
 							});
 						});
+				
 				// 버튼 클릭 시 폼 제출
 				$("#createButton").on("click", function(event) {
 					submitPost(event);
@@ -413,7 +413,7 @@ $(document).ready(
 
             // AJAX 요청: 해당 부서의 결재자 목록을 받아옴
             $.ajax({
-                url: '/approvals/selectEmps/' + deptNo,
+                url: '/approvals/select-emps/' + deptNo,
                 type: 'POST',
                 success: function(response) {
                     if (response.length === 0) {

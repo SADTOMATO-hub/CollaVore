@@ -300,7 +300,7 @@ button:active {
 <script>
 	$('.eatNo').on('click', function() {
 		let eatNo = event.currentTarget/*이벤트가 걸려 있는 타겟*/.dataset.no;
-		let url = '/approvals/readTempInfo?eatNo=' + eatNo;
+		let url = '/approvals/read-temp-info?eatNo=' + eatNo;
 		location.href = url
 	})
 </script>

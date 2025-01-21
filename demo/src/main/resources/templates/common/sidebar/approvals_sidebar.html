@@ -2,7 +2,7 @@
 	<ul id="sidebarnav" class="pt-4">
 		<!-- -------------------------------기안하기----------------------------------------------- -->
 		<li class="sidebar-item">
-			<a class="sidebar-link waves-effect waves-dark" th:href="@{/approvals/createApprForm}" aria-expanded="false" id="createBtn"> 
+			<a class="sidebar-link waves-effect waves-dark" th:href="@{/approvals/create-appr-form}" aria-expanded="false" id="createBtn"> 
 				<i class="fas fa-edit"></i> 
 				<span class="hide-menu">起案文作成</span>
 			</a>
@@ -16,30 +16,30 @@
 			</a>
 			<ul aria-expanded="false" class="collapse first-level">
 				<li class="sidebar-item">
-					<a th:href="@{/approvals/myApprList/a5}" class="sidebar-link"> 
+					<a th:href="@{/approvals/my-appr-list/a5}" class="sidebar-link"> 
 						<i class="fas fa-inbox"></i> 
 						<span class="hide-menu">全て</span>
 					</a>
 				<li class="sidebar-item">
-					<a th:href="@{/approvals/myApprList/a1}" class="sidebar-link"> 
+					<a th:href="@{/approvals/my-appr-list/a1}" class="sidebar-link"> 
 						<i class="mdi mdi-stop-circle-outline"></i> 
 						<span class="hide-menu">待機</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a th:href="@{/approvals/myApprList/a2}" class="sidebar-link"> 
+					<a th:href="@{/approvals/my-appr-list/a2}" class="sidebar-link"> 
 						<i class="mdi mdi-play-circle-outline"></i> 
 						<span class="hide-menu">進行中</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a th:href="@{/approvals/myApprList/a3}" class="sidebar-link"> 
+					<a th:href="@{/approvals/my-appr-list/a3}" class="sidebar-link"> 
 						<i class="mdi mdi-check-circle-outline"></i> 
 						<span class="hide-menu">承認終了</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a th:href="@{/approvals/myApprList/a4}" class="sidebar-link"> 
+					<a th:href="@{/approvals/my-appr-list/a4}" class="sidebar-link"> 
 						<i class="far fa-times-circle"></i> 
 						<span class="hide-menu">否認終了</span>
 					</a>
@@ -54,25 +54,25 @@
 			</a>
 			<ul aria-expanded="false" class="collapse first-level">
 				<li class="sidebar-item">
-					<a th:href="@{/approvals/approveList/all}" class="sidebar-link"> 
+					<a th:href="@{/approvals/approve-list/all}" class="sidebar-link"> 
 						<i class="fas fa-inbox"></i> 
 						<span class="hide-menu">全て</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a th:href="@{/approvals/approveList/drafted}" class="sidebar-link">
+					<a th:href="@{/approvals/approve-list/drafted}" class="sidebar-link">
 						<i class="mdi mdi-check"></i> 
 						<span class="hide-menu">起案した文書</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a th:href="@{/approvals/approveList/approved}" class="sidebar-link">
+					<a th:href="@{/approvals/approve-list/approved}" class="sidebar-link">
 						<i class="mdi mdi-account-check"></i> 
 						<span class="hide-menu">要請された文書</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a th:href="@{/approvals/approveList/denied}" class="sidebar-link">
+					<a th:href="@{/approvals/approve-list/denied}" class="sidebar-link">
 						<i class="far fa-times-circle"></i> 
 						<span class="hide-menu">否認終了文書</span>
 					</a>
@@ -87,13 +87,13 @@
 			</a>
 			<ul aria-expanded="false" class="collapse first-level">
 				<li class="sidebar-item">
-					<a th:href="@{/approvals/createTempForm}" class="sidebar-link"> 
+					<a th:href="@{/approvals/create-temp-form}" class="sidebar-link"> 
 						<i class="mdi mdi-grease-pencil"></i>
 						<span class="hide-menu">テンプレート生成</span>
 					</a>
 				</li>
 				<li class="sidebar-item">
-					<a th:href="@{/approvals/tempList}" class="sidebar-link"> 
+					<a th:href="@{/approvals/temp-list}" class="sidebar-link"> 
 						<i class="mdi mdi-folder-multiple-outline"></i> 
 						<span class="hide-menu">テンプレート項目</span>
 					</a>

@@ -290,7 +290,7 @@ button:active {
 					<tbody>
 						<th:block th:each=" approve, sts : ${approveList}">
 							<tr
-								th:onclick="|location.href='@{/approvals/readApprInfo(eaNo=${approve.eaNo})}'|">
+								th:onclick="|location.href='@{/approvals/read-appr-info(eaNo=${approve.eaNo})}'|">
 								<td>[[${sts.count}]]</td>
 								<td>[[${approve.title}]]</td>
 								<td>[[${approve.drafterName}]]</td>

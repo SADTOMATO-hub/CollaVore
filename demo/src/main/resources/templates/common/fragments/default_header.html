@@ -92,13 +92,13 @@
 					</a>
 						<ul class="dropdown-menu" aria-labelledby="navbarDropdown_appr">
 							<li><a class="dropdown-item"
-								th:href="@{/approvals/myApprList/a5}">진행중인 전자결재</a></li>
+								th:href="@{/approvals/my-appr-list/a5}">진행중인 전자결재</a></li>
 							<li><a class="dropdown-item"
-								th:href="@{/approvals/approveList/all}">문서함</a></li>
+								th:href="@{/approvals/approve-list/all}">문서함</a></li>
 							<li th:if="${menuAuth.contains('approval')}"><hr
 									class="dropdown-divider" /></li>
 							<li th:if="${menuAuth.contains('approval')}"><a
-								class="dropdown-item" th:href="@{/approvals/tempList}">전자결재
+								class="dropdown-item" th:href="@{/approvals/temp-list}">전자결재
 									템플릿 관리</a></li>
 						</ul></li>
 					<li class="nav-item dropdown"><a
