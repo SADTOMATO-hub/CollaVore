@@ -7,7 +7,8 @@
 
 #### デモ映像
 
-- <a href="https://youtu.be/hfSzDxm3IJk">電子決裁決裁・先決デモ映像</a>
+- <a href="https://youtu.be/6CGdhDFVPsE">電子決裁決裁デモ映像</a>
+- <a href="https://youtu.be/6CGdhDFVPsE">先決デモ映像</a>
 
 ## プロシージャを通じて承認を進行
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/accepctOrDenine.png">
