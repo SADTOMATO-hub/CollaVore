@@ -55,10 +55,22 @@ $('#selectDept').on('change', function() {
 3. 選択した部署に所属している社員が表示されます。
   <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/approver.png">
 
-4. 承認者選択ボタンをクリックすると、イベントを発生させたボタンの直下にあるtr, tdに選択した承認者の情報が反映されます。
+4. 承認者選択ボタンをクリックすると、イベントを発生させたボタンの直下にあるテーブルに選択した承認者の情報が反映されます。
   <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/selected_approvers.png">
+  
+````
+<input type="hidden" name="approvers[0].empNo" value="">
+<input type="hidden" name="approvers[1].empNo" value="">
+<input type="hidden" name="approvers[2].empNo" value="">
+<input type="hidden" name="approvers[3].empNo" value="">
 
-- 各ボタンにdata-set属性を設定することで、イベントを発生させたボタンを識別します。
+<input type="hidden" name="approvers[0].sort" value="1">
+<input type="hidden" name="approvers[1].sort" value="2">
+<input type="hidden" name="approvers[2].sort" value="3">
+<input type="hidden" name="approvers[3].sort" value="4">
+````
+- テーブルに入力された承認者の情報は使用者が確認するためで、実際の情報はこれらのhiddenタイプのinputタグに入力されます。
+  
  ```
 <thead>
   <tr>
@@ -66,30 +78,35 @@ $('#selectDept').on('change', function() {
 	<-first->
      <td style="text-align: center;">
        <button type="button" class="btn btn-warning modalBtn"
-        data-seq="1" data-bs-target="#approversSelect"
+        data-seq="1" data-bs-target="#approversSelect"　　//data-seq-1
         data-bs-toggle="modal">選択</button>
      </td>
 	<-second->			
      <td style="text-align: center;">
        <button type="button" class="btn btn-warning modalBtn"
-        data-seq="2" data-bs-target="#approversSelect"
+        data-seq="2" data-bs-target="#approversSelect"   //data-seq-2
         data-bs-toggle="modal">選択</button>
      </td>
 	<-third->		
      <td style="text-align: center;">
        <button type="button" class="btn btn-warning modalBtn"
-        data-seq="3" data-bs-target="#approversSelect"
+        data-seq="3" data-bs-target="#approversSelect"   //data-seq-3
         data-bs-toggle="modal">選択</button>
      </td>
 	<-fourth->
      <td style="text-align: center;">
        <button type="button" class="btn btn-warning modalBtn"
-        data-seq="4" data-bs-target="#approversSelect"
+        data-seq="4" data-bs-target="#approversSelect"   //data-seq-4
         data-bs-toggle="modal">選択</button>
      </td
    </tr>
 </thead>
  ```
+- 各ボタンにdata-set属性を設定することで、イベントを発生させたボタンを識別します。
+  
+- data-seqがdata-set属性の名前です。
+
+
 
 ## テンプレート選択
 5. ドロップダウンから起案する電子決裁に対応するテンプレートを選択して、内容を入力します。
