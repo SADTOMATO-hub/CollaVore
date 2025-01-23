@@ -12,6 +12,62 @@
 1. 選択ボタンをクリックすると、モーダルウィンドウが表示され、部署を選択できます。
   <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/selecting_approver.png">
   
+ ```
+<thead>
+  <tr>
+    <td></td>
+	<-first->
+     <td style="text-align: center;">
+       <button type="button" class="btn btn-warning modalBtn"
+        data-seq="1" data-bs-target="#approversSelect"　　//data-seq-1
+        data-bs-toggle="modal">選択</button>
+     </td>
+	<-second->			
+     <td style="text-align: center;">
+       <button type="button" class="btn btn-warning modalBtn"
+        data-seq="2" data-bs-target="#approversSelect"   //data-seq-2
+        data-bs-toggle="modal">選択</button>
+     </td>
+	<-third->		
+     <td style="text-align: center;">
+       <button type="button" class="btn btn-warning modalBtn"
+        data-seq="3" data-bs-target="#approversSelect"   //data-seq-3
+        data-bs-toggle="modal">選択</button>
+     </td>
+	<-fourth->
+     <td style="text-align: center;">
+       <button type="button" class="btn btn-warning modalBtn"
+        data-seq="4" data-bs-target="#approversSelect"   //data-seq-4
+        data-bs-toggle="modal">選択</button>
+     </td
+   </tr>
+</thead>
+ ```
+- 各ボタンにdata-set属性を設定することで、イベントを発生させたボタンを識別します。
+  
+
+`````
+//モーダルウィンドウにseq設定
+<input type="hidden" id="seq">
+`````
+
+- モーダルウィンドウにhiddenタイプのinputタグを設定しました。
+
+```
+$(document).ready(
+	function() {
+	　　　const modal = $("#apprModal");
+　　　　　　　　const closeBtn = $(".close");
+			// モーダルウィンドウを有効化すると、イベント発生
+			$('.modalBtn').on('click', function() {
+				        $('#seq').val( event.target.dataset.seq ); //data-set属性の値
+						$("body").addClass("modal-open");
+						modal.show();
+					});
+```
+- モーダルウィンドウを有効化すると、data-set属性の値が上記のinputに入力されます。
+
+
 2. 部署を選択すると、AJAXにより非同期処理が実行されます。
 
 ```
@@ -71,41 +127,6 @@ $('#selectDept').on('change', function() {
 ````
 - テーブルに入力された承認者の情報は使用者が確認するためで、実際の情報はこれらのhiddenタイプのinputタグに入力されます。
   
- ```
-<thead>
-  <tr>
-    <td></td>
-	<-first->
-     <td style="text-align: center;">
-       <button type="button" class="btn btn-warning modalBtn"
-        data-seq="1" data-bs-target="#approversSelect"　　//data-seq-1
-        data-bs-toggle="modal">選択</button>
-     </td>
-	<-second->			
-     <td style="text-align: center;">
-       <button type="button" class="btn btn-warning modalBtn"
-        data-seq="2" data-bs-target="#approversSelect"   //data-seq-2
-        data-bs-toggle="modal">選択</button>
-     </td>
-	<-third->		
-     <td style="text-align: center;">
-       <button type="button" class="btn btn-warning modalBtn"
-        data-seq="3" data-bs-target="#approversSelect"   //data-seq-3
-        data-bs-toggle="modal">選択</button>
-     </td>
-	<-fourth->
-     <td style="text-align: center;">
-       <button type="button" class="btn btn-warning modalBtn"
-        data-seq="4" data-bs-target="#approversSelect"   //data-seq-4
-        data-bs-toggle="modal">選択</button>
-     </td
-   </tr>
-</thead>
- ```
-- 各ボタンにdata-set属性を設定することで、イベントを発生させたボタンを識別します。
-  
-- data-seqがdata-set属性の名前です。
-
 
 
 ## テンプレート選択
