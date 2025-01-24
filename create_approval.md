@@ -11,6 +11,8 @@
 ## 承認者選択
 1. 選択ボタンをクリックすると、モーダルウィンドウが表示され、部署を選択できます。
   <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/selecting_approver.png">
+
+### DATA-SET属性を活用してイベント対象区別
   
  ```
 <thead>
