@@ -91,7 +91,7 @@
 
 ```
 // 電子決裁詳細ページ
-@GetMapping("/readApprInfo")
+@GetMapping("/read-appr-info")
 public String readapprinfo(Model model, ApprovalsVO apprVO, HttpSession session) {
     int userEmpNo = (Integer) session.getAttribute("userEmpNo");
     apprVO.setUserEmpNo(userEmpNo);
