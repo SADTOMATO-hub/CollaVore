@@ -1,6 +1,10 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=9172EC&height=200&section=header&text=COLLAVORE%&fontSize=40&animation=fadeIn&fontAlign=80&fontAlignY=36" />
 
 <div>
+  <h1>✉<i>&nbsp</i></h1>
+</div>  
+
+<div>
   <h1>✉<i>&nbsp 電子決裁</i></h1>
 </div>  
 
@@ -8,7 +12,7 @@
   - <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/create_template.md">テンプレート生成</a>
     1. Naver smart editor 2.0 apiを利用して電子決裁のテンプレート生成
   - <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/create_approval.md">電子決裁文書起案</a>
-    1. 電子決裁のタイトルを決めます。
+    1. 비동기 처리로 결재자 데이터 취득
     2. 承認者情報を非同期処理で取得後決めます。
     3. 電子決裁のテンプレートを選択します。
     4. 上記の三つが決められたら起案します。
