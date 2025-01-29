@@ -1,4 +1,4 @@
-<img src="https://capsule-render.vercel.app/api?type=waving&color=9172EC&height=200&section=header&text=COLLAVORE%[electric_approval]%&fontSize=40&animation=fadeIn&fontAlign=64&fontAlignY=36" />
+<img src="https://capsule-render.vercel.app/api?type=waving&color=9172EC&height=200&section=header&text=COLLAVORE%&fontSize=40&animation=fadeIn&fontAlign=64&fontAlignY=36" />
 
 <div>
   <h1>✉<i>&nbsp 電子決裁</i></h1>
