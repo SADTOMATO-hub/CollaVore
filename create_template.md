@@ -5,7 +5,7 @@
 ## ✅ 注目ポイント
 
  1. Naver smart editor 2.0를 활용하여 HTML5 코드를 데이터베이스에 저장
- 2. Thymeleaf문법을 이용하여 화면에 HTML5 태그 구현
+ 2. Thymeleaf문법을 이용하여 화면에 HTML5 코드 구현
 
 
 ## 💡 Naver smart editor 2.0とは？
@@ -50,7 +50,9 @@ Naver Smart Editor 2.0はJavaScriptで実装されたウェブベースのWYSIWY
 
 #### 変更後のtextarea
 
+<p>
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/after_textarea.png" />
+</p>
 
 ### 4. HTML5コード入力
 
@@ -59,7 +61,12 @@ Naver Smart Editor 2.0はJavaScriptで実装されたウェブベースのWYSIWY
 - HTML5コードを入力する事でテーブルが実装されます。
 
 ### 5. テンプレート登録
-- 登録ボタンをクリックする事でテンプレートをデータベースに登録します。
+
+<p>
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/table_DB.png" style:align="center" />
+</p>
+
+- 登録ボタンを押す事でテンプレートをデータベースに格納します。
 
 ---
 
