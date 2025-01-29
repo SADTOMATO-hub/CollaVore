@@ -78,9 +78,6 @@ $('#selectDept').on('change', function() {
 5. ドロップダウンから起案する電子決裁に対応するテンプレートを選択して、内容を入力します。
   <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/template.png">
 
-## 起案
-6. バリデーションを通過し、データが正常に格納されます。
-
 ----
 ### <a href="https://github.com/leewoosang-hub/CollaVore">トップページに戻る
 	
