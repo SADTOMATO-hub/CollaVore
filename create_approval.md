@@ -12,63 +12,6 @@
 1. 選択ボタンをクリックすると、モーダルウィンドウが表示され、部署を選択できます。
   <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/selecting_approver.png">
 
-### DATA-SET属性を活用してイベント対象区別
-  
- ```
-<thead>
-  <tr>
-    <td></td>
-	<-first->
-     <td style="text-align: center;">
-       <button type="button" class="btn btn-warning modalBtn"
-        data-seq="1" data-bs-target="#approversSelect"　　//data-seq-1
-        data-bs-toggle="modal">選択</button>
-     </td>
-	<-second->			
-     <td style="text-align: center;">
-       <button type="button" class="btn btn-warning modalBtn"
-        data-seq="2" data-bs-target="#approversSelect"   //data-seq-2
-        data-bs-toggle="modal">選択</button>
-     </td>
-	<-third->		
-     <td style="text-align: center;">
-       <button type="button" class="btn btn-warning modalBtn"
-        data-seq="3" data-bs-target="#approversSelect"   //data-seq-3
-        data-bs-toggle="modal">選択</button>
-     </td>
-	<-fourth->
-     <td style="text-align: center;">
-       <button type="button" class="btn btn-warning modalBtn"
-        data-seq="4" data-bs-target="#approversSelect"   //data-seq-4
-        data-bs-toggle="modal">選択</button>
-     </td
-   </tr>
-</thead>
- ```
-- 各ボタンにdata-set属性を設定することで、イベントを発生させたボタンを識別します。
-  
-
-`````
-//モーダルウィンドウにseq設定
-<input type="hidden" id="seq">
-`````
-
-- モーダルウィンドウにhiddenタイプのinputタグを設定しました。
-
-```
-$(document).ready(
-	function() {
-	　　　const modal = $("#apprModal");
-　　　　　　　　const closeBtn = $(".close");
-			// モーダルウィンドウを有効化すると、イベント発生
-			$('.modalBtn').on('click', function() {
-				        $('#seq').val( event.target.dataset.seq ); //data-set属性の値
-						$("body").addClass("modal-open");
-						modal.show();
-					});
-```
-- モーダルウィンドウを有効化すると、data-set属性の値が上記のinputに入力されます。
-
 
 2. 部署を選択すると、AJAXにより非同期処理が実行されます。
 
@@ -138,51 +81,6 @@ $('#selectDept').on('change', function() {
 ## 起案
 6. バリデーションを通過し、データが正常に格納されます。
 
-```
-// 起案ボタンを押すとフォームのデータをすべて送信します。
-function submitPost(event) {
-    event.preventDefault(); // フォーム送信を防止
-    
-    // drafterEmpNoの値をuserEmpNoに設定
-    var drafterEmpNo = $('input[name=drafterEmpNo]').val(userEmpNo);
-
-    // approvalTitleの検証
-    var approvalTitle = $('#approvalTitle').val();
-    if (!approvalTitle) {
-        Toast.fire({
-            icon: "warning",
-            title: "タイトルを入力してください。"
-        });
-        $('#approvalTitle').focus();
-        return;
-    }
-
-    // approvers[].empNo配列の値を検証
-    var approvers = $('input[name^="approvers["][name$=".empNo"]').map(function() { return $(this).val(); }).get();
-    if (approvers.length === 0 || approvers.every(val => !val)) {
-        Toast.fire({
-            icon: "warning",
-            title: "承認者を最低1人以上指定してください。"
-        });
-        return;
-    }
-    // contentの検証
-    oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []); // contentを更新
-    var content = $('#content').val();
-    if (content == null || content.trim() == '' || content == '&nbsp;' || content == '<br>' || content == '<p>&nbsp;</p>') {
-        Toast.fire({
-            icon: "warning",
-            title: "テンプレートを設定してください。"
-        });
-        oEditors.getById["content"].exec("FOCUS");
-        return;
-    }
-
-    // 全ての検証を通過した場合、フォームを送信
-    insertForm.submit(); // フォームを送信
-  }	
-}
-```
 ----
 ### <a href="https://github.com/leewoosang-hub/CollaVore">トップページに戻る
 	
