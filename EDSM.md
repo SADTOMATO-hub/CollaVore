@@ -4,7 +4,8 @@
 ### <a href="https://youtu.be/3FdpodYiA90">先決デモ映像</a>
 
 ## 注目ポイント
- 1. 프로시저를 사용하여 
+ 1. 프로시저를 사용하여 블록 단위의 쿼리문 실행
+    - 목적 : 
 
 ## プロシージャを通じて承認を進行
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/accepctOrDenine.png">
