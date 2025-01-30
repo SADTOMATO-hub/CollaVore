@@ -4,16 +4,18 @@
 ### <a href="https://youtu.be/3FdpodYiA90">先決デモ映像</a>
 
 ## 注目ポイント
- 1. 프로시저를 사용하여 결재상태 변경
+ 1. 클릭 이벤트와 연계하여 비동기 처리로 승인자의 승인 여부를 즉시 반영
+    - 사용목적 : 화면의 깜빡이나 새로고침 없이 유저의 요청을 즉각적으로 화면에 반영함으로써 UX 향상
+
+ 2. 프로시저를 사용하여 결재상태 변경
     - 사용목적 : 
 
-## プロシージャを通じて承認を進行
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/accepctOrDenine.png">
+ 3. 
 
-- ログイン中のセッションが含まれている電子決裁の詳細ページで、自分の承認順番の場合、「待機」イメージの代わりに承認・否認ボタンが表示されます。
-  
-- 承認ボタンをクリックすると、AJAXを通じてControllerにデータ（承認者の社員番号、承認可否）を送信します。
-  
+## プロシージャを通じて承認を進行
+
+버튼을 눌러 결재 하는 gif 따기
+
 ```
   $(".approveBtn").on('click', function(event) {
 	const approveOrDenine = $(this).val();
@@ -32,6 +34,8 @@
 }
 ```
 
+- 承認ボタンをクリックすると、AJAXを通じてControllerにデータ（承認者の社員番号、承認可否）を送信します。
+
 ```
 <update id="updateApprStatus" statementType="CALLABLE">
 		{ CALL
@@ -49,10 +53,7 @@
 
 <br>
 
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/approval_process.png">
-
-- プロシージャを通過して承認者の承認可否が「承認」に更新され、それに応じたイメージが表示されます。
-- 承認者の決裁が進行するにつれて、電子決裁の状態が更新されることが確認できます。
+데이터베이스에 결재자 상태가 갱신된 이미지
 
 ## 先決
 
