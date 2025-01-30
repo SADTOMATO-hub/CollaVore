@@ -1,12 +1,14 @@
 # 🖋電子決裁起案
-- タイトルを決定します。
-- 承認者は最大4名まで選択できますす。
-- 電子決裁に使用するテンプレートを選択し、内容を入力します。
 
-#### デモ映像
+### <a href="https://youtu.be/dpTXWomP3uY">電子決裁起案デモ映像</a>
 
-- <a href="https://youtu.be/dpTXWomP3uY">電子決裁起案デモ映像</a>
+## 注目ポイント
 
+1. 클릭 이벤트, 체인지 이벤트와 연계하여 AJAX의 비동기 처리로 데이터를 취득 
+   - 사용목적 : 이벤트를 발생 시킬 때 마다, 화면이 깜빡이는 것을 방지하여 UX를 향상  
+
+2. 배열 타입을 이용하여, 여러 데이터를 데이터베이스에 격납
+   - 사용목적 : 한 번의 
 	
 ## 承認者選択
 1. 選択ボタンをクリックすると、モーダルウィンドウが表示され、部署を選択できます。
@@ -57,7 +59,7 @@ $('#selectDept').on('change', function() {
   <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/approver.png">
 
 4. 承認者選択ボタンをクリックすると、イベントを発生させたボタンの直下にあるテーブルに選択した承認者の情報が反映されます。
-  <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/selected_approvers.png">
+  <img src="">
   
 ````
 <input type="hidden" name="approvers[0].empNo" value="">
