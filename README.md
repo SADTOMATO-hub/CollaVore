@@ -12,6 +12,8 @@
 <strong>&nbsp&nbsp開発人数</strong>　： 5名<br>
 <strong>&nbsp&nbsp担　　当</strong>　： 電子決裁管理</strong><br>
 <p></p>
+
+## 主要機能
 spring MVC 패턴과 3계층 아키택처를 활용
 
 <div>
