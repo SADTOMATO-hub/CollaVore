@@ -10,7 +10,7 @@
 	
 ## 承認者選択
 1. 選択ボタンをクリックすると、モーダルウィンドウが表示され、部署を選択できます。
-  <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/selecting_approver.png">
+  <img src="">
 
 
 2. 部署を選択すると、AJAXにより非同期処理が実行されます。
