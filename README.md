@@ -8,6 +8,7 @@
                                         チーム内で円滑に作業を進められるコラボレーションツールを開発いたしました。<br>
 <strong>&nbsp&nbsp概　　要</strong>　：  このプラットフォームは人事管理、スケジュール管理、電子決裁管理、プロジェクト管理、 <br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                                          企画管理などを提供します。<br>
+<strong>&nbsp&nbspSKILLS</strong>   ： Java, Java Spring boot, Oracle, 
 <strong>&nbsp&nbsp開発期間</strong>　： 2024.09.30 - 2024.11.13<br>
 <strong>&nbsp&nbsp開発人数</strong>　： 5名<br>
 <strong>&nbsp&nbsp担　　当</strong>　： 電子決裁管理</strong><br>
@@ -49,91 +50,17 @@
 
 ***
 
-### コードレビュー後修正項目 
+### コードレビュー後修正項目 (2025.01.10)
 
-  - **コードレビューを行う後、開発当時には気付かなかった問題点を改善しました。**
+1. HTML5のインデントを改善しました。
 
-  1. HTML5のインデントを改善しました。
-     
- ```
-    $(document)
-				.ready(
-						function() {
-							$(".approval-row")
-									.on(
-											"click",
-											function(event) {
-												if (!$(event.target).hasClass(
-														"delete-button")) {
-													const eaNo = event.currentTarget/*이벤트가 걸려 있는 타겟*/.dataset.eaNo;
-													location.href = '/approvals/readApprInfo?eaNo='
-															+ eaNo;
-												}
-											});
-							$(".delete-button")
-									.on(
-											"click",
-											function(event) {
-												const eaNo = event.currentTarget.parentElement.parentElement.dataset.eaNo;
-												Swal.fire({
-										              title: "해당 전자결재를 삭제하시겠습니까?",
-										              icon: "warning",
-										              showCancelButton: true,
-										              confirmButtonColor: "#3085d6",
-										              cancelButtonColor: "#d33",
-										              confirmButtonText: "예",
-										              cancelButtonText:"아니요"
-										            }).then((result) => {
-										              if (result.isConfirmed) {
-										                  // 아작스
-															location.href = '/approvals/deleteAppr?eaNo='
-																+ eaNo;
-										                    
-										              }
-										            });
-											});
-						});      
-```
-    
-  - 改善前
-
-````
-    $(document).ready(function () {
-      $(".approval-row").on("click", function (event) {
-        if (!$(event.target).hasClass("delete-button")) { // 対象にdelete-buttonクラスがない場合、こーどを実行
-          const eaNo = event.currentTarget.dataset.eaNo;
-          location.href = "/approvals/readApprInfo?eaNo=" + eaNo;
-        }
-      });
-      $(".delete-button").on("click", function (event) {
-        const eaNo =
-          event.currentTarget.parentElement.parentElement.dataset.eaNo;
-        Swal.fire({
-          title: "削除しますか",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "はい",
-          cancelButtonText: "いいえ",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            location.href = "/approvals/deleteAppr?eaNo=" + eaNo;
-          }
-        });
-      });
-    });
-````
-    
-- 改善後
-
-  - 改善理由 : コードの可読性を向上させ、チームメンバーや他の開発者が混乱せず、よりスムーズに理解できるようにしました。
+    - 改善理由 : コードの可読性を向上させ、チームメンバーや他の開発者が混乱せず、よりスムーズに理解できるようにしました。
 
 2. イメージフォルダのイメージファイルの拡張子を大文字から小文字に修正しました。
 
     - 修正理由 : 拡張子は全て小文字にする、コーディングコンベンションに従いました。
    
-4. Controllerのパスをキャメルケースからスケバブケースに変更しました。
+3. Controllerのパスをキャメルケースからスケバブケースに変更しました。
 
    - 修正理由 : URLはケバブケースにするウェブ開発コンベンションに従い、可読性を高めました。
     
