@@ -47,32 +47,6 @@
  <!-- 프로시저 상세 -->
  > プロシージャ詳細
 
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure1.png">
- 
-- パラメーターで承認者の社員番号、承認可否を受信します。
-  
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure3.png">
-
-- 決裁が進行する際に、電子決裁の状態を更新するために必要な変数を宣言しました。
-  
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure2.png">
-
-- パラメーターとして渡された承認可否の値を基に電子決裁の状態を更新します。
-
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure4.png">
-
-- 更新される電子決裁の番号を照会します。
-
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure6-2.png">
-
-- 承認者の承認可否は「b1/待機」、「b2/承認」、「b3/否認」の3つです。
-
-<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/procedure6.png">
-
-- 電子決裁の状態は「a1/承認待機」、「a2/進行中」、「a3/承認終了」、「a4/否認終了」の4つです。
-
- > 
-
 <br>
 
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/approval_process.png">
