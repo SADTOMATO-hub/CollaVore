@@ -5,8 +5,10 @@
 ## ✅ 注目ポイント
 
  1. Naver smart editor 2.0를 활용하여 HTML5 코드를 데이터베이스에 저장
- 2. Thymeleaf문법을 이용하여 화면에 HTML5 코드 구현
-
+    - 사용목적 : 전자결재 템플릿을 DB에 저장하고, 저장된 HTML을 동적으로 렌더링하여 활용(수정필요) 
+      
+ 2. Thymeleaf utext 활용하여 HTML5 코드 렌더링
+    - 사용목적 : th:text를 사용할 경우 HTML 태그가 문자열로 출력되는 문제를 해결하고, HTML을 실제 요소로 해석하여 렌더링하기 위해 사용
 
 ## 💡 Naver smart editor 2.0とは？
   ```
@@ -66,7 +68,7 @@ Naver Smart Editor 2.0はJavaScriptで実装されたウェブベースのWYSIWY
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/table_DB.png" style:align="center" />
 </p>
 
-- 登録ボタンを押す事でテンプレートをデータベースに格納します。
+- 登録ボタンを押す事でHTML5コードをデータベースに格納します。
 
 ---
 
