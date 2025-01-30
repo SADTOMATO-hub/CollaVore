@@ -1,14 +1,13 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=9172EC&height=200&section=header&text=COLLAVORE%&fontSize=40&animation=fadeIn&fontAlign=80&fontAlignY=36" />
 
 <h1><i>&nbsp プロジェクト詳細</i></h1>
-<p></p
 <strong>&nbsp&nbsp開発動機</strong>　：ピザのショッピングサイトを開発する中で、 <br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                                         チームメンバーとリソースや進捗状況を共有するためのプラットフォームがなく、<br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                                         効率的な協力が困難していました。以降も同様の問題が発生しないよう、 <br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                                         チーム内で円滑に作業を進められるコラボレーションツールを開発いたしました。<br>
 <strong>&nbsp&nbsp概　　要</strong>　：  このプラットフォームは人事管理、スケジュール管理、電子決裁管理、プロジェクト管理、 <br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                                          企画管理などを提供します。<br>
-<strong>&nbsp&nbspSKILLS</strong>   ： Java, Java Spring boot, Oracle, <br>
+<strong>&nbsp&nbspS&nbspK&nbspI&nbspL&nbspL&nbspS</strong>  &nbsp ： Java, Java Spring boot, Oracle, <br>
 <strong>&nbsp&nbsp開発期間</strong>　： 2024.09.30 - 2024.11.13<br>
 <strong>&nbsp&nbsp開発人数</strong>　： 5名<br>
 <strong>&nbsp&nbsp担　　当</strong>　： 電子決裁管理</strong><br>
@@ -17,7 +16,7 @@
 ## ✅ 注目ポイント
 
 1. spring MVC 패턴과 3계층 아키택처를 활용
-   사용목적 : spring MVC 패턴을 활용하여 객체 간 역할을 분리, 계층 아키택처 기법을 통해 Model객체를 각 역할에 맞게 세분화
+   - 사용목적 : spring MVC 패턴을 활용하여 객체 간 역할을 분리, 계층 아키택처 기법을 통해 Model객체를 각 역할에 맞게 세분화
 
 
 <div>
