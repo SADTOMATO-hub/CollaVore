@@ -13,8 +13,9 @@
 <strong>&nbsp&nbsp担　　当</strong>　： 電子決裁管理</strong><br>
 <p></p>
 
-## 主要機能
+## ✅ 注目ポイント
 spring MVC 패턴과 3계층 아키택처를 활용
+
 
 <div>
   <h1>✉<i>&nbsp 電子決裁</i></h1>
