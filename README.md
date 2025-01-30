@@ -8,7 +8,7 @@
                                         チーム内で円滑に作業を進められるコラボレーションツールを開発いたしました。<br>
 <strong>&nbsp&nbsp概　　要</strong>　：  このプラットフォームは人事管理、スケジュール管理、電子決裁管理、プロジェクト管理、 <br>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                                          企画管理などを提供します。<br>
-<strong>&nbsp&nbspSKILLS</strong>   ： Java, Java Spring boot, Oracle, 
+<strong>&nbsp&nbspSKILLS</strong>   ： Java, Java Spring boot, Oracle, <br>
 <strong>&nbsp&nbsp開発期間</strong>　： 2024.09.30 - 2024.11.13<br>
 <strong>&nbsp&nbsp開発人数</strong>　： 5名<br>
 <strong>&nbsp&nbsp担　　当</strong>　： 電子決裁管理</strong><br>
