@@ -1,14 +1,10 @@
 # 📝決裁・先決
-- ログイン中のセッションの決裁順番に基づいて、決裁ボタンが表示されます。
-- 承認者の中で1名以上が承認した場合、電子決裁の状態が「進行中」になります。
-- 承認者の中で1名でも「否認」した場合、電子決裁の状態が「否認」になります。
-- 全ての承認者が「承認」した場合、電子決裁の状態が「承認」になります。
-- 先決。
 
-#### デモ映像
+### <a href="https://youtu.be/6CGdhDFVPsE">電子決裁決裁デモ映像</a>
+### <a href="https://youtu.be/3FdpodYiA90">先決デモ映像</a>
 
-- <a href="https://youtu.be/6CGdhDFVPsE">電子決裁決裁デモ映像</a>
-- <a href="https://youtu.be/3FdpodYiA90">先決デモ映像</a>
+## 注目ポイント
+ 1. 프로시저를 사용하여 
 
 ## プロシージャを通じて承認を進行
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/accepctOrDenine.png">
