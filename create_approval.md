@@ -67,7 +67,9 @@ $('#selectDept').on('change', function() {
 - テーブルに入力された承認者の情報は使用者が確認するためで、実際の情報は下記のhiddenタイプのinputタグに入力されます。
   
 ## テンプレート選択
-체인지 이벤트를 통해 전자결재를 선택하여 데이터를 취득하는 gif 따기
+<img src="https://github.com/user-attachments/assets/bb543124-0e11-4a55-bbd1-03b273ccca0a">
+
+- change eventとAJAXを連携して非同期処理でテンプレートのデータを取得
 
 ----
 ### <a href="https://github.com/leewoosang-hub/CollaVore">トップページに戻る
