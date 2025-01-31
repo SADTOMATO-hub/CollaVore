@@ -18,7 +18,6 @@
 1. spring MVC 패턴과 3계층 아키택처를 활용
    - 사용목적 : spring MVC 패턴을 활용하여 객체 간 역할을 분리, 계층 아키택처 기법을 통해 Model객체를 각 역할에 맞게 세분화
 
-
 <div>
   <h1>✉<i>&nbsp 電子決裁</i></h1>
 </div>  
@@ -29,7 +28,8 @@
     2. Thymeleaf를 통해 HTML5 코드 랜더링
   - <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/create_approval.md">電子決裁文書起案</a>
     1. 비동기 처리로 결재자 데이터 취득
-    2. 배열 타입을 이용하여 다수의 데이터 처리
+    2. data-set을 이용하여 이벤트핸들러 공유 
+    3. 배열 타입을 이용하여 다수의 데이터 처리
   - <a href="https://github.com/leewoosang-hub/CollaVore/tree/master/EDSM.md">電子決裁文書決裁</a>
     1. 비동기 처리를 통해 문서 결재 진행
     2. 프로시저를 이용하여 문서 및 승인자 상태 변경
@@ -40,6 +40,12 @@
   - テンプレート項目整列
   - 電子決裁文書修正
   - 電子決裁文書削除
+    <br>프로시저를 활용한 전자결재 문서 및 결재자 데이터 동시 삭제
+    - 사용목적
+      1. 전자결재 테이블(PK)이 결재자 테이블에서 외래키(FK)로 참조되고 있는 구조에서, 데이터 무결성을 유지하면서 삭제 처리
+      2. 수작업 없이 일괄 삭제 가능하도록 자동화
+    - 활용기술 : Oracle PL/SQL 프로시저(Procedure) 활용
+                MyBatis의 CALL명령어를 활용하여 프로시저 호출 
   - 電子決裁文書項目整列
 
 
