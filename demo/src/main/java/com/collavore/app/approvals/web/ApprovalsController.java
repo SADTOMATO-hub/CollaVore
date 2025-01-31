@@ -172,13 +172,11 @@ public class ApprovalsController {
 	public String readapprinfo(Model model, ApprovalsVO apprVO, HttpSession session) {
 	    int userEmpNo = (Integer) session.getAttribute("userEmpNo");
 	    apprVO.setUserEmpNo(userEmpNo);
-	    
 	    // 결재 및 결재자 정보 조회
 	    ApprovalsVO approvals = approvalsService.approvalsInfo(apprVO);
 	    List<Map<String, Object>> approvers = approvalsService.approversInfo(apprVO);
         String documentStatus = approvals.getApprovalStatus(); // 문서 상태 가져오기
-
-	 // 버튼 활성화 여부 및 상태 표시 설정
+	    // 버튼 활성화 여부 및 상태 표시 설정
 	    for (int i = 0; i < approvers.size(); i++) {
 	        Map<String, Object> approver = approvers.get(i);
 	        

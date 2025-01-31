@@ -2,6 +2,8 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{common/layouts/default_layout}"
 	layout:fragment="Content">
+	<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js"
+		charset="utf-8"></script>
 	<style>
 /* 페이지 기본 스타일 */
 .body-page-wrapper {
@@ -153,7 +155,8 @@ button:active {
 			</div>
 			<div class="card_memberInsert">
 				<div class="col-md-9">
-					<form class="form-horizontal" name="insertForm" action="create-appr" method="post">
+					<form class="form-horizontal" name="insertForm"
+						action="create-appr" method="post">
 						<input type="hidden" name="${_csrf.parameterName}"
 							value="${_csrf.token}" /> <input type="hidden"
 							name="drafterEmpNo" value="">
@@ -174,6 +177,7 @@ button:active {
 									class="table table-striped table-bordered">
 									<thead>
 										<tr>
+											<!-- 選択ボタンにdata-set属性設定 -->
 											<td></td>
 											<!-- ------------------- -->
 											<td style="text-align: center;">
@@ -232,7 +236,7 @@ button:active {
 						<div class="form-group row">
 							<label for="selectContent"
 								class="col-sm-3 text-end control-label col-form-label">テンプレート選択
-								</label>
+							</label>
 							<div class="col-sm-9">
 								<select id="selectContent" class="form-select">
 									<option selected value="" disabled>==テンプレート選択==</option>
@@ -256,25 +260,11 @@ button:active {
 			</div>
 		</div>
 	</div>
-
-
-	<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js"
-		charset="utf-8"></script>
-	<!-- ------------------------------------- -->
-	<!-- ------------------------------------- -->
-	<!-- ------------------------------------- -->
-	<!-- ------------------------------------- -->
-	<!-- ------------------------------------- -->
-	<!-- ------------------------------------- -->
-	<!-- ------------------------------------- -->
-	<!-- ------------------------------------- -->
-	<!-- ------------------------------------- -->
-	<!-- 모달 -->
+	<!-- 選択ボタンクリックすとモーダルウィンドウが有効化 -->
 	<div class="modal fade" id="approversSelect" tabindex="-1"
 		aria-labelledby="approversModalLabel" aria-hidden="true">
-		<!-- 선택한 option의 seq를 저장하기 위한 태그 -->
+		<!-- data-set属性の値を入力するためinputのタグを宣言 -->
 		<input type="hidden" id="seq">
-		<!-- --------------------------------- -->
 		<div class="modal-dialog" style="height: 500px;">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -316,17 +306,10 @@ button:active {
 			</div>
 		</div>
 	</div>
-	<!-- -----------------모달----------------- -->
 	<!-- ------------------------------------- -->
-	<!-- ------------------------------------- -->
-	<!-- ------------------------------------- -->
-	<!-- ------------------------------------- -->
-	<!-- ------------------------------------- -->
-	<!-- ------------------------------------- -->
-	<!-- ------------------------------------- -->
-	<script>
+<script>
 	const userEmpNo = '[[${session.userEmpNo}]]';
-	// SmartEditor 참조를 위한 배열
+	// SmartEditorの配列
 	var oEditors = [];
 	function smartEditor() {
 		console.log("Naver SmartEditor");
@@ -338,148 +321,147 @@ button:active {
 		});
 	}
 
-//템플릿에 저장되어 있는 data 가지고 오기
-	$(document).ready(function() {
-		smartEditor();
-				// 템플릿 선택 시 내용 불러오기
-				$("#selectContent").on("change",
- 						function(event) {
-							var selectedVal = $(this).val();
-							var eatNo = $("#eatNo").val(selectedVal);
-							$.ajax({
-								url : `/approvals/temp?eatNo=` + selectedVal,
-								type : 'GET',
-								success : function(response) {
-									oEditors.getById["content"].exec(
-											"UPDATE_CONTENTS_FIELD", []);
-									oEditors.getById["content"].exec("SET_IR",
-											[ response.content ]);
-									$('#content').val(response.content);
-								},
-								error : function(xhr, status, error) {
-									Toast.fire({
-									  icon: "error",
-									  title: '데이터 호출 실패: ' + error
-									});
-								}
-							});
-						});
-				
-				// 버튼 클릭 시 폼 제출
-				$("#createButton").on("click", function(event) {
-					submitPost(event);
-				});
-			});
-//end of 템플릿에 저장되어 있는 data 가지고 오기
+//テンプレートのでデータ取得
+$(document).ready(function () {
+    smartEditor();
+    $("#selectContent").on("change", function (event) {
+      var selectedVal = $(this).val();
+      var eatNo = $("#eatNo").val(selectedVal);
+      $.ajax({
+        url: `/approvals/temp?eatNo=` + selectedVal,
+        type: "GET",
+        success: function (response) {
+          oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
+          oEditors.getById["content"].exec("SET_IR", [response.content]);
+          $("#content").val(response.content);
+        },
+        error: function (xhr, status, error) {
+          Toast.fire({
+            icon: "error",
+            title: "データ取得中エラーが発生しました。: " + error,
+          });
+        },
+      });
+    });
+    //データ送信
+    $("#createButton").on("click", function (event) {
+      submitPost(event);
+    });
+ });
 
-<!-- 모달창 여닫는 script -->
+//選択ボタンをクリックすると、イベントが実行される
 $(document).ready(
-		function() {
-			const modal = $("#apprModal");
-			const closeBtn = $(".close");
-			// 모달 열기 버튼 클릭 시 이벤트 처리
-			$('.modalBtn').on('click', function() {
-				        $('#seq').val( event.target.dataset.seq ); //결재자의 순번을 결정하는 기능, 
-						$("body").addClass("modal-open"); // 스크롤 막는 클래스 추가
-						modal.show();
-					});
-			// 모달 닫기 버튼 클릭 시 이벤트 처리
-			closeBtn.on("click", function() {
-				https: //hayleyun.tistory.com/entry/HTML-모달창Modal-만들기 5/9
-				modal.css("display", "none");
-				$("body").removeClass("modal-open"); // 스크롤 막는 클래스 제거
-			});
-			// 모달 영역 외부 클릭 시 모달 닫기
-			$(window).on("click", function(event) {
-				if (event.target === modal[0]) {
-					modal.css("display", "none");
-					$("body").removeClass("modal-open"); // 스크롤 막는 클래스 제거
-				}
-			});
-		});
-	//modal에서 선택한 결재자 정보를 부모 페이지에 넘기는 기능
-	  $(document).ready(function() {
-        // 부서 선택 시, 해당 부서에 소속된 결재자 목록을 동적으로 불러오는 AJAX
-        $('#selectDept').on('change', function() {
-            var deptNo = $(this).val(); // 선택된 부서 번호
+    function() {
+        const modal = $("#apprModal");
+        const closeBtn = $(".close");
 
-            // 부서 번호가 없으면 리턴
-            if (!deptNo) return;
+        // モーダルを開くボタンがクリックされた時のイベント処理
+        $('.modalBtn').on('click', function() {
+            // イベントを発生させたボタンの data-set の値を、モーダルウィンドウの HTML5 コード内の seq の value に保存する
+            $('#seq').val(event.target.dataset.seq);
+            $("body").addClass("modal-open");
+            modal.show();
+        });
 
-            // 결재자 선택 드롭다운 초기화
-            $('#selectApprovers').empty();
-            $('#selectApprovers').append('<option selected value="" disabled>==承認者選択==</option>');
+        // モーダルを閉じるボタンがクリックされた時のイベント処理
+        closeBtn.on("click", function() {
+            modal.css("display", "none");
+            $("body").removeClass("modal-open"); // スクロールをブロックするクラスを削除
+        });
 
-            // AJAX 요청: 해당 부서의 결재자 목록을 받아옴
-            $.ajax({
-                url: '/approvals/select-emps/' + deptNo,
-                type: 'POST',
-                success: function(response) {
-                    if (response.length === 0) {
-                        $('#selectApprovers').append('<option value="">承認者選択なし</option>');
-                        return;
-                    }
-                    // 응답 받은 결재자 목록을 드롭다운에 추가
-                    $.each(response, function(index, employeesInfo) {
-                        $('#selectApprovers').append(
-                            `<option value="${employeesInfo.empNo}">${employeesInfo.empName} / ${employeesInfo.posiName}</option>`
-                        );
-                    });
-                },
-                error: function(xhr, status, error) {
-					Toast.fire({
-					  icon: "error",
-					  title: "承認者データ取得中エラーが発生しました。"
-					});
-                }
-            });
+        // モーダル領域外をクリックした時にモーダルを閉じる
+        $(window).on("click", function(event) {
+            if (event.target === modal[0]) {
+                modal.css("display", "none");
+                $("body").removeClass("modal-open"); // スクロールをブロックするクラスを削除
+            }
         });
     });
+
+// モーダルで選択した承認者情報を親ページに渡す機能
+$(document).ready(function() {
+    // 部署選択時に、その部署に所属する承認者リストを動的に取得する AJAX
+    $('#selectDept').on('change', function() {
+        var deptNo = $(this).val(); // 選択された部署番号
+
+        // 部署番号が未選択の場合は処理を中断
+        if (!deptNo) return;
+
+        // 承認者選択ドロップダウンを初期化
+        $('#selectApprovers').empty();
+        $('#selectApprovers').append('<option selected value="" disabled>==承認者選択==</option>');
+
+        // AJAXリクエスト：該当部署の承認者リストを取得
+        $.ajax({
+            url: '/approvals/select-emps/' + deptNo,
+            type: 'POST',
+            success: function(response) {
+                if (response.length === 0) {
+                    $('#selectApprovers').append('<option value="">承認者選択なし</option>');
+                    return;
+                }
+                // 取得した承認者リストをドロップダウンに追加
+                $.each(response, function(index, employeesInfo) {
+                    $('#selectApprovers').append(
+                        `<option value="${employeesInfo.empNo}">${employeesInfo.empName} / ${employeesInfo.posiName}</option>`
+                    );
+                });
+            },
+            error: function(xhr, status, error) {
+                Toast.fire({
+                    icon: "error",
+                    title: "承認者データ取得中にエラーが発生しました。"
+                });
+            }
+        });
+    });
+});
+
  $(document).ready(function(){
     $("#modalSubmit").on("click", function(e){
-        e.preventDefault();
+    	e.preventDefault();
         var seq = $('#seq').val();
         var selectedApprover = $("#selectApprovers option:checked").text();
         var selectedApproversEmp = $("#selectApprovers option:checked").val();
         
-        // 선택된 approver 이름과 정보를 분리
+        // 選択した承認者の名前と情報を分割
         var selectedApproversName = selectedApprover.split('/')[0];
         var selectedApproversInfo = selectedApprover.split('/')[1];
         
-        // approver의 empNo 값 설정 및 초기화 조건
+        // 承認者の社員番号(empNo)を設定し、初期化条件を適用
         if (selectedApproversEmp) {
             $(`[name="approvers[${seq-1}].empNo"]`).val(selectedApproversEmp);
         } else {
-            // selectedApproversEmp가 빈 값인 경우 부모 값 초기화
+            // 選択した承認者の社員番号が空の場合、親の値を初期化
             $(`[name="approvers[${seq-1}].empNo"]`).val('');
         }
         
-        // 이름과 정보 설정 및 초기화
+        // 名前と情報を設定し、初期化
         if (selectedApproversEmp) {
             $('#apprerTable tbody tr').eq(0).children().eq(seq).find('span').html(selectedApproversName);
             $('#apprerTable tbody tr').eq(1).children().eq(seq).find('span').html(selectedApproversInfo);
         } else {
-            // 빈 값인 경우 초기화
+            // 空の場合、初期化処理
             $('#apprerTable tbody tr').eq(0).children().eq(seq).find('span').html('');
             $('#apprerTable tbody tr').eq(1).children().eq(seq).find('span').html('');
         }
 
-        // 초기 상태로 복귀
+        // 初期状態にリセット
         $('#selectApprovers').prop('selectedIndex', 0);
         $('#approversSelect').modal('hide');
         
         $('#selectDept').prop('selectedIndex', 0);
     });
 });
-	//
-//기안버튼을 누르면 form의 데이터를 전부 넘김
+
+// 起案ボタンを押すと、フォームのデータをすべて送信
 function submitPost(event) {
-    event.preventDefault(); // 폼 제출 방지
+    event.preventDefault(); // フォーム送信を防止
     
-    // drafterEmpNo 값을 userEmpNo로 설정
+    // drafterEmpNo の値を userEmpNo に設定
     var drafterEmpNo = $('input[name=drafterEmpNo]').val(userEmpNo);	
 
-    // approvalTitle 검증
+    // approvalTitle の検証
     var approvalTitle = $('#approvalTitle').val();
     if (!approvalTitle) {
 		Toast.fire({
@@ -490,33 +472,30 @@ function submitPost(event) {
         return;
     }
 
-    // approvers[].empNo 배열 값 검증
+    // approvers[].empNo 配列の値を検証
     var approvers = $('input[name^="approvers["][name$=".empNo"]').map(function() { return $(this).val(); }).get();
     if (approvers.length === 0 || approvers.every(val => !val)) {
 		Toast.fire({
 			  icon: "warning",
-			  title: "最小一名の承認者を指定してください。"
+			  title: "最低1名の承認者を指定してください。"
 			});
         return;
     }
 
-    // content 검증
-    oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []); // content 업데이트
+    // content の検証
+    oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []); // content 更新
     var content = $('#content').val();
     if (content == null || content.trim() == '' || content == '&nbsp;' || content == '<br>' || content == '<p>&nbsp;</p>') {
 		Toast.fire({
 			  icon: "warning",
-			  title: "テンプレート選択してください。"
+			  title: "テンプレートを選択してください。"
 			});
         oEditors.getById["content"].exec("FOCUS");
         return;
     }
 
-    // 모든 검증을 통과하면 폼 제출
-    insertForm.submit(); // 폼 제출			
+    // すべての検証を通過したらフォームを送信
+    insertForm.submit(); // フォーム送信
 }
-
-
-//end of 기안버튼을 누르면 form의 데이터를 전부 넘김
 </script>
 </div>
