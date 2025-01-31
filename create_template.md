@@ -70,9 +70,9 @@ Naver Smart Editor 2.0はJavaScriptで実装されたウェブベースのWYSIWY
 
 - 登録ボタンを押す事でHTML5コードをデータベースに格納します。
 
-### 5. utext를 통해 테이블 구현
+### 6. utext를 통해 테이블 구현
 
-테이블이 구현된 화면 이미지
+<img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/read_template.png">
 
 - Thymeleaf의  utext를 통해 HTML5 코드를 문자열이 아닌 테이블을 구현하여 화면에 출력
 
