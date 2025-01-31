@@ -5,24 +5,21 @@
 ## ✅ 注目ポイント
 
 1. 클릭 이벤트, 체인지 이벤트와 연계하여 AJAX의 비동기 처리로 데이터를 취득 
-   - 사용목적 : 이벤트를 발생 시킬 때 마다, 화면이 깜빡이는 것을 방지하여 UX를 향상 
+   - 사용목적 : 이벤트를 발생 시킬 때 마다, 화면이 깜빡이는 것을 방지하여 UX를 향상
 
-2. 배열 타입을 이용하여, 여러 데이터를 데이터베이스에 격납
+2. data-set 속성을 활용하여 이벤트 핸들러 공유
+   - 사용목적 : 단일 이벤트 핸들러를 통해 코드 재사용성과 유지보수성 향상
+
+3. 배열 타입을 이용하여, 여러 데이터를 데이터베이스에 격납
    - 사용목적 : 한 번의 CRUD 처리를 통해 최대 4명의 정보를 동시에 데이터베이스에 격납하여 트랜직셔널 부하 감소 (좀 더 쉬운 말로 바꿔보자)
    - 활용기술 : MyBatis의 foreach를 활용하여 배열 데이터를 반복 처리
                Oracle의 시퀀스와 함수를 결합하여 PK를 자동생성하여 데이터 무결성 보장
-     
-3. 프로시저를 활용한 전자결재 문서 및 결재자 데이터 동시 삭제
-    - 사용목적 : 전자결재 테이블(PK)이 결재자 테이블에서 외래키(FK)로 참조되고 있는 구조에서, 데이터 무결성을 유지하면서 삭제 처리
-                수작업 없이 일괄 삭제 가능하도록 자동화
-    - 활용기술 : Oracle PL/SQL 프로시저(Procedure) 활용
-                MyBatis의 CALL명령어를 활용하여 프로시저 호출 
       
 ## 承認者選択
 
 <img src="https://github.com/user-attachments/assets/08ae6b57-e6af-4cca-aef5-cda73922f5f2">
 
-- 모달 윈도우를 통해 드롭 다운에서 부서를 선택하면 클릭이벤트가 발동하여 비동기 처리로 부서의 사원 정보를 출력
+- モーダルウィンドウを通じてドロップダウンから部署を選択するとクリックイベントが実行され、非同期処理で部署に所属している社員の情報を取得
 
 #### コード詳細
 ```
@@ -64,12 +61,57 @@ $('#selectDept').on('change', function() {
 ```
 <img src="https://github.com/user-attachments/assets/7d386123-dd86-42c5-afc8-6d48cc9fbd01" />
 
-- テーブルに入力された承認者の情報は使用者が確認するためで、実際の情報は下記のhiddenタイプのinputタグに入力されます。
+- 4つのボタンが同一なイベントハンドラーを通じてモーダルウィンドウ有効化し、まちまちのtrに承認者の情報を反映
+
+#### コード詳細
+
+> <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L180">選択ボタンにdata-set属性設定</a> <br>
+>
+> <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L266">data-set属性の値を入力するためモーダルウィンドウにinputのタグを宣言</a> <br>
+>
+> <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L359">選択ボタンをクリックすると、イベントが実行される</a> <br>
+>
+> <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L423">モーダルウィンドウの承認者選択ボタンをクリックすると、イベントを実行</a> <br>
+
+上記の流れで4つの選択ボタンが1つのモーダルウィンドウ、モーダルウィンドウのイベントハンドラーを共有することが出来ます。
   
 ## テンプレート選択
 <img src="https://github.com/user-attachments/assets/bb543124-0e11-4a55-bbd1-03b273ccca0a">
 
-- change eventとAJAXを連携して非同期処理でテンプレートのデータを取得
+- change eventとAJAXを連携して非同期処理でテンプレートのデータを取得します。
+
+#### コード詳細
+```
+$(document).ready(function () {
+    smartEditor();
+    // テンプレートのデータ取得
+    $("#selectContent").on("change", function (event) {
+      var selectedVal = $(this).val();
+      var eatNo = $("#eatNo").val(selectedVal);
+      $.ajax({
+        url: `/approvals/temp?eatNo=` + selectedVal,
+        type: "GET",
+        success: function (response) {
+          oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
+          oEditors.getById["content"].exec("SET_IR", [response.content]);
+          $("#content").val(response.content);
+        },
+        error: function (xhr, status, error) {
+          Toast.fire({
+            icon: "error",
+            title: "データ取得中エラーが発生しました。: " + error,
+          });
+        },
+      });
+    });
+    // ボタンをクリックすると、データ提出
+    $("#createButton").on("click", function (event) {
+      submitPost(event);
+    });
+ });
+```
+
+## 配列でデータを格納
 
 ----
 ### <a href="https://github.com/leewoosang-hub/CollaVore">トップページに戻る
