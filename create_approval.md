@@ -19,10 +19,12 @@
                 MyBatis의 CALL명령어를 활용하여 프로시저 호출 
       
 ## 承認者選択
-버튼을 눌러 모달창을 활성화한 뒤 부서를 선택하고 결재자를 선택하는 gif 따기
 
-部署を選択すると、AJAXにより非同期処理が実行されます。
+<img src="https://github.com/user-attachments/assets/08ae6b57-e6af-4cca-aef5-cda73922f5f2">
 
+- 모달 윈도우를 통해 드롭 다운에서 부서를 선택하면 클릭이벤트가 발동하여 비동기 처리로 부서의 사원 정보를 출력
+
+#### コード詳細
 ```
  // 部署選択時、該当部署に所属する承認者リストを動的に取得するAJAX
 $('#selectDept').on('change', function() {
@@ -60,21 +62,9 @@ $('#selectDept').on('change', function() {
     });
 }); 
 ```
-4. 承認者選択ボタンをクリックすると、イベントを発生させたボタンの直下にあるテーブルに選択した承認者の情報が反映されます。
-   결재자 정보를 테이블에 출력하는 gif 따기
-  
-````
-<input type="hidden" name="approvers[0].empNo" value="">
-<input type="hidden" name="approvers[1].empNo" value="">
-<input type="hidden" name="approvers[2].empNo" value="">
-<input type="hidden" name="approvers[3].empNo" value="">
+<img src="https://github.com/user-attachments/assets/7d386123-dd86-42c5-afc8-6d48cc9fbd01" />
 
-<input type="hidden" name="approvers[0].sort" value="1">
-<input type="hidden" name="approvers[1].sort" value="2">
-<input type="hidden" name="approvers[2].sort" value="3">
-<input type="hidden" name="approvers[3].sort" value="4">
-````
-- テーブルに入力された承認者の情報は使用者が確認するためで、実際の情報はこれらのhiddenタイプのinputタグに入力されます。
+- テーブルに入力された承認者の情報は使用者が確認するためで、実際の情報は下記のhiddenタイプのinputタグに入力されます。
   
 ## テンプレート選択
 체인지 이벤트를 통해 전자결재를 선택하여 데이터를 취득하는 gif 따기
