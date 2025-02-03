@@ -29,6 +29,8 @@ Naver Smart Editor 2.0はJavaScriptで実装されたウェブベースのWYSIWY
 ### 2. API適用
 
 ```
+<script type="text/javascript" src="/smarteditor/js/HuskyEZCreator.js" charset="utf-8"></script>
+
 // SmartEditor参照のための配列
 	var oEditors = [];
 	function smartEditor() {
