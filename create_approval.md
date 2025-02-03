@@ -22,7 +22,7 @@
 
 #### コード詳細
 
-<a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L238">
+> <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L238">AJAXで取得</a> <br>
 
 <img src="https://github.com/user-attachments/assets/7d386123-dd86-42c5-afc8-6d48cc9fbd01" />
 
@@ -46,35 +46,8 @@
 - change eventとAJAXを連携して非同期処理でテンプレートのデータを取得します。
 
 #### コード詳細
-```
-$(document).ready(function () {
-    smartEditor();
-    // テンプレートのデータ取得
-    $("#selectContent").on("change", function (event) {
-      var selectedVal = $(this).val();
-      var eatNo = $("#eatNo").val(selectedVal);
-      $.ajax({
-        url: `/approvals/temp?eatNo=` + selectedVal,
-        type: "GET",
-        success: function (response) {
-          oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
-          oEditors.getById["content"].exec("SET_IR", [response.content]);
-          $("#content").val(response.content);
-        },
-        error: function (xhr, status, error) {
-          Toast.fire({
-            icon: "error",
-            title: "データ取得中エラーが発生しました。: " + error,
-          });
-        },
-      });
-    });
-    // ボタンをクリックすると、データ提出
-    $("#createButton").on("click", function (event) {
-      submitPost(event);
-    });
- });
-```
+
+> <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L180">AJAXで取得</a> <br>
 
 ## 配列でデータを格納
 
