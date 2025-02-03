@@ -22,7 +22,46 @@
 
 #### コード詳細
 
-> <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L238">AJAXで取得</a> <br>
+```
+// モーダルで選択した承認者情報を親ページに渡す機能
+$(document).ready(function() {
+    // 部署選択時に、その部署に所属する承認者リストを動的に取得する AJAX
+    $('#selectDept').on('change', function() {
+        var deptNo = $(this).val(); // 選択された部署番号
+
+        // 部署番号が未選択の場合は処理を中断
+        if (!deptNo) return;
+
+        // 承認者選択ドロップダウンを初期化
+        $('#selectApprovers').empty();
+        $('#selectApprovers').append('<option selected value="" disabled>==承認者選択==</option>');
+
+        // AJAXリクエスト：該当部署の承認者リストを取得
+        $.ajax({
+            url: '/approvals/select-emps/' + deptNo,
+            type: 'POST',
+            success: function(response) {
+                if (response.length === 0) {
+                    $('#selectApprovers').append('<option value="">承認者選択なし</option>');
+                    return;
+                }
+                // 取得した承認者リストをドロップダウンに追加
+                $.each(response, function(index, employeesInfo) {
+                    $('#selectApprovers').append(
+                        `<option value="${employeesInfo.empNo}">${employeesInfo.empName} / ${employeesInfo.posiName}</option>`
+                    );
+                });
+            },
+            error: function(xhr, status, error) {
+                Toast.fire({
+                    icon: "error",
+                    title: "承認者データ取得中にエラーが発生しました。"
+                });
+            }
+        });
+    });
+});
+```
 
 <img src="https://github.com/user-attachments/assets/7d386123-dd86-42c5-afc8-6d48cc9fbd01" />
 
@@ -47,7 +86,35 @@
 
 #### コード詳細
 
-> <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L180">AJAXで取得</a> <br>
+```
+//テンプレートのでデータ取得
+$(document).ready(function () {
+    smartEditor();
+    $("#selectContent").on("change", function (event) {
+      var selectedVal = $(this).val();
+      var eatNo = $("#eatNo").val(selectedVal);
+      $.ajax({
+        url: `/approvals/temp?eatNo=` + selectedVal,
+        type: "GET",
+        success: function (response) {
+          oEditors.getById["content"].exec("UPDATE_CONTENTS_FIELD", []);
+          oEditors.getById["content"].exec("SET_IR", [response.content]);
+          $("#content").val(response.content);
+        },
+        error: function (xhr, status, error) {
+          Toast.fire({
+            icon: "error",
+            title: "データ取得中エラーが発生しました。: " + error,
+          });
+        },
+      });
+    });
+    //データ送信
+    $("#createButton").on("click", function (event) {
+      submitPost(event);
+    });
+ });
+```
 
 ## 配列でデータを格納
 
