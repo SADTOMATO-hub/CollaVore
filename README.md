@@ -24,14 +24,12 @@
 ### 主要機能
   - <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/create_template.md">テンプレート生成</a>
     1. Naver smart editor 2.0 apiを利用して電子決裁のテンプレート生成
-    2. Thymeleaf를 통해 HTML5 코드 랜더링
   - <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/create_approval.md">電子決裁文書起案</a>
-    1. 비동기 처리로 결재자 데이터 취득
-    2. data-set을 이용하여 이벤트핸들러 공유 
-    3. 배열 타입을 이용하여 다수의 데이터 처리
+    1. 결재를 요철할 승인자를 4명까지 선택
+    2. 문서에 사용할 템플릿을  Naver smart editor 2.0 api로 호출
   - <a href="https://github.com/leewoosang-hub/CollaVore/tree/master/EDSM.md">電子決裁文書決裁</a>
-    1. 비동기 처리를 통해 문서 결재 진행
-    2. 프로시저를 이용하여 문서 및 승인자 상태 변경
+    1. 본인이 결재해야 할 문서를 선택하야 승인 혹은 반려
+    2. 결재자의 상태에 따라 문서의 상태 갱신
 
 ### 他の機能
   - テンプレート修正
