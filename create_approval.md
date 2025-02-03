@@ -21,43 +21,9 @@
 - モーダルウィンドウを通じてドロップダウンから部署を選択するとクリックイベントが実行され、非同期処理で部署に所属している社員の情報を取得
 
 #### コード詳細
-```
- // 部署選択時、該当部署に所属する承認者リストを動的に取得するAJAX
-$('#selectDept').on('change', function() {
-    var deptNo = $(this).val(); // 選択された部署番号
 
-    // 部署番号がない場合は処理を終了
-    if (!deptNo) return;
+<a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L238">
 
-    // 承認者選択ドロップダウンを初期化
-    $('#selectApprovers').empty();
-    $('#selectApprovers').append('<option selected value="" disabled>==承認者を選択==</option>');
-
-    // AJAXリクエスト: 該当部署の承認者リストを取得
-    $.ajax({
-        url: '/approvals/selectEmps/' + deptNo,
-        type: 'POST',
-        success: function(response) {
-            if (response.length === 0) {
-                $('#selectApprovers').append('<option value="">承認者がいません</option>');
-                return;
-            }
-            // 取得した承認者リストをドロップダウンに追加
-            $.each(response, function(index, employeesInfo) {
-                $('#selectApprovers').append(
-                    `<option value="${employeesInfo.empNo}">${employeesInfo.empName} / ${employeesInfo.posiName}</option>`
-                );
-            });
-        },
-        error: function(xhr, status, error) {
-			Toast.fire({
-			  icon: "error",
-			  title: "承認者情報の取得中にエラーが発生しました。"
-	 });
-       }
-    });
-}); 
-```
 <img src="https://github.com/user-attachments/assets/7d386123-dd86-42c5-afc8-6d48cc9fbd01" />
 
 - 4つのボタンが同一なイベントハンドラーを通じてモーダルウィンドウ有効化し、まちまちのtrに承認者の情報を反映
@@ -70,7 +36,7 @@ $('#selectDept').on('change', function() {
 >
 > <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L208">選択ボタンをクリックすると、イベントが実行される</a> <br>
 >
-> <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L235">モーダルウィンドウの承認者選択ボタンをクリックすると、イベントを実行</a> <br>
+> <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L274">モーダルウィンドウの承認者選択ボタンをクリックすると、イベントを実行</a> <br>
 
 上記の流れで4つの選択ボタンが1つのモーダルウィンドウ、モーダルウィンドウのイベントハンドラーを共有することが出来ます。
   
