@@ -68,9 +68,9 @@ $('#selectDept').on('change', function() {
 >
 > <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L130">data-set属性の値を入力するためモーダルウィンドウにinputのタグを宣言</a> <br>
 >
-> <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L359">選択ボタンをクリックすると、イベントが実行される</a> <br>
+> <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L208">選択ボタンをクリックすると、イベントが実行される</a> <br>
 >
-> <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L423">モーダルウィンドウの承認者選択ボタンをクリックすると、イベントを実行</a> <br>
+> <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L235">モーダルウィンドウの承認者選択ボタンをクリックすると、イベントを実行</a> <br>
 
 上記の流れで4つの選択ボタンが1つのモーダルウィンドウ、モーダルウィンドウのイベントハンドラーを共有することが出来ます。
   
