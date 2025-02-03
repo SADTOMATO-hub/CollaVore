@@ -66,7 +66,7 @@ $('#selectDept').on('change', function() {
 
 > <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L180">選択ボタンにdata-set属性設定</a> <br>
 >
-> <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L267">data-set属性の値を入力するためモーダルウィンドウにinputのタグを宣言</a> <br>
+> <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L427">data-set属性の値を入力するためモーダルウィンドウにinputのタグを宣言</a> <br>
 >
 > <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/demo/src/main/resources/templates/approvals/createApprovalForm.html#L359">選択ボタンをクリックすると、イベントが実行される</a> <br>
 >
