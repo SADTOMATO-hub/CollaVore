@@ -4,7 +4,7 @@
 
 ## ✅ 注目ポイント
 
- 1. Naver smart editor 2.0를 활용하여 HTML5 코드를 데이터베이스에 저장
+ 1. Naver Smart Editor 2.0を活用したHTML5コードのデータベース登録
     - 사용목적 : 전자결재 템플릿이 될 HTML5를 데이터베이스에 격납하기 위해 사용 
       
  2. Thymeleaf utext 활용하여 HTML5 코드 렌더링
