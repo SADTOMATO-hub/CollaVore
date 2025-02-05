@@ -3,7 +3,24 @@
 ## ✅ 注目ポイント
 
 1. spring MVC 패턴과 3계층 아키택처를 활용
-   - 사용목적 : spring MVC 패턴을 활용하여 객체 간 역할을 분리, 계층 아키택처 기법을 통해 Model객체를 각 역할에 맞게 세분화
+   - 사용목적 : 
+
+```
+📁 프로젝트 구조 예시
+src/main/java/com/example/project
+├── controller  (Controller - MVCの C)
+│   ├── UserController.java
+├── service  (Service 계층 - 3계층의 중간)
+│   ├── UserService.java
+│   ├── UserServiceImpl.java
+├── repository  (DAO 계층 - 3계층의 데이터 처리)
+│   ├── UserRepository.java
+│   ├── UserMapper.xml (MyBatis 사용 시)
+├── model  (DTO / VO / Entity - MVC의 M)
+│   ├── User.java
+
+```
+
 <div>
   <h1>✉<i>&nbsp 電子決裁</i></h1>
 </div>  
