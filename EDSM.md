@@ -3,7 +3,7 @@
 ### <a href="https://youtu.be/6CGdhDFVPsE">電子決裁決裁デモ映像</a>
 ### <a href="https://youtu.be/3FdpodYiA90">先決デモ映像</a>
 
-## 注目ポイント
+## ✅注目ポイント
 1. クリックイベントと連携し、非同期処理で承認者の承認状況を即時反映
    - 使用目的：画面のちらつきやリロードなしでユーザーのリクエストを即座に画面へ反映し、UXを向上させるため。
 
@@ -14,7 +14,7 @@
 
 ## プロシージャを通じて承認を進行
 
-버튼을 눌러 결재 하는 gif 따기
+<img src="https://github.com/user-attachments/assets/e8f0911c-4ecc-40ee-af5b-04939a1c365d">
 
 ```
   $(".approveBtn").on('click', function(event) {
