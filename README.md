@@ -2,23 +2,25 @@
 
 ## ✅ 注目ポイント
 
-1. spring MVC 패턴과 3계층 아키택처를 활용
-   - 사용목적 : 
+1. Spring MVCパターンと3層アーキテクチャを活用
+   - 使用目的 : オブジェクトの役割をより明確に区別するために使用
 
 ```
-📁 프로젝트 구조 예시
-src/main/java/com/example/project
-├── controller  (Controller - MVCの C)
-│   ├── UserController.java
-├── service  (Service 계층 - 3계층의 중간)
-│   ├── UserService.java
-│   ├── UserServiceImpl.java
-├── repository  (DAO 계층 - 3계층의 데이터 처리)
-│   ├── UserRepository.java
-│   ├── UserMapper.xml (MyBatis 사용 시)
-├── model  (DTO / VO / Entity - MVC의 M)
-│   ├── User.java
-
+📁 app
+src/main/java/com/collavore.app/approvasls
+├── mapper
+│   ├── ApprovalsMapper.java (DAO)
+├── Web  (Controller - spring MVC2のC)
+│   ├── ApprovalsController.java
+├── service  (Service - spring MVC2のS)
+│   │   ├──impl
+│   │   │    ├──approvalsServiceImpl.java(3層のビジネス層)
+│   ├── approvalsService.java
+│   ├── ApprovalsVO.java (3層のデータ層)
+src/main/java/resources/mapper
+│   ├── ApprovalsMapper.xml (MyBatis/3層のデータ接近層)
+src/main/java/resources/templates
+│   ├── Approvals.html (View - spring MVC2のV)
 ```
 
 <div>
@@ -29,11 +31,11 @@ src/main/java/com/example/project
   - <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/create_template.md">テンプレート生成</a>
     1. Naver smart editor 2.0 apiを利用して電子決裁のテンプレート生成
   - <a href="https://github.com/leewoosang-hub/CollaVore/blob/master/create_approval.md">電子決裁文書起案</a>
-    1. 결재를 요철할 승인자를 4명까지 선택
-    2. 문서에 사용할 템플릿을  Naver smart editor 2.0 api로 호출
+    1. 最大4名までの承認者を選択
+    2. Naver Smart Editor 2.0 APIを呼び出して、文書用のテンプレートを適用
   - <a href="https://github.com/leewoosang-hub/CollaVore/tree/master/EDSM.md">電子決裁文書決裁</a>
-    1. 본인이 결재해야 할 문서를 선택하야 승인 혹은 반려
-    2. 결재자의 상태에 따라 문서의 상태 갱신
+    1. ボタンを使用して承認または却下を決定
+    2. 承認者のステータスに応じて文書のステータスを変更
 
 ### 他の機能
   - テンプレート修正
@@ -41,12 +43,6 @@ src/main/java/com/example/project
   - テンプレート項目整列
   - 電子決裁文書修正
   - 電子決裁文書削除
-    <br>프로시저를 활용한 전자결재 문서 및 결재자 데이터 동시 삭제
-    - 사용목적
-      전자결재 테이블(PK)이 결재자 테이블에서 외래키(FK)로 참조되고 있는 구조에서, 데이터 무결성을 유지하면서 삭제 처리<br>
-      수작업 없이 일괄 삭제 가능하도록 자동화하기 위해 사용
-    - 활용기술 : Oracle PL/SQL 프로시저(Procedure) 활용
-                MyBatis의 CALL명령어를 활용하여 프로시저 호출 
   - 電子決裁文書項目整列
 
 
