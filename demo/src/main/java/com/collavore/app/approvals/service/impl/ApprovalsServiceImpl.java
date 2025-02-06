@@ -76,6 +76,9 @@ public class ApprovalsServiceImpl implements ApprovalsService {
 		for (ApprovalsVO appr : apprVO.getApprovers()) {
 			appr.setEaNo(apprVO.getEaNo());
 		}
+//		for(int eaNo = 0; eaNo<apprVO.getApproversList().size(); eaNo++) {
+//			apprVO.getApproversList().
+//		}
 		int result = approvalsMapper.createApprsEar(apprVO);
 		return result;
 	}
