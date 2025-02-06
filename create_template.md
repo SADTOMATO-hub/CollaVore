@@ -5,9 +5,9 @@
 ## ✅ 注目ポイント
 
  1. Naver Smart Editor 2.0API
-      使用目的 : 電子決裁のテンプレートとなるHTML5タグをデータベースに格納する為
- 2. Thymeleaf utext 활용하여 HTML5 코드 렌더링
-    - 사용목적 : th:text를 사용할 경우 HTML 태그가 문자열로 출력되는 문제를 해결하고, HTML을 실제 요소로 해석하여 렌더링하기 위해 사용
+    - 使用目的 : 電子決裁のテンプレートとなるHTML5タグをデータベースに格納する為
+ 2. Thymeleafのutextを活用してHTML5コードをレンダリング
+    - 使用目的 : th:textではHTMLタグが文字列として出力される問題を解決し、HTMLタグを解釈してレンダリングするために使用
 
 ## 💡 Naver smart editor 2.0とは？
   ```
@@ -75,7 +75,7 @@ Naver Smart Editor 2.0はJavaScriptで実装されたウェブベースのWYSIWY
 
 <img src="https://github.com/leewoosang-hub/CollaVore/blob/master/images/read_template.png">
 
-- Thymeleaf의 utext를 통해 HTML5 코드를 문자열이 아닌 테이블을 구현하여 화면에 출력
+- HTML5コードを文字列ではなくテーブルとして実装し、画面に出力
 
 ---
 
