@@ -20,7 +20,7 @@ src/main/java/com/collavore.app/approvasls
 src/main/java/resources/mapper
 │   ├── ApprovalsMapper.xml (MyBatis/3層のデータ接近層)
 src/main/java/resources/templates
-│   ├── Approvals.html (View - spring MVC2のV)
+│   ├── Approvals.html (View/thymeleaf - spring MVC2のV)
 ```
 
 
