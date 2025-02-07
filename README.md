@@ -23,6 +23,7 @@ src/main/java/resources/templates
 │   ├── Approvals.html (View - spring MVC2のV)
 ```
 
+
 <div>
   <h1>✉<i>&nbsp 電子決裁</i></h1>
 </div>  
