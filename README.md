@@ -9,7 +9,7 @@
 📁 app
 src/main/java/com/collavore.app/approvasls
 ├── mapper
-│   ├── ApprovalsMapper.java (DAO)
+│   ├── ApprovalsMapper.java
 ├── Web  (Controller - spring MVC2のC)
 │   ├── ApprovalsController.java
 ├── service  (Service - spring MVC2のS)
